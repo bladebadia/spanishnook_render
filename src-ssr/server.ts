@@ -10,6 +10,8 @@
  * anything you import here (except for express and compression).
  */
 import type { Server } from 'node:http';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import compression from 'compression';
 import express from 'express';
 import type { Application, Request, Response } from 'express';
@@ -31,6 +33,8 @@ declare module '#q-app' {
   }
 }
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /**
  * Create your webserver and return its instance.
  *
@@ -49,8 +53,24 @@ export const create = defineSsrCreate((/* { ... } */) => {
     app.use(compression());
   }
 
+  // ✅ SERVIR ARCHIVOS ESTÁTICOS - CRUCIAL PARA PRODUCCIÓN
+  // En producción, los archivos estáticos están en dist/ssr/public
+  if (process.env.PROD) {
+    // Servir archivos estáticos desde la carpeta public
+    const publicPath = path.join(__dirname, '../public');
+    app.use(express.static(publicPath));
+    
+    // También servir específicamente la carpeta img
+    const imgPath = path.join(__dirname, '../public/img');
+    app.use('/img', express.static(imgPath));
+    
+    console.log('✅ Servir archivos estáticos desde:', publicPath);
+  }
+
   return app;
 });
+
+// El resto de tus funciones (injectDevMiddleware, listen, etc.) se mantienen igual
 
 /**
  * Used by Quasar SSR dev server to inject middleware into the webserver.
