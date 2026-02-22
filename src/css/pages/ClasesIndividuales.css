@@ -1,0 +1,515 @@
+.custom-calendar {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden; /* Prevenir desbordamiento */
+}
+
+.time-btn {
+  min-width: 80px;
+  font-weight: bold;
+}
+
+:deep(.q-date__calendar-item) {
+  height: 40px;
+  width: 40px;
+  font-size: 14px;
+}
+
+/* Pantallas extra pequeñas (menos de 400px) */
+@media (max-width: 399px) {
+  .custom-calendar {
+    width: 95%;
+    max-width: 95%;
+    font-size: 10px;
+  }
+
+  :deep(.q-date) {
+    font-size: 10px;
+  }
+
+  :deep(.q-date__header) {
+    padding: 4px;
+  }
+
+  :deep(.q-date__calendar-item) {
+    height: 22px !important;
+    width: 22px !important;
+    font-size: 9px !important;
+    min-width: 22px !important;
+    padding: 1px !important;
+    margin: 0 !important;
+  }
+
+  :deep(.q-date__calendar-weekdays) {
+    padding: 2px 4px;
+  }
+
+  :deep(.q-date__calendar-weekdays > div) {
+    height: 18px;
+    font-size: 8px;
+    padding: 1px;
+    min-width: 22px;
+  }
+
+  :deep(.q-date__navigation) {
+    padding: 2px 4px;
+  }
+
+  :deep(.q-date__header-title) {
+    font-size: 12px;
+  }
+
+  :deep(.q-date__header-subtitle) {
+    font-size: 10px;
+  }
+
+  :deep(.q-btn) {
+    min-height: 28px;
+    padding: 2px 4px;
+    font-size: 10px;
+  }
+
+  :deep(.q-date__actions .q-btn) {
+    font-size: 9px;
+    padding: 1px 4px;
+    min-height: 24px;
+  }
+
+  /* Forzar el ancho de la tabla del calendario */
+  :deep(.q-date__calendar-days) {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  :deep(.q-date__calendar-days td) {
+    width: 14.28% !important; /* 100% / 7 días */
+    max-width: 14.28% !important;
+    padding: 0 !important;
+  }
+
+  /* Contenedor del calendario más compacto */
+  :deep(.q-date__main) {
+    padding: 2px !important;
+  }
+
+  /* Botones de tiempo más pequeños */
+  .time-btn {
+    min-width: 45px;
+    font-size: 10px;
+    padding: 4px 6px;
+    margin: 2px;
+  }
+
+  /* Ajustar el contenedor principal */
+  .col-md-6 {
+    padding: 0 4px;
+  }
+  
+  .col-md-5 {
+    padding: 0 4px;
+  }
+}
+
+/* Móvil pequeño (400px - 480px) */
+@media (min-width: 400px) and (max-width: 480px) {
+  .custom-calendar {
+    width: 90%;
+    max-width: 90%;
+  }
+
+  :deep(.q-date) {
+    font-size: 12px;
+  }
+
+  :deep(.q-date__header) {
+    padding: 6px;
+  }
+
+  :deep(.q-date__calendar-item) {
+    height: 26px !important;
+    width: 26px !important;
+    font-size: 10px !important;
+    min-width: 26px !important;
+    padding: 1px !important;
+  }
+
+  :deep(.q-date__calendar-weekdays) {
+    padding: 3px 6px;
+  }
+
+  :deep(.q-date__calendar-weekdays > div) {
+    height: 22px;
+    font-size: 9px;
+    padding: 1px;
+  }
+
+  :deep(.q-date__navigation) {
+    padding: 3px 6px;
+  }
+
+  :deep(.q-date__header-title) {
+    font-size: 13px;
+  }
+
+  :deep(.q-date__header-subtitle) {
+    font-size: 11px;
+  }
+
+  :deep(.q-btn) {
+    min-height: 30px;
+    padding: 3px 6px;
+  }
+
+  :deep(.q-date__actions .q-btn) {
+    font-size: 10px;
+    padding: 2px 5px;
+    min-height: 26px;
+  }
+
+  .time-btn {
+    min-width: 55px;
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+
+/* Móvil medio (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+  .custom-calendar {
+    width: 85%;
+    max-width: 85%;
+    min-height: 350px;
+    max-height: 400px;
+  }
+
+  :deep(.q-date__calendar-item) {
+    height: 35px !important;
+    width: 35px !important;
+    font-size: 13px !important;
+    min-width: 35px !important;
+  }
+
+  :deep(.q-date__calendar-weekdays > div) {
+    height: 28px;
+    font-size: 11px;
+  }
+
+  :deep(.q-date__header-title) {
+    font-size: 16px;
+  }
+
+  .time-btn {
+    min-width: 70px;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .custom-calendar {
+    max-width: 700px;
+    min-height: 450px;
+  }
+
+  :deep(.q-date__calendar-item) {
+    height: 50px;
+    width: 50px;
+    font-size: 16px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .custom-calendar {
+    max-width: 800px;
+    min-height: 500px;
+  }
+
+  :deep(.q-date__calendar-item) {
+    height: 55px;
+    width: 55px;
+    font-size: 17px;
+  }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1440px) {
+  .custom-calendar {
+    max-width: 800px;
+    min-height: 550px;
+  }
+
+  :deep(.q-date__calendar-item) {
+    height: 60px;
+    width: 60px;
+    font-size: 18px;
+  }
+}
+
+/* Prevenir desbordamiento horizontal en TODOS los tamaños */
+:deep(.q-date__calendar) {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+:deep(.q-date__calendar-days) {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+:deep(.q-date__calendar-days td) {
+  max-width: 14.28% !important;
+  overflow: hidden !important;
+}
+
+/* Días deshabilitados */
+:deep(.q-date__calendar-item--disabled) {
+  color: #bdbdbd !important;
+  background-color: #f5f5f5;
+}
+
+/* Asegurar que el contenedor padre no cause overflow */
+.row.q-col-gutter-lg {
+  overflow-x: hidden;
+}
+
+.col-md-6, .col-md-5 {
+  overflow-x: hidden;
+}
+
+/* Responsive para el contenedor general en pantallas muy pequeñas */
+@media (max-width: 399px) {
+  .q-col-gutter-lg {
+    margin: 0 -2px;
+  }
+  
+  .q-col-gutter-lg > div {
+    padding: 0 2px;
+  }
+  
+  .q-pa-md {
+    padding: 8px !important;
+  }
+  
+  .q-mb-lg {
+    margin-bottom: 16px !important;
+  }
+}
+
+/* Sección de Opiniones */
+.opiniones-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.opinion-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.opinion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.opinion-card .q-avatar {
+  border: 3px solid #f0f0f0;
+}
+
+.opinion-card .q-rating {
+  margin-bottom: 8px;
+}
+
+/* Responsive para opiniones */
+@media (max-width: 768px) {
+  .opinion-card {
+    margin-bottom: 20px;
+  }
+  
+  .opiniones-section h2 {
+    font-size: 1.8rem;
+  }
+  
+  .opiniones-section p {
+    font-size: 1.1rem;
+  }
+}
+
+/* ...existing styles... */
+
+/* Carrusel de Opiniones - Una sola tarjeta */
+.carousel-container {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.opinions-carousel.single-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.opinions-carousel.single-card .q-carousel__slide {
+  padding: 30px 20px;
+  background: transparent;
+}
+
+.single-opinion-card {
+  max-width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  transform: scale(1);
+  transition: all 0.4s ease;
+}
+
+.single-opinion-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+}
+
+/* Flechas del carrusel mejoradas */
+.carousel-arrow {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.carousel-arrow:hover {
+  transform: scale(1.15);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-arrow-left {
+  position: absolute;
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.carousel-arrow-right {
+  position: absolute;
+  right: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+/* Indicadores mejorados */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.indicator-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+
+.indicator-dot.active {
+  transform: scale(1.4);
+  border-color: rgba(25, 118, 210, 0.3);
+}
+
+.indicator-dot:hover {
+  transform: scale(1.2);
+}
+
+/* Chip del nombre */
+.opinion-name-chip {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+/* Sección de opiniones con gradiente mejorado */
+.opiniones-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.opiniones-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(25, 118, 210, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(25, 118, 210, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Responsive para una sola tarjeta */
+@media (max-width: 768px) {
+  .carousel-arrow-left {
+    left: 15px;
+    top: 45%;
+  }
+  
+  .carousel-arrow-right {
+    right: 15px;
+    top: 45%;
+  }
+  
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .opinions-carousel.single-card {
+    height: auto !important;
+    min-height: 400px;
+  }
+  
+  .opinions-carousel.single-card .q-carousel__slide {
+    padding: 20px 15px;
+  }
+  
+  .carousel-container {
+    margin: 0 15px;
+  }
+  
+  .single-opinion-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .carousel-arrow-left {
+    left: 10px;
+  }
+  
+  .carousel-arrow-right {
+    right: 10px;
+  }
+  
+  .opinions-carousel.single-card {
+    min-height: 380px;
+  }
+  
+  .indicator-dot {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+  }
+}

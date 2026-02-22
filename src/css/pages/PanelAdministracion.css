@@ -1,0 +1,265 @@
+
+/* ⬇️ CONTROLAR ANCHO MEDIANTE EL GRID */
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  width: 100%;
+}
+
+/* ⬇️ CELDAS CON ANCHO AUTOMÁTICO BASADO EN EL GRID */
+.celda-dia {
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+}
+
+.dia-calendario {
+  border: 2px solid #e0e0e0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dia-calendario:hover {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dia-seleccionado {
+  background: linear-gradient(135deg, #4caf50, #388e3c) !important;
+  border-color: #2e7d32 !important;
+  color: white;
+  transform: scale(1.05);
+}
+
+.dia-hoy {
+  border: 3px solid #ff9800 !important;
+  background-color: #fff3e0 !important;
+  font-weight: bold;
+}
+
+.dia-vacio {
+  background-color: #f5f5f5;
+  border: 2px dashed #e0e0e0;
+  cursor: default;
+}
+
+.contenido-dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 6px;
+}
+
+.numero-dia {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.dia-seleccionado .numero-dia {
+  color: white;
+  font-weight: 700;
+}
+
+/* 🔴 INDICADORES MÁS VISIBLES */
+.indicador-tipo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tipo-laborable {
+  background-color: #2196f3;
+}
+
+.tipo-festivo {
+  background-color: #f44336;
+}
+
+.tipo-especial {
+  background-color: #ff9800;
+}
+
+.dia-seleccionado .indicador-tipo {
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔧 MENÚ LATERAL */
+.sticky-menu {
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+}
+
+.menu-lateral {
+  border-radius: 8px;
+}
+
+.menu-item {
+  border-radius: 8px;
+  margin: 4px 8px;
+  transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+  background-color: #e3f2fd;
+  transform: translateX(5px);
+}
+
+.menu-item.q-item--active {
+  background-color: #1976d2;
+  color: white;
+}
+
+.menu-item.q-item--active .q-icon {
+  color: white;
+}
+
+/* 📱 RESPONSIVE MEJORADO */
+@media (max-width: 1024px) {
+  .celda-dia {
+    height: 70px;
+    padding: 4px;
+  }
+
+  .numero-dia {
+    font-size: 1rem;
+  }
+
+  .indicador-tipo {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .calendario-grid {
+    gap: 2px;
+  }
+
+  .celda-dia {
+    height: 60px;
+    padding: 3px;
+  }
+
+  .numero-dia {
+    font-size: 0.9rem;
+  }
+
+  .indicador-tipo {
+    width: 16px;
+    height: 16px;
+  }
+
+  .contenido-dia {
+    gap: 4px;
+  }
+
+  .sticky-menu {
+    position: relative;
+    top: 0;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .celda-dia {
+    height: 50px;
+    padding: 2px;
+  }
+
+  .numero-dia {
+    font-size: 0.8rem;
+  }
+
+  .indicador-tipo {
+    width: 14px;
+    height: 14px;
+    border-width: 1px;
+  }
+
+  .contenido-dia {
+    gap: 2px;
+  }
+}
+
+/* 🔧 FORZAR TAMAÑOS EN CASO DE CONFLICTOS */
+:deep(.q-page) {
+  min-height: calc(100vh - 50px);
+}
+
+:deep(.q-card) {
+  overflow: visible;
+}
+
+:deep(.q-card-section) {
+  padding: 16px;
+}
+
+/* Estilos para estados de carga */
+.celda-dia.cargando {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.celda-dia.deshabilitado {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Efectos visuales mejorados */
+.dia-calendario:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Animación para nuevos días seleccionados */
+@keyframes seleccionarDia {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.dia-seleccionado {
+  animation: seleccionarDia 0.3s ease-out;
+}
+
+/* Mejora para días vacíos */
+.dia-vacio:hover {
+  transform: none;
+  background-color: #f5f5f5;
+  cursor: default;
+}
+
+/* Asegurar que el grid ocupe espacio consistente */
+.calendario-grid::after {
+  content: '';
+  flex: auto;
+}
+
+/* Contenedor principal del calendario */
+:deep(.calendario-container) {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilos para las secciones de contenido */
+.seccion-contenido {
+  min-height: 600px;
+}

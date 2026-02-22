@@ -1,0 +1,320 @@
+/* Grilla de tarjetas */
+.promocards-container {
+  display: grid;
+  width: 100%;
+  padding: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  align-items: stretch;
+  justify-items: stretch;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.promocards-container .q-card {
+  height: 100%;
+}
+
+.promocards-container > div {
+  display: flex;
+  justify-content: center;
+}
+
+.promocards-container > div > .q-card {
+  width: 100%;
+}
+
+/* Responsive: grid */
+@media (max-width: 768px) {
+  .promocards-container {
+    padding: 1rem;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    justify-items: center;
+  }
+
+  .promocards-container > div {
+    width: 100%;
+    max-width: 350px;
+  }
+}
+
+/* Sección de Opiniones */
+.opiniones-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
+  overflow: hidden;
+}
+.opinion-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+.opinion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+.opinion-card .q-avatar {
+  border: 3px solid #f0f0f0;
+}
+.opinion-card .q-rating {
+  margin-bottom: 8px;
+}
+
+/* Carrusel de Opiniones - Una sola tarjeta */
+.carousel-container {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+.opinions-carousel.single-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+.opinions-carousel.single-card .q-carousel__slide {
+  padding: 30px 20px;
+  background: transparent;
+}
+.single-opinion-card {
+  max-width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  transform: scale(1);
+  transition: all 0.4s ease;
+}
+.single-opinion-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+}
+
+/* Flechas del carrusel mejoradas */
+.carousel-arrow {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+.carousel-arrow:hover {
+  transform: scale(1.15);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+.carousel-arrow-left {
+  position: absolute;
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+.carousel-arrow-right {
+  position: absolute;
+  right: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+/* Indicadores mejorados */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.indicator-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+.indicator-dot.active {
+  transform: scale(1.4);
+  border-color: rgba(25, 118, 210, 0.3);
+}
+.indicator-dot:hover {
+  transform: scale(1.2);
+}
+
+/* Chip del nombre */
+.opinion-name-chip {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+/* Animación/banner */
+.animacion-banner {
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+  overflow: visible;
+}
+.anim-group {
+  position: absolute;
+  right: 32vw;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  will-change: transform, opacity;
+  animation: slide-in-right 1.6s ease-out forwards;
+  opacity: 0;
+  z-index: 2;
+}
+.anim-img {
+  width: 220px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.18));
+}
+.test-card {
+  background: #ffffff;
+  border: 2px solid #1976d2;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  max-width: 220px;
+}
+.test-card__text {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #2c3e50;
+}
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(-120vw);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-60%);
+    opacity: 1;
+  }
+}
+
+/* Banner clases grupales */
+.banner-clases-grupales {
+  background: linear-gradient(135deg, #851319 0%, #a31820 100%);
+  border-radius: 20px;
+  padding: 48px 32px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(133, 19, 25, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+.banner-clases-grupales::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.banner-clases-grupales__titulo {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  margin: 0;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+/* Tarjeta formativa (cabecera de sección) */
+.tarjeta-formativos {
+  width: 80%;
+  padding: 2rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .opiniones-section h2 {
+    font-size: 1.8rem;
+  }
+  .opiniones-section p {
+    font-size: 1.1rem;
+  }
+
+  .animacion-banner {
+    min-height: 220px;
+  }
+  .anim-group {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    justify-content: center;
+    animation: none;
+    opacity: 1;
+    gap: 10px;
+    transform: translateX(8%);
+  }
+  .anim-img {
+    width: 140px;
+  }
+  .test-card {
+    max-width: 170px;
+    padding: 10px 12px;
+  }
+  .test-card__text {
+    font-size: 0.9rem;
+  }
+
+  .banner-clases-grupales {
+    padding: 32px 24px;
+    margin:  16px;
+  }
+  .banner-clases-grupales__titulo {
+    font-size: 1.6rem;
+  }
+
+  .tarjeta-formativos {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .tarjeta-formativos .titulo-responsivo {
+    padding: 1rem 0.5rem;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .tarjeta-formativos {
+    width: 85%;
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tarjeta-formativos:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+  .opinions-carousel.single-card {
+    min-height: 380px;
+  }
+  .indicator-dot {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+  }
+}

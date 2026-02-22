@@ -1,0 +1,11 @@
+/* Flechas de q-expansion-item más grandes y blancas para todas las páginas */
+.q-expansion-item__toggle-icon {
+  font-size: 2.4rem !important;
+  color: #fff !important;
+}
+
+/* Para Quasar v2+ con deep selector */
+:deep(.q-expansion-item__toggle-icon) {
+  font-size: 2.4rem !important;
+  color: #fff !important;
+}

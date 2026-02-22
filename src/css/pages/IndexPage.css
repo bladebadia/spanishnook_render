@@ -1,0 +1,362 @@
+/*  TARJETAS */
+
+.tarjeta-quien {
+  width: 55%;
+}
+@media (max-width: 599px) {
+  .tarjeta-quien {
+    width: 90%;
+  }
+}
+/* Para hacer el avatar responsive */
+.tarjeta-quien .q-avatar {
+  font-size: 140px !important;
+}
+
+@media (max-width: 768px) {
+  .tarjeta-quien .q-avatar {
+    font-size: 100px !important;
+  }
+}
+
+/* Estilos para la lista con checks */
+.lista-check {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1.3rem;
+}
+.lista-check > li {
+  padding-left: 2em; /* Sangría para el texto */
+  text-indent: -1.5em; /* Retrocede el check */
+  margin-bottom: 0.5em; /* Espacio entre elementos */
+  line-height: 1.4; /* Altura de línea para mejor legibilidad */
+}
+.lista-check > li::before {
+  content: '\2713'; /* Unicode para ✓ */
+  color: #2ecc40 !important;
+  margin-right: 0.5em;
+  font-size: 1.1em;
+  font-family: inherit;
+}
+
+.faqs-section {
+  border-radius: 18px;
+  padding: 32px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.contacto-section {
+  border-radius: 18px;
+  padding: 32px 0 40px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Agrandar icono de q-expansion-item en FAQs */
+/* Flechas de q-expansion-item más grandes y blancas */
+.faqs-section .q-expansion-item__toggle-icon {
+  font-size: 2.4rem !important;
+  color: #fff !important;
+}
+/* Para Quasar v2+ con deep selector */
+.faqs-section ::v-deep .q-expansion-item__toggle-icon {
+  font-size: 2.4rem !important;
+  color: #fff !important;
+}
+/* Agrandar icono de q-expansion-item en FAQs usando ::v-deep para Quasar */
+.faqs-section ::v-deep .q-expansion-item__toggle-icon {
+  font-size: 2.3rem !important;
+}
+
+/* En móvil, cambiar el orden: imagen arriba, texto abajo */
+.row.justify-center.items-center {
+  flex-direction: column-reverse;
+}
+
+/* Móviles (max-width: 600px) */
+
+@media (max-width: 600px) {
+  .lista-check {
+    font-size: 0.9rem;
+  }
+  .lista-check > li {
+    padding-left: 1.5em;
+    text-indent: -1.2em;
+  }
+}
+
+.promocards-container {
+  display: grid;
+  width: 100%;
+  padding: 2rem;
+  gap: 2rem;
+  margin: 0 auto;
+  justify-content: center;
+  max-width: 1800px;
+  align-items: stretch;
+  height: 100%;
+}
+
+.promocards-container .q-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 480px;
+}
+
+.promocards-container .q-card .q-card__section {
+  flex-grow: 1;
+}
+
+.promocards-container .q-card .q-card__section {
+  flex-grow: 1;
+}
+
+/* Móvil (<768px): 1 tarjeta */
+@media (max-width: 767px) {
+  .promocards-container {
+    grid-template-columns: minmax(280px, 1fr);
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+/* Tablet (768px - 1023px): 2 tarjetas */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .promocards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Desktop (>1024px): 3 tarjetas */
+@media (min-width: 1024px) {
+  .promocards-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1800px) {
+  .promocards-container {
+    width: 90%;
+  }
+}
+
+/* Sección de Opiniones */
+.opiniones-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.opinion-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.opinion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.opinion-card .q-avatar {
+  border: 3px solid #f0f0f0;
+}
+
+.opinion-card .q-rating {
+  margin-bottom: 8px;
+}
+
+/* Responsive para opiniones */
+@media (max-width: 768px) {
+  .opinion-card {
+    margin-bottom: 20px;
+  }
+
+  .opiniones-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .opiniones-section p {
+    font-size: 1.1rem;
+  }
+}
+
+/* ...existing styles... */
+
+/* Carrusel de Opiniones - Una sola tarjeta */
+.carousel-container {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.opinions-carousel.single-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.opinions-carousel.single-card .q-carousel__slide {
+  padding: 30px 20px;
+  background: transparent;
+}
+
+.single-opinion-card {
+  max-width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  transform: scale(1);
+  transition: all 0.4s ease;
+}
+
+.single-opinion-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+}
+
+/* Flechas del carrusel mejoradas */
+.carousel-arrow {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.carousel-arrow:hover {
+  transform: scale(1.15);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-arrow-left {
+  position: absolute;
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.carousel-arrow-right {
+  position: absolute;
+  right: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+/* Indicadores mejorados */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.indicator-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+
+.indicator-dot.active {
+  transform: scale(1.4);
+  border-color: rgba(25, 118, 210, 0.3);
+}
+
+.indicator-dot:hover {
+  transform: scale(1.2);
+}
+
+/* Chip del nombre */
+.opinion-name-chip {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+/* Sección de opiniones con gradiente mejorado */
+.opiniones-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.opiniones-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(25, 118, 210, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(25, 118, 210, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Responsive para una sola tarjeta */
+@media (max-width: 768px) {
+  .carousel-arrow-left {
+    left: 15px;
+    top: 45%;
+  }
+
+  .carousel-arrow-right {
+    right: 15px;
+    top: 45%;
+  }
+
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .opinions-carousel.single-card {
+    height: auto !important;
+    min-height: 400px;
+  }
+
+  .opinions-carousel.single-card .q-carousel__slide {
+    padding: 20px 15px;
+  }
+
+  .carousel-container {
+    margin: 0 15px;
+  }
+
+  .single-opinion-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .carousel-arrow-left {
+    left: 10px;
+  }
+
+  .carousel-arrow-right {
+    right: 10px;
+  }
+
+  .opinions-carousel.single-card {
+    min-height: 380px;
+  }
+
+  .indicator-dot {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+  }
+}
