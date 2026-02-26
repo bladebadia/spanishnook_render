@@ -10,7 +10,7 @@
         class="no-shadow rounded-borders"
         header-class="text-weight-bold"
       >
-        <q-step :name="1" title="Cuenta" icon="lock" :done="step > 1">
+        <q-step :name="1" :title="t('registro.cuenta')" icon="lock" :done="step > 1">
           <div class="text-h5 text-center q-mb-md text-primary text-weight-bold">
             Crea tu cuenta / Create account
           </div>
@@ -27,8 +27,8 @@
               dense
               class="q-mb-md"
               :rules="[
-                (val) => !!val || 'Requerido',
-                (val) => /.+@.+\..+/.test(val) || 'Email inválido',
+                (val) => !!val || t('registro.requerido'),
+                (val) => /.+@.+\..+/.test(val) || t('registro.Email'),
               ]"
             >
               <template v-slot:prepend><q-icon name="email" color="primary" /></template>
@@ -41,9 +41,9 @@
               outlined
               dense
               :rules="[
-                (val) => (val && val.length > 5) || 'Mínimo 6 caracteres',
-                (val) => /\d/.test(val) || 'Debe contener al menos un número',
-                (val) => /[aeiouAEIOU]/.test(val) || 'Debe contener al menos una vocal',
+                (val) => (val && val.length > 5) || t('registro.errorMinCaracteres'),
+                (val) => /\d/.test(val) || t('registro.errorAlMenosUnNumero'),
+                (val) => /[aeiouAEIOU]/.test(val) || t('registro.errorAlMenosUnaVocal'),
               ]"
             >
               <template v-slot:prepend><q-icon name="lock" color="primary" /></template>
@@ -63,8 +63,8 @@
               outlined
               dense
               :rules="[
-                (val) => !!val || 'Requerido',
-                (val) => val === form.password || 'Las contraseñas no coinciden',
+                (val) => !!val || t('registro.requerido'),
+                (val) => val === form.password || t('registro.contraseñas'),
               ]"
             >
               <template v-slot:prepend><q-icon name="lock_clock" color="primary" /></template>
@@ -106,7 +106,7 @@
           </div>
         </q-step>
 
-        <q-step :name="2" title="Sobre ti" icon="person" :done="step > 2">
+        <q-step :name="2" :title="t('registro.sobreTi')" icon="person" :done="step > 2">
           <div class="text-h5 text-center q-mb-sm text-primary text-weight-bold">
             Cuéntanos sobre ti
           </div>
@@ -122,7 +122,7 @@
                   label="Nombre / Name *"
                   outlined
                   dense
-                  :rules="[(val) => !!val || 'Requerido']"
+                  :rules="[(val) => !!val || t('registro.requerido')]"
                 >
                   <template v-slot:prepend><q-icon name="badge" color="primary" /></template>
                 </q-input>
@@ -144,7 +144,7 @@
               input-debounce="0"
               new-value-mode="add-unique"
               class="q-mt-md"
-              :rules="[(val) => !!val || 'Requerido']"
+              :rules="[(val) => !!val || t('registro.requerido')]"
             >
               <template v-slot:prepend><q-icon name="language" color="primary" /></template>
             </q-select>
@@ -163,7 +163,7 @@
           </q-form>
         </q-step>
 
-        <q-step :name="3" title="Tu Español" icon="school">
+        <q-step :name="3" :title="t('registro.tuEspanol')" icon="school">
           <q-form @submit="registrarUsuario" class="q-px-sm-md">
             <q-card flat bordered class="bg-grey-1 q-mb-lg border-left-primary">
               <q-card-section class="row items-center no-wrap">
@@ -343,7 +343,7 @@ const form = ref({
   usoEspanol: '',
 });
 
-const idiomasComunes = ['English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Otro'];
+const idiomasComunes = ['English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Otro/Another'];
 
 const tagsIntereses = [
   { label: 'Conversación / Conversation', val: 'Conversación' },
@@ -367,7 +367,7 @@ const siguientePaso = async () => {
     ) {
       $q.notify({
         type: 'warning',
-        message: 'Por favor, completa todos los campos correctamente.',
+        message: t('registro.camposIncorrectos'),
       });
       return;
     }
@@ -384,7 +384,7 @@ const siguientePaso = async () => {
       if (existe) {
         $q.notify({
           type: 'negative',
-          message: 'Este email ya está registrado. Por favor, inicia sesión.',
+          message: t('registro.emailYaRegistrado'),
           icon: 'login',
         });
         // Opcional: router.push('/Acceder');
@@ -393,7 +393,7 @@ const siguientePaso = async () => {
     } catch (err) {
       console.error(err);
       // Si falla la red, dejamos pasar o avisamos? Mejor avisar.
-      $q.notify({ type: 'warning', message: 'Error de conexión verificando el email.' });
+      $q.notify({ type: 'warning', message: t('registro.errorConexion') });
       return;
     } finally {
       validandoEmail.value = false;
@@ -403,7 +403,7 @@ const siguientePaso = async () => {
   // --- VALIDACIÓN PASO 2 ---
   if (step.value === 2) {
     if (!form.value.nombre || !form.value.idiomaNativo) {
-      $q.notify({ type: 'warning', message: 'Por favor, rellena los campos obligatorios.' });
+      $q.notify({ type: 'warning', message: t('registro.camposObligatorios') });
       return;
     }
   }
@@ -444,7 +444,7 @@ const registrarUsuario = async () => {
     if (authData.user && !authData.session) {
       $q.notify({
         type: 'info',
-        message: 'Registro casi listo. ¡Revisa tu email para confirmar la cuenta!',
+        message: t('registro.revisaMail'),
         icon: 'mark_email_unread',
         timeout: 8000,
         position: 'top',
@@ -455,13 +455,13 @@ const registrarUsuario = async () => {
     else if (authData.session) {
       $q.notify({
         type: 'positive',
-        message: '¡Bienvenido! Has iniciado sesión.',
+        message: t('registro.bienvenido'),
         position: 'top',
       });
       await router.push('/AreaPersonal');
     }
   } catch (error: unknown) {
-    let msg = 'Ocurrió un error inesperado';
+    let msg = t('registro.errorInesperado');
     if (error instanceof Error) {
       msg = error.message;
     } else if (typeof error === 'object' && error !== null && 'message' in error) {
@@ -469,7 +469,7 @@ const registrarUsuario = async () => {
     }
 
     // Traducir error común
-    if (msg.includes('already registered')) msg = 'Este email ya está registrado.';
+    if (msg.includes('already registered')) msg = t('registro.emailYaRegistrado');
 
     $q.notify({ type: 'negative', message: msg });
   } finally {

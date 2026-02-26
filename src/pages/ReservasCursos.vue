@@ -497,7 +497,7 @@ const reservarAutenticado = async () => {
       p_email_or_id: user.value.id,
     });
     if (error) throw error;
-    $q.notify({ type: 'positive', message: 'Añadido a lista de espera.' });
+    $q.notify({ type: 'positive', message: t('reservasCursos.anadido') });
     await cargarCurso();
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Error desconocido';

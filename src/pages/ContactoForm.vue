@@ -20,7 +20,7 @@
                   <strong>{{ t('Contacto.telefono') }}:</strong> +34 694 280 178
                 </p>
                 <p class="text-body1">
-                  <strong>{{ t('Contacto.email') }}:</strong> info@spanishnook.com
+                  <strong>{{ t('Contacto.email') }}:</strong> contacto@spanishnook.com
                 </p>
                 <p class="text-body1">
                   <strong>{{ t('Contacto.redesSociales') }}:</strong>

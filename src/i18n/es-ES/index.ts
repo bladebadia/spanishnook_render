@@ -23,55 +23,74 @@ export default {
   footerInstitutoCervantes: 'Instituto Cervantes',
   footerDerechosReservados: '© 2025 Spanishnook · Todos los derechos reservados',
   indexeUnLugarDonde: 'Un lugar donde aprender español se siente como en casa',
-  indexAprenderEspañolPuede: 'Aprender español puede ser algo cómodo, cercano y hecho para ti. En SpanishNook encontrarás tu lugar: un espacio online con sesiones en vivo donde aprender a tu ritmo, con clases dinámicas, seguimiento personal y materiales pensados para ti. Aprende español con confianza, en un entorno donde sentirse a gusto es tan importante como progresar.',
+  indexAprenderEspañolPuede:
+    'Aprender español puede ser algo cómodo, cercano y hecho para ti. En SpanishNook encontrarás tu lugar: un espacio online con sesiones en vivo donde aprender a tu ritmo, con clases dinámicas, seguimiento personal y materiales pensados para ti. Aprende español con confianza, en un entorno donde sentirse a gusto es tan importante como progresar.',
   indexCreaTuEspacio: 'crea tu espacio',
   indexDescubreNuestrasClases: '¡Descubre nuestras clases!',
-  indexDescubreNuestrasClasesTexto: 'Explora la forma de aprender que mejor se adapta a ti. Reserva tu primera clase y vive la experiencia SpanishNook.',
+  indexDescubreNuestrasClasesTexto:
+    'Explora la forma de aprender que mejor se adapta a ti. Reserva tu primera clase y vive la experiencia SpanishNook.',
   indexEncuentraTusClases: 'Encuentra tus clases',
   indexQueEncontraras: '¿Qué encontrarás en nuestras clases?',
   indexclasesEnVivo: 'Clases en vivo: aprende, conversa y pregunta en tiempo real.',
-  indexdiferentesModalidades: 'Diferentes modalidades: clases privadas, grupales y de conversación.',
+  indexdiferentesModalidades:
+    'Diferentes modalidades: clases privadas, grupales y de conversación.',
   indexseguimientoContinuo: 'Seguimiento continuo de tu progreso y feedback personalizado.',
   indexClasesAdaptadas: 'Clases adaptadas a tus intereses y objetivos.',
-  indexMaterialesExclusivos: 'Materiales exclusivos y recursos adicionales para complementar tu aprendizaje.',
+  indexMaterialesExclusivos:
+    'Materiales exclusivos y recursos adicionales para complementar tu aprendizaje.',
   indexAmbienteRelajado: 'Entorno de aprendizaje relajado y cercano.',
   indexDiferentesCaminos: 'Diferentes caminos, un mismo objetivo: hablar español',
-  indexAprendeEnDirecto: 'Aprende en directo, solo con tu profesor o con compañeros al otro lado de la pantalla.',
+  indexAprendeEnDirecto:
+    'Aprende en directo, solo con tu profesor o con compañeros al otro lado de la pantalla.',
   indexClasesPrivadas: 'Clases individuales',
   indexClasesConversacion: 'Clases de Conversación en grupo',
   indexClasesGrupales: 'Clases Grupales',
-  indexAvanzaEnTu:'Avanza en tu español con un profesor dedicado solo a ti. Tú decides el ritmo, los temas y tus metas.                                        ',
+  indexAvanzaEnTu:
+    'Avanza en tu español con un profesor dedicado solo a ti. Tú decides el ritmo, los temas y tus metas.                                        ',
   indexQuieroMiClase: 'Quiero mi clase 1:1',
-  indexAprendeEspañol: 'Aprende español paso a paso junto a compañeros de tu mismo nivel. Grupos reducidos y dinámicos para avanzar en compañía.',
+  indexAprendeEspañol:
+    'Aprende español paso a paso junto a compañeros de tu mismo nivel. Grupos reducidos y dinámicos para avanzar en compañía.',
   indexAprenderEnGrupo: 'Aprender en grupo',
   indexClasesDeConversacion: 'Clases de conversación en grupo',
-  indexMejoraTuConfianza: 'Mejora tu confianza y fluidez conversando en español en grupos pequeños en un ambiente relajado y estimulante.',
+  indexMejoraTuConfianza:
+    'Mejora tu confianza y fluidez conversando en español en grupos pequeños en un ambiente relajado y estimulante.',
   indexUneteALaLista: 'Empezar ahora',
   indexDescubreTuPunto: 'Descubre tu punto de partida ➡️ test de nivel gratuito',
-  indexEnSolo: 'En solo 5 minutos sabrás cuál es tu nivel de español y qué opción es mejor para ti. El primer paso para aprender a tu ritmo.',
+  indexEnSolo:
+    'En solo 5 minutos sabrás cuál es tu nivel de español y qué opción es mejor para ti. El primer paso para aprender a tu ritmo.',
   indexHacerTest: 'Hacer el test',
   indexQuienHayDetras: '¿Quién hay detrás de SpanishNook?',
-  indexDetrasDeSpanishnook1: '​En SpanishNook creemos que aprender un idioma debe ser una experiencia cercana, flexible y positiva. Por eso hemos creado este rincón online: un espacio pensado para acompañarte en tu camino con clases en vivo y personalizadas.',
-  indexDetrasDeSpanishnook2: 'El proyecto nace de la experiencia y la pasión de Paula, profesora de español con varios años de trayectoria en la enseñanza.',
+  indexDetrasDeSpanishnook1:
+    '​En SpanishNook creemos que aprender un idioma debe ser una experiencia cercana, flexible y positiva. Por eso hemos creado este rincón online: un espacio pensado para acompañarte en tu camino con clases en vivo y personalizadas.',
+  indexDetrasDeSpanishnook2:
+    'El proyecto nace de la experiencia y la pasión de Paula, profesora de español con varios años de trayectoria en la enseñanza.',
   indexDetrasDeSpanishnook3: 'SpanishNook es ese lugar donde sentirte cómodo aprendiendo.',
   indexMasSobreSpanishnook: 'Más sobre SpanishNook',
   indexPreguntasFrecuentes: 'Preguntas frecuentes (FAQs)',
   indexComoFuncionanClases: '¿Cómo funcionan las clases?',
-  indexTodasClasesEnVivo: 'Todas las clases son en vivo (NO grabadas). Nos conectamos online a través de videollamada (Google Meet) en el horario acordado. Las clases privadas son 1:1, mientras que las grupales se realizan en grupos reducidos de un máximo 6 personas.',
+  indexTodasClasesEnVivo:
+    'Todas las clases son en vivo (NO grabadas). Nos conectamos online a través de videollamada (Google Meet) en el horario acordado. Las clases privadas son 1:1, mientras que las grupales se realizan en grupos reducidos de un máximo 6 personas.',
   indexQueNecesitoParaEmpezar: '¿Qué necesito para empezar?',
-  indexSoloNecesito: 'Solo necesitas un ordenador o tablet, conexión a internet y ganas de aprender. El resto lo ponemos nosotros: materiales dinámicos y un entorno amigable para que te sientas cómodo aprendiendo.',
+  indexSoloNecesito:
+    'Solo necesitas un ordenador o tablet, conexión a internet y ganas de aprender. El resto lo ponemos nosotros: materiales dinámicos y un entorno amigable para que te sientas cómodo aprendiendo.',
   indexPuedoCambiarDeModalidad: '¿Puedo cambiar de curso o modalidad si me equivoco?',
-  indexClaroQueremos: 'Queremos que estés cómodo. Si una clase no es lo que necesitas, te ayudamos a encontrar la opción más adecuada para ti.',
+  indexClaroQueremos:
+    'Queremos que estés cómodo. Si una clase no es lo que necesitas, te ayudamos a encontrar la opción más adecuada para ti.',
   indexQueNivelDeEspañol: '¿Qué nivel de español necesito para apuntarme?',
-  indexNoNecesitoNingun: 'No necesitas nivel previo. Ofrecemos clases para diferentes niveles, desde principiantes (A1) hasta avanzados (C1+), dependiendo de la modalidad que elijas.',
+  indexNoNecesitoNingun:
+    'No necesitas nivel previo. Ofrecemos clases para diferentes niveles, desde principiantes (A1) hasta avanzados (C1+), dependiendo de la modalidad que elijas.',
   indexPuedoCambiarDeHorario: '¿Puedo cambiar de horario si me surge un imprevisto?',
-  indexEntendemosQueLaVida: 'Entendemos que la vida puede ser impredecible. Pero dependerá de la modalidad de estudio: con las clases privadas, tú decides (siempre que exista un preaviso). Las clases grupales sin embargo, tienen un horario fijo.',
+  indexEntendemosQueLaVida:
+    'Entendemos que la vida puede ser impredecible. Pero dependerá de la modalidad de estudio: con las clases privadas, tú decides (siempre que exista un preaviso). Las clases grupales sin embargo, tienen un horario fijo.',
   indexQuePasaSiNoPuedoAsistir: '¿Qué pasa si no puedo asistir a una clase?',
-  indexDependeraDeLaModalidad: 'Dependerá de la modalidad de la clase que selecciones. Consulta las diferentes opciones de clases y sus condiciones.',
+  indexDependeraDeLaModalidad:
+    'Dependerá de la modalidad de la clase que selecciones. Consulta las diferentes opciones de clases y sus condiciones.',
   indexSuscripción: '¿Puedo cancelar mi suscripción mensual?',
-  indexSuscripciónRespuesta: '¡Claro! Cancela en cualquier momento y tu suscripción quedará anulada para el siguiente mes.',
+  indexSuscripciónRespuesta:
+    '¡Claro! Cancela en cualquier momento y tu suscripción quedará anulada para el siguiente mes.',
   indexAunTienesDudas: '¿Aún tienes dudas?',
-  indexEstamosAlOtroLadoOk: 'Estamos al otro lado. Ponte en contacto con nosotros a través de cualquiera de nuestros canales disponibles y te responderemos lo antes posible.',
+  indexEstamosAlOtroLadoOk:
+    'Estamos al otro lado. Ponte en contacto con nosotros a través de cualquiera de nuestros canales disponibles y te responderemos lo antes posible.',
   indexContactanosCon: 'Contacta con nosotros',
   indexOpinionesVerificadas: 'Opiniones verificadas ⭐',
   indexConoceExperiencias: 'Conoce las experiencias de nuestros estudiantes',
@@ -80,7 +99,8 @@ export default {
   // Agregar a src/i18n/es-ES/index.ts
   indexDanosTuOpinion: 'Déjanos tu opinión',
   indexRegistroRequerido: 'Registro requerido',
-  indexDebesEstarRegistrado: 'Debes estar registrado para dejar una opinión. ¿Deseas crear una cuenta?',
+  indexDebesEstarRegistrado:
+    'Debes estar registrado para dejar una opinión. ¿Deseas crear una cuenta?',
   indexCancelar: 'Cancelar',
   indexRegistrarse: 'Registrarse',
   indexComparteTuExperiencia: 'Comparte tu experiencia',
@@ -96,7 +116,7 @@ export default {
   indexPais: 'País',
   indexNombre: 'Nombre',
 
-  reservasClases:{
+  reservasClases: {
     reservaTuClase: 'Reserva tu clase',
     carritoDeReservas: 'Carrito de reservas',
     aLas: 'a las',
@@ -107,68 +127,84 @@ export default {
     noSePuede: 'No se puede cancelar (con menos de 24 horas)',
     noSePuedeCancelar: 'No se puede cancelar con menos de 24 horas de antelación',
     cancelarReserva: 'Cancelar reserva',
-    noTienesReservas:'No tienes reservas confirmadas.',
-    tipoDeClase:'Modalidad de clase',
-    precio:'Precio:',
+    noTienesReservas: 'No tienes reservas confirmadas.',
+    tipoDeClase: 'Modalidad de clase',
+    precio: 'Precio:',
     cargandoDisponibilidad: 'Cargando disponibilidad...',
     horariosDisponiblesPara: 'Horarios disponibles para',
-    claseConversacion:'Clase conversacion',
+    claseConversacion: 'Clase conversacion',
     noHayHuecosLibres: 'No hay huecos libres (revisa si hay un curso grupal ese día)',
-    debesIniciarSesion:'Debes iniciar sesión para reservar',
+    debesIniciarSesion: 'Debes iniciar sesión para reservar',
   },
 
-  test:{
-        deNivel: 'Test de nivel',
-        evaluaTuNivel: '🏆 Evalúa tu nivel de español', 
-        instrucciones: 'Instrucciones',
-        elTestConsta: 'El test consta de 25 preguntas organizadas por niveles.',
-        cadaPreguntaTiene: 'Cada pregunta tiene 3 opciones de respuesta; selecciona una. Cuando creas que no sabes o no puedes continuar con el test, deja las preguntas en blanco y avanza hasta completarlo.',
-        alCompletar:'Al finalizar, recibirás una orientación aproximada de tu nivel de español.', 
-        esteTest: 'Este test no sustituye una evaluación oficial, pero te ayudará a encontrar el curso que mejor se adapta a ti.',
-        comenzarTest: 'Comenzar Test',
-        elTestToma:'El test dura aproximadamente 5 minutos.',
-        pregunta:'Pregunta',
-        de:'de',
-        anterior:'Anterior',
-        siguiente:'Siguiente',
-        finalizarTest: 'Finalizar test',
-        accesoConocesLo:'Principiante - ¡Estás comenzando tu camino con el español! Puedes presentarte, pedir información básica y comunicarte de forma simple en situaciones cotidianas.',
-        plataformaPuedes:'Elemental - Puedes comunicarte en situaciones del día a día: trabajo, familia y ocio.',
-        umbralTienes:'Intermedio - Eres capaz de entender y desenvolverte en conversaciones y textos claros o con temas conocidos. Puedes hablar de experiencias, planes y dar tu opinión.',
-        avanzadoPuedes:'Avanzado - Te comunicas con fluidez y naturalidad. Entiendes textos complejos y defiendes tus ideas o pensamientoscon argumentos detallados.',
-        dominioTeExpresas: 'Dominio - Te expresas con soltura y espontaneidad en casi cualquier situación. Comprendes textos complejos y te comunicas de forma flexible para fines sociales, académicos y profesionales.',
-        testCompletado:'¡Test Completado!',
-        correcto: '% correcto',
-        repetirTest: 'Repetir test ',
-        tuNivel: 'Tu nivel',
+  test: {
+    deNivel: 'Test de nivel',
+    evaluaTuNivel: '🏆 Evalúa tu nivel de español',
+    instrucciones: 'Instrucciones',
+    elTestConsta: 'El test consta de 25 preguntas organizadas por niveles.',
+    cadaPreguntaTiene:
+      'Cada pregunta tiene 3 opciones de respuesta; selecciona una. Cuando creas que no sabes o no puedes continuar con el test, deja las preguntas en blanco y avanza hasta completarlo.',
+    alCompletar: 'Al finalizar, recibirás una orientación aproximada de tu nivel de español.',
+    esteTest:
+      'Este test no sustituye una evaluación oficial, pero te ayudará a encontrar el curso que mejor se adapta a ti.',
+    comenzarTest: 'Comenzar Test',
+    elTestToma: 'El test dura aproximadamente 5 minutos.',
+    pregunta: 'Pregunta',
+    de: 'de',
+    anterior: 'Anterior',
+    siguiente: 'Siguiente',
+    finalizarTest: 'Finalizar test',
+    accesoConocesLo:
+      'Principiante - ¡Estás comenzando tu camino con el español! Puedes presentarte, pedir información básica y comunicarte de forma simple en situaciones cotidianas.',
+    plataformaPuedes:
+      'Elemental - Puedes comunicarte en situaciones del día a día: trabajo, familia y ocio.',
+    umbralTienes:
+      'Intermedio - Eres capaz de entender y desenvolverte en conversaciones y textos claros o con temas conocidos. Puedes hablar de experiencias, planes y dar tu opinión.',
+    avanzadoPuedes:
+      'Avanzado - Te comunicas con fluidez y naturalidad. Entiendes textos complejos y defiendes tus ideas o pensamientoscon argumentos detallados.',
+    dominioTeExpresas:
+      'Dominio - Te expresas con soltura y espontaneidad en casi cualquier situación. Comprendes textos complejos y te comunicas de forma flexible para fines sociales, académicos y profesionales.',
+    testCompletado: '¡Test Completado!',
+    correcto: '% correcto',
+    repetirTest: 'Repetir test ',
+    tuNivel: 'Tu nivel',
   },
   // Sección de Opiniones
   indexOpinionesVerificadasOk: 'Opiniones Verificadas',
-  indexConoceExperienciasOk: 'Conoce las experiencias reales de nuestros estudiantes que han transformado su español con SpanishNook',
-  indexOpinion1: 'Las clases con SpanishNook han sido increíbles. En solo 3 meses he mejorado mi conversación significativamente. Los profesores son muy pacientes y profesionales.',
-  indexOpinion2: 'I love the flexibility of the classes and how personalized they are. The teachers adapt to my learning pace and help me with pronunciation. Highly recommended!',
-  indexOpinion3: 'Excellent experience! The live classes are very dynamic and I finally feel confident speaking Spanish. The method is very effective.',
-  indexOpinion4: '课程非常棒！老师很专业，教学方法很有效。我的西班牙语水平提高了很多。强烈推荐SpanishNook！',
+  indexConoceExperienciasOk:
+    'Conoce las experiencias reales de nuestros estudiantes que han transformado su español con SpanishNook',
+  indexOpinion1:
+    'Las clases con SpanishNook han sido increíbles. En solo 3 meses he mejorado mi conversación significativamente. Los profesores son muy pacientes y profesionales.',
+  indexOpinion2:
+    'I love the flexibility of the classes and how personalized they are. The teachers adapt to my learning pace and help me with pronunciation. Highly recommended!',
+  indexOpinion3:
+    'Excellent experience! The live classes are very dynamic and I finally feel confident speaking Spanish. The method is very effective.',
+  indexOpinion4:
+    '课程非常棒！老师很专业，教学方法很有效。我的西班牙语水平提高了很多。强烈推荐SpanishNook！',
   indexVerMasOpinionesOk: 'Ver Más Opiniones',
   indexAunTienesDudasOk: '¿Aún tienes dudas?',
-  indexEstamosAlOtroLado: 'Estamos al otro lado: ponte en contacto con nosotros a través de alguno de nuestros canales disponibles y te responderemos lo antes posible.',
+  indexEstamosAlOtroLado:
+    'Estamos al otro lado: ponte en contacto con nosotros a través de alguno de nuestros canales disponibles y te responderemos lo antes posible.',
   indexContactanos: 'contáctanos',
 
   // Sección nuestras clases
   NuestrasClases: {
-    promoPromoPacks:'¡Más créditos, más ahorro!',
+    promoPromoPacks: '¡Más créditos, más ahorro!',
     nuestrasClases: 'Nuestras Clases',
-    textoNuestrasClases: 'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
+    textoNuestrasClases:
+      'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
     botonClasesIndividuales: 'CLASES INDIVIDUALES',
     botonClasesConversacion: 'CLASES DE CONVERSACION',
     recuerdaHacerTest: 'Recuerda hacer tu test',
     testDeNivel: 'Test de nivel',
     tituloClasesA1: 'Clases Nivel A1',
-    textoClasesA1: 'Ideal para principiantes. Enfócate en conocer la lengua: gramática básica, vocabulario esencial y conversaciones simples para construir una base sólida en español.',
+    textoClasesA1:
+      'Ideal para principiantes. Enfócate en conocer la lengua: gramática básica, vocabulario esencial y conversaciones simples para construir una base sólida en español.',
     botonClasesA1: 'ir a clases generales',
     botonClasesA2: 'ir a clases conversación',
     tituloClasesB1: 'Clases Nivel B1',
-    textoClasesB1: 'Perfecto para nivel intermedio. Desarrolla tu capacidad comunicativa: conversaciones fluidas, comprensión de textos complejos y expresión de opiniones con confianza.',
+    textoClasesB1:
+      'Perfecto para nivel intermedio. Desarrolla tu capacidad comunicativa: conversaciones fluidas, comprensión de textos complejos y expresión de opiniones con confianza.',
     botonClasesB1: 'Reservar clase B1',
     reservaTuClase: 'Reserva tu clase particular',
     carritoDeReservas: 'Carrito de reservas',
@@ -178,32 +214,37 @@ export default {
     nuestrasClasesConversacion: 'Nuestras clases de conversación',
     clasesIndividualesPersonalizadas: 'Clases individuales personalizadas',
     nuestrasClasesIndividuales: 'Nuestras clases individuales',
-    aprendeEspanolATuRitmo: 'Aprende español a tu ritmo con clases personalizadas adaptadas a tus necesidades específicas. Nuestros profesores nativos crean un plan de estudios único para ti, enfocándose en tus objetivos y disponibilidad de horario.',
+    aprendeEspanolATuRitmo:
+      'Aprende español a tu ritmo con clases personalizadas adaptadas a tus necesidades específicas. Nuestros profesores nativos crean un plan de estudios único para ti, enfocándose en tus objetivos y disponibilidad de horario.',
     botonIrAlCarrito: 'Ir al carrito',
     pruebaTuClaseGratis: '¡Prueba tu clase gratis!',
     misReservasConfirmadas: 'Mis reservas confirmadas',
     noSePuede: 'No se puede cancelar (menos de 24 horas)',
     noSePuedeCancelar: 'No se puede cancelar con menos de 24 horas de antelación',
     cancelarReserva: 'Cancelar reserva',
-    noTienesReservas:'No tienes reservas confirmadas.',
-    tipoDeClase:'Tipo de Clase',
-    precio:'Precio:',
+    noTienesReservas: 'No tienes reservas confirmadas.',
+    tipoDeClase: 'Tipo de Clase',
+    precio: 'Precio:',
     horariosDisponiblesPara: 'Horarios disponibles para',
     clasesGrupales: 'Clases Grupales',
     botonEmpiezaAhora: 'Empieza ahora',
     bienVenidaA: '¡Bienvenido a Spanish Nook!',
     disfrutaNuestrasClases: 'Disfruta nuestras clases en grupo',
-    uneteANuestrasClases: 'Únete a nuestras clases grupales y mejora tu español en un ambiente colaborativo y divertido.',
-    uneteAEllas:'¡Únete a ellas!',
-    alumnos:'Alumnos',
-    cursos:'Cursos',
-    clasesImpartidas:'Clases impartidas',
+    uneteANuestrasClases:
+      'Únete a nuestras clases grupales y mejora tu español en un ambiente colaborativo y divertido.',
+    uneteAEllas: '¡Únete a ellas!',
+    alumnos: 'Alumnos',
+    cursos: 'Cursos',
+    clasesImpartidas: 'Clases impartidas',
     nuestrosGruposFormativos: 'Nuestros grupos formativos',
-    textoNuestrosGruposFormativos: 'Nuestras clases grupales están pensadas para ofrecerte una experiencia de aprendizaje enfocada en trabajar las habilidades orales de forma dinámica, colaborativa y funcional. Fomentamos la interacción, participación y el intercambio cultural en un espacio donde tú eres el protagonista. Ya sea que estés comenzando tu viaje en el español o buscando perfeccionar tus habilidades, nuestras clases grupales te proporcionan el entorno ideal para crecer y prosperar en tu dominio del idioma.',
+    textoNuestrosGruposFormativos:
+      'Nuestras clases grupales están pensadas para ofrecerte una experiencia de aprendizaje enfocada en trabajar las habilidades orales de forma dinámica, colaborativa y funcional. Fomentamos la interacción, participación y el intercambio cultural en un espacio donde tú eres el protagonista. Ya sea que estés comenzando tu viaje en el español o buscando perfeccionar tus habilidades, nuestras clases grupales te proporcionan el entorno ideal para crecer y prosperar en tu dominio del idioma.',
     NuestrosCursos: 'Nuestros Cursos',
     ClasesConversacion: 'Clases de Conversación en Grupo',
-    IntroNuestrosCursosGrupo: '¿Te pasa que entiendes español, pero te cuesta hablar con naturalidad? ¿Quieres ganar confianza al hablar español sin miedo a equivocarte?',
-    TextoNuestrosCursosGrupo: 'Cada semana nos reunimos en grupos reducidos para practicar español de forma real, dinámica y divertida. Trabajamos con temas actuales y actividades diseñadas para ayudarte a hablar más, soltarte y sentirte cómodo desde el primer día. Aquí hablamos mucho, nos equivocamos sin miedo, reímos, aprendemos vocabulario útil y mejoramos paso a paso.', 
+    IntroNuestrosCursosGrupo:
+      '¿Te pasa que entiendes español, pero te cuesta hablar con naturalidad? ¿Quieres ganar confianza al hablar español sin miedo a equivocarte?',
+    TextoNuestrosCursosGrupo:
+      'Cada semana nos reunimos en grupos reducidos para practicar español de forma real, dinámica y divertida. Trabajamos con temas actuales y actividades diseñadas para ayudarte a hablar más, soltarte y sentirte cómodo desde el primer día. Aquí hablamos mucho, nos equivocamos sin miedo, reímos, aprendemos vocabulario útil y mejoramos paso a paso.',
     TextoNuestrosCursosGrupo1: '¿Cómo funcionan las clases grupales?',
     ListaComoFuncionanGrupos1Bold: '1 clase a la semana',
     ListaComoFuncionanGrupos1: '➡️ 90 minutos',
@@ -224,13 +265,17 @@ export default {
     Logro6Grupales: 'Mejorar casi sin darte cuenta',
     BotonVerCursos: 'Ver Cursos disponibles',
     Individuales: 'Clases Individuales Personalizadas',
-    IntroIndividuales1Bold: 'Aprende a tu ritmo con clases pensadas solo para ti y tus necesidades de aprendizaje.',
-    IntroIndividuales2: 'Elige si quieres mejorar tu fluidez al hablar o avanzar en otros aspectos generales de la lengua. Tú eliges el ritmo, los temas y los objetivos. Nosotros ponemos el acompañamiento y los recursos.',
+    IntroIndividuales1Bold:
+      'Aprende a tu ritmo con clases pensadas solo para ti y tus necesidades de aprendizaje.',
+    IntroIndividuales2:
+      'Elige si quieres mejorar tu fluidez al hablar o avanzar en otros aspectos generales de la lengua. Tú eliges el ritmo, los temas y los objetivos. Nosotros ponemos el acompañamiento y los recursos.',
     Modalidades: 'Modalidades 1:1',
     Modalidad1: 'Clases de conversación',
-    TextoModalidad1: 'Enfócate en mejorar tu fluidez, pronunciación y habilidades comunicativas en sesiones diseñadas para practicar el idioma de forma natural y efectiva.',
+    TextoModalidad1:
+      'Enfócate en mejorar tu fluidez, pronunciación y habilidades comunicativas en sesiones diseñadas para practicar el idioma de forma natural y efectiva.',
     Modalidad2: 'Clases generales',
-    TextoModalidad2: 'Nuestras clases generales cubren gramática, vocabulario, comprensión y expresión oral y escrita. Progresa de forma integral en tu dominio del español y sube de nivel.',
+    TextoModalidad2:
+      'Nuestras clases generales cubren gramática, vocabulario, comprensión y expresión oral y escrita. Progresa de forma integral en tu dominio del español y sube de nivel.',
     TextoComoFuncionanIndividuales: 'Cómo funcionan las clases individuales:',
     ListaComoFuncionanInd1Bold: 'Sesiones online en vivo de 55 min 🕒',
     ListaComoFuncionanInd1: 'Materiales 100% personalizados',
@@ -240,29 +285,35 @@ export default {
     ListaComoFuncionanInd3: 'Conversación o General',
     ListaComoFuncionanInd4Bold: 'Feedback y seguimiento continuo 📈',
     ListaComoFuncionanInd4: 'Repositorio compartido (Google Classroom y Google Drive)',
-    ListaComoFuncionanInd5: 'Cancelaciones hasta con 24 h de antelación. La clase se agendará para otro día sin coste adicional',
+    ListaComoFuncionanInd5:
+      'Cancelaciones hasta con 24 h de antelación. La clase se agendará para otro día sin coste adicional',
     BotonVerClases: 'Reservar mi clase 1:1',
     inicio: 'Inicio',
-    tePasaQue: '¿Te pasa que entiendes español pero te cuesta hablar con naturalidad? ¿Quieres ganar confianza al hablar español sin miedo a equivocarte?',
+    tePasaQue:
+      '¿Te pasa que entiendes español pero te cuesta hablar con naturalidad? ¿Quieres ganar confianza al hablar español sin miedo a equivocarte?',
     esteCursoEsParaTi: '⭐ Este curso es para ti.',
-    cadaSemanaNos: 'Cada semana nos reunimos en grupos reducidos para practicar español de forma real, divertida y práctica. Trabajamos con temas actuales y actividades diseñadas para ayudarte a hablar más, soltarte y sentirte cómodo desde el primer día.',
-    aquiHablamos: 'Aquí hablamos mucho, nos equivocamos sin miedo, reímos, aprendemos vocabulario útil y mejoramos paso a paso.',
-    esUnPrograma: 'Es un programa por suscripción mensual, sencillo: pagas mes a mes y puedes darte de baja cuando quieras. Así puedes avanzar con regularidad sin complicaciones.',
-    uneteALa:'Únete a la lista de espera, rellena el formulario y te avisaremos cuando se abra tu grupo.',
-    comoFunciona:'¿Cómo funciona?',
+    cadaSemanaNos:
+      'Cada semana nos reunimos en grupos reducidos para practicar español de forma real, divertida y práctica. Trabajamos con temas actuales y actividades diseñadas para ayudarte a hablar más, soltarte y sentirte cómodo desde el primer día.',
+    aquiHablamos:
+      'Aquí hablamos mucho, nos equivocamos sin miedo, reímos, aprendemos vocabulario útil y mejoramos paso a paso.',
+    esUnPrograma:
+      'Es un programa por suscripción mensual, sencillo: pagas mes a mes y puedes darte de baja cuando quieras. Así puedes avanzar con regularidad sin complicaciones.',
+    uneteALa:
+      'Únete a la lista de espera, rellena el formulario y te avisaremos cuando se abra tu grupo.',
+    comoFunciona: '¿Cómo funciona?',
     queLograras: '¿Qué lograrás?',
     comprarPacks: 'Comprar packs de clases',
     nuestrosPacks: 'Nuestros packs de clases',
-    ahorra: 'Ahorra dinero comprando packs de clases individuales por adelantado y disfruta de descuentos exclusivos. Gasta tus créditos cuando quieras.',
-    
-
+    ahorra:
+      'Ahorra dinero comprando packs de clases individuales por adelantado y disfruta de descuentos exclusivos. Gasta tus créditos cuando quieras.',
   },
   personal: {
     hola: 'Hola',
+    passwordActualIncorrecta: 'Contraseña actual incorrecta',
     aLas: 'a las',
     seleccionar: 'Selección',
     bienvenidoAreaPersonal: '¡Bienvenido/a a tu Área Personal!',
-    holaUsuario:' ¡Hola Usuario!',
+    holaUsuario: ' ¡Hola Usuario!',
     bienvenido: '¡Bienvenido',
     nuevaReserva: 'Nueva Reserva',
     clasesReservadas: 'Clases Reservadas',
@@ -331,7 +382,8 @@ export default {
     confirmarCancelarReserva: '¿Estás seguro de que quieres cancelar la reserva del',
     seProcesaraReembolso: 'Se procesará un reembolso.',
     noHayReservasParaCancelar: 'No hay reservas que puedas cancelar en este momento.',
-    gestionaTusReservas: 'Desde aquí puedes gestionar tus reservas de clases individuales y grupales, así como actualizar tu información personal.',
+    gestionaTusReservas:
+      'Desde aquí puedes gestionar tus reservas de clases individuales y grupales, así como actualizar tu información personal.',
     gestionar: 'Gestionar mis reservas',
     entrar: 'Entrar',
     misclases: 'MIS CLASES',
@@ -349,10 +401,11 @@ export default {
     introduceNuevaContraseña: 'Introduce tu nueva contraseña',
     repiteNueva: 'Confirma tu nueva contraseña',
     requerida: 'Requerida',
-    minimo6: 'La contraseña debe tener al menos 6 caracteres',
+    minimo6: 'Mínimo 6 caracteres',
     noCoinciden: 'Las contraseñas no coinciden',
     actualizarContraseña: 'Actualizar contraseña',
-    estaAccion: 'Esta acción no se puede deshacer. Se borrarán todos tus datos y reservas junto con tu cuenta.',
+    estaAccion:
+      'Esta acción no se puede deshacer. Se borrarán todos tus datos y reservas junto con tu cuenta.',
     eliminarDefinitivamente: 'Eliminar mi cuenta definitivamente',
     autenticacion: '¡Autenticación completada! Reidiriendo...',
     finalizada: 'Finalizada',
@@ -361,48 +414,71 @@ export default {
     borrar: 'BORRAR',
     vasA: 'Vas a cancelar ',
     clase: 'clase(s)',
-    seDevolvera: 'Se devolverán los créditos correspondientes a las clases canceladas (si estas dentro del plazo permitido).',
+    seDevolvera:
+      'Se devolverán los créditos correspondientes a las clases canceladas (si estas dentro del plazo permitido).',
     confirmar: 'CONFIRMAR',
     hecho: '¡HECHO!',
     canceladas: 'canceladas',
     errorDesconocido: 'Error desconocido. Inténtalo de nuevo más tarde.',
     sinDefinir: 'Sin definir',
-
+    reservaClase: 'RESERVAR MI PRIMERA CLASE',
+    actualizada: 'Contraseña actualizada con éxito.',
   },
 
-  registro:{
+  registro: {
     nombreOApodo: 'Nombre o Apodo',
     correoElectronico: 'Correo Electrónico',
     contrasena: 'Contraseña',
-    laContrasenaDebe: 'La contraseña debe tener mínimo 6 caracteres, mayúscula, minúscula, número y símbolo',
+    laContrasenaDebe:
+      'La contraseña debe tener mínimo 6 caracteres, mayúscula, minúscula, número y símbolo',
     confirmarContrasena: 'Confirmar Contraseña',
     lasContrasenasNo: 'Las contraseñas no coinciden',
     aceptoLos: 'Acepto los',
     terminosYCondiciones: 'Términos y Condiciones de privacidad',
     debesAceptarLos: 'Debes aceptar los términos y condiciones',
-    registrarse:'Registrarse',
+    registrarse: 'Registrarse',
     yaTengoCuenta: 'Inicia sesión',
-
+    tuEspanol: 'Tu Español',
+    sobreTi: 'About you',
+    cuenta: 'Account',
+    errorMinCaracteres: 'Mínimo 6 caracteres',
+    errorAlMenosUnNumero: 'Debe contener al menos un número',
+    errorAlMenosUnaVocal: 'Debe contener al menos una vocal',
+    requerido: 'Requerido',
+    Email: 'Email inválido',
+    contraseñas: 'Las contraseñas no coinciden',
+    emailYaRegistrado: 'Este email ya está registrado. Por favor, inicia sesión.',
+    revisaMail: 'Registro casi listo. ¡Revisa tu email para confirmar la cuenta!',
+    camposIncorrectos: 'Por favor, completa todos los campos correctamente.',
+    errorConexion: 'Error de conexión verificando el email.',
+    camposObligatorios: 'Por favor, rellena los campos obligatorios.',
+    bienvenido: '¡Bienvenido! Has iniciado sesión.',
+    errorInesperado: 'Ocurrió un error inesperado.',
+    opinionEnviada: '¡Gracias! Tu opinión ha sido enviada.',
+    errorEnviarOpinion: 'Hubo un error al enviar tu opinión.',
   },
-  registroCuenta:{
+  registroCuenta: {
     aceptar: 'Acepto la política de privacidad',
     yatienescuenta: '¿Ya tienes cuenta? Entra aquí',
   },
 
-    checkEmail:{
-    hemosenviado: 'Hemos enviado un enlace de confirmación a tu correo electrónico. Para activar tu cuenta, solo tienes que hacer clic en él.',
+  checkEmail: {
+    hemosenviado:
+      'Hemos enviado un enlace de confirmación a tu correo electrónico. Para activar tu cuenta, solo tienes que hacer clic en él.',
     noloEncuentras: '¿No lo encuentras?',
-    revisatuCarpeta: 'Revisa tu carpeta de spam o correo no deseado. A veces los correos de confirmación pueden llegar allí por error.',
+    revisatuCarpeta:
+      'Revisa tu carpeta de spam o correo no deseado. A veces los correos de confirmación pueden llegar allí por error.',
     iniciar: 'Iniciar sesión',
     volver: 'Volver a la página de inicio',
     registro: '¡Registro exitoso!',
-    registroCasi: '¡Casi lo tienes!', 
+    registroCasi: '¡Casi lo tienes!',
     soloFalta: 'Solo falta un paso para activar tu cuenta.',
   },
 
-  comprarPacks:{
+  comprarPacks: {
     packsCreditos: '💎 Packs de Créditos',
-    compraClases: 'Compra clases por adelantado, ahorra dinero y gasta tus créditos cuando quieras.',
+    compraClases:
+      'Compra clases por adelantado, ahorra dinero y gasta tus créditos cuando quieras.',
     clasesGenerales: 'Clases Generales',
     clasesConversacion: 'Clases de Conversación',
     pack5Gen: 'Pack 5: GENERALES',
@@ -426,9 +502,10 @@ export default {
     ahorras2conv: 'Ahorras 40€',
   },
 
-  accederForm:{
+  accederForm: {
     correoElectronico: 'Correo Electrónico',
-    teEnviaremosUnCorreo: 'Te enviaremos un correo electrónico para que puedas acceder a tu cuenta.',
+    teEnviaremosUnCorreo:
+      'Te enviaremos un correo electrónico para que puedas acceder a tu cuenta.',
     credencialesIncorrectas: 'Credenciales incorrectas',
     entrar: 'Entrar',
     contrasena: 'Contraseña',
@@ -436,27 +513,33 @@ export default {
     registrateAqui: 'Regístrate aquí',
     olvidarContrasena: '¿Olvidaste tu contraseña?',
     recuperarContrasena: 'Recuperar Contraseña',
-    enviar:' Enviar',
-    correoEnviado:' Correo enviado',
-    seHaEnviado:'Se ha enviado un correo a tu dirección con las instrucciones para recuperar tu contraseña.',
+    enviar: ' Enviar',
+    correoEnviado: ' Correo enviado',
+    seHaEnviado:
+      'Se ha enviado un correo a tu dirección con las instrucciones para recuperar tu contraseña.',
     revisaTubandeja: ' Revisa tu bandeja de entrada y la carpeta de spam.',
-    aceptar:' Aceptar',
+    aceptar: ' Aceptar',
     introduceTuCorreo: 'Introduce tu email y te enviaremos un enlace para restablecerla.',
-    
   },
-  SobreSpanish:{
+  SobreSpanish: {
     sobre: 'Sobre SpanishNook',
     conoce: '✨Conoce SpanishNook✨',
-    intro: 'Detrás de cada clase hay una persona, una historia y una forma de enseñar pensada para ti. En un mundo frenético, aprender también puede ser un refugio.',
+    intro:
+      'Detrás de cada clase hay una persona, una historia y una forma de enseñar pensada para ti. En un mundo frenético, aprender también puede ser un refugio.',
     tulug: 'Tu lugar',
-    aprender: 'Aprender un idioma no debería sentirse frío ni distante. SpanishNook nace para ofrecer un aprendizaje cercano en un entorno virtual: un lugar donde sentirte acompañado, avanzar con confianza y formar parte de una pequeña comunidad.',
-    enmedio: 'En un mundo donde el tiempo no se detiene, aquí encontrarás flexibilidad, calidad y un proceso que se adapta a ti y a tus objetivos. Nuestro objetivo es ofrecer un entorno de aprendizaje accesible y efectivo, adaptado a las necesidades de cada estudiante.',
+    aprender:
+      'Aprender un idioma no debería sentirse frío ni distante. SpanishNook nace para ofrecer un aprendizaje cercano en un entorno virtual: un lugar donde sentirte acompañado, avanzar con confianza y formar parte de una pequeña comunidad.',
+    enmedio:
+      'En un mundo donde el tiempo no se detiene, aquí encontrarás flexibilidad, calidad y un proceso que se adapta a ti y a tus objetivos. Nuestro objetivo es ofrecer un entorno de aprendizaje accesible y efectivo, adaptado a las necesidades de cada estudiante.',
     quien: 'Quién está detrás de SpanishNook',
     soy: 'Soy Paula, profesora de español, traductora e intérprete.',
-    tras1: 'Tras más de cuatro años enseñando en escuelas, online y de forma privada en distintas ciudades europeas, he podido acompañar a estudiantes de perfiles muy diversos a descubrir su propia voz en español. Con el tiempo me di cuenta de que la enseñanza en el aula tiene algunas limitaciones en la actualidad: no es necesario compartir un mismo espacio físico para vivir una experiencia de aprendizaje significativa; basta con crear un espacio seguro y estimulante donde poder ser, vincularse y crecer sin impedimentos.',
-    tras2: 'De esta idea nació SpanishNook: un lugar donde la enseñanza online conserva la cercanía y la autenticidad de una buena clase, con la ventaja de llegar a cualquier rincón del mundo y adaptarse mejor a tu día a día, ofreciéndote la flexibilidad y el control de tu tiempo que necesitas para aprender.',
+    tras1:
+      'Tras más de cuatro años enseñando en escuelas, online y de forma privada en distintas ciudades europeas, he podido acompañar a estudiantes de perfiles muy diversos a descubrir su propia voz en español. Con el tiempo me di cuenta de que la enseñanza en el aula tiene algunas limitaciones en la actualidad: no es necesario compartir un mismo espacio físico para vivir una experiencia de aprendizaje significativa; basta con crear un espacio seguro y estimulante donde poder ser, vincularse y crecer sin impedimentos.',
+    tras2:
+      'De esta idea nació SpanishNook: un lugar donde la enseñanza online conserva la cercanía y la autenticidad de una buena clase, con la ventaja de llegar a cualquier rincón del mundo y adaptarse mejor a tu día a día, ofreciéndote la flexibilidad y el control de tu tiempo que necesitas para aprender.',
     filosofía: 'Filosofía',
-    mipropuesta: 'Mi propuesta une materiales auténticos, clases dinámicas y un enfoque comunicativo en el que tú eres el protagonista de tu aprendizaje. Todo ello con un toque creativo (sí, incluso doodles y pizarras digitales) que hace que cada sesión tenga su propia personalidad.',
+    mipropuesta:
+      'Mi propuesta une materiales auténticos, clases dinámicas y un enfoque comunicativo en el que tú eres el protagonista de tu aprendizaje. Todo ello con un toque creativo (sí, incluso doodles y pizarras digitales) que hace que cada sesión tenga su propia personalidad.',
     loque: 'En SpanishNook encontrarás...',
     cercaniaBold: 'Cercanía',
     cercania: 'trato humano, clases reducidas y ambiente relajado.',
@@ -466,15 +549,15 @@ export default {
     confianza: 'acompañamiento real en cada paso de tu aprendizaje.',
     ojalá: '✦ Ojalá este rincón también pueda ser tuyo.',
     espero: 'Te espero en SpanishNook para dar juntos el siguiente paso.',
-
-    },
-  Contacto:{
+  },
+  Contacto: {
     datosContacto: 'Datos de Contacto',
     telefono: 'Teléfono',
     email: 'Email',
     redesSociales: 'Redes Sociales',
     tienesPreg: '¿Tienes preguntas o quieres más información?',
-    rellena: 'Rellena el formulario de contacto o escríbenos en cualquiera de nuestras redes sociales',
+    rellena:
+      'Rellena el formulario de contacto o escríbenos en cualquiera de nuestras redes sociales',
     formulario: '👉 Formulario de contacto',
     nombre: 'Nombre',
     hintNombre: 'Tu nombre completo',
@@ -493,9 +576,8 @@ export default {
     exito: '¡Mensaje enviado! Te responderemos lo antes posible.',
     error: 'Error al enviar el mensaje. Inténtalo de nuevo.',
     elNombre: 'El nombre es obligatorio',
-
   },
-  carrito:{
+  carrito: {
     carritoDeReservas: 'Carrito de compra',
     claseNormal: 'Clase general',
     claseConversacion: 'Clase de conversación',
@@ -506,7 +588,7 @@ export default {
     resumenDelPedido: 'Resumen del Pedido',
     totalEstimado: 'Total estimado',
     reservaNoDisponible: 'reserva no disponible',
-    debesIniciarSesion:' Debes iniciar sesión para confirmar reservas',
+    debesIniciarSesion: ' Debes iniciar sesión para confirmar reservas',
     reserva: 'Reserva',
     pagarYConfirmarReservas: 'Pagar y confirmar reservas',
     eliminar: 'Eliminar',
@@ -516,8 +598,7 @@ export default {
     canjear: 'Canjear créditos',
     seguir: 'Seguir reservando',
     credito: 'crédito(s)',
-
-
+    confirmadas: '¡Reservas confirmadas! 📧',
   },
   wallet: {
     wallet: 'Monedero',
@@ -528,9 +609,9 @@ export default {
     seleccionarPack: 'Seleccionar pack',
     clases: 'General',
     conversacion: 'Conversación',
-
   },
-   reservasCursos: {
+  reservasCursos: {
+    anadido: 'Añadido a lista de espera.',
     estado: 'Estado',
     enEspera: 'En espera',
     activo: 'Activo',
@@ -541,13 +622,15 @@ export default {
     horario: 'Horario: tu zona horaria',
     reservaTu: 'Reserva tu plaza',
     elCurso: 'El curso todavía no ha comenzado.',
-    apuntate: 'Apúntate a la lista de espera para ser el primero en enterarte y tener prioridad cuando se abra el curso.',
+    apuntate:
+      'Apúntate a la lista de espera para ser el primero en enterarte y tener prioridad cuando se abra el curso.',
     unirme: 'UNIRME A LA LISTA DE ESPERA',
     acepto: 'Acepto términos y condiciones',
     inscripcion: 'Inscripción al curso',
     elCursoYa: 'El curso ya ha comenzado.',
     cursoCompleto: 'El curso está completo.',
-    apuntateA: 'Apúntate a la lista de espera y te avisaremos si se abre un nuevo grupo o si hay alguna plaza disponible.',
+    apuntateA:
+      'Apúntate a la lista de espera y te avisaremos si se abre un nuevo grupo o si hay alguna plaza disponible.',
     reservaConfirmada: '¡Reserva confirmada! Te esperamos en clase.',
     unirse: '¿Quieres unirte a la lista de espera?',
     si: 'SÍ, quiero unirme',
@@ -558,7 +641,8 @@ export default {
     yaEstas: 'Ya estás en la lista de espera de este curso.',
     ups: 'Ups, algo ha salido mal. Inténtalo de nuevo.',
     yaTienes: 'Ya tienes una reserva activa para este curso.',
-    ahoraTienes: 'Ahora tienes tu plaza asegurada para el curso. Te avisaremos con toda la información cuando se acerque la fecha de inicio.',
+    ahoraTienes:
+      'Ahora tienes tu plaza asegurada para el curso. Te avisaremos con toda la información cuando se acerque la fecha de inicio.',
     yaEres: '¡Ya eres alumno! Te esperamos en clase.',
     iniciarSesion: 'Iniciar sesión para unirte al curso',
     mes: '/mes',
@@ -574,8 +658,6 @@ export default {
     iniciar: 'Iniciar sesión',
     confirmarEmail: 'Confirmar email',
     irArea: 'Ir a mi área personal',
-    
-  
   },
   flecos: {
     ups: '¡Ups... No hay nada aquí!',
@@ -593,5 +675,4 @@ export default {
     numero: 'La contraseña debe contener al menos un número',
     mayuscula: 'La contraseña debe contener al menos una vocal',
   },
-
 };

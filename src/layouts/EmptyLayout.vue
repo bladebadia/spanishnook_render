@@ -1,38 +1,33 @@
 <template>
   <q-layout view="lHh Lpr fff">
-    <!-- HEADER -->
-    <q-header elevated data-allow-mismatch="children">
+    <q-header elevated ref="headerRef">
       <q-bar>
         <q-space></q-space>
-        
-        <!-- Elementos condicionales de usuario -->
-        <div data-allow-mismatch="children">
-          <template v-if="user">
-            <q-btn to="/AreaPersonal" flat class="text-white btn-nav-superior">
-              {{ t('areaPersonal') }}
-            </q-btn>
-            <q-btn flat class="text-white btn-nav-superior" @click="cerrarSesion">
-              {{ t('cerrarSesion') }}
-            </q-btn>
-            <q-btn
-              to="/CarritoCompra"
-              class="text-white carro-btn"
-              icon="shopping_cart"
-              flat
-            >
-              <q-badge v-if="carritoCount > 0" color="red" floating rounded class="badge-notification">
-                {{ carritoCount }}
-              </q-badge>
-            </q-btn>
-          </template>
-          <template v-else>
-            <q-btn to="/Acceder" flat class="text-white btn-nav-superior">
-              {{ t('acceder') }}
-            </q-btn>
-          </template>
-        </div>
 
-        <!-- Selector de idioma -->
+        <q-btn to="/AreaPersonal" v-show="user" flat class="text-white btn-nav-superior">
+          {{ t('areaPersonal') }}
+        </q-btn>
+
+        <q-btn to="/Acceder" v-show="!user" flat class="text-white btn-nav-superior">
+          {{ t('acceder') }}
+        </q-btn>
+
+        <q-btn v-show="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
+          {{ t('cerrarSesion') }}
+        </q-btn>
+
+        <q-btn
+          to="/CarritoCompra"
+          v-show="user"
+          class="text-white carro-btn"
+          icon="shopping_cart"
+          flat
+        >
+          <q-badge v-if="carritoCount > 0" color="red" floating rounded class="badge-notification">
+            {{ carritoCount }}
+          </q-badge>
+        </q-btn>
+
         <div class="row items-center q-gutter-xs flag-switcher">
           <q-btn
             :class="locale === 'es-ES' ? 'flag-selected' : 'flag-unselected'"
@@ -60,9 +55,8 @@
       </q-bar>
 
       <q-toolbar>
-        <!-- Menú hamburguesa -->
         <q-btn
-          v-if="$q.screen.lt.md"
+          v-show="showMenuButton"
           flat
           round
           icon="menu"
@@ -70,75 +64,124 @@
           @click="toggleLeftDrawer"
           style="font-size: 1rem"
         />
-        
+
         <div class="q-ma-none q-pa-none">
           <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
         </div>
         <div>
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
         </div>
-        
-        <!-- Navegación desktop -->
-        <div class="nav-container" v-if="$q.screen.gt.sm">
-          <q-btn flat :to="'/'" exact class="nave-btn" :class="{ 'nave-btn-active': activeButton === 'inicio' }">
+
+        <div class="nav-container" v-show="showDesktopNav">
+          <q-btn
+            flat
+            :to="'/'"
+            exact
+            class="nave-btn"
+            :class="{ 'nave-btn-active': activeButton === 'inicio' }"
+          >
             {{ t('inicio') }}
           </q-btn>
-          <q-btn flat class="nave-btn" :class="{ 'nave-btn-active': activeButton === 'clases' }" :label="t('clases')" to="/Clases" />
-          <q-btn flat :to="'/TestNivel'" exact class="nave-btn" :class="{ 'nave-btn-active': activeButton === 'testNivel' }">
+
+          <q-btn
+            flat
+            :to="'/Clases'"
+            class="nave-btn"
+            :class="{ 'nave-btn-active': activeButton === 'clases' }"
+            :label="t('clases')"
+          />
+
+          <q-btn
+            flat
+            :to="'/TestNivel'"
+            exact
+            class="nave-btn"
+            :class="{ 'nave-btn-active': activeButton === 'testNivel' }"
+          >
             {{ t('testNivel') }}
           </q-btn>
-          <q-btn flat :to="'/sobreSpanish'" exact class="nave-btn" :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }">
+
+          <q-btn
+            flat
+            :to="'/sobreSpanish'"
+            exact
+            class="nave-btn"
+            :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
+          >
             {{ t('sobre') }}
           </q-btn>
-          <q-btn flat :to="'/Contacto'" exact class="nave-btn" :class="{ 'nave-btn-active': activeButton === 'contacto' }">
+
+          <q-btn
+            flat
+            :to="'/Contacto'"
+            exact
+            class="nave-btn"
+            :class="{ 'nave-btn-active': activeButton === 'contacto' }"
+          >
             {{ t('contacto') }}
           </q-btn>
         </div>
       </q-toolbar>
     </q-header>
 
-    <!-- DRAWER -->
-    <q-drawer v-model="leftDrawerOpen" bordered data-allow-mismatch="children">
+    <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
         <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
-    <!-- PAGE CONTAINER -->
-    <q-page-container data-allow-mismatch="children">
-      <!-- Banner de cookies -->
+    <q-page-container>
       <q-banner
         v-if="showCookiesBanner"
         class="bg-primary text-white shadow-2 cookies-banner"
-        style="position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); width: 70vw; max-width: 900px; z-index: 9999; font-size: 1.25rem; border-radius: 18px; padding: 24px 32px;"
+        style="
+          position: fixed;
+          left: 50%;
+          bottom: 96px;
+          transform: translateX(-50%);
+          width: 70vw;
+          max-width: 900px;
+          z-index: 9999;
+          font-size: 1.25rem;
+          border-radius: 18px;
+          padding: 24px 32px;
+        "
         icon="cookie"
-        data-allow-mismatch="children"
       >
         <div class="row items-center justify-between">
           <div style="line-height: 1.5">
-            Este sitio web utiliza cookies...
-            <q-btn flat dense color="white" label="Política de Cookies" to="/Cookies" class="q-ml-sm" />
+            Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
+            usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su uso.
+            <q-btn
+              flat
+              dense
+              color="white"
+              label="Política de Cookies"
+              to="/Cookies"
+              class="q-ml-sm"
+            />
           </div>
-          <q-btn color="white" text-color="primary" label="Aceptar" @click="aceptarCookies" class="q-ml-md text-weight-bold" style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px" />
+          <q-btn
+            color="white"
+            text-color="primary"
+            label="Aceptar"
+            @click="aceptarCookies"
+            class="q-ml-md text-weight-bold"
+            style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
+          />
         </div>
       </q-banner>
-      
-      <router-view />
+
+      <router-view :min-height-style="pageMinHeight" />
     </q-page-container>
 
-    <!-- WhatsApp sticky -->
-    <q-page-sticky
-      v-if="!['/Administracion', '/CarritoCompra', '/Aviso', '/Privacidad', '/Cookies', '/Condiciones'].includes(route.path)"
-      position="bottom-right"
-      :offset="[10, 10]"
-      data-allow-mismatch="children"
-    >
+    <q-page-sticky position="bottom-right" :offset="[10, 10]">
       <q-btn
         class="whatsapp-sticky-btn enlarged-touch"
         round
         color="green-6"
         icon="mdi-whatsapp"
-        size="lg"
+        size="xl"
         href="https://wa.me/34694280178"
         target="_blank"
         rel="noopener"
@@ -146,15 +189,16 @@
       />
     </q-page-sticky>
 
-    <!-- FOOTER -->
-    <q-footer class="bg-black text-white" data-allow-mismatch="children">
+    <q-footer class="bg-black text-white">
       <div class="footer-legal-bar">
         <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
         <div class="footer-legal-links">
           <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
           <router-link to="/Privacidad" class="foot-link">{{ t('footerPrivacidad') }}</router-link>
           <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
-          <router-link to="/Condiciones" class="foot-link">{{ t('footerCondiciones') }}</router-link>
+          <router-link to="/Condiciones" class="foot-link">{{
+            t('footerCondiciones')
+          }}</router-link>
         </div>
       </div>
     </q-footer>
@@ -163,109 +207,161 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
-import { useQuasar } from 'quasar';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
 import { useI18n } from 'vue-i18n';
 import { useAuth } from 'src/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
 import { supabase } from 'src/supabaseClient';
+import { useQuasar } from 'quasar';
 
-const $q = useQuasar();
-const route = useRoute();
-const router = useRouter();
-const { user, logout } = useAuth();
+const { user } = useAuth();
 const { locale, t } = useI18n();
+const router = useRouter();
+const { logout } = useAuth();
+const headerRef = ref<HTMLElement | null>(null);
 
-// Valores por defecto para servidor
-const leftDrawerOpen = ref(false);
+// Quasar solo en cliente
+const $q = typeof window !== 'undefined' ? useQuasar() : undefined;
+
+// Estado para controlar elementos condicionales
+const showMenuButton = ref(false);
+const showDesktopNav = ref(false);
+const headerHeight = ref(50); // Altura por defecto para servidor
+
+// Banner de cookies
 const showCookiesBanner = ref(false);
+function aceptarCookies() {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('cookies_accepted', 'true');
+  }
+  showCookiesBanner.value = false;
+}
+
+// Contador del carrito
 const carritoCount = ref(0);
+
+const cargarCarrito = () => {
+  let carritoGuardado = null;
+  if (typeof window !== 'undefined') {
+    carritoGuardado = localStorage.getItem('carritoReservas');
+  }
+  if (carritoGuardado) {
+    const carrito = JSON.parse(carritoGuardado);
+    carritoCount.value = carrito.length;
+  } else {
+    carritoCount.value = 0;
+  }
+};
+
+const setupCarritoListener = () => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'carritoReservas') {
+        cargarCarrito();
+      }
+    });
+  }
+};
+
+const temporizadorCarrito = ref<number | null>(null);
+
+const iniciarTemporizadorCarrito = () => {
+  if (typeof window !== 'undefined') {
+    temporizadorCarrito.value = window.setInterval(() => {
+      cargarCarrito();
+    }, 1000); // Verificar cada segundo
+  }
+};
+
 const activeButton = ref('');
+const route = useRoute();
 
-// Links para el drawer (computed para i18n)
-const linksList = computed((): EssentialLinkProps[] => [
-  {
-    title: t('inicio'),
-    icon: 'home',
-    link: '/',
-  },
-  {
-    title: t('testNivel'),
-    icon: 'code',
-    link: '/TestNivel',
-  },
-  {
-    title: t('clases'),
-    icon: 'record_voice_over',
-    link: '/Clases',
-  },
-  {
-    title: t('sobre'),
-    icon: 'rss_feed',
-    link: '/SobreSpanish',
-  },
-  {
-    title: t('contacto'),
-    icon: 'rss_feed',
-    link: '/Contacto',
-  },
-]);
-
-// Watcher para detectar cambios de ruta
 watch(
   () => route.path,
   (newPath) => {
     if (newPath === '/') activeButton.value = 'inicio';
-    else if (newPath === '/Clases') activeButton.value = 'clases';
-    else if (newPath === '/TestNivel') activeButton.value = 'testNivel';
-    else if (newPath === '/sobreSpanish') activeButton.value = 'sobreSpanish';
+    else if (
+      newPath === '/ClasesIndividuales' ||
+      newPath === '/ClasesGrupales' ||
+      newPath === '/Clases'
+    )
+      activeButton.value = 'clases';
+    else if (newPath === '/TestNivel') activeButton.value = 'test';
+    else if (newPath === '/sobreSpanish') activeButton.value = 'sobre';
     else if (newPath === '/Contacto') activeButton.value = 'contacto';
     else activeButton.value = '';
   },
-  { immediate: true }
+  { immediate: true },
 );
 
-// Cargar carrito desde localStorage
-const cargarCarrito = () => {
-  if (typeof window === 'undefined') return;
-  
-  const carritoGuardado = localStorage.getItem('carritoReservas');
-  carritoCount.value = carritoGuardado ? JSON.parse(carritoGuardado).length : 0;
-};
+const pageMinHeight = computed(() => {
+  if (typeof window === 'undefined') {
+    return 'calc(100vh - 50px)'; // Valor para servidor
+  }
+  return `calc(100vh - ${headerHeight.value}px)`;
+});
 
-// Escuchar cambios en el localStorage (para actualizar en tiempo real)
-const setupCarritoListener = () => {
-  if (typeof window === 'undefined') return;
-  
-  const handleStorageChange = (event: StorageEvent) => {
-    if (event.key === 'carritoReservas') {
-      cargarCarrito();
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    // Inicializar variables seguras en cliente
+    showMenuButton.value = $q?.screen.lt.md || false;
+    showDesktopNav.value = $q?.screen.gt.sm || false;
+
+    const header = document.querySelector('.q-header');
+    if (header) {
+      headerHeight.value = (header as HTMLElement).offsetHeight;
     }
-  };
-  
-  window.addEventListener('storage', handleStorageChange);
-  
-  // Cleanup en onUnmounted
-  return () => window.removeEventListener('storage', handleStorageChange);
-};
 
-// Temporizador para verificar cambios (por si las páginas están en la misma pestaña)
-let temporizadorCarrito: number | null = null;
+    showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
 
-const iniciarTemporizadorCarrito = () => {
-  if (typeof window === 'undefined') return;
-  
-  temporizadorCarrito = window.setInterval(() => {
+    carritoCount.value = 0;
     cargarCarrito();
-  }, 1000);
-};
+    setupCarritoListener();
+    iniciarTemporizadorCarrito();
 
-// Cerrar sesión
-const cerrarSesion = async () => {
+    const updateScreenState = () => {
+      if ($q) {
+        showMenuButton.value = $q.screen.lt.md;
+        showDesktopNav.value = $q.screen.gt.sm;
+      }
+    };
+
+    window.addEventListener('resize', updateScreenState);
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateScreenState);
+    });
+  }
+});
+
+onUnmounted(() => {
+  if (temporizadorCarrito.value !== null) {
+    clearInterval(temporizadorCarrito.value);
+  }
+});
+
+function changeLang(val: string) {
+  locale.value = val;
+}
+
+const linksList = computed((): EssentialLinkProps[] => [
+  { title: t('inicio'), icon: 'home', link: '/' },
+  { title: t('testNivel'), icon: 'code', link: '/TestNivel' },
+  { title: t('clases'), icon: 'record_voice_over', link: '/Clases' },
+  { title: t('sobre'), icon: 'rss_feed', link: '/SobreSpanish' },
+  { title: t('contacto'), icon: 'rss_feed', link: '/Contacto' },
+]);
+
+const leftDrawerOpen = ref(false);
+
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+const cerrarSesion = async (): Promise<void> => {
   try {
     await supabase.auth.signOut({ scope: 'global' });
     await logout();
-    
     if (typeof window !== 'undefined') {
       localStorage.removeItem('carritoReservas');
       carritoCount.value = 0;
@@ -276,69 +372,29 @@ const cerrarSesion = async () => {
   }
 };
 
-// Cambiar idioma
-const changeLang = (lang: string) => {
-  locale.value = lang;
-};
-
-// Alternar drawer
-const toggleLeftDrawer = () => {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-};
-
-// Aceptar cookies
-const aceptarCookies = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('cookies_accepted', 'true');
-  }
-  showCookiesBanner.value = false;
-};
-
-// INICIALIZACIÓN EN CLIENTE
-onMounted(() => {
-  // Verificar cookies
-  if (typeof window !== 'undefined') {
-    showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
-  }
-  
-  // Cargar carrito inicial
-  cargarCarrito();
-  
-  // Configurar listeners
-  const removeStorageListener = setupCarritoListener();
-  iniciarTemporizadorCarrito();
-  
-  // Cleanup en unmount
-  onUnmounted(() => {
-    if (removeStorageListener) removeStorageListener();
-    if (temporizadorCarrito !== null) {
-      clearInterval(temporizadorCarrito);
-    }
-  });
-});
+defineExpose({ $q, t });
 </script>
 
-<style lang="scss">
-// Botón barra superior
+<style lang="scss" scoped>
+/* ESTILOS EXACTOS DEL MAINLAYOUT CON SCOPED PARA QUE NO SE PISEN EN PRODUCCIÓN */
+
 .btn-nav-superior {
-  font-size: 0.6rem !important;
+  font-size: 0.8rem !important;
   font-weight: 300 !important;
   text-decoration: underline;
   margin-right: 5%;
 
   @media (min-width: 1024px) {
-    font-size: 0.8rem !important;
+    font-size: 1rem !important;
   }
 }
 
-/* Botón del carrito responsivo */
 .carro-btn {
   padding: 2px;
   .q-icon {
     font-size: 2rem !important;
   }
 
-  /* Padding responsivo del botón */
   @media (min-width: 300px) {
     padding: 2px;
     .q-icon {
@@ -353,7 +409,6 @@ onMounted(() => {
   }
 }
 
-/* Badge responsivo */
 .badge-notification {
   font-size: 8px;
   padding: 1px 3px;
@@ -381,52 +436,41 @@ onMounted(() => {
   }
 }
 
-/* Logo responsivo */
 .logo-responsivo {
   height: auto;
   margin: 0;
   padding: 0;
   display: inline-block;
-
-  /* Móviles pequeños (xs) */
   width: 50px;
 
-  /* Móviles grandes y tablets (sm) */
   @media (min-width: 600px) and (max-width: 1023px) {
     width: 55px;
   }
 
-  /* Escritorio (md y superior) */
   @media (min-width: 1024px) {
     width: 60px;
   }
 
-  /* Escritorio grande (xl) */
   @media (min-width: 1920px) {
     width: 60px;
   }
 }
-/* Título Spanishnook responsivo */
+
 .spanishnook-titl {
   font-weight: bold !important;
   margin-left: 8px;
   margin-right: auto;
-
-  /* Móviles pequeños */
   font-size: 1.2rem !important;
 
-  /* Móviles grandes y tablets */
   @media (min-width: 600px) and (max-width: 1023px) {
     font-size: 1.3rem !important;
   }
 
-  /* Escritorio pequeño */
   @media (min-width: 1024px) and (max-width: 1439px) {
     font-size: 1rem !important;
   }
 }
 
-/* Botón de navegación con mayor especificidad */
 .nave-btn {
   font-weight: 500 !important;
   color: white !important;
@@ -438,8 +482,12 @@ onMounted(() => {
     transform: scale(1.1);
   }
 
-  @media (min-width: 600px) and (max-width: 1220px) {
-    font-size: 0.7rem !important;
+  @media (min-width: 600px) and (max-width: 1023px) {
+    font-size: 0.8rem !important;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1rem !important;
   }
 
   @media (min-width: 1440px) {
@@ -464,25 +512,20 @@ onMounted(() => {
   }
 }
 
-/* Contenedor de navegación centrado */
 .nav-container {
   display: flex !important;
   align-items: center !important;
-  margin-left: 8% !important;
+  margin-left: 2%;
   width: 100% !important;
   gap: 3rem !important;
   padding: 0 3rem !important;
-  @media (max-width: 1224px) {
-    padding: 0 1rem !important;
-    margin-left: 4% !important;
-  }
 }
 
-/* También para el dropdown de Clases */
 .q-btn-dropdown.nav-btn.router-link-active .q-btn__content {
   text-decoration: underline !important;
   text-underline-offset: 4px !important;
 }
+
 .q-btn-dropdown {
   .q-btn__content {
     flex-direction: row !important;
@@ -520,6 +563,56 @@ onMounted(() => {
   margin-top: 16px;
 }
 
+.footer-legal-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #000;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-legal-text {
+  margin: 0;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  width: 100%;
+}
+
+@media (min-width: 1025px) {
+  .footer-legal-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+  }
+
+  .footer-legal-text {
+    text-align: left;
+    width: auto;
+  }
+
+  .footer-legal-links {
+    gap: 80px;
+    justify-content: flex-end;
+    width: auto;
+  }
+}
+
 .whatsapp-sticky-btn {
   .enlarged-touch {
     min-width: 72px;
@@ -529,7 +622,6 @@ onMounted(() => {
   }
 }
 
-/* Estilos para las banderas */
 .flag-selected {
   background-color: rgba(255, 255, 255, 0.2);
   border: 2px solid #fff;
@@ -549,7 +641,6 @@ onMounted(() => {
   position: relative;
 }
 
-/* Contenedor de banderas responsivo */
 .flags-container {
   gap: 4px;
 
@@ -562,7 +653,6 @@ onMounted(() => {
   }
 }
 
-/* Botones de banderas responsivos */
 .flag-btn {
   margin: 0 2px;
 
@@ -649,7 +739,6 @@ onMounted(() => {
   }
 }
 
-/* Contenedor de links del footer */
 .footer-links-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -657,7 +746,6 @@ onMounted(() => {
   width: 100%;
   max-width: 300px;
 
-  /* Móviles: dos columnas */
   @media (max-width: 599px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -687,63 +775,11 @@ onMounted(() => {
     transform: translateX(8px);
   }
 
-  /* Responsivo */
   @media (max-width: 599px) {
     font-size: 0.8rem !important;
     &:hover {
-      transform: scale(1.05); /* En móvil, solo escalar en lugar de mover */
+      transform: scale(1.05);
     }
-  }
-}
-
-.footer-legal-bar {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background-color: #000;
-  color: white;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.footer-legal-text {
-  margin: 0;
-  flex-shrink: 0;
-  font-size: 0.9rem;
-  text-align: center;
-  width: 100%;
-}
-
-.footer-legal-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  justify-content: center;
-  width: 100%;
-}
-
-/* Pantallas grandes (>= 1025px): una sola fila */
-@media (min-width: 1025px) {
-  .footer-legal-bar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 16px;
-  }
-
-  .footer-legal-text {
-    text-align: left;
-    width: auto;
-  }
-
-  .footer-legal-links {
-    gap: 80px;
-    justify-content: flex-end;
-    width: auto;
   }
 }
 </style>

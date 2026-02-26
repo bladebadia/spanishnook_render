@@ -427,7 +427,7 @@ const confirmarReservasHibridas = async () => {
     if (itemsConTarjeta.length > 0) {
       await irAStripe(itemsConTarjeta);
     } else {
-      $q.notify({ type: 'positive', message: '¡Reservas confirmadas! 📧' });
+      $q.notify({ type: 'positive', message: t('carrito.confirmadas') });
       carrito.value = [];
       guardarCarrito();
 

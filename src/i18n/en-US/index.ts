@@ -14,7 +14,8 @@ export default {
   clasesIndividuales: 'Private Classes',
   clasesGrupales: 'Group Classes',
   clases: 'Classes',
-  footerSpanishnookEs: 'SpanishNook - The nook where Spanish is learned without haste, but properly.',
+  footerSpanishnookEs:
+    'SpanishNook - The nook where Spanish is learned without haste, but properly.',
   footerAvisoLegal: 'Legal Notice',
   footerPrivacidad: 'Privacy Policy',
   footerCondiciones: 'Terms of Service',
@@ -25,57 +26,77 @@ export default {
   footerInstitutoCervantes: 'Cervantes Institute',
   footerDerechosReservados: '© 2025 SpanishNook · All rights reserved',
   indexeUnLugarDonde: 'A place where learning Spanish feels like home',
-  indexAprenderEspañolPuede: 'Learning Spanish can be comfortable, personal, and made for you. At SpanishNook, you’ll find your place: an online space with live lessons where you can learn at your own pace, with dynamic classes, personal guidance, and materials designed for you. Learn Spanish with confidence, in an environment where feeling comfortable is just as important as making progress.',
+  indexAprenderEspañolPuede:
+    'Learning Spanish can be comfortable, personal, and made for you. At SpanishNook, you’ll find your place: an online space with live lessons where you can learn at your own pace, with dynamic classes, personal guidance, and materials designed for you. Learn Spanish with confidence, in an environment where feeling comfortable is just as important as making progress.',
   indexCreaTuEspacio: 'create your space',
   indexDescubreNuestrasClases: 'Discover our classes!',
-  indexDescubreNuestrasClasesTexto: 'Explore the learning option that best suits you. Book your first class and experience SpanishNook.',
+  indexDescubreNuestrasClasesTexto:
+    'Explore the learning option that best suits you. Book your first class and experience SpanishNook.',
   indexEncuentraTusClases: 'Find your classes',
   indexQueEncontraras: 'What will you find in our classes?',
   indexclasesEnVivo: 'Live classes: learn, speak, and ask questions in real time.',
   indexdiferentesModalidades: 'Different formats: private, group, and conversation classes.',
   indexseguimientoContinuo: 'Continuous progress tracking and personalised feedback.',
   indexClasesAdaptadas: 'Classes adapted to your interests and goals',
-  indexMaterialesExclusivos: 'Exclusive materials and additional resources to complement your learning.',
+  indexMaterialesExclusivos:
+    'Exclusive materials and additional resources to complement your learning.',
   indexAmbienteRelajado: 'A relaxed and friendly environment that makes learning easier',
   indexDiferentesCaminos: 'Different paths, one goal: speaking Spanish',
-  indexAprendeEnDirecto: 'Learn live, only with your teacher or with classmates on the other side of the screen.',
+  indexAprendeEnDirecto:
+    'Learn live, only with your teacher or with classmates on the other side of the screen.',
   indexClasesPrivadas: 'Private Classes',
   indexClasesConversacion: 'Group Conversation Classes',
   indexClasesGrupales: 'Group Classes',
-  indexAvanzaEnTu: 'Improve your Spanish with a teacher dedicated exclusively to you. You decide the pace, the topics, and your goals.                               ',                                      
+  indexAvanzaEnTu:
+    'Improve your Spanish with a teacher dedicated exclusively to you. You decide the pace, the topics, and your goals.                               ',
   indexQuieroMiClase: 'I want my class',
-  indexAprendeEspañol: 'Learn Spanish step by step with classmates at your same level. Small, dynamic groups designed to help you progress together.',
+  indexAprendeEspañol:
+    'Learn Spanish step by step with classmates at your same level. Small, dynamic groups designed to help you progress together.',
   indexAprenderEnGrupo: 'Learn in a group',
   indexClasesDeConversacion: 'Group Conversational Classes',
-  indexMejoraTuConfianza: 'Improve your confidence and fluency by speaking Spanish in small groups, in a relaxed yet fun environment.',
+  indexMejoraTuConfianza:
+    'Improve your confidence and fluency by speaking Spanish in small groups, in a relaxed yet fun environment.',
   indexUneteALaLista: 'Start now',
   indexDescubreTuPunto: 'Discover your starting point ➡️ take the free level test',
-  indexEnSolo: 'In just 5 minutes, you’ll find out your Spanish level and which option suits you best. The first step towards learning at your own pace.',
+  indexEnSolo:
+    'In just 5 minutes, you’ll find out your Spanish level and which option suits you best. The first step towards learning at your own pace.',
   indexHacerTest: 'Take the test',
-  indexQuienHayDetras: 'Who\'s behind SpanishNook?',
-  indexDetrasDeSpanishnook1: 'At SpanishNook, we believe that learning a language should be a personal, flexible, and positive experience. That\'s why we\'ve created this online space: a place designed to support you on your journey with live, personalised classes.',
-  indexDetrasDeSpanishnook2: 'The project was born from the experience and passion of Paula, a Spanish teacher with several years of teaching experience.',
-  indexDetrasDeSpanishnook3: 'SpanishNook is a place where you can feel comfortable while learning.',
+  indexQuienHayDetras: "Who's behind SpanishNook?",
+  indexDetrasDeSpanishnook1:
+    "At SpanishNook, we believe that learning a language should be a personal, flexible, and positive experience. That's why we've created this online space: a place designed to support you on your journey with live, personalised classes.",
+  indexDetrasDeSpanishnook2:
+    'The project was born from the experience and passion of Paula, a Spanish teacher with several years of teaching experience.',
+  indexDetrasDeSpanishnook3:
+    'SpanishNook is a place where you can feel comfortable while learning.',
   indexMasSobreSpanishnook: 'More about SpanishNook',
   indexComoFuncionanClases: 'How do the classes work?',
-  indexTodasClasesEnVivo: 'All classes are live (NOT recorded). We connect online via video call (Google Meet) at the agreed time. Private classes are 1:1, while group classes are in small groups of a maximum of 6 people.',
+  indexTodasClasesEnVivo:
+    'All classes are live (NOT recorded). We connect online via video call (Google Meet) at the agreed time. Private classes are 1:1, while group classes are in small groups of a maximum of 6 people.',
   indexQueNecesitoParaEmpezar: 'What do I need to get started?',
-  indexSoloNecesito: 'You only need a computer or tablet, an internet connection, and the desire to learn.',
+  indexSoloNecesito:
+    'You only need a computer or tablet, an internet connection, and the desire to learn.',
   indexPuedoCambiarDeModalidad: 'Can I change the course or modality if I make a mistake?',
-  indexClaroQueremos: 'We want you to feel comfortable. If a class isn\'t what you need, we\'ll help you find the most suitable option for you.',
+  indexClaroQueremos:
+    "We want you to feel comfortable. If a class isn't what you need, we'll help you find the most suitable option for you.",
   indexQueNivelDeEspañol: 'What level of Spanish do I need to sign up?',
-  indexNoNecesitoNingun: 'You do not need any prior level. We offer classes for different levels, from beginners to advanced levels, depending on the option you choose. If you\'re unsure of your level, you can take our free level test to help you determine it.',
+  indexNoNecesitoNingun:
+    "You do not need any prior level. We offer classes for different levels, from beginners to advanced levels, depending on the option you choose. If you're unsure of your level, you can take our free level test to help you determine it.",
   indexCuantasPersonas: 'How many people are there in group classes?',
-  indexEnClasesPrivadas: 'In private classes, it is just you and your teacher. In group classes, there are a maximum of 6 people to ensure personalized attention and a dynamic learning environment.',
+  indexEnClasesPrivadas:
+    'In private classes, it is just you and your teacher. In group classes, there are a maximum of 6 people to ensure personalized attention and a dynamic learning environment.',
   indexPuedoCambiarDeHorario: 'Can I change my schedule?',
-  indexEntendemosQueLaVida: 'We understand that life can be unpredictable. But it will depend on the study format: with private classes, you decide (provided you give advance notice). Group classes, however, are fixed to a specific schedule.',
+  indexEntendemosQueLaVida:
+    'We understand that life can be unpredictable. But it will depend on the study format: with private classes, you decide (provided you give advance notice). Group classes, however, are fixed to a specific schedule.',
   indexPreguntasFrecuentes: 'Frequently Asked Questions (FAQs)',
   indexQuePasaSiNoPuedoAsistir: 'What happens if I cannot attend a class?',
-  indexDependeraDeLaModalidad: 'It will depend on the modality of the class you select. Check the different class options and their conditions.',
+  indexDependeraDeLaModalidad:
+    'It will depend on the modality of the class you select. Check the different class options and their conditions.',
   indexSuscripción: 'Can I cancel my monthly subscription?',
-  indexSuscripciónRespuesta: 'Sure! Cancel at any time and your subscription will be cancelled for the next month.',
+  indexSuscripciónRespuesta:
+    'Sure! Cancel at any time and your subscription will be cancelled for the next month.',
   indexAunTienesDudas: 'Still have questions?',
-  indexEstamosAlOtroLado: 'We’re on the other side. Get in touch with us through any of our available channels and we’ll get back to you as soon as possible.',
+  indexEstamosAlOtroLado:
+    'We’re on the other side. Get in touch with us through any of our available channels and we’ll get back to you as soon as possible.',
   indexContactanos: 'contact us',
   indexOpinionesVerificadas: 'Verified Reviews ⭐',
   indexConoceExperiencias: 'Get to know the experiences of our students',
@@ -84,7 +105,8 @@ export default {
   // Agregar a src/i18n/en-US/index.ts
   indexDanosTuOpinion: 'Leave us your opinion',
   indexRegistroRequerido: 'Registration required',
-  indexDebesEstarRegistrado: 'You must be registered to leave an opinion. Would you like to create an account?',
+  indexDebesEstarRegistrado:
+    'You must be registered to leave an opinion. Would you like to create an account?',
   indexCancelar: 'Cancel',
   indexRegistrarse: 'Register',
   indexComparteTuExperiencia: 'Share your experience',
@@ -100,7 +122,7 @@ export default {
   indexPais: 'Country',
   indexNombre: 'Name',
 
-  reservasClases:{
+  reservasClases: {
     reservaTuClase: 'Book your Private Class',
     carritoDeReservas: 'Booking Cart',
     aLas: 'at',
@@ -111,59 +133,68 @@ export default {
     misReservasConfirmadas: 'My confirmed bookings',
     noSePuede: 'Cannot be canceled (less than 24 hours)',
     noSePuedeCancelar: 'Cannot be canceled with less than 24 hours notice',
-    cancelarReserva:' Cancel Booking',
-    noTienesReservas:'You have no confirmed bookings.',
-    tipoDeClase:'Class Formats',
+    cancelarReserva: ' Cancel Booking',
+    noTienesReservas: 'You have no confirmed bookings.',
+    tipoDeClase: 'Class Formats',
     precio: 'Price:',
     cargandoDisponibilidad: 'Loading availability...',
-    horariosDisponiblesPara:'Available times for',
+    horariosDisponiblesPara: 'Available times for',
     noHayHuecosLibres: 'No available slots (check if there is a group class that day)',
-    debesIniciarSesion:'You must log in to book a class',
-  
+    debesIniciarSesion: 'You must log in to book a class',
   },
 
-  test:{
-        deNivel: 'Spanish Level Test',
-        evaluaTuNivel: '🏆 Find out your Spanish level',
-        instrucciones: 'Instructions',
-        elTestConsta: 'The test consists of 25 questions arranged by levels.',
-        cadaPreguntaTiene: 'Each question has 3 answer options. Select one. If you feel you can’t continue with the test, leave the remaining questions blank and complete the test.',
-        alCompletar: 'At the end, you will receive an approximate indication of your Spanish level. This test does not replace an official evaluation, but it will help you choose the course that best suits you.',
-        comenzarTest: 'Start the Level Test',
-        elTestToma: 'The test takes approximately 5 minutes.',
-        pregunta: 'Question',
-        siguiente: 'Next',
-        anterior: 'Previous',
-        de: 'of',
-        finalizarTest: 'Finish Test',
-        accesoConocesLo: 'Beginner - You\'re starting your journey with Spanish! You can introduce yourself, ask for basic information, and communicate simply in everyday situations.',
-        plataformaPuedes: 'Elementary - You can communicate in everyday situations: work, family, and leisure.',
-        umbralTienes: 'Intermediate - You can understand and navigate clear conversations and texts on familiar topics. You can talk about experiences, plans, and give your opinion.',
-        avanzadoPuedes: 'Advanced - You communicate fluently and naturally. You understand complex texts and defend your ideas or thoughts with detailed arguments.',
-        dominioTeExpresas: 'Proficient - You express yourself with ease and spontaneity in almost any situation. You understand complex texts and communicate flexibly for social, academic, and professional purposes.',
-        testCompletado: 'Test Completed!',
-        correcto: '% correct',
-        repetirTest: 'Retake the Test',
-        tuNivel: 'Your Spanish level',
-
+  test: {
+    deNivel: 'Spanish Level Test',
+    evaluaTuNivel: '🏆 Find out your Spanish level',
+    instrucciones: 'Instructions',
+    elTestConsta: 'The test consists of 25 questions arranged by levels.',
+    cadaPreguntaTiene:
+      'Each question has 3 answer options. Select one. If you feel you can’t continue with the test, leave the remaining questions blank and complete the test.',
+    alCompletar:
+      'At the end, you will receive an approximate indication of your Spanish level. This test does not replace an official evaluation, but it will help you choose the course that best suits you.',
+    comenzarTest: 'Start the Level Test',
+    elTestToma: 'The test takes approximately 5 minutes.',
+    pregunta: 'Question',
+    siguiente: 'Next',
+    anterior: 'Previous',
+    de: 'of',
+    finalizarTest: 'Finish Test',
+    accesoConocesLo:
+      "Beginner - You're starting your journey with Spanish! You can introduce yourself, ask for basic information, and communicate simply in everyday situations.",
+    plataformaPuedes:
+      'Elementary - You can communicate in everyday situations: work, family, and leisure.',
+    umbralTienes:
+      'Intermediate - You can understand and navigate clear conversations and texts on familiar topics. You can talk about experiences, plans, and give your opinion.',
+    avanzadoPuedes:
+      'Advanced - You communicate fluently and naturally. You understand complex texts and defend your ideas or thoughts with detailed arguments.',
+    dominioTeExpresas:
+      'Proficient - You express yourself with ease and spontaneity in almost any situation. You understand complex texts and communicate flexibly for social, academic, and professional purposes.',
+    testCompletado: 'Test Completed!',
+    correcto: '% correct',
+    repetirTest: 'Retake the Test',
+    tuNivel: 'Your Spanish level',
   },
   NuestrasClases: {
-    promoPromoPacks:'More credits, more saving!',
+    promoPromoPacks: 'More credits, more saving!',
     nuestrasClases: 'Our Classes',
-    textoNuestrasClases: 'At SpanishNook, there isn\'t just one path: every student has their own goals, schedule, and way of learning. That\'s why we offer flexible options, so you can choose what fits you best: private classes or small group courses.',
+    textoNuestrasClases:
+      "At SpanishNook, there isn't just one path: every student has their own goals, schedule, and way of learning. That's why we offer flexible options, so you can choose what fits you best: private classes or small group courses.",
     botonClasesIndividuales: 'PRIVATE CLASSES',
     botonClasesConversacion: 'CONVERSATION CLASSES',
     recuerdaHacerTest: 'Remember to take the test',
     testDeNivel: 'Level Test',
     nuestrasClasesIndividuales: 'Our Private Classes',
-    aprendeEspanolATuRitmo: 'Learn Spanish at your own pace with personalized classes tailored to your specific needs. Our native teachers create a unique curriculum for you, focusing on your goals and schedule availability.',
+    aprendeEspanolATuRitmo:
+      'Learn Spanish at your own pace with personalized classes tailored to your specific needs. Our native teachers create a unique curriculum for you, focusing on your goals and schedule availability.',
     tituloClasesA1: 'A1 Level Classes',
     pruebaTuClaseGratis: 'Try your free class!',
-    textoClasesA1: 'Ideal for beginners. Focus on learning the language: basic grammar, essential vocabulary, and simple conversations to build a solid foundation in Spanish.',
+    textoClasesA1:
+      'Ideal for beginners. Focus on learning the language: basic grammar, essential vocabulary, and simple conversations to build a solid foundation in Spanish.',
     botonClasesA1: 'go to general classes',
     botonClasesA2: 'go to conversation classes',
     tituloClasesB1: 'B1 Level Classes',
-    textoClasesB1: 'Perfect for intermediate level. Develop your communication skills: fluent conversations, understanding complex texts, and expressing opinions with confidence.',
+    textoClasesB1:
+      'Perfect for intermediate level. Develop your communication skills: fluent conversations, understanding complex texts, and expressing opinions with confidence.',
     botonClasesB1: 'Book B1 class',
     tituloClasesConversacion: 'Conversation Classes',
 
@@ -178,26 +209,30 @@ export default {
     misReservasConfirmadas: 'My confirmed bookings',
     noSePuede: 'Cannot be canceled (less than 24 hours)',
     noSePuedeCancelar: 'Cannot be canceled with less than 24 hours notice',
-    cancelarReserva:' Cancel Booking',
-    noTienesReservas:'You have no confirmed bookings.',
-    tipoDeClase:'Learning Modalities',
+    cancelarReserva: ' Cancel Booking',
+    noTienesReservas: 'You have no confirmed bookings.',
+    tipoDeClase: 'Learning Modalities',
     precio: 'Price:',
-    horariosDisponiblesPara:'Available times for',
+    horariosDisponiblesPara: 'Available times for',
     clasesGrupales: 'Group Classes',
     botonEmpiezaAhora: 'Start now',
     bienVenidaA: 'Welcome to \nSpanishNook!',
     disfrutaNuestrasClases: 'Enjoy our group classes',
-    uneteANuestrasClases: 'Join our group classes and improve your Spanish in a collaborative and fun environment.',
+    uneteANuestrasClases:
+      'Join our group classes and improve your Spanish in a collaborative and fun environment.',
     uneteAEllas: '¡Join them!',
     alumnos: 'students',
     cursos: 'courses',
     clasesImpartidas: 'classes taught',
     nuestrosGruposFormativos: 'Our training groups',
-    textoNuestrosGruposFormativos: 'Our group classes are made to offer you a learning experience focused on developing oral skills in a dynamic, collaborative and functional environment. We encourage interaction, participation and cultural exchange in a space where you are the main character. Whether you are starting your journey in Spanish or looking to perfect your skills, our group classes provide the ideal environment for you to grow and thrive in your command of the language.',
+    textoNuestrosGruposFormativos:
+      'Our group classes are made to offer you a learning experience focused on developing oral skills in a dynamic, collaborative and functional environment. We encourage interaction, participation and cultural exchange in a space where you are the main character. Whether you are starting your journey in Spanish or looking to perfect your skills, our group classes provide the ideal environment for you to grow and thrive in your command of the language.',
     NuestrosCursos: 'Our Courses',
     ClasesConversacion: 'Conversation Group Classes',
-    IntroNuestrosCursosGrupo: 'Do you understand Spanish but struggle to speak it naturally? Do you want to feel more confident speaking Spanish without being afraid of making mistakes?',
-    TextoNuestrosCursosGrupo: 'Every week, we meet in small groups to practice Spanish in a real, practical, and enjoyableway. We work with current topics and activities designed to help you speak more, loosen up, and feel comfortable from day one. Here we speak a lot, make mistakes without fear, laugh, learn useful vocabulary, and improve step by step.',
+    IntroNuestrosCursosGrupo:
+      'Do you understand Spanish but struggle to speak it naturally? Do you want to feel more confident speaking Spanish without being afraid of making mistakes?',
+    TextoNuestrosCursosGrupo:
+      'Every week, we meet in small groups to practice Spanish in a real, practical, and enjoyableway. We work with current topics and activities designed to help you speak more, loosen up, and feel comfortable from day one. Here we speak a lot, make mistakes without fear, laugh, learn useful vocabulary, and improve step by step.',
     TextoNuestrosCursosGrupo1: 'How do the group classes work?',
     ListaComoFuncionanGrupos1Bold: '1 class per week',
     ListaComoFuncionanGrupos1: '➡️ 90 minutes',
@@ -218,13 +253,17 @@ export default {
     Logro6Grupales: 'Improve almost without even noticing it!',
     BotonVerCursos: 'See available courses',
     Individuales: 'Personalized Private Classes',
-    IntroIndividuales1Bold: 'Learn at your own pace with classes designed just for you and your learning needs.',
-    IntroIndividuales2: 'Choose whether you want to improve your speaking fluency or work on other general aspects of the language. You choose the pace, the topics, and the goals. We provide the support and resources.',
+    IntroIndividuales1Bold:
+      'Learn at your own pace with classes designed just for you and your learning needs.',
+    IntroIndividuales2:
+      'Choose whether you want to improve your speaking fluency or work on other general aspects of the language. You choose the pace, the topics, and the goals. We provide the support and resources.',
     Modalidades: '1:1 Class Formats',
     Modalidad1: 'Conversational Classes',
-    TextoModalidad1: 'Focus on improving your fluency, pronunciation, and communication skills in sessions designed to practise Spanish in a natural and effective way.',
+    TextoModalidad1:
+      'Focus on improving your fluency, pronunciation, and communication skills in sessions designed to practise Spanish in a natural and effective way.',
     Modalidad2: 'General Spanish Classes',
-    TextoModalidad2: 'Our general classes cover grammar, vocabulary, listening and reading comprehension, as well as spoken and written expression. Progress in a well-rounded way and take your Spanish to the next level.',
+    TextoModalidad2:
+      'Our general classes cover grammar, vocabulary, listening and reading comprehension, as well as spoken and written expression. Progress in a well-rounded way and take your Spanish to the next level.',
     TextoComoFuncionanIndividuales: 'How private classes work:',
     ListaComoFuncionanInd1Bold: 'Live 55-minute online sessions 🕒',
     ListaComoFuncionanInd1: 'With 100% personalized materials',
@@ -234,28 +273,37 @@ export default {
     ListaComoFuncionanInd3: 'Conversation or General Spanish',
     ListaComoFuncionanInd4Bold: 'Ongoing feedback and progress tracking 📈',
     ListaComoFuncionanInd4: 'Shared repository (Google Classroom and Google Drive)',
-    ListaComoFuncionanInd5: 'Cancellations up to 24 hours in advance. The class will be rescheduled for another day at no extra cost',
+    ListaComoFuncionanInd5:
+      'Cancellations up to 24 hours in advance. The class will be rescheduled for another day at no extra cost',
     BotonVerClases: 'Book my 1:1 class',
     inicio: 'Start',
-    tePasaQue: 'Do you understand Spanish but find it hard to speak naturally? Want to feel more confident without worrying about making mistakes?',
+    tePasaQue:
+      'Do you understand Spanish but find it hard to speak naturally? Want to feel more confident without worrying about making mistakes?',
     esteCursoEsParaTi: '⭐ This courses are for you.',
-    cadaSemanaNos: 'Every week we meet in small groups to practise Spanish in a real, practical and enjoyable way. We work with current topics and activities designed to help you speak more, feel relaxed and gain confidence from day one.',
-    aquiHablamos: 'Here we speak a lot, make mistakes without fear, laugh, learn useful vocabulary, and improve step by step in a friendly, supportive atmosphere.',
-    esUnPrograma: 'It’s a simple monthly subscription: pay month by month, with no commitment. Improve regularly and stay motivated with ease.',
-    uneteALa:'Join the waiting list, fill out the form, and we\'ll let you know you when your group opens.',
-    comoFunciona:'How does it work?',
+    cadaSemanaNos:
+      'Every week we meet in small groups to practise Spanish in a real, practical and enjoyable way. We work with current topics and activities designed to help you speak more, feel relaxed and gain confidence from day one.',
+    aquiHablamos:
+      'Here we speak a lot, make mistakes without fear, laugh, learn useful vocabulary, and improve step by step in a friendly, supportive atmosphere.',
+    esUnPrograma:
+      'It’s a simple monthly subscription: pay month by month, with no commitment. Improve regularly and stay motivated with ease.',
+    uneteALa:
+      "Join the waiting list, fill out the form, and we'll let you know you when your group opens.",
+    comoFunciona: 'How does it work?',
     queLograras: 'What will you achieve?',
     comprarPacks: 'Buy class packs',
     nuestrosPacks: 'Our class packs',
-    ahorra: 'Save money by buying packs of individual classes in advance and enjoy exclusive discounts. Use your credits whenever you want.',
-
+    ahorra:
+      'Save money by buying packs of individual classes in advance and enjoy exclusive discounts. Use your credits whenever you want.',
   },
-  personal:{
+  personal: {
+    reservaClase: 'BOOK MY FIRST LESSON',
+    passwordActualIncorrecta: 'Incorrect current password.',
+    actualizada: 'Password updated.',
     hola: 'Hello',
     aLas: 'at',
     seleccionar: 'Select',
     bienvenidoAreaPersonal: 'Welcome to your Personal Area!',
-    holaUsuario:' Hello User!',
+    holaUsuario: ' Hello User!',
     bienvenido: 'Welcome',
     nuevaReserva: 'New Booking',
     clasesReservadas: 'Booked Classes',
@@ -268,17 +316,18 @@ export default {
     mostrarMenu: 'Show Menu',
     ocultarMenu: 'Hide Menu',
     misReservasConfirmadas: 'My confirmed bookings',
-    noTienesReservas:'You have no confirmed bookings.',
-    tipoDeClase:'Learning Modalities',
+    noTienesReservas: 'You have no confirmed bookings.',
+    tipoDeClase: 'Learning Modalities',
     precio: 'Price:',
     noSePuedeCancelar: 'Cannot be canceled with less than 24 hours notice',
-    cancelarReserva:' Cancel',
+    cancelarReserva: ' Cancel',
     bloqueado: 'Blocked',
     claseNormal: 'General Class',
     claseConversacion: 'Conversation Class',
     misSuscripcionesActivas: 'My active subscriptions',
     ningunaSuscripcionActiva: 'You have no active subscriptions.',
-    gestionarSuscripciones: 'Manage your subscriptions for group classes here, including cancellations and renewals.',
+    gestionarSuscripciones:
+      'Manage your subscriptions for group classes here, including cancellations and renewals.',
     cancelacionProgramada: 'Scheduled cancellation for',
     accesoValidoHasta: 'Access valid until:',
     proximaRenovacion: 'Next renewal',
@@ -325,10 +374,12 @@ export default {
     seProcesaraReembolso: 'A refund will be processed.',
     cuentaPersonal: 'Personal Account',
     desdeAquiPuedesGestionar: 'From here you can manage your bookings and personal information.',
-    confirmaEliminarCuenta: 'Are you sure you want to delete your account? This action is irreversible and all your data will be lost.',
+    confirmaEliminarCuenta:
+      'Are you sure you want to delete your account? This action is irreversible and all your data will be lost.',
     desdeAquiPuedes: 'From here you can manage your bookings and personal information.',
-    gestionaTusReservas: 'From here you can manage your bookings for private and group classes, as well as update your personal information.',
-    gestionar:'Manage my bookings',
+    gestionaTusReservas:
+      'From here you can manage your bookings for private and group classes, as well as update your personal information.',
+    gestionar: 'Manage my bookings',
     entrar: 'Enter',
     misclases: 'MY CLASSES',
     idiomaNativo: 'Native Language',
@@ -348,7 +399,8 @@ export default {
     minimo6: 'Minimum 6 characters',
     noCoinciden: 'Passwords do not match',
     actualizarContraseña: 'Update Password',
-    estaAccion: 'This action cannot be undone. All your data and bookings will be deleted along with your account.',
+    estaAccion:
+      'This action cannot be undone. All your data and bookings will be deleted along with your account.',
     eliminarDefinitivamente: 'Delete account permanently',
     autenticacion: 'Authentication completed! Redirecting...',
     finalizada: 'Completed',
@@ -357,40 +409,60 @@ export default {
     borrar: 'DELETE',
     vasA: 'You are going to cancel ',
     clase: 'class(es)',
-    seDevolvera: 'Credits corresponding to the canceled classes will be refunded (if within the allowed period).',
+    seDevolvera:
+      'Credits corresponding to the canceled classes will be refunded (if within the allowed period).',
     confirmar: 'CONFIRM',
     hecho: 'DONE!',
     canceladas: 'canceled',
     errorDesconocido: 'Unknown error. Please try again later.',
     sinDefinir: 'Undefined',
-
-
   },
-  registro:{
+  registro: {
     nombreOApodo: 'Name or Nickname',
     correoElectronico: 'Email',
     contrasena: 'Password',
-    laContrasenaDebe: 'Password must be at least 6 characters, including uppercase, lowercase and numbers',
+    laContrasenaDebe:
+      'Password must be at least 6 characters, including uppercase, lowercase and numbers',
     confirmarContrasena: 'Confirm Password',
     lasContrasenasNo: 'Passwords do not match',
     aceptoLos: 'I accept the',
     terminosYCondiciones: 'Terms and Conditions',
     politicaDePrivacidad: 'Privacy Policy',
     debesAceptarLos: 'You must accept the terms and conditions',
-    registrarse:'Register',
+    registrarse: 'Register',
     yaTengoCuenta: 'Log in',
     aceptar: 'I accept the privacy policy',
+    tuEspanol: 'Your Spanish',
+    sobreTi: 'Sobre ti',
+    cuenta: 'Cuenta',
+    errorMinCaracteres: 'Atleast 6 characters',
+    errorAlMenosUnNumero: 'Atleast 1 number',
+    errorAlMenosUnaVocal: 'Atleast 1 vowel',
+    requerido: 'Required',
+    Email: 'Invalid email',
+    contraseñas: 'Passwords do not match',
+    emailYaRegistrado: 'This email is already registered. Please log in.',
+    revisaMail: 'Registration almost done. ¡Check your email to confirm your account!',
+    camposIncorrectos: 'Please, fill the fields correctly',
+    errorConexion: 'Connection error while verifying the email.',
+    camposObligatorios: 'Please fill in the required fields.',
+    bienvenido: 'Welcome! You have logged in.',
+    errorInesperado: 'An unexpected error occurred.',
+    opinionEnviada: 'Thank you! Your opinion has been sent.',
+    errorEnviarOpinion: 'There was an error sending your opinion.',
   },
 
-  registroCuenta:{
+  registroCuenta: {
     aceptar: 'I accept the privacy policy',
     yatienescuenta: 'Do you already have an account? Log in here',
   },
 
-    checkEmail:{
-    hemosenviado: 'We have sent a confirmation link to your email. To activate your account, just click on it.',
-    noloEncuentras: 'Don\'t find it?',
-    revisatuCarpeta: 'Check your spam or junk folder. Sometimes confirmation emails can end up there by mistake.',
+  checkEmail: {
+    hemosenviado:
+      'We have sent a confirmation link to your email. To activate your account, just click on it.',
+    noloEncuentras: "Don't find it?",
+    revisatuCarpeta:
+      'Check your spam or junk folder. Sometimes confirmation emails can end up there by mistake.',
     iniciar: 'Log in',
     volver: 'Back to the homepage',
     registro: 'Registration completed!',
@@ -398,7 +470,7 @@ export default {
     soloFalta: 'Just one more step to activate your account.',
   },
 
-  comprarPacks:{
+  comprarPacks: {
     packsCreditos: '💎 Credit Packs',
     compraClases: 'Buy classes in advance, save money, and use your credits whenever you want.',
     clasesGenerales: 'General Classes',
@@ -424,35 +496,45 @@ export default {
     ahorras2conv: 'You save 40€!',
   },
 
-  accederForm:{
+  accederForm: {
+    revisaBandeja: 'Check your inbox and spam folder.',
+    correoEnviado: 'Mail sent',
     correoElectronico: 'Email',
     contrasena: 'Password',
     olvidarContrasena: 'Forgot your password?',
     teEnviaremosUnCorreo: 'We will send you an email to reset your password',
     credencialesIncorrectas: 'Incorrect credentials',
-    entrar:'Login',
-    aunNoTienes:'You don\'t have an account?',
+    entrar: 'Login',
+    aunNoTienes: "You don't have an account?",
     registrateAqui: 'Register here',
     recuperarContrasena: 'Reset Password',
     enviar: 'send',
-    seHaEnviado: 'An email has been sent to your email address with instructions to reset your password.',
+    seHaEnviado:
+      'An email has been sent to your email address with instructions to reset your password.',
     revisaTubandeja: 'Check your inbox and spam folder.',
     aceptar: 'Accept',
-    introduceTuCorreo: 'Enter your email address and we will send you instructions to reset your password.',
+    introduceTuCorreo:
+      'Enter your email address and we will send you instructions to reset your password.',
   },
-  SobreSpanish:{
+  SobreSpanish: {
     sobre: 'About SpanishNook',
     conoce: '✨Get to know SpanishNook✨',
-    intro: 'Behind every class, there\'s a person, a story, and a way of teaching designed just for you. In a fast-paced world, learning can also be a refuge.',
+    intro:
+      "Behind every class, there's a person, a story, and a way of teaching designed just for you. In a fast-paced world, learning can also be a refuge.",
     tulug: 'Your place',
-    aprender: 'Learning a language shouldn’t feel cold or distant. SpanishNook was created to offer a warm, personal learning experience in a virtual environment: a place where you can feel supported, grow with confidence, and be part of a small community.',
-    enmedio: 'In a world that never slows down, here you’ll find flexibility, quality, and a learning process that adapts to you and your goals. Our aim is to provide an accessible and effective learning environment, tailored to each student’s needs.',
-    quien: 'Who\'s behind SpanishNook',
-    soy: 'I\'m Paula, a Spanish teacher, translator, and interpreter.',
-    tras1: 'After more than four years teaching in schools, online, and privately across different European cities, I\'ve had the opportunity to support students from very diverse backgrounds as they discover their own voice in Spanish. Over time, I realised that traditional classroom teaching has certain limitations today: sharing the same physical space isn\'t essential for a meaningful learning experience. What truly matters is creating a safe and stimulating space where people can simply be themselves, connect, and grow without barriers.',
-    tras2: 'From this idea, SpanishNook was born: a place where online teaching preserves the closeness and authenticity of a great class, with the added advantage of reaching any corner of the world and adapting better to your daily life, giving you the flexibility and control over your time that you need to learn.',
+    aprender:
+      'Learning a language shouldn’t feel cold or distant. SpanishNook was created to offer a warm, personal learning experience in a virtual environment: a place where you can feel supported, grow with confidence, and be part of a small community.',
+    enmedio:
+      'In a world that never slows down, here you’ll find flexibility, quality, and a learning process that adapts to you and your goals. Our aim is to provide an accessible and effective learning environment, tailored to each student’s needs.',
+    quien: "Who's behind SpanishNook",
+    soy: "I'm Paula, a Spanish teacher, translator, and interpreter.",
+    tras1:
+      "After more than four years teaching in schools, online, and privately across different European cities, I've had the opportunity to support students from very diverse backgrounds as they discover their own voice in Spanish. Over time, I realised that traditional classroom teaching has certain limitations today: sharing the same physical space isn't essential for a meaningful learning experience. What truly matters is creating a safe and stimulating space where people can simply be themselves, connect, and grow without barriers.",
+    tras2:
+      'From this idea, SpanishNook was born: a place where online teaching preserves the closeness and authenticity of a great class, with the added advantage of reaching any corner of the world and adapting better to your daily life, giving you the flexibility and control over your time that you need to learn.',
     filosofía: 'Philosophy',
-    mipropuesta: 'My approach brings together authentic materials, dynamic classes, and a communicative method in which you are at the centre of your learning. All of this comes with a creative touch (yes, even doodles and digital whiteboards!) that gives each session its own personality.',
+    mipropuesta:
+      'My approach brings together authentic materials, dynamic classes, and a communicative method in which you are at the centre of your learning. All of this comes with a creative touch (yes, even doodles and digital whiteboards!) that gives each session its own personality.',
     loque: 'At SpanishNook, you’ll find…',
     cercaniaBold: 'Closeness',
     cercania: 'human connection, small groups and a relaxed atmosphere.',
@@ -461,17 +543,16 @@ export default {
     confianzaBold: 'Confidence',
     confianza: 'real support at every step of your learning journey.',
     ojalá: '✦ I hope this little nook can become yours.',
-    espero: 'I\'ll be waiting for you at SpanishNook so we can take the next step together.',
-
+    espero: "I'll be waiting for you at SpanishNook so we can take the next step together.",
   },
-  Contacto:{
+  Contacto: {
     datosContacto: 'Contact information',
     hintCorreo: 'Your email',
     telefono: 'Phone',
     email: 'Email',
     redesSociales: 'Social Media',
     tienesPreg: '¿Do you have any questions or want more information?',
-    rellena: 'Fill the following contact form or write us through our social media', 
+    rellena: 'Fill the following contact form or write us through our social media',
     formulario: '👉 Contact form',
     nombre: 'Name',
     hintNombre: 'Your name',
@@ -490,9 +571,8 @@ export default {
     exito: 'Your message has been sent successfully. We will get back to you as soon as possible.',
     error: 'There was an error sending your message. Please try again later.',
     elNombre: 'Name is required',
-
   },
-  carrito:{
+  carrito: {
     carritoDeReservas: 'Shopping cart',
     claseNormal: 'General Class',
     claseConversacion: 'Conversation Class',
@@ -513,7 +593,7 @@ export default {
     canjear: 'Redeem credits',
     seguir: 'Continue booking',
     credito: 'credit(s)',
-
+    confirmadas: '¡Bookings confirmed! 📧',
   },
   wallet: {
     wallet: 'Wallet',
@@ -524,7 +604,6 @@ export default {
     seleccionarPack: 'Select pack',
     clases: 'General',
     conversacion: 'Conversation',
-
   },
   reservasCursos: {
     estado: 'Status',
@@ -537,7 +616,8 @@ export default {
     horario: 'Schedule: your time zone',
     reservaTu: 'Book your spot',
     elCurso: 'The course has not started yet',
-    apuntate: 'Sign up for the waiting list to be the first one to know when the course opens and secure your spot.',
+    apuntate:
+      'Sign up for the waiting list to be the first one to know when the course opens and secure your spot.',
     unirme: 'JOIN TO THE WAITING LIST',
     acepto: 'I accept Terms and Conditions',
     inscripcion: 'Course Registration',
@@ -551,10 +631,11 @@ export default {
     suscribirte: 'SUBSCRIBE NOW',
     pago: 'Secure payment with Stripe',
     añadido: 'Added to the waiting list.',
-    yaEstas:  'You are already on the waiting list for this course.',
+    yaEstas: 'You are already on the waiting list for this course.',
     ups: 'Oops! Something went wrong. Please try again.',
     yaTienes: 'You already have an active reservation for this course.',
-    ahoraTienes: 'Now you have your spot guaranteed for the course. We will send you an email with all the details and next steps.',
+    ahoraTienes:
+      'Now you have your spot guaranteed for the course. We will send you an email with all the details and next steps.',
     yaEres: 'You are now a student! See you in class!',
     iniciarSesion: 'Log in to be able to join the course',
     mes: '/month',
@@ -570,8 +651,7 @@ export default {
     iniciar: 'Log in',
     confirmarEmail: 'Confirm your email',
     irArea: 'Go to my Personal Area',
-  
-  
+    anadido: 'You joined into the waitlist.',
   },
   flecos: {
     ups: 'Oops... There is nothing here!',
@@ -589,7 +669,4 @@ export default {
     numero: 'Password must contain at least one number',
     mayuscula: 'Password must contain at least one vowel',
   },
-
-
-
 };

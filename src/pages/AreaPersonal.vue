@@ -258,7 +258,7 @@
                 <q-btn
                   outline
                   color="primary"
-                  label="Reservar mi primera clase"
+                  :label="t('personal.reservaClase')"
                   to="/Reservas"
                   class="q-mt-md"
                 />
@@ -450,67 +450,52 @@
             </q-card-section>
           </q-card>
 
-          <q-card class="shadow-1 rounded-borders">
-            <q-card-section>
-              <div class="text-h6 text-primary flex items-center">
-                <q-icon name="security" class="q-mr-sm" /> {{ t('personal.seguridad') }}
+          <q-form @submit="verificarYCambiarPassword" class="row q-col-gutter-md items-end">
+            <div class="col-12 col-md-4">
+              <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                {{ t('personal.contraseñaActual') }}
               </div>
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <q-form @submit="verificarYCambiarPassword" class="row q-col-gutter-md items-end">
-                <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
-                    {{ t('personal.contraseñaActual') }}
-                  </div>
-                  <q-input
-                    v-model="passForm.current"
-                    type="password"
-                    dense
-                    outlined
-                    :placeholder="t('personal.introduceContraseñaActual')"
-                    :rules="[(val) => !!val || t('personal.requerida')]"
-                  />
-                </div>
-                <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
-                    {{ t('personal.introduceNuevaContraseña') }}
-                  </div>
-                  <q-input
-                    v-model="passForm.new"
-                    type="password"
-                    dense
-                    outlined
-                    :placeholder="t('personal.minimo6')"
-                    :rules="[(val) => val.length >= 6 || t('personal.minimo6')]"
-                  />
-                </div>
-                <div class="col-12 col-md-4">
-                  <div class="text-subtitle2 text-grey-8 q-mb-xs">
-                    {{ t('personal.repiteNueva') }}
-                  </div>
-                  <q-input
-                    v-model="passForm.confirm"
-                    type="password"
-                    dense
-                    outlined
-                    :placeholder="t('personal.repiteNueva')"
-                    :rules="[(val) => val === passForm.new || t('personal.noCoinciden')]"
-                  />
-                </div>
+              <q-input
+                v-model="passForm.current"
+                type="password"
+                dense
+                outlined
+                :placeholder="t('personal.introduceContraseñaActual')"
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                {{ t('personal.introduceNuevaContraseña') }}
+              </div>
+              <q-input
+                v-model="passForm.new"
+                type="password"
+                dense
+                outlined
+                :placeholder="t('personal.minimo6')"
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="text-subtitle2 text-grey-8 q-mb-xs">{{ t('personal.repiteNueva') }}</div>
+              <q-input
+                v-model="passForm.confirm"
+                type="password"
+                dense
+                outlined
+                :placeholder="t('personal.repiteNueva')"
+              />
+            </div>
 
-                <div class="col-12 flex justify-end">
-                  <q-btn
-                    :label="t('personal.actualizarContraseña')"
-                    color="primary"
-                    unelevated
-                    type="submit"
-                    :loading="loadingPass"
-                  />
-                </div>
-              </q-form>
-            </q-card-section>
-          </q-card>
+            <div class="col-12 flex justify-end">
+              <q-btn
+                :label="t('personal.actualizarContraseña')"
+                color="primary"
+                unelevated
+                type="submit"
+                :loading="loadingPass"
+              />
+            </div>
+          </q-form>
         </div>
 
         <div v-if="menuActivo === 'historial'">
@@ -670,7 +655,7 @@ const formDatos = ref<DatosUsuario>({
   saldo_conversacion: 0,
 });
 
-const idiomasComunes = ['English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Otro'];
+const idiomasComunes = ['English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Otro/Another'];
 const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
 
 const getIconoPersonalizado = (tipo: string | undefined) => {
@@ -925,7 +910,24 @@ const eliminarCuenta = async () => {
 };
 
 const verificarYCambiarPassword = async () => {
+  // 1. Si no hay email o los campos están vacíos, no hacemos nada (es opcional)
   if (!user.value?.email) return;
+  if (!passForm.value.current && !passForm.value.new && !passForm.value.confirm) return;
+
+  // 2. Validaciones manuales ANTES de tocar la base de datos
+  // Así evitamos mensajes de error permanentes en los inputs
+  if (!passForm.value.current) {
+    $q.notify({ type: 'warning', message: t('personal.introduceContraseñaActual') });
+    return;
+  }
+  if (passForm.value.new.length < 6) {
+    $q.notify({ type: 'warning', message: t('personal.minimo6') });
+    return;
+  }
+  if (passForm.value.new !== passForm.value.confirm) {
+    $q.notify({ type: 'negative', message: t('personal.noCoinciden') });
+    return;
+  }
 
   loadingPass.value = true;
   try {
@@ -935,16 +937,19 @@ const verificarYCambiarPassword = async () => {
     });
 
     if (loginError) {
-      throw new Error('La contraseña actual no es correcta.');
+      throw new Error(t('personal.passwordActualIncorrecta'));
     }
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: passForm.value.new,
+    });
 
-    const { error: updateError } = await supabase.auth.updateUser({ password: passForm.value.new });
     if (updateError) throw updateError;
 
-    $q.notify({ type: 'positive', message: 'Contraseña actualizada con éxito.' });
+    $q.notify({ type: 'positive', message: t('personal.actualizada') });
+
     passForm.value = { current: '', new: '', confirm: '' };
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error al actualizar';
+    const msg = err instanceof Error ? err.message : t('personal.errorActualizar');
     $q.notify({ type: 'negative', message: msg });
   } finally {
     loadingPass.value = false;
