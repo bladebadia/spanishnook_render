@@ -206,7 +206,7 @@ interface PackCreditos {
 
 const packsNormales = computed<PackCreditos[]>(() => [
   {
-    id: 'price_1SxcvuLFUAzgw0DD3CYqrL2E',
+    id: 'price_1T5z33PqNYrMmXl35sDcDBn1',
     nombre: t('comprarPacks.pack5Gen'),
     creditos: 5,
     creditosTexto: t('comprarPacks.creditos1'),
@@ -218,7 +218,7 @@ const packsNormales = computed<PackCreditos[]>(() => [
     tipo: 'normal',
   },
   {
-    id: 'price_1SxcwsLFUAzgw0DDzuCzeCXF',
+    id: 'price_1T5z2ZPqNYrMmXl3PJsL4MLR',
     nombre: t('comprarPacks.pack10Gen'),
     creditos: 10,
     creditosTexto: t('comprarPacks.creditos2'),
@@ -233,7 +233,7 @@ const packsNormales = computed<PackCreditos[]>(() => [
 
 const packsConversacion = computed<PackCreditos[]>(() => [
   {
-    id: 'price_1SxcyKLFUAzgw0DD0ImH5iZB',
+    id: 'price_1T5z23PqNYrMmXl3PVDgH9Nv',
     nombre: t('comprarPacks.pack5Conv'),
     creditos: 5,
     creditosTexto: t('comprarPacks.creditos1'),
@@ -245,7 +245,7 @@ const packsConversacion = computed<PackCreditos[]>(() => [
     tipo: 'conversacion',
   },
   {
-    id: 'price_1SxczzLFUAzgw0DD7G8AXvUD',
+    id: 'price_1T5z1OPqNYrMmXl3fI17X5C8',
     nombre: t('comprarPacks.pack10Conv'),
     creditos: 10,
     creditosTexto: t('comprarPacks.creditos2'),

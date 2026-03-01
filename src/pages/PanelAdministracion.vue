@@ -1821,15 +1821,15 @@ const añoActual = computed(() => fechaActual.value.getFullYear());
 
 const TARIFAS_DISPONIBLES = [
   {
-    label: 'Clases de Conversación',
+    label: 'Curso de Conversación',
     precio_display: '65', // Lo que se ve en la tarjeta
-    stripe_id: 'price_1SXvSpLFUAzgw0DDMUPJgHzv', // El ID raro de Stripe
+    stripe_id: 'price_1T5z4KPqNYrMmXl3YKsZ7rhm', // El ID raro de Stripe
     descripcion: 'Acceso a las clases de conversación',
   },
   {
     label: 'Curso Niveles',
     precio_display: '75',
-    stripe_id: 'price_1SxcqELFUAzgw0DDiTwVF5Np',
+    stripe_id: 'price_1T5z3sPqNYrMmXl3xfzw2lBo',
     descripcion: 'Acceso a las clases por niveles',
   },
   {
