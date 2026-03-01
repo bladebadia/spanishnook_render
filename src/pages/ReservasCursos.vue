@@ -27,7 +27,7 @@
             <div class="text-subtitle2 text-grey-7 q-mt-xs row items-center no-wrap">
               {{ t('reservasCursos.estado') }}
               <q-chip size="md" :color="colorEstado" text-color="white" dense>
-                {{ t('reservasCursos.activo') }}
+                {{ textoEstado }}
               </q-chip>
               <span class="text-caption text-grey-8 q-ml-auto">
                 <q-icon name="group" class="q-mr-xs" />
@@ -305,13 +305,32 @@ const cursoLleno = computed(() => {
 
 const colorEstado = computed(() => {
   if (cursoLleno.value && esCursoActivo.value) return 'red';
+
   switch (curso.value?.estado_curso) {
     case 'Activo':
       return 'positive';
     case 'Completo':
       return 'red';
+    case 'Lista de espera':
+      return 'grey-7';
     default:
       return 'orange';
+  }
+});
+// AÑADE ESTO:
+const textoEstado = computed(() => {
+  // Si está activo pero se llenó, lo marcamos como Completo
+  if (cursoLleno.value && esCursoActivo.value) return t('reservasCursos.completo');
+
+  switch (curso.value?.estado_curso) {
+    case 'Activo':
+      return t('reservasCursos.activo');
+    case 'Completo':
+      return t('reservasCursos.completo');
+    case 'Lista de espera':
+      return t('reservasCursos.espera');
+    default:
+      return curso.value?.estado_curso || t('reservasCursos.activo');
   }
 });
 

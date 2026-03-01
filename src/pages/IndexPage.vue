@@ -1,6 +1,5 @@
 <template>
   <q-page>
-    <!-- Banner principal OK-->
     <div>
       <q-img
         fit="cover"
@@ -9,7 +8,7 @@
       >
       </q-img>
     </div>
-    <!-- Sección introductoria OK-->
+
     <div class="items-center text-center q-my-xl">
       <p class="titulo-responsivo font-weight: 700" style="color: #851319">
         {{ t('indexeUnLugarDonde') }}
@@ -18,11 +17,19 @@
       <p class="texto-responsivo text-justify" style="margin-left: 13%; margin-right: 13%">
         {{ t('indexAprenderEspañolPuede') }}
       </p>
-      <q-btn class="oval-btn" no-caps items-center color="primary" unelevated to="/Clases">
+
+      <q-btn
+        class="oval-btn"
+        no-caps
+        items-center
+        color="primary"
+        unelevated
+        @click="handleCreaTuEspacio"
+      >
         {{ t('indexCreaTuEspacio') }}
       </q-btn>
     </div>
-    <!--Tarjeta descubre nuestras clases y lista OK-->
+
     <div v-intersect="onPromoIntersect" class="row justify-center q-my-xl">
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div v-if="showPromoCard" class="row align-center">
@@ -75,7 +82,7 @@
         </div>
       </transition>
     </div>
-    <!-- Tarjetas de promoción de clases OK -->
+
     <div v-intersect="onPromoIntersect1" class="q-my-xs row justify-center bg-grey-2">
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
@@ -90,36 +97,38 @@
           </div>
           <q-separator class="q-my-xl" />
 
-          <div class="col-12 promocards-container">
-            <!-- Componente 1: Clases Privadas -->
+          <div
+            class="col-12"
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: center;
+              gap: 3rem;
+              padding: 0 1rem;
+            "
+          >
             <PromoCard
               :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-individuales.png'"
               :title="t('indexClasesPrivadas')"
               :description="t('indexAvanzaEnTu')"
               :button-text="t('indexQuieroMiClase')"
               :to="{ path: '/Clases', hash: '#clases-individuales' }"
+              style="max-width: 450px"
             />
-            <!-- Componente 2: Clases Grupales 
-              <PromoCard
-                :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-grupo.png'"
-                :title="t('indexClasesGrupales')"
-                :description="t('indexAprendeEspañol')"
-                :button-text="t('indexAprenderEnGrupo')"
-                :to="{ path: '/Clases', hash: '#clases-conversacion' }"
-              />   -->
-            <!-- Componente 3: Clases de Conversación -->
+
             <PromoCard
               :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-conversacion.png'"
               :title="t('indexClasesDeConversacion')"
               :description="t('indexMejoraTuConfianza')"
               :button-text="t('indexUneteALaLista')"
               :to="{ path: '/Clases', hash: '#clases-conversacion' }"
+              style="max-width: 450px"
             />
           </div>
         </div>
       </transition>
     </div>
-    <!-- Banner promocional test nivel que aparece al hacer scroll OK-->
+
     <div
       v-intersect="onPromoIntersect2"
       class="q-mt-xl q-mb-xl row degradado-fondo"
@@ -146,7 +155,7 @@
         </div>
       </transition>
     </div>
-    <!-- Tarjeta sobre quién hay detrás de Spanishnook OK-->
+
     <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div
@@ -193,7 +202,7 @@
         </div>
       </transition>
     </div>
-    <!-- Sección de Opiniones Verificadas - CARRUSEL -->
+
     <div v-intersect="onOpinionesIntersect" class="opiniones-section bg-grey-1">
       <transition enter-active-class="animated fadeInUpBig slower">
         <div v-if="showOpiniones" class="q-py-xl q-px-md">
@@ -206,7 +215,6 @@
             </p>
           </div>
 
-          <!-- Carrusel de Opiniones -->
           <div class="carousel-container">
             <template v-if="todasLasOpiniones.length === 0">
               <div class="row justify-center full-height items-center">
@@ -230,7 +238,6 @@
               height="300px"
               class="opinions-carousel"
             >
-              <!-- Slides del carrusel - mostrar 1 -->
               <q-carousel-slide
                 v-for="(opinion, index) in todasLasOpiniones"
                 :key="index"
@@ -248,7 +255,6 @@
                 </div>
               </q-carousel-slide>
 
-              <!-- Controles personalizados -->
               <template v-slot:control>
                 <q-carousel-control
                   position="bottom-right"
@@ -261,8 +267,6 @@
                 </q-carousel-control>
               </template>
 
-              <!-- Flechas personalizadas -->
-              <!-- Eliminado cierre/apertura incorrecto de <q-no-ssr> -->
               <template v-slot:navigation-icon="{ active, btnProps, onClick }">
                 <q-btn
                   v-if="btnProps.icon === 'chevron_left'"
@@ -280,7 +284,6 @@
               </template>
             </q-carousel>
 
-            <!-- Indicadores de slide personalizados -->
             <div class="carousel-indicators q-mt-md">
               <q-btn
                 v-for="(opinion, index) in todasLasOpiniones"
@@ -299,7 +302,6 @@
               </q-btn>
             </div>
 
-            <!-- Botón para dar opinión -->
             <div class="text-center q-mt-xl">
               <q-btn outline color="primary" size="lg" @click="handleDarOpinion" class="oval-btn">
                 {{ t('indexDanosTuOpinion') }}
@@ -309,7 +311,7 @@
         </div>
       </transition>
     </div>
-    <!-- Sección de FAQs -->
+
     <div class="faqs-section">
       <p class="subtitulo-responsivo" style="margin-bottom: 40px">
         {{ t('indexPreguntasFrecuentes') }}
@@ -375,7 +377,6 @@
       </q-expansion-item>
     </div>
 
-    <!-- Sección de Contacto -->
     <div class="q-my-xl contacto-section flex flex-center column items-center">
       <p class="titulo-responsivo" style="color: #851319">{{ t('indexAunTienesDudas') }}</p>
       <p class="texto-responsivo">
@@ -387,7 +388,6 @@
     </div>
     <div class="q-my-xl"></div>
 
-    <!-- Diálogo para no autenticados -->
     <q-dialog v-model="showLoginDialog">
       <q-card style="min-width: 350px">
         <q-card-section class="bg-primary text-white">
@@ -405,7 +405,6 @@
       </q-card>
     </q-dialog>
 
-    <!-- Diálogo para dar opinión (usuarios autenticados) -->
     <q-dialog v-model="showOpinionDialog" persistent>
       <q-card style="min-width: 500px; max-width: 600px">
         <q-card-section class="bg-primary text-white">
@@ -414,7 +413,6 @@
 
         <q-card-section>
           <q-form @submit="enviarOpinion" class="q-gutter-md">
-            <!-- Calificación -->
             <div>
               <label class="text-weight-medium">{{ t('indexCalificacion') }}</label>
               <q-rating
@@ -428,7 +426,6 @@
               />
             </div>
 
-            <!-- En el formulario, después de Calificación, antes de País -->
             <q-input
               v-model="nuevaOpinion.name"
               :label="t('indexNombre')"
@@ -436,7 +433,6 @@
               :rules="[(val: string) => !!val || t('indexCampoRequerido')]"
             />
 
-            <!-- País -->
             <q-input
               v-model="nuevaOpinion.country"
               :label="t('indexPais')"
@@ -444,7 +440,6 @@
               :rules="[(val: string) => !!val || t('indexCampoRequerido')]"
             />
 
-            <!-- Comentario -->
             <q-input
               v-model="nuevaOpinion.comment"
               type="textarea"
@@ -479,7 +474,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <!-- cierre eliminado: </q-no-ssr> -->
   </q-page>
 </template>
 
@@ -491,6 +485,7 @@ import { useQuasar } from 'quasar';
 import { useAuth } from '../stores/auth';
 import { supabase } from '../supabaseClient';
 import { useMeta } from 'quasar';
+import { onServerPrefetch } from 'vue';
 
 // Importar los estilos CSS
 import '../css/pages/IndexPage.css';
@@ -574,6 +569,15 @@ const nuevaOpinion = ref({
   country: '',
   comment: '',
 });
+
+// NUEVA FUNCIÓN: Redirigir según el estado del usuario
+const handleCreaTuEspacio = () => {
+  if (user.value) {
+    void router.push('/AreaPersonal');
+  } else {
+    void router.push('/Acceder');
+  }
+};
 
 // Función para manejar el clic en "Danos tu opinión"
 const handleDarOpinion = () => {
@@ -682,7 +686,6 @@ const enviarOpinion = async () => {
   }
 };
 
-import { onServerPrefetch } from 'vue';
 const todasLasOpiniones = ref<Opinion[]>([]);
 
 const fetchOpiniones = async () => {

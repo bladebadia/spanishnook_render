@@ -25,7 +25,7 @@ export default {
   indexeUnLugarDonde: 'Un lugar donde aprender español se siente como en casa',
   indexAprenderEspañolPuede:
     'Aprender español puede ser algo cómodo, cercano y hecho para ti. En SpanishNook encontrarás tu lugar: un espacio online con sesiones en vivo donde aprender a tu ritmo, con clases dinámicas, seguimiento personal y materiales pensados para ti. Aprende español con confianza, en un entorno donde sentirse a gusto es tan importante como progresar.',
-  indexCreaTuEspacio: 'crea tu espacio',
+  indexCreaTuEspacio: 'Crea tu espacio',
   indexDescubreNuestrasClases: '¡Descubre nuestras clases!',
   indexDescubreNuestrasClasesTexto:
     'Explora la forma de aprender que mejor se adapta a ti. Reserva tu primera clase y vive la experiencia SpanishNook.',
@@ -190,6 +190,7 @@ export default {
   // Sección nuestras clases
   NuestrasClases: {
     promoPromoPacks: '¡Más créditos, más ahorro!',
+    botonReservaUnica: 'RESERVA TU CLASE',
     nuestrasClases: 'Nuestras Clases',
     textoNuestrasClases:
       'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
@@ -313,6 +314,12 @@ export default {
     aLas: 'a las',
     seleccionar: 'Selección',
     bienvenidoAreaPersonal: '¡Bienvenido/a a tu Área Personal!',
+    estadoCancelada: 'Cancelada',
+    reactivar: 'Reactivar',
+    cancelar: 'Cancelar',
+    finalizaEl: 'finaliza el',
+    estadoActiva: 'Active',
+    renovacion: 'renovación el',
     holaUsuario: ' ¡Hola Usuario!',
     bienvenido: '¡Bienvenido',
     nuevaReserva: 'Nueva Reserva',
@@ -340,7 +347,6 @@ export default {
     cancelacionProgramada: 'Cancelación programada para',
     accesoValidoHasta: 'Acceso válido hasta:',
     proximaRenovacion: 'Próxima renovación',
-    cancelar: 'Cancelar',
     cancelarSuscripcion: 'Cancelar suscripción',
     seguirasTeniendoAcceso: 'Seguirás teniendo acceso al curso hasta el',
     peroNo: 'pero no se te volverá a cobrar.',
@@ -611,7 +617,9 @@ export default {
     conversacion: 'Conversación',
   },
   reservasCursos: {
+    espera: 'En espera',
     anadido: 'Añadido a lista de espera.',
+    completo: 'Full',
     estado: 'Estado',
     enEspera: 'En espera',
     activo: 'Activo',

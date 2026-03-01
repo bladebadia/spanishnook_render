@@ -8,113 +8,115 @@
       </div>
 
       <div class="col-12 col-md-5">
-        <div v-if="user" class="q-mb-lg">
-          <SaldoWallet
-            :saldo-normal="saldoNormal"
-            :saldo-conversacion="saldoConversacion"
-            :loading="cargandoSaldo"
-          />
-        </div>
-
-        <div
-          v-if="carrito && carrito.length > 0"
-          class="q-mb-lg bg-yellow-2 q-pa-md rounded-borders shadow-2"
-        >
-          <h5 class="carrito-titulo">🛒 {{ t('reservasClases.carritoDeReservas') }}</h5>
-          <q-list separator>
-            <q-item v-for="(reserva, index) in carrito" :key="index">
-              <q-item-section>
-                <q-item-label class="fecha-hora-carrito">
-                  {{ formatFechaSeguro(reserva.fecha) }}
-                </q-item-label>
-
-                <q-item-label>
-                  <span class="text-weight-bold text-primary" style="font-size: 1.1em">
-                    {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
-                  </span>
-                  <span class="text-caption text-grey-8 q-ml-xs"> (🇪🇸 {{ reserva.hora }}) </span>
-                </q-item-label>
-
-                <q-item-label caption>
-                  {{
-                    reserva.tipo === 'normal'
-                      ? t('reservasClases.claseNormal')
-                      : t('reservasClases.conversacion')
-                  }}
-                  ({{ reserva.tipo === 'normal' ? '32€' : '27€' }})
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn
-                  color="negative"
-                  icon="delete"
-                  @click="quitarDelCarrito(index)"
-                  size="sm"
-                  round
-                  flat
-                />
-              </q-item-section>
-            </q-item>
-            <div class="q-mt-md text-center">
-              <q-btn
-                color="primary"
-                class="btn-ir-carrito"
-                :label="t('reservasClases.botonIrAlCarrito')"
-                to="/CarritoCompra"
-              />
-            </div>
-          </q-list>
-        </div>
-
-        <div class="q-mt-lg">
-          <h5 class="reservas-titulo">{{ t('reservasClases.misReservasConfirmadas') }}</h5>
-
-          <q-list
-            bordered
-            separator
-            v-if="misReservasFuturas && misReservasFuturas.length > 0"
-            class="rounded-borders bg-white"
-          >
-            <q-item v-for="reserva in misReservasFuturas" :key="reserva.id" class="q-py-md">
-              <q-item-section avatar>
-                <q-avatar :size="avatarSize" square>
-                  <img :src="getIconoPersonalizado(reserva.tipo)" />
-                </q-avatar>
-              </q-item-section>
-
-              <q-item-section>
-                <q-item-label class="text-weight-bold">
-                  {{ formatFechaSeguro(reserva.fecha) }}
-                </q-item-label>
-
-                <q-item-label>
-                  <span class="text-weight-bold text-primary" style="font-size: 1.1em">
-                    {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
-                  </span>
-                  <span class="text-caption text-grey-8 q-ml-xs">
-                    (🇪🇸 {{ reserva.hora ? reserva.hora.slice(0, 5) : '--:--' }})
-                  </span>
-                </q-item-label>
-
-                <q-item-label caption class="text-grey-8 q-mt-xs">
-                  {{
-                    reserva.tipo === 'normal'
-                      ? t('reservasClases.claseNormal')
-                      : t('reservasClases.conversacion')
-                  }}
-                </q-item-label>
-              </q-item-section>
-
-              <q-item-section side>
-                <q-badge color="positive" outline label="Reservada" />
-              </q-item-section>
-            </q-item>
-          </q-list>
-
-          <div v-else class="text-grey q-mt-sm q-pa-md text-center border-dashed">
-            {{ t('reservasClases.noTienesReservas') }}
+        <q-no-ssr>
+          <div v-if="user" class="q-mb-lg">
+            <SaldoWallet
+              :saldo-normal="saldoNormal"
+              :saldo-conversacion="saldoConversacion"
+              :loading="cargandoSaldo"
+            />
           </div>
-        </div>
+
+          <div
+            v-if="carrito && carrito.length > 0"
+            class="q-mb-lg bg-yellow-2 q-pa-md rounded-borders shadow-2"
+          >
+            <h5 class="carrito-titulo">🛒 {{ t('reservasClases.carritoDeReservas') }}</h5>
+            <q-list separator>
+              <q-item v-for="(reserva, index) in carrito" :key="index">
+                <q-item-section>
+                  <q-item-label class="fecha-hora-carrito">
+                    {{ formatFechaSeguro(reserva.fecha) }}
+                  </q-item-label>
+
+                  <q-item-label>
+                    <span class="text-weight-bold text-primary" style="font-size: 1.1em">
+                      {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
+                    </span>
+                    <span class="text-caption text-grey-8 q-ml-xs"> (🇪🇸 {{ reserva.hora }}) </span>
+                  </q-item-label>
+
+                  <q-item-label caption>
+                    {{
+                      reserva.tipo === 'normal'
+                        ? t('reservasClases.claseNormal')
+                        : t('reservasClases.conversacion')
+                    }}
+                    ({{ reserva.tipo === 'normal' ? '32€' : '27€' }})
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn
+                    color="negative"
+                    icon="delete"
+                    @click="quitarDelCarrito(index)"
+                    size="sm"
+                    round
+                    flat
+                  />
+                </q-item-section>
+              </q-item>
+              <div class="q-mt-md text-center">
+                <q-btn
+                  color="primary"
+                  class="btn-ir-carrito"
+                  :label="t('reservasClases.botonIrAlCarrito')"
+                  to="/CarritoCompra"
+                />
+              </div>
+            </q-list>
+          </div>
+
+          <div class="q-mt-lg">
+            <h5 class="reservas-titulo">{{ t('reservasClases.misReservasConfirmadas') }}</h5>
+
+            <q-list
+              bordered
+              separator
+              v-if="misReservasFuturas && misReservasFuturas.length > 0"
+              class="rounded-borders bg-white"
+            >
+              <q-item v-for="reserva in misReservasFuturas" :key="reserva.id" class="q-py-md">
+                <q-item-section avatar>
+                  <q-avatar :size="avatarSize" square>
+                    <img :src="getIconoPersonalizado(reserva.tipo)" />
+                  </q-avatar>
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label class="text-weight-bold">
+                    {{ formatFechaSeguro(reserva.fecha) }}
+                  </q-item-label>
+
+                  <q-item-label>
+                    <span class="text-weight-bold text-primary" style="font-size: 1.1em">
+                      {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
+                    </span>
+                    <span class="text-caption text-grey-8 q-ml-xs">
+                      (🇪🇸 {{ reserva.hora ? reserva.hora.slice(0, 5) : '--:--' }})
+                    </span>
+                  </q-item-label>
+
+                  <q-item-label caption class="text-grey-8 q-mt-xs">
+                    {{
+                      reserva.tipo === 'normal'
+                        ? t('reservasClases.claseNormal')
+                        : t('reservasClases.conversacion')
+                    }}
+                  </q-item-label>
+                </q-item-section>
+
+                <q-item-section side>
+                  <q-badge color="positive" outline label="Reservada" />
+                </q-item-section>
+              </q-item>
+            </q-list>
+
+            <div v-else class="text-grey q-mt-sm q-pa-md text-center border-dashed">
+              {{ t('reservasClases.noTienesReservas') }}
+            </div>
+          </div>
+        </q-no-ssr>
       </div>
 
       <div class="col-12 col-md-6">
@@ -163,30 +165,35 @@
           <h5 class="horarios-titulo">
             {{ t('reservasClases.horariosDisponiblesPara') }}
             <span class="fecha-seleccionada">{{ formatFechaSeguro(fechaSeleccionada) }}</span>
+            <span class="text-caption q-ml-sm text-grey-7" v-if="zonaHorariaUsuario"
+              >({{ zonaHorariaUsuario }})</span
+            >
           </h5>
 
-          <div
-            v-if="horariosDisponiblesFiltrados && horariosDisponiblesFiltrados.length > 0"
-            class="row q-gutter-sm q-mt-md justify-center"
-          >
-            <q-btn
-              v-for="hora in horariosDisponiblesFiltrados"
-              :key="hora"
-              :color="estaEnCarrito(hora) ? 'orange' : 'primary'"
-              @click="agregarAlCarrito(hora)"
-              outline
-              class="time-btn"
-              style="min-width: 100px"
+          <q-no-ssr>
+            <div
+              v-if="horariosDisponiblesFiltrados && horariosDisponiblesFiltrados.length > 0"
+              class="row q-gutter-sm q-mt-md justify-center"
             >
-              <span class="text-weight-bold" style="font-size: 1.1em">
-                {{ formatoHoraInicioSegura(fechaSeleccionada, hora) }}
-              </span>
-            </q-btn>
-          </div>
+              <q-btn
+                v-for="hora in horariosDisponiblesFiltrados"
+                :key="hora"
+                :color="estaEnCarrito(hora) ? 'orange' : 'primary'"
+                @click="agregarAlCarrito(hora)"
+                outline
+                class="time-btn"
+                style="min-width: 100px"
+              >
+                <span class="text-weight-bold" style="font-size: 1.1em">
+                  {{ formatoHoraInicioSegura(fechaSeleccionada, hora) }}
+                </span>
+              </q-btn>
+            </div>
 
-          <div v-else class="text-grey q-mt-md text-center">
-            <q-icon name="event_busy" /> {{ t('reservasClases.noHayHuecosLibres') }}
-          </div>
+            <div v-else class="text-grey q-mt-md text-center">
+              <q-icon name="event_busy" /> {{ t('reservasClases.noHayHuecosLibres') }}
+            </div>
+          </q-no-ssr>
         </div>
       </div>
     </div>
@@ -215,6 +222,9 @@ const cargando = ref(true);
 const saldoNormal = ref(0);
 const saldoConversacion = ref(0);
 const cargandoSaldo = ref(false);
+
+// SOLUCIÓN MISMATCH ZONA HORARIA: Inicializar vacío y llenar en cliente
+const zonaHorariaUsuario = ref('');
 
 const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
 
@@ -260,31 +270,23 @@ const formatoRangoSeguro = (fechaStr: string | undefined, horaStr: string | unde
   if (!fechaStr || !horaStr) return '...';
 
   try {
-    // 1. Parsear hora Madrid
     const partes = horaStr.split(':');
     if (partes.length < 2) return horaStr;
     const h = Number(partes[0]);
     const m = Number(partes[1]);
     if (isNaN(h) || isNaN(m)) return horaStr;
 
-    // 2. Calcular Offset con Madrid
     const now = new Date();
     const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
     const dateMadrid = new Date(strMadrid);
     const diff = now.getTime() - dateMadrid.getTime();
 
-    // 3. Crear fecha base (con la hora de Madrid)
-    // Usamos fechaStr para tener el día correcto
     const baseDate = new Date(fechaStr);
     baseDate.setHours(h, m, 0, 0);
 
-    // 4. Aplicar diferencia para obtener hora local
     const localStart = new Date(baseDate.getTime() + diff);
-
-    // 5. Calcular fin (60 minutos para clases individuales)
     const localEnd = new Date(localStart.getTime() + 60 * 60000);
 
-    // 6. Formatear HH:MM
     const fmt = (d: Date) =>
       d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
@@ -298,24 +300,20 @@ const formatoRangoSeguro = (fechaStr: string | undefined, horaStr: string | unde
 const formatoHoraInicioSegura = (fechaStr: string | undefined, horaStr: string | undefined) => {
   if (!fechaStr || !horaStr) return '--:--';
   try {
-    // 1. Parsear
     const partes = horaStr.split(':');
     if (partes.length < 2) return horaStr;
     const h = Number(partes[0]);
     const m = Number(partes[1]);
     if (isNaN(h) || isNaN(m)) return horaStr;
 
-    // 2. Offset Madrid
     const now = new Date();
     const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
     const dateMadrid = new Date(strMadrid);
     const diff = now.getTime() - dateMadrid.getTime();
 
-    // 3. Base
     const baseDate = new Date(fechaStr);
     baseDate.setHours(h, m, 0, 0);
 
-    // 4. Local
     const localStart = new Date(baseDate.getTime() + diff);
 
     return localStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -331,7 +329,9 @@ const getIconoPersonalizado = (tipo: string | undefined) => {
   return `${BUCKET_URL}iconoindiv.svg`;
 };
 
+// Se ejecuta solo en cliente, así evitamos mismatch por el tamaño de pantalla
 const avatarSize = computed(() => {
+  if (typeof window === 'undefined') return '80px';
   if ($q.screen.lt.sm) return '60px';
   if ($q.screen.lt.md) return '80px';
   return '100px';
@@ -365,6 +365,10 @@ const cargarSaldoUsuario = async () => {
 onMounted(async () => {
   try {
     cargando.value = true;
+
+    // Obtenemos la zona horaria en el cliente para no pelear con el servidor
+    zonaHorariaUsuario.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     await inicializar();
     if (user.value) {
       await cargarSaldoUsuario();

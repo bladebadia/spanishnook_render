@@ -323,7 +323,7 @@
               :header-class="
                 curso.estado_curso === 'Activo'
                   ? 'bg-green-1'
-                  : curso.estado_curso === 'Completo'
+                  : curso.estado_curso === 'Completado'
                     ? 'bg-blue-1'
                     : 'bg-grey-2'
               "
@@ -1735,7 +1735,7 @@ const horariosDisponibles = [
 ];
 
 const nivelesDisponibles = ['Principiante', 'Elemental', 'Intermedio', 'Avanzado', 'Nativo'];
-const estadosCurso = ['Activo', 'Completo', 'Lista de espera'];
+const estadosCurso = ['Activo', 'Completado', 'Lista de espera'];
 const reservasActivas = ref<Reserva[]>([]);
 const dialogEditarReserva = ref(false);
 const guardandoReserva = ref(false);
@@ -2623,7 +2623,7 @@ const confirmarCierreCurso = (curso: CursoGrupal) => {
     title: '⚠️ Cierre de Curso y Reembolsos',
     message: `¿Estás seguro de finalizar el curso <b>"${curso.nombre_curso}"</b>?<br><br>
     Esto realizará las siguientes acciones:<br>
-    1. Marcará el curso como 'Completo' y lo ocultará.<br>
+    1. Marcará el curso como 'Completado' y lo ocultará.<br>
     2. Cancelará las suscripciones de todos los alumnos activos.<br>
     3. <b>Stripe devolverá automáticamente la parte proporcional</b> del dinero no disfrutado.<br>
     4. Se enviará un email automático de despedida.`,
@@ -2817,7 +2817,7 @@ const getColorEstado = (estado: string): string => {
   switch (estado) {
     case 'Activo':
       return 'positive';
-    case 'Completo':
+    case 'Completado':
       return 'blue';
     case 'Lista de espera':
       return 'cyan';

@@ -28,7 +28,7 @@ export default {
   indexeUnLugarDonde: 'A place where learning Spanish feels like home',
   indexAprenderEspañolPuede:
     'Learning Spanish can be comfortable, personal, and made for you. At SpanishNook, you’ll find your place: an online space with live lessons where you can learn at your own pace, with dynamic classes, personal guidance, and materials designed for you. Learn Spanish with confidence, in an environment where feeling comfortable is just as important as making progress.',
-  indexCreaTuEspacio: 'create your space',
+  indexCreaTuEspacio: 'Create your space',
   indexDescubreNuestrasClases: 'Discover our classes!',
   indexDescubreNuestrasClasesTexto:
     'Explore the learning option that best suits you. Book your first class and experience SpanishNook.',
@@ -176,6 +176,7 @@ export default {
   },
   NuestrasClases: {
     promoPromoPacks: 'More credits, more saving!',
+    botonReservaUnica: 'BOOK YOUR CLASS',
     nuestrasClases: 'Our Classes',
     textoNuestrasClases:
       "At SpanishNook, there isn't just one path: every student has their own goals, schedule, and way of learning. That's why we offer flexible options, so you can choose what fits you best: private classes or small group courses.",
@@ -302,6 +303,12 @@ export default {
     hola: 'Hello',
     aLas: 'at',
     seleccionar: 'Select',
+    reactivar: 'reactivate',
+    cancelar: 'Cancel',
+    estadoCancelada: 'Canceled',
+    finalizaEl: 'Ends at',
+    estadoActiva: 'Active',
+    renovacion: 'renews at',
     bienvenidoAreaPersonal: 'Welcome to your Personal Area!',
     holaUsuario: ' Hello User!',
     bienvenido: 'Welcome',
@@ -331,7 +338,6 @@ export default {
     cancelacionProgramada: 'Scheduled cancellation for',
     accesoValidoHasta: 'Access valid until:',
     proximaRenovacion: 'Next renewal',
-    cancelar: 'Cancel',
     cancelarSuscripcion: 'Cancel Subscription',
     seguirasTeniendoAcceso: 'You will retain access until the',
     peroNoSeTeVolvera: 'but you will not be charged again.',
@@ -380,7 +386,7 @@ export default {
     gestionaTusReservas:
       'From here you can manage your bookings for private and group classes, as well as update your personal information.',
     gestionar: 'Manage my bookings',
-    entrar: 'Enter',
+    entrar: 'Join',
     misclases: 'MY CLASSES',
     idiomaNativo: 'Native Language',
     apellido: 'Surname',
@@ -607,6 +613,8 @@ export default {
   },
   reservasCursos: {
     estado: 'Status',
+    espera: 'Waitlist',
+    completo: 'Completo',
     enEspera: 'Waiting',
     activo: 'Active',
     sinDescripcion: 'No available description.',

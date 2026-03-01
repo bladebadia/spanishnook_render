@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="row q-pa-md q-my-md justify-evenly botones-clases">
+    <div class="row q-pa-xl q-my-md justify-evenly botones-clases">
       <q-btn
         class="oval-btn"
         items-center
@@ -205,12 +205,12 @@
           <q-separator spaced />
           <q-card-section>
             <h2
-              class="text-center q-mb-md"
+              class="text-center q-mb-xl"
               style="color: #851319; font-size: 1.4rem; font-weight: 600"
             >
               {{ t('NuestrasClases.Modalidades') }}
             </h2>
-            <br />
+
             <div class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
                 <div class="modalidad-card bg-yellow-2">
@@ -225,17 +225,6 @@
                   <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
                     {{ t('NuestrasClases.TextoModalidad1') }}
                   </p>
-                  <div class="q-mt-md flex flex-center">
-                    <q-btn
-                      color="primary"
-                      class="oval-btn oval-btn-md"
-                      unelevated
-                      size="md"
-                      :label="t('NuestrasClases.botonClasesA2')"
-                      no-caps
-                      to="/Reservas"
-                    />
-                  </div>
                 </div>
               </div>
               <div class="col-12 col-md-6">
@@ -245,25 +234,26 @@
                     style="width: 70%; max-width: 300px; border-radius: 16px"
                     fit="cover"
                   />
-                  <div class="subtitulo-responsivo text-center">
+                  <div class="subtitulo-responsivo text-center q-my-xl">
                     {{ t('NuestrasClases.Modalidad2') }}
                   </div>
                   <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
                     {{ t('NuestrasClases.TextoModalidad2') }}
                   </p>
-                  <div class="flex flex-center">
-                    <q-btn
-                      color="primary"
-                      class="oval-btn oval-btn-md"
-                      unelevated
-                      size="md"
-                      :label="t('NuestrasClases.botonClasesA1')"
-                      no-caps
-                      to="/Reservas"
-                    />
-                  </div>
                 </div>
               </div>
+            </div>
+
+            <div class="q-mt-xs flex flex-center">
+              <q-btn
+                color="primary"
+                class="oval-btn oval-btn-lg text-weight-bold"
+                unelevated
+                size="lg"
+                :label="t('NuestrasClases.botonReservaUnica')"
+                no-caps
+                to="/Reservas"
+              />
             </div>
           </q-card-section>
           <q-separator spaced />

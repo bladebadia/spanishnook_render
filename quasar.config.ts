@@ -3,7 +3,6 @@
 
 import { defineConfig } from '#q-app/wrappers';
 import { fileURLToPath } from 'node:url';
-import { QTooltip } from 'quasar';
 
 export default defineConfig((ctx) => {
   return {
@@ -13,7 +12,7 @@ export default defineConfig((ctx) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-  boot: ['i18n', 'axios', 'intersect'],
+    boot: ['i18n', 'axios', 'intersect'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss'],
@@ -123,59 +122,118 @@ export default defineConfig((ctx) => {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
     framework: {
-  config: { 
-    notify: { position: 'top-right' },
-    // Desactivar estilos por defecto que puedan interferir
-    
-  },
+      config: {
+        notify: { position: 'top-right' },
+        // Desactivar estilos por defecto que puedan interferir
+      },
 
-  // Componentes que usas en tu app
-  components: [
-    'QLayout', 'QHeader', 'QDrawer', 'QPageContainer', 'QPage', 'QFooter',
-    'QBar', 'QToolbar', 'QToolbarTitle', 'QBtn', 'QBadge', 'QImg', 'QSpace',
-    'QList', 'QItem', 'QItemSection', 'QItemLabel', 'QAvatar', 'QPageSticky',
-    'QBanner', 'QCard', 'QCardSection', 'QCardActions', 'QSeparator',
-    'QExpansionItem', 'QNoSsr', 'QIcon', 'QMenu', 'QToggle', 'QCheckbox',
-    'QRadio', 'QSelect', 'QInput', 'QField', 'QForm', 'QPopupProxy',
-    'QDate', 'QTime', 'QTabPanels', 'QTabPanel', 'QTabs', 'QTab',
-    'QRouteTab', 'QCarousel', 'QCarouselControl', 'QCarouselSlide',
-    'QSlideTransition', 'QParallax', 'QIntersection', 'QVideo',
-    'QChatMessage', 'QTimeline', 'QTimelineEntry', 'QStepper',
-    'QStepperNavigation', 'QStep', 'QMarkupTable', 'QTable', 'QTh',
-    'QTr', 'QTd', 'QBreadcrumbs', 'QBreadcrumbsEl', 'QRating',
-    'QScrollArea', 'QResizeObserver', 'QSpinner', 'QInnerLoading',
-    'QDialog', 'QPopupEdit', 'QTooltip'
-  ],
+      // Componentes que usas en tu app
+      components: [
+        'QLayout',
+        'QHeader',
+        'QDrawer',
+        'QPageContainer',
+        'QPage',
+        'QFooter',
+        'QBar',
+        'QToolbar',
+        'QToolbarTitle',
+        'QBtn',
+        'QBadge',
+        'QImg',
+        'QSpace',
+        'QList',
+        'QItem',
+        'QItemSection',
+        'QItemLabel',
+        'QAvatar',
+        'QPageSticky',
+        'QBanner',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QSeparator',
+        'QExpansionItem',
+        'QNoSsr',
+        'QIcon',
+        'QMenu',
+        'QToggle',
+        'QCheckbox',
+        'QRadio',
+        'QSelect',
+        'QInput',
+        'QField',
+        'QForm',
+        'QPopupProxy',
+        'QDate',
+        'QTime',
+        'QTabPanels',
+        'QTabPanel',
+        'QTabs',
+        'QTab',
+        'QRouteTab',
+        'QCarousel',
+        'QCarouselControl',
+        'QCarouselSlide',
+        'QSlideTransition',
+        'QParallax',
+        'QIntersection',
+        'QVideo',
+        'QChatMessage',
+        'QTimeline',
+        'QTimelineEntry',
+        'QStepper',
+        'QStepperNavigation',
+        'QStep',
+        'QMarkupTable',
+        'QTable',
+        'QTh',
+        'QTr',
+        'QTd',
+        'QBreadcrumbs',
+        'QBreadcrumbsEl',
+        'QRating',
+        'QScrollArea',
+        'QResizeObserver',
+        'QSpinner',
+        'QInnerLoading',
+        'QDialog',
+        'QPopupEdit',
+        'QTooltip',
+        'QChip',
+        'QOptionGroup',
+        'QSpinnerDots',
+      ],
 
-  // Directivas que usas
-  directives: [
-    'Ripple',
-    'ClosePopup',
-    'ScrollFire',
-    'Scroll',
-    'TouchHold',
-    'TouchPan',
-    'TouchRepeat',
-    'TouchSwipe'
-  ],
+      // Directivas que usas
+      directives: [
+        'Ripple',
+        'ClosePopup',
+        'ScrollFire',
+        'Scroll',
+        'TouchHold',
+        'TouchPan',
+        'TouchRepeat',
+        'TouchSwipe',
+      ],
 
-  // Plugins
-  plugins: ['Dialog', 'Notify', 'Meta', 'Loading', 'LocalStorage', 'SessionStorage'],
-  
-  // Importante: desactivar cssAddon para evitar estilos extra
-  cssAddon: false,
-  
-  // Forzar el caso de los componentes
-  autoImportComponentCase: 'pascal',
-  
-  // Configuración adicional para SSR
-  iconSet: 'material-icons', // Asegurar que los iconos funcionan
-  lang: 'es', // Idioma por defecto
-},
+      // Plugins
+      plugins: ['Dialog', 'Notify', 'Meta', 'Loading', 'LocalStorage', 'SessionStorage'],
 
-      // animations: 'all', // --- includes all animations
-      // https://v2.quasar.dev/options/animations
-      animations: 'all',
+      // Importante: desactivar cssAddon para evitar estilos extra
+      cssAddon: false,
+
+      // Forzar el caso de los componentes
+      autoImportComponentCase: 'pascal',
+
+      // Configuración adicional para SSR
+      iconSet: 'material-icons', // Asegurar que los iconos funcionan
+      lang: 'es', // Idioma por defecto
+    },
+
+    // animations: 'all', // --- includes all animations
+    // https://v2.quasar.dev/options/animations
+    animations: 'all',
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#sourcefiles
     // sourceFiles: {

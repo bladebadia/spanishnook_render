@@ -4,21 +4,26 @@
       <q-bar>
         <q-space></q-space>
 
-        <q-btn to="/AreaPersonal" v-show="user" flat class="text-white btn-nav-superior">
+        <q-btn to="/AreaPersonal" v-if="isMounted && user" flat class="text-white btn-nav-superior">
           {{ t('areaPersonal') }}
         </q-btn>
 
-        <q-btn to="/Acceder" v-show="!user" flat class="text-white btn-nav-superior">
+        <q-btn to="/Acceder" v-if="isMounted && !user" flat class="text-white btn-nav-superior">
           {{ t('acceder') }}
         </q-btn>
 
-        <q-btn v-show="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
+        <q-btn
+          v-if="isMounted && user"
+          flat
+          class="text-white btn-nav-superior"
+          @click="cerrarSesion"
+        >
           {{ t('cerrarSesion') }}
         </q-btn>
 
         <q-btn
           to="/CarritoCompra"
-          v-show="user"
+          v-if="isMounted && user"
           class="text-white carro-btn"
           icon="shopping_cart"
           flat
@@ -56,7 +61,7 @@
 
       <q-toolbar>
         <q-btn
-          v-show="showMenuButton"
+          v-if="isMounted && showMenuButton"
           flat
           round
           icon="menu"
@@ -72,7 +77,7 @@
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
         </div>
 
-        <div class="nav-container" v-show="showDesktopNav">
+        <div class="nav-container" v-if="isMounted && showDesktopNav">
           <q-btn
             flat
             :to="'/'"
@@ -131,48 +136,51 @@
     </q-drawer>
 
     <q-page-container>
-      <q-banner
-        v-if="showCookiesBanner"
-        class="bg-primary text-white shadow-2 cookies-banner"
-        style="
-          position: fixed;
-          left: 50%;
-          bottom: 96px;
-          transform: translateX(-50%);
-          width: 70vw;
-          max-width: 900px;
-          z-index: 9999;
-          font-size: 1.25rem;
-          border-radius: 18px;
-          padding: 24px 32px;
-        "
-        icon="cookie"
-      >
-        <div class="row items-center justify-between">
-          <div style="line-height: 1.5">
-            Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
-            usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su uso.
+      <q-no-ssr>
+        <q-banner
+          v-if="showCookiesBanner"
+          class="bg-primary text-white shadow-2 cookies-banner"
+          style="
+            position: fixed;
+            left: 50%;
+            bottom: 96px;
+            transform: translateX(-50%);
+            width: 70vw;
+            max-width: 900px;
+            z-index: 9999;
+            font-size: 1.25rem;
+            border-radius: 18px;
+            padding: 24px 32px;
+          "
+          icon="cookie"
+        >
+          <div class="row items-center justify-between">
+            <div style="line-height: 1.5">
+              Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
+              usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su
+              uso.
+              <q-btn
+                flat
+                dense
+                color="white"
+                label="Política de Cookies"
+                to="/Cookies"
+                class="q-ml-sm"
+              />
+            </div>
             <q-btn
-              flat
-              dense
               color="white"
-              label="Política de Cookies"
-              to="/Cookies"
-              class="q-ml-sm"
+              text-color="primary"
+              label="Aceptar"
+              @click="aceptarCookies"
+              class="q-ml-md text-weight-bold"
+              style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
             />
           </div>
-          <q-btn
-            color="white"
-            text-color="primary"
-            label="Aceptar"
-            @click="aceptarCookies"
-            class="q-ml-md text-weight-bold"
-            style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
-          />
-        </div>
-      </q-banner>
+        </q-banner>
+      </q-no-ssr>
 
-      <router-view :min-height-style="pageMinHeight" />
+      <router-view />
     </q-page-container>
 
     <q-page-sticky position="bottom-right" :offset="[10, 10]">
@@ -222,6 +230,9 @@ const headerRef = ref<HTMLElement | null>(null);
 
 // Quasar solo en cliente
 const $q = typeof window !== 'undefined' ? useQuasar() : undefined;
+
+// NUEVO: Estado para hidratación segura
+const isMounted = ref(false);
 
 // Estado para controlar elementos condicionales
 const showMenuButton = ref(false);
@@ -294,15 +305,10 @@ watch(
   { immediate: true },
 );
 
-const pageMinHeight = computed(() => {
-  if (typeof window === 'undefined') {
-    return 'calc(100vh - 50px)'; // Valor para servidor
-  }
-  return `calc(100vh - ${headerHeight.value}px)`;
-});
-
 onMounted(() => {
   if (typeof window !== 'undefined') {
+    isMounted.value = true; // Activar renderización del cliente
+
     // Inicializar variables seguras en cliente
     showMenuButton.value = $q?.screen.lt.md || false;
     showDesktopNav.value = $q?.screen.gt.sm || false;
@@ -376,8 +382,6 @@ defineExpose({ $q, t });
 </script>
 
 <style lang="scss" scoped>
-/* ESTILOS EXACTOS DEL MAINLAYOUT CON SCOPED PARA QUE NO SE PISEN EN PRODUCCIÓN */
-
 .btn-nav-superior {
   font-size: 0.8rem !important;
   font-weight: 300 !important;

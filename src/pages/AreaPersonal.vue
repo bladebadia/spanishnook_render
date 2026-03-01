@@ -297,13 +297,30 @@
                           {{ formatHorarios(suscripcion.cursos_grupales?.horarios_curso) }}
                         </div>
                         <div class="row items-center q-gutter-x-sm">
-                          <q-badge :color="suscripcion.estado === 'active' ? 'positive' : 'orange'">
-                            {{ suscripcion.estado === 'active' ? 'Activa' : suscripcion.estado }}
-                          </q-badge>
-                          <span class="text-caption text-grey"
-                            >Renovación:
-                            {{ formatearFechaSuscripcion(suscripcion.current_period_end) }}</span
+                          <q-badge
+                            :color="
+                              suscripcion.estado === 'active' && !suscripcion.cancel_at_period_end
+                                ? 'positive'
+                                : 'orange'
+                            "
                           >
+                            {{
+                              suscripcion.estado === 'active' && !suscripcion.cancel_at_period_end
+                                ? t('personal.estadoActiva')
+                                : suscripcion.cancel_at_period_end
+                                  ? t('personal.estadoCancelada')
+                                  : suscripcion.estado
+                            }}
+                          </q-badge>
+
+                          <span class="text-caption text-grey">
+                            {{
+                              suscripcion.cancel_at_period_end
+                                ? t('personal.finalizaEl')
+                                : t('personal.renovacion')
+                            }}
+                            {{ formatearFechaSuscripcion(suscripcion.current_period_end) }}
+                          </span>
                         </div>
                       </q-card-section>
                       <q-card-section class="col-auto column justify-center q-gutter-y-sm">
@@ -313,7 +330,7 @@
                           target="_blank"
                           color="primary"
                           icon="videocam"
-                          label="Entrar"
+                          :label="t('personal.entrar')"
                           unelevated
                           size="sm"
                         />
@@ -323,7 +340,7 @@
                           "
                           flat
                           color="negative"
-                          label="Cancelar"
+                          :label="t('personal.cancelar')"
                           @click="confirmarCancelacion(suscripcion)"
                           :loading="procesando"
                           size="sm"
@@ -332,7 +349,7 @@
                           v-if="suscripcion.cancel_at_period_end"
                           flat
                           color="positive"
-                          label="Reactivar"
+                          :label="t('personal.reactivar')"
                           @click="reactivarSuscripcion(suscripcion)"
                           :loading="procesando"
                           size="sm"
@@ -570,7 +587,7 @@ import { jwtDecode } from 'jwt-decode';
 import { ref, onMounted, computed } from 'vue';
 import { useAuth } from 'src/stores/auth';
 import { supabase } from 'src/supabaseClient';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import '../css/pages/EstilosGenerales.css';
 import { useI18n } from 'vue-i18n';
@@ -582,6 +599,7 @@ const { user, logout } = useAuth();
 const router = useRouter();
 const { t, locale } = useI18n();
 const { procesando, cambiarEstadoCancelacion } = useSuscripciones();
+const route = useRoute();
 
 // --- ESTADOS ---
 const reservasConfirmadas = ref<Reserva[]>([]);
@@ -753,14 +771,22 @@ const confirmarCancelacion = (sub: Suscripcion) => {
   }).onOk(() => {
     void (async () => {
       const exito = await cambiarEstadoCancelacion(sub.stripe_subscription_id, true);
-      if (exito) await cargarSuscripciones();
+      if (exito) {
+        // 🔥 ESTO HACE QUE CAMBIE AL INSTANTE
+        sub.cancel_at_period_end = true;
+        await cargarSuscripciones();
+      }
     })();
   });
 };
 
 const reactivarSuscripcion = async (sub: Suscripcion) => {
   const exito = await cambiarEstadoCancelacion(sub.stripe_subscription_id, false);
-  if (exito) await cargarSuscripciones();
+  if (exito) {
+    // 🔥 ESTO HACE QUE VUELVA A VERDE AL INSTANTE
+    sub.cancel_at_period_end = false;
+    await cargarSuscripciones();
+  }
 };
 
 const formatearFechaSuscripcion = (fecha: string | number) => {
@@ -1148,6 +1174,21 @@ onMounted(() => {
   void cargarReservasConfirmadas();
   void cargarSesion();
   void cargarDatosPersonales();
+
+  if (route.query.session_id) {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('carritoReservas');
+      window.dispatchEvent(new Event('storage'));
+    }
+    $q.notify({
+      type: 'positive',
+      message: '¡Pago completado! Tus reservas han sido confirmadas.',
+      icon: 'check_circle',
+      position: 'top',
+    });
+
+    void router.replace('/AreaPersonal');
+  }
 });
 </script>
 
