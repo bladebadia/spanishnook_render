@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
         return '/Acceder';
       }
     },
-    meta: { requiresAuth: true, layout: 'empty' },
+    meta: { requiresAuth: true, layout: 'empty', ssr: false },
   },
   {
     path: '/Administracion',

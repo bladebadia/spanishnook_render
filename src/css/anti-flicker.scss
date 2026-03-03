@@ -1,0 +1,68 @@
+/* ANTI-FLICKERING LAYOUT */
+.q-header,
+.q-toolbar,
+.q-bar {
+  transition: none !important;
+}
+
+/* Contenedor principal del header */
+.q-header {
+  contain: layout size style;
+}
+
+/* Logo y título - dimensiones fijas */
+.logo-responsivo {
+  aspect-ratio: 1/1;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  content-visibility: auto;
+}
+
+.spanishnook-titl {
+  min-width: 120px;
+  display: inline-block;
+}
+
+/* Menú desktop - reserva espacio */
+.desktop-nav {
+  min-height: 40px;
+  visibility: hidden; /* Oculto inicialmente */
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+
+/* Menú móvil - reserva espacio */
+.menu-button-mobile {
+  min-width: 40px;
+  min-height: 40px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+
+/* Cuando el cliente está listo, mostramos */
+.client-ready .desktop-nav,
+.client-ready .menu-button-mobile {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Breakpoints - ahora con visibilidad controlada */
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+  .menu-button-mobile {
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .menu-button-mobile {
+    display: inline-flex !important;
+  }
+}

@@ -1,29 +1,25 @@
 <template>
   <q-layout view="lHh Lpr fff">
+    <!-- Inicio  -->
     <q-header elevated ref="headerRef">
+      <!-- Inicio barra superior -->
       <q-bar>
-        <q-space></q-space>
-
-        <q-btn to="/AreaPersonal" v-if="isMounted && user" flat class="text-white btn-nav-superior">
+        <q-space></q-space>        
+        <!-- Elementos condicionales con v-show en lugar de v-if -->
+        <q-btn to="/AreaPersonal" v-show="user" flat class="text-white btn-nav-superior">
           {{ t('areaPersonal') }}
         </q-btn>
-
-        <q-btn to="/Acceder" v-if="isMounted && !user" flat class="text-white btn-nav-superior">
+        <q-btn to="/Acceder" v-show="!user" flat class="text-white btn-nav-superior">
           {{ t('acceder') }}
         </q-btn>
 
-        <q-btn
-          v-if="isMounted && user"
-          flat
-          class="text-white btn-nav-superior"
-          @click="cerrarSesion"
-        >
+        <q-btn v-show="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
           {{ t('cerrarSesion') }}
         </q-btn>
 
         <q-btn
           to="/CarritoCompra"
-          v-if="isMounted && user"
+          v-show="user"
           class="text-white carro-btn"
           icon="shopping_cart"
           flat
@@ -32,7 +28,8 @@
             {{ carritoCount }}
           </q-badge>
         </q-btn>
-
+       
+        <!-- Selector de idioma con banderas -->
         <div class="row items-center q-gutter-xs flag-switcher">
           <q-btn
             :class="locale === 'es-ES' ? 'flag-selected' : 'flag-unselected'"
@@ -60,8 +57,10 @@
       </q-bar>
 
       <q-toolbar>
+        <!-- Botón menú hamburguesa - Siempre visible en DOM, oculto con CSS -->
+         <q-no-ssr>
         <q-btn
-          v-if="isMounted && showMenuButton"
+          v-if="showMenuButton"
           flat
           round
           icon="menu"
@@ -69,7 +68,7 @@
           @click="toggleLeftDrawer"
           style="font-size: 1rem"
         />
-
+        </q-no-ssr>
         <div class="q-ma-none q-pa-none">
           <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
         </div>
@@ -77,7 +76,8 @@
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
         </div>
 
-        <div class="nav-container" v-if="isMounted && showDesktopNav">
+        <!-- Navegación desktop - Siempre visible en DOM, oculto con CSS -->
+        <div class="nav-container" v-if="showDesktopNav">
           <q-btn
             flat
             :to="'/'"
@@ -136,50 +136,48 @@
     </q-drawer>
 
     <q-page-container>
-      <q-no-ssr>
-        <q-banner
-          v-if="showCookiesBanner"
-          class="bg-primary text-white shadow-2 cookies-banner"
-          style="
-            position: fixed;
-            left: 50%;
-            bottom: 96px;
-            transform: translateX(-50%);
-            width: 70vw;
-            max-width: 900px;
-            z-index: 9999;
-            font-size: 1.25rem;
-            border-radius: 18px;
-            padding: 24px 32px;
-          "
-          icon="cookie"
-        >
-          <div class="row items-center justify-between">
-            <div style="line-height: 1.5">
-              Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
-              usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su
-              uso.
-              <q-btn
-                flat
-                dense
-                color="white"
-                label="Política de Cookies"
-                to="/Cookies"
-                class="q-ml-sm"
-              />
-            </div>
+      <q-banner
+        v-if="showCookiesBanner"
+        class="bg-primary text-white shadow-2 cookies-banner"
+        style="
+          position: fixed;
+          left: 50%;
+          bottom: 96px;
+          transform: translateX(-50%);
+          width: 70vw;
+          max-width: 900px;
+          z-index: 9999;
+          font-size: 1.25rem;
+          border-radius: 18px;
+          padding: 24px 32px;
+        "
+        icon="cookie"
+      >
+        <div class="row items-center justify-between">
+          <div style="line-height: 1.5">
+            Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
+            usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su uso.
             <q-btn
+              flat
+              dense
               color="white"
-              text-color="primary"
-              label="Aceptar"
-              @click="aceptarCookies"
-              class="q-ml-md text-weight-bold"
-              style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
+              label="Política de Cookies"
+              to="/Cookies"
+              class="q-ml-sm"
             />
           </div>
-        </q-banner>
-      </q-no-ssr>
+          <q-btn
+            color="white"
+            text-color="primary"
+            label="Aceptar"
+            @click="aceptarCookies"
+            class="q-ml-md text-weight-bold"
+            style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
+          />
+        </div>
+      </q-banner>
 
+      <!-- Pasar la altura calculada a las páginas -->
       <router-view />
     </q-page-container>
 
@@ -196,8 +194,8 @@
         aria-label="WhatsApp"
       />
     </q-page-sticky>
-
-    <q-footer class="bg-black text-white">
+    <q-footer class="bg-black text-white" data-allow-mismatch="children">
+      <q-no-ssr>
       <div class="footer-legal-bar">
         <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
         <div class="footer-legal-links">
@@ -209,6 +207,7 @@
           }}</router-link>
         </div>
       </div>
+      </q-no-ssr>
     </q-footer>
   </q-layout>
 </template>
@@ -231,12 +230,10 @@ const headerRef = ref<HTMLElement | null>(null);
 // Quasar solo en cliente
 const $q = typeof window !== 'undefined' ? useQuasar() : undefined;
 
-// NUEVO: Estado para hidratación segura
-const isMounted = ref(false);
-
 // Estado para controlar elementos condicionales
 const showMenuButton = ref(false);
 const showDesktopNav = ref(false);
+const showFooterDesktop = ref(false);
 const headerHeight = ref(50); // Altura por defecto para servidor
 
 // Banner de cookies
@@ -251,6 +248,7 @@ function aceptarCookies() {
 // Contador del carrito
 const carritoCount = ref(0);
 
+// Cargar carrito desde localStorage
 const cargarCarrito = () => {
   let carritoGuardado = null;
   if (typeof window !== 'undefined') {
@@ -264,6 +262,7 @@ const cargarCarrito = () => {
   }
 };
 
+// Escuchar cambios en el localStorage (para actualizar en tiempo real)
 const setupCarritoListener = () => {
   if (typeof window !== 'undefined') {
     window.addEventListener('storage', (event) => {
@@ -274,6 +273,7 @@ const setupCarritoListener = () => {
   }
 };
 
+// Temporizador para verificar cambios (por si las páginas están en la misma pestaña)
 const temporizadorCarrito = ref<number | null>(null);
 
 const iniciarTemporizadorCarrito = () => {
@@ -287,15 +287,12 @@ const iniciarTemporizadorCarrito = () => {
 const activeButton = ref('');
 const route = useRoute();
 
+// Watcher para detectar cambios de ruta
 watch(
   () => route.path,
   (newPath) => {
     if (newPath === '/') activeButton.value = 'inicio';
-    else if (
-      newPath === '/ClasesIndividuales' ||
-      newPath === '/ClasesGrupales' ||
-      newPath === '/Clases'
-    )
+    else if (newPath === '/ClasesIndividuales' || newPath === '/ClasesGrupales')
       activeButton.value = 'clases';
     else if (newPath === '/TestNivel') activeButton.value = 'test';
     else if (newPath === '/sobreSpanish') activeButton.value = 'sobre';
@@ -307,33 +304,45 @@ watch(
 
 onMounted(() => {
   if (typeof window !== 'undefined') {
-    isMounted.value = true; // Activar renderización del cliente
-
-    // Inicializar variables seguras en cliente
+    // Mostrar elementos que dependen del tamaño de pantalla
     showMenuButton.value = $q?.screen.lt.md || false;
     showDesktopNav.value = $q?.screen.gt.sm || false;
+    showFooterDesktop.value = $q?.screen.gt.sm || false;
 
-    const header = document.querySelector('.q-header');
-    if (header) {
-      headerHeight.value = (header as HTMLElement).offsetHeight;
+    // Medir altura real del header
+    if (headerRef.value) {
+      headerHeight.value = headerRef.value.offsetHeight;
     }
 
+    // Banner de cookies
     showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
+
+    // NO eliminar el carrito al montar (comentado)
+    // localStorage.removeItem('carritoReservas');
 
     carritoCount.value = 0;
     cargarCarrito();
     setupCarritoListener();
     iniciarTemporizadorCarrito();
 
+    // Listener para cambios de tamaño de pantalla
     const updateScreenState = () => {
       if ($q) {
         showMenuButton.value = $q.screen.lt.md;
         showDesktopNav.value = $q.screen.gt.sm;
+        showFooterDesktop.value = $q.screen.gt.sm;
       }
     };
-
+    // Ejecutar al montar para asegurar el cálculo inicial correcto
+    updateScreenState();
+    void import('vue').then(({ nextTick }) => {
+      void nextTick(() => {
+        updateScreenState();
+      });
+    });
     window.addEventListener('resize', updateScreenState);
 
+    // Cleanup
     onUnmounted(() => {
       window.removeEventListener('resize', updateScreenState);
     });
@@ -351,11 +360,31 @@ function changeLang(val: string) {
 }
 
 const linksList = computed((): EssentialLinkProps[] => [
-  { title: t('inicio'), icon: 'home', link: '/' },
-  { title: t('testNivel'), icon: 'code', link: '/TestNivel' },
-  { title: t('clases'), icon: 'record_voice_over', link: '/Clases' },
-  { title: t('sobre'), icon: 'rss_feed', link: '/SobreSpanish' },
-  { title: t('contacto'), icon: 'rss_feed', link: '/Contacto' },
+  {
+    title: t('inicio'),
+    icon: 'home',
+    link: '/',
+  },
+  {
+    title: t('testNivel'),
+    icon: 'code',
+    link: '/TestNivel',
+  },
+  {
+    title: t('clases'),
+    icon: 'record_voice_over',
+    link: '/Clases',
+  },
+  {
+    title: t('sobre'),
+    icon: 'rss_feed',
+    link: '/SobreSpanish',
+  },
+  {
+    title: t('contacto'),
+    icon: 'rss_feed',
+    link: '/Contacto',
+  },
 ]);
 
 const leftDrawerOpen = ref(false);
@@ -371,17 +400,19 @@ const cerrarSesion = async (): Promise<void> => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('carritoReservas');
       carritoCount.value = 0;
-      await router.replace('/').catch(() => {});
+      void router.replace('/').catch(() => {});
     }
   } catch (e) {
     console.error('Error al cerrar sesión:', e);
   }
 };
 
+// Exponer variables necesarias
 defineExpose({ $q, t });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+// Botón barra superior
 .btn-nav-superior {
   font-size: 0.8rem !important;
   font-weight: 300 !important;
@@ -393,12 +424,14 @@ defineExpose({ $q, t });
   }
 }
 
+/* Botón del carrito responsivo */
 .carro-btn {
   padding: 2px;
   .q-icon {
     font-size: 2rem !important;
   }
 
+  /* Padding responsivo del botón */
   @media (min-width: 300px) {
     padding: 2px;
     .q-icon {
@@ -413,6 +446,7 @@ defineExpose({ $q, t });
   }
 }
 
+/* Badge responsivo */
 .badge-notification {
   font-size: 8px;
   padding: 1px 3px;
@@ -440,41 +474,52 @@ defineExpose({ $q, t });
   }
 }
 
+/* Logo responsivo */
 .logo-responsivo {
   height: auto;
   margin: 0;
   padding: 0;
   display: inline-block;
+
+  /* Móviles pequeños (xs) */
   width: 50px;
 
+  /* Móviles grandes y tablets (sm) */
   @media (min-width: 600px) and (max-width: 1023px) {
     width: 55px;
   }
 
+  /* Escritorio (md y superior) */
   @media (min-width: 1024px) {
     width: 60px;
   }
 
+  /* Escritorio grande (xl) */
   @media (min-width: 1920px) {
     width: 60px;
   }
 }
-
+/* Título Spanishnook responsivo */
 .spanishnook-titl {
   font-weight: bold !important;
   margin-left: 8px;
   margin-right: auto;
+
+  /* Móviles pequeños */
   font-size: 1.2rem !important;
 
+  /* Móviles grandes y tablets */
   @media (min-width: 600px) and (max-width: 1023px) {
     font-size: 1.3rem !important;
   }
 
+  /* Escritorio pequeño */
   @media (min-width: 1024px) and (max-width: 1439px) {
     font-size: 1rem !important;
   }
 }
 
+/* Botón de navegación con mayor especificidad */
 .nave-btn {
   font-weight: 500 !important;
   color: white !important;
@@ -516,6 +561,7 @@ defineExpose({ $q, t });
   }
 }
 
+/* Contenedor de navegación centrado */
 .nav-container {
   display: flex !important;
   align-items: center !important;
@@ -525,11 +571,11 @@ defineExpose({ $q, t });
   padding: 0 3rem !important;
 }
 
+/* También para el dropdown de Clases */
 .q-btn-dropdown.nav-btn.router-link-active .q-btn__content {
   text-decoration: underline !important;
   text-underline-offset: 4px !important;
 }
-
 .q-btn-dropdown {
   .q-btn__content {
     flex-direction: row !important;
@@ -596,6 +642,7 @@ defineExpose({ $q, t });
   width: 100%;
 }
 
+/* Pantallas grandes (>= 1025px): una sola fila */
 @media (min-width: 1025px) {
   .footer-legal-bar {
     flex-direction: row;
@@ -626,6 +673,7 @@ defineExpose({ $q, t });
   }
 }
 
+/* Estilos para las banderas */
 .flag-selected {
   background-color: rgba(255, 255, 255, 0.2);
   border: 2px solid #fff;
@@ -645,6 +693,7 @@ defineExpose({ $q, t });
   position: relative;
 }
 
+/* Contenedor de banderas responsivo */
 .flags-container {
   gap: 4px;
 
@@ -657,6 +706,7 @@ defineExpose({ $q, t });
   }
 }
 
+/* Botones de banderas responsivos */
 .flag-btn {
   margin: 0 2px;
 
@@ -743,19 +793,17 @@ defineExpose({ $q, t });
   }
 }
 
+/* Contenedor de links del footer */
 .footer-links-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
   max-width: 300px;
 
+  /* Móviles */
   @media (max-width: 599px) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px 32px;
-    width: 100%;
-    max-width: 300px;
+    gap: 6px;
 
     .footer-link {
       font-size: 0.9rem !important;
@@ -779,10 +827,11 @@ defineExpose({ $q, t });
     transform: translateX(8px);
   }
 
+  /* Responsivo */
   @media (max-width: 599px) {
     font-size: 0.8rem !important;
     &:hover {
-      transform: scale(1.05);
+      transform: scale(1.05); /* En móvil, solo escalar en lugar de mover */
     }
   }
 }

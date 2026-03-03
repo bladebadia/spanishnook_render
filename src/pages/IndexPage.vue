@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page   :style-fn="customStyleFn" >
     <div>
       <q-img
         fit="cover"
@@ -492,7 +492,13 @@ import '../css/pages/IndexPage.css';
 import '../css/pages/EstilosGenerales.css';
 import PromoCard from '../components/PromoCard.vue';
 import OpinioneVerificadas from '../components/OpinioneVerificadas.vue';
-
+// Calculamos el estilo de forma consistente
+const customStyleFn = () => {
+  // Ignoramos el offset que Quasar calcula y usamos nuestro valor fijo
+  return {
+    minHeight: 'calc(100vh - 100px)'
+  }
+}
 type Opinion = {
   name: string;
   country: string;
@@ -772,4 +778,6 @@ function onOpinionesIntersect(entry: IntersectionObserverEntry): boolean {
 }
 </script>
 
-<style></style>
+<style>
+
+</style>

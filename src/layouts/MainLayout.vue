@@ -1,54 +1,35 @@
 <template>
   <q-layout view="lHh Lpr fff">
+    <!-- Inicio  -->
     <q-header elevated ref="headerRef">
+      <!-- Inicio barra superior -->
       <q-bar>
-        <q-space></q-space>
-
-        <q-btn
-          to="/AreaPersonal"
-          v-show="isMounted && user"
-          flat
-          class="text-white btn-nav-superior"
-        >
+        <q-space></q-space>        
+        <!-- Elementos condicionales con v-show en lugar de v-if -->
+        <q-btn to="/AreaPersonal" v-show="user" flat class="text-white btn-nav-superior">
           {{ t('areaPersonal') }}
         </q-btn>
-
-        <q-btn
-          to="/Acceder"
-          v-show="isMounted ? !user : true"
-          flat
-          class="text-white btn-nav-superior"
-        >
+        <q-btn to="/Acceder" v-show="!user" flat class="text-white btn-nav-superior">
           {{ t('acceder') }}
         </q-btn>
 
-        <q-btn
-          v-show="isMounted && user"
-          flat
-          class="text-white btn-nav-superior"
-          @click="cerrarSesion"
-        >
+        <q-btn v-show="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
           {{ t('cerrarSesion') }}
         </q-btn>
 
         <q-btn
           to="/CarritoCompra"
-          v-show="isMounted && user"
+          v-show="user"
           class="text-white carro-btn"
           icon="shopping_cart"
           flat
         >
-          <q-badge
-            v-if="isMounted && carritoCount > 0"
-            color="red"
-            floating
-            rounded
-            class="badge-notification"
-          >
+          <q-badge v-if="carritoCount > 0" color="red" floating rounded class="badge-notification">
             {{ carritoCount }}
           </q-badge>
         </q-btn>
-
+       
+        <!-- Selector de idioma con banderas -->
         <div class="row items-center q-gutter-xs flag-switcher">
           <q-btn
             :class="locale === 'es-ES' ? 'flag-selected' : 'flag-unselected'"
@@ -76,8 +57,10 @@
       </q-bar>
 
       <q-toolbar>
+        <!-- Botón menú hamburguesa - Siempre visible en DOM, oculto con CSS -->
+         <q-no-ssr>
         <q-btn
-          :style="{ display: showMenuButton ? 'inline-flex' : 'none' }"
+          v-if="showMenuButton"
           flat
           round
           icon="menu"
@@ -85,7 +68,7 @@
           @click="toggleLeftDrawer"
           style="font-size: 1rem"
         />
-
+        </q-no-ssr>
         <div class="q-ma-none q-pa-none">
           <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
         </div>
@@ -93,7 +76,8 @@
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
         </div>
 
-        <div class="nav-container" :style="{ display: showDesktopNav ? 'flex' : 'none' }">
+        <!-- Navegación desktop - Siempre visible en DOM, oculto con CSS -->
+        <div class="nav-container" v-if="showDesktopNav">
           <q-btn
             flat
             :to="'/'"
@@ -193,6 +177,7 @@
         </div>
       </q-banner>
 
+      <!-- Pasar la altura calculada a las páginas -->
       <router-view />
     </q-page-container>
 
@@ -217,6 +202,7 @@
           <p class="text-bold items-center footer-titulo q-pa-none q-ma-none">SpanishNook</p>
         </div>
 
+        <!-- Footer condicional con v-show -->
         <div
           v-show="showFooterDesktop"
           class="col-12 col-md-3 flex column items-center q-pa-none q-ma-none"
@@ -251,6 +237,7 @@
           </div>
         </div>
 
+        <!-- Columna Mapa del sitio -->
         <div class="col-12 col-md-3 flex column items-center">
           <div class="text-bold q-mx-xs">
             <p class="text-bold footer-titulo items-center">{{ t('footerMapa') }}</p>
@@ -274,6 +261,7 @@
           </div>
         </div>
 
+        <!-- Columna Enlaces de interés con v-show -->
         <div v-show="showFooterDesktop" class="col-12 col-md-3 flex column items-center">
           <div class="text-bold q-mx-xs">
             <p class="text-bold items-center footer-titulo">
@@ -338,9 +326,6 @@ const headerRef = ref<HTMLElement | null>(null);
 // Quasar solo en cliente
 const $q = typeof window !== 'undefined' ? useQuasar() : undefined;
 
-// Estado para hidratación segura
-const isMounted = ref(false);
-
 // Estado para controlar elementos condicionales
 const showMenuButton = ref(false);
 const showDesktopNav = ref(false);
@@ -384,14 +369,14 @@ const setupCarritoListener = () => {
   }
 };
 
-// Temporizador para verificar cambios
+// Temporizador para verificar cambios (por si las páginas están en la misma pestaña)
 const temporizadorCarrito = ref<number | null>(null);
 
 const iniciarTemporizadorCarrito = () => {
   if (typeof window !== 'undefined') {
     temporizadorCarrito.value = window.setInterval(() => {
       cargarCarrito();
-    }, 1000);
+    }, 1000); // Verificar cada segundo
   }
 };
 
@@ -403,11 +388,7 @@ watch(
   () => route.path,
   (newPath) => {
     if (newPath === '/') activeButton.value = 'inicio';
-    else if (
-      newPath === '/ClasesIndividuales' ||
-      newPath === '/ClasesGrupales' ||
-      newPath === '/Clases'
-    )
+    else if (newPath === '/ClasesIndividuales' || newPath === '/ClasesGrupales')
       activeButton.value = 'clases';
     else if (newPath === '/TestNivel') activeButton.value = 'test';
     else if (newPath === '/sobreSpanish') activeButton.value = 'sobre';
@@ -419,21 +400,21 @@ watch(
 
 onMounted(() => {
   if (typeof window !== 'undefined') {
-    isMounted.value = true;
-
     // Mostrar elementos que dependen del tamaño de pantalla
     showMenuButton.value = $q?.screen.lt.md || false;
     showDesktopNav.value = $q?.screen.gt.sm || false;
     showFooterDesktop.value = $q?.screen.gt.sm || false;
 
     // Medir altura real del header
-    const header = document.querySelector('.q-header');
-    if (header) {
-      headerHeight.value = (header as HTMLElement).offsetHeight;
+    if (headerRef.value) {
+      headerHeight.value = headerRef.value.offsetHeight;
     }
 
     // Banner de cookies
     showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
+
+    // NO eliminar el carrito al montar (comentado)
+    // localStorage.removeItem('carritoReservas');
 
     carritoCount.value = 0;
     cargarCarrito();
@@ -448,7 +429,13 @@ onMounted(() => {
         showFooterDesktop.value = $q.screen.gt.sm;
       }
     };
-
+    // Ejecutar al montar para asegurar el cálculo inicial correcto
+    updateScreenState();
+    void import('vue').then(({ nextTick }) => {
+      void nextTick(() => {
+        updateScreenState();
+      });
+    });
     window.addEventListener('resize', updateScreenState);
 
     // Cleanup
@@ -509,7 +496,7 @@ const cerrarSesion = async (): Promise<void> => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('carritoReservas');
       carritoCount.value = 0;
-      await router.replace('/').catch(() => {});
+      void router.replace('/').catch(() => {});
     }
   } catch (e) {
     console.error('Error al cerrar sesión:', e);

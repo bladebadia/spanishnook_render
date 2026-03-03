@@ -1,20 +1,23 @@
 <template>
-  <q-page class="q-pa-lg bg-grey-1">
-    <div class="col-12 text-center q-mb-lg">
-      <h4 class="text-h4 text-weight-bold text-primary q-my-none">
-        {{
-          user?.user_metadata?.nombre
+  <q-page class=" bg-grey-1 q-pa-lg full-width" >
+    <q-no-ssr>
+    <div class="full-width">
+    <div class="row" style="border: 2px solid red;">
+      <div class="col-12 text-center q-mb-lg">
+        <h4 class="text-h4 text-weight-bold text-primary q-my-none">
+          {{
+            user?.user_metadata?.nombre
             ? `¡Hola, ${user.user_metadata.nombre}!`
             : t('personal.holaUsuario')
-        }}
-      </h4>
-      <p class="text-subtitle1 text-grey-7 q-mt-sm">
-        {{ t('personal.bienvenidoAreaPersonal') }}
-      </p>
+          }}
+        </h4>
+        <p class="text-subtitle1 text-grey-7 q-mt-sm">
+          {{ t('personal.bienvenidoAreaPersonal') }}
+       </p>
+      </div>
     </div>
-
-    <div class="row q-col-gutter-lg">
-      <div :class="['menu-lateral', $q.screen.lt.md ? 'col-12' : 'col-12 col-md-3']">
+    <div class="row ">
+      <div class="col-12 col-md-3">
         <SaldoWallet
           :saldo-normal="formDatos.saldo_normal"
           :saldo-conversacion="formDatos.saldo_conversacion"
@@ -43,7 +46,7 @@
           />
         </div>
 
-        <q-card v-show="menuVisible || $q.screen.gt.sm" class="menu-card no-shadow border-gray">
+        <q-card v-if="menuVisible || $q.screen.gt.sm" class="menu-card no-shadow border-gray">
           <q-list separator>
             <q-item-label
               header
@@ -137,7 +140,7 @@
         </q-card>
       </div>
 
-      <div :class="[$q.screen.lt.md ? 'col-12' : 'col-12 col-md-9']">
+      <div class="col-12 col-md-9">
         <div v-if="menuActivo === 'reservadas' || menuActivo === ''">
           <q-card class="shadow-1 rounded-borders">
             <q-card-section class="row items-center justify-between q-pb-none">
@@ -579,6 +582,8 @@
         </div>
       </div>
     </div>
+    </div>
+    </q-no-ssr>
   </q-page>
 </template>
 
@@ -594,6 +599,7 @@ import { useI18n } from 'vue-i18n';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
 import SaldoWallet from 'components/SaldoWallet.vue';
 
+
 const $q = useQuasar();
 const { user, logout } = useAuth();
 const router = useRouter();
@@ -604,12 +610,13 @@ const route = useRoute();
 // --- ESTADOS ---
 const reservasConfirmadas = ref<Reserva[]>([]);
 const reservasPasadas = ref<Reserva[]>([]);
-const menuVisible = ref($q.screen.gt.sm);
+const menuVisible = ref(false);
 const menuActivo = ref('reservadas');
 const passwordConfirm = ref('');
 const deleting = ref(false);
 const cargandoSaldo = ref(true);
 const sessionToken = ref<string | null>(null);
+
 
 // Variables para cambio de contraseña
 const loadingPass = ref(false);
@@ -1187,7 +1194,8 @@ onMounted(() => {
       position: 'top',
     });
 
-    void router.replace('/AreaPersonal');
+    // void router.replace('/AreaPersonal');
+    menuVisible.value = $q.screen.gt.sm;
   }
 });
 </script>
@@ -1210,4 +1218,5 @@ onMounted(() => {
 .opacity-50 {
   opacity: 0.5;
 }
+
 </style>
