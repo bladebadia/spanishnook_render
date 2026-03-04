@@ -181,13 +181,13 @@
       <router-view />
     </q-page-container>
 
-    <q-page-sticky position="bottom-right" :offset="[10, 10]">
+    <q-page-sticky v-if="!['/Acceder', '/RegistroCuenta', '/CarritoCompra', '/AreaPersonal', '/Administracion'].includes(route.path)" position="bottom-right" :offset="[10, 10]">
       <q-btn
         class="whatsapp-sticky-btn enlarged-touch"
         round
         color="green-6"
         icon="mdi-whatsapp"
-        size="xl"
+        size="lg"
         href="https://wa.me/34694280178"
         target="_blank"
         rel="noopener"
@@ -214,11 +214,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
-import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import EssentialLink, { type EssentialLinkProps } from '../components/EssentialLink.vue';
 import { useI18n } from 'vue-i18n';
-import { useAuth } from 'src/stores/auth';
+import { useAuth } from '../stores/auth';
 import { useRoute, useRouter } from 'vue-router';
-import { supabase } from 'src/supabaseClient';
+import { supabase } from '../supabaseClient';
 import { useQuasar } from 'quasar';
 
 const { user } = useAuth();

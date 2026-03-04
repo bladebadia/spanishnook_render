@@ -70,7 +70,7 @@
         />
         </q-no-ssr>
         <div class="q-ma-none q-pa-none">
-          <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
+          <img round src="/img/Logotexto_200.png" alt="Logo Spanish nook" class="logo-responsivo" />
         </div>
         <div>
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
@@ -187,7 +187,7 @@
         round
         color="green-6"
         icon="mdi-whatsapp"
-        size="xl"
+        size="lg"
         href="https://wa.me/34694280178"
         target="_blank"
         rel="noopener"

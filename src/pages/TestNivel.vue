@@ -126,7 +126,7 @@
         <div class="column full-width items-center">
           <q-card flat bordered class="results-card test-card-size fixed-test-card">
             <q-card-section class="text-center">
-              <div style="font-size: 2.5rem; margin-bottom: 0.5rem">✅</div>
+              <div style="font-size: 2.5rem; margin-bottom: 1.5rem; margin-top: 1rem">✅</div>
               <p class="text-h3 text-primary text-weight-bold q-mb-xl">
                 {{ t('test.testCompletado') }}
               </p>

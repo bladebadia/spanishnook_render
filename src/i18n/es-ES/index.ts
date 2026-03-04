@@ -145,8 +145,7 @@ export default {
     cadaPreguntaTiene:
       'Cada pregunta tiene 3 opciones de respuesta; selecciona una. Cuando creas que no sabes o no puedes continuar con el test, deja las preguntas en blanco y avanza hasta completarlo.',
     alCompletar: 'Al finalizar, recibirás una orientación aproximada de tu nivel de español.',
-    esteTest:
-      'Este test no sustituye una evaluación oficial, pero te ayudará a encontrar el curso que mejor se adapta a ti.',
+    esteTest: 'Este test no sustituye una evaluación oficial, pero te ayudará a encontrar el curso que mejor se adapta a ti.',
     comenzarTest: 'Comenzar Test',
     elTestToma: 'El test dura aproximadamente 5 minutos.',
     pregunta: 'Pregunta',
@@ -195,7 +194,7 @@ export default {
     textoNuestrasClases:
       'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
     botonClasesIndividuales: 'CLASES INDIVIDUALES',
-    botonClasesConversacion: 'CLASES DE CONVERSACION',
+    botonClasesConversacion: 'CLASES DE CONVERSACION EN GRUPO',
     recuerdaHacerTest: 'Recuerda hacer tu test',
     testDeNivel: 'Test de nivel',
     tituloClasesA1: 'Clases Nivel A1',

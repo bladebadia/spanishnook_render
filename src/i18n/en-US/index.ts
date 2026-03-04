@@ -148,10 +148,9 @@ export default {
     evaluaTuNivel: '🏆 Find out your Spanish level',
     instrucciones: 'Instructions',
     elTestConsta: 'The test consists of 25 questions arranged by levels.',
-    cadaPreguntaTiene:
-      'Each question has 3 answer options. Select one. If you feel you can’t continue with the test, leave the remaining questions blank and complete the test.',
-    alCompletar:
-      'At the end, you will receive an approximate indication of your Spanish level. This test does not replace an official evaluation, but it will help you choose the course that best suits you.',
+    cadaPreguntaTiene:'Each question has 3 answer options. Select one. If you feel you can’t continue with the test, leave the remaining questions blank and complete the test.',
+    alCompletar:'At the end, you will receive an approximate indication of your Spanish level.',
+    esteTest: 'This test does not replace an official evaluation, but it will help you find the course that best suits you.',
     comenzarTest: 'Start the Level Test',
     elTestToma: 'The test takes approximately 5 minutes.',
     pregunta: 'Question',
@@ -181,7 +180,7 @@ export default {
     textoNuestrasClases:
       "At SpanishNook, there isn't just one path: every student has their own goals, schedule, and way of learning. That's why we offer flexible options, so you can choose what fits you best: private classes or small group courses.",
     botonClasesIndividuales: 'PRIVATE CLASSES',
-    botonClasesConversacion: 'CONVERSATION CLASSES',
+    botonClasesConversacion: 'GROUP CONVERSATION CLASSES',
     recuerdaHacerTest: 'Remember to take the test',
     testDeNivel: 'Level Test',
     nuestrasClasesIndividuales: 'Our Private Classes',
