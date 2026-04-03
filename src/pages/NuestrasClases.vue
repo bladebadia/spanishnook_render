@@ -530,9 +530,18 @@ watch(
   justify-content: center;
 }
 
+.banner-individuales {
+    max-width: 100vw !important;
+    width: 100vw !important;
+    box-sizing: border-box;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 5% !important;
+  }
+
 @media (max-width: 600px) {
   .banner-individuales-col {
-    margin-left: 0 !important;
+    margin-left: 5% !important;
     margin-right: 0 !important;
     max-width: 100vw !important;
     width: 100vw !important;

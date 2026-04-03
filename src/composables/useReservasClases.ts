@@ -60,37 +60,41 @@ export function useReservasClases() {
 
   const misReservasFuturas = computed(() => {
     const ahora = new Date();
-    return misReservas.value.filter(r => {
+    return misReservas.value.filter((r) => {
       // Creamos la fecha completa (Fecha + Hora)
       const fechaClase = new Date(`${r.fecha}T${r.hora}`);
       return fechaClase > ahora;
     });
   });
 
-
   const opcionesTipoClase = computed(() => [
     { label: `${t('reservasClases.claseNormal')} (32€)`, value: 'normal' },
     { label: `${t('reservasClases.claseConversacion')} (27€)`, value: 'conversacion' },
   ]);
 
-const fechaMinima = computed<string>(() => {
-  const d = new Date(); d.setDate(d.getDate() + 1);
-  const isoDate = d.toISOString().split('T')[0] || ''; // <--- AÑADIDO "|| ''"
-  return isoDate.replace(/-/g, '/');
-});
+  const fechaMinima = computed<string>(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    const isoDate = d.toISOString().split('T')[0] || ''; // <--- AÑADIDO "|| ''"
+    return isoDate.replace(/-/g, '/');
+  });
 
-const fechaMaxima = computed<string>(() => {
-  const d = new Date(); d.setMonth(d.getMonth() + 9);
-  const isoDate = d.toISOString().split('T')[0] || ''; // <--- AÑADIDO "|| ''"
-  return isoDate.replace(/-/g, '/');
-});
+  const fechaMaxima = computed<string>(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 9);
+    const isoDate = d.toISOString().split('T')[0] || ''; // <--- AÑADIDO "|| ''"
+    return isoDate.replace(/-/g, '/');
+  });
 
   // 🔥 CORE FIX: Set de días disponibles NORMALIZADO a YYYY/MM/DD
   const diasValidosSet = computed(() => {
     const fechas = new Set<string>();
     calendario.value.forEach((dia) => {
-      if ((dia.tipo_dia === 'laborable' || dia.tipo_dia === 'especial') && 
-          dia.horario && dia.horario.length > 0) {
+      if (
+        (dia.tipo_dia === 'laborable' || dia.tipo_dia === 'especial') &&
+        dia.horario &&
+        dia.horario.length > 0
+      ) {
         // TRUCO: Convertimos lo que venga de BD (guiones) a barras
         fechas.add(dia.fecha.replace(/-/g, '/'));
       }
@@ -100,7 +104,7 @@ const fechaMaxima = computed<string>(() => {
 
   // 🔥 CORE FIX: Función options para Quasar (recibe YYYY/MM/DD)
   const opcionesFechasComputed = (fecha: string): boolean => {
-    // Quasar envía la fecha con BARRAS (2026/01/07). 
+    // Quasar envía la fecha con BARRAS (2026/01/07).
     // Como nuestro Set ya tiene barras, la comparación es directa.
     return diasValidosSet.value.has(fecha);
   };
@@ -114,50 +118,60 @@ const fechaMaxima = computed<string>(() => {
   // --- LÓGICA DE HORARIOS ---
   const horariosDisponiblesFiltrados = computed(() => {
     if (!fechaSeleccionada.value) return [];
-    
+
     // Normalizamos la fecha (YYYY-MM-DD)
     const fechaModelo = fechaSeleccionada.value.replace(/\//g, '-');
 
-    const diaCalendario = calendario.value.find(d => d.fecha === fechaModelo);
+    const diaCalendario = calendario.value.find((d) => d.fecha === fechaModelo);
     if (!diaCalendario || !diaCalendario.horario || diaCalendario.horario.length === 0) return [];
 
     // Lógica para filtrar cursos grupales (días de la semana)
     const fechaObj = new Date(fechaModelo + 'T12:00:00');
-    const diasSemanaMap = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const diasSemanaMap = [
+      'Domingo',
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+    ];
     const nombreDia = diasSemanaMap[fechaObj.getDay()] || '';
 
     // 🔥 FIX: Los cursos grupales duran 2 horas, bloqueamos hora actual y siguiente
     const horasCursos = cursosGrupalesActivos.value
-      .filter(c => c.dias_semana.includes(nombreDia))
-      .flatMap(c => c.horarios_curso || [])
-      .flatMap(h => {
+      .filter((c) => c.dias_semana.includes(nombreDia))
+      .flatMap((c) => c.horarios_curso || [])
+      .flatMap((h) => {
         const horaInicio = h.slice(0, 5);
-        const [horas, minutos] = horaInicio.split(':').map(Number);
-        
+        const partes = horaInicio.split(':');
+        const horas = Number(partes[0] ?? 0);
+        const minutos = Number(partes[1] ?? 0);
+        if (!Number.isFinite(horas) || !Number.isFinite(minutos)) return [horaInicio];
+
         // Calculamos la hora siguiente
         const horaSiguiente = new Date(2000, 0, 1, horas + 1, minutos);
         const horaSiguienteStr = horaSiguiente.toTimeString().slice(0, 5);
-        
+
         // Retornamos ambas horas bloqueadas
         return [horaInicio, horaSiguienteStr];
       });
 
     const horasReservadas = reservasExistentes.value
-      .filter(r => r.fecha === fechaModelo && r.estado === 'confirmada')
-      .map(r => r.hora.slice(0, 5));
+      .filter((r) => r.fecha === fechaModelo && r.estado === 'confirmada')
+      .map((r) => r.hora.slice(0, 5));
     const ahora = new Date();
-    const limite24h = ahora.getTime() + (24 * 60 * 60 * 1000);
+    const limite24h = ahora.getTime() + 24 * 60 * 60 * 1000;
 
-    return diaCalendario.horario.filter(h => {
+    return diaCalendario.horario.filter((h) => {
       const cleanH = h.slice(0, 5);
-      
-      const estaOcupado = horasReservadas.includes(cleanH) || 
-                          horasCursos.includes(cleanH) || 
-                          estaEnCarrito(cleanH);
+
+      const estaOcupado =
+        horasReservadas.includes(cleanH) || horasCursos.includes(cleanH) || estaEnCarrito(cleanH);
 
       if (estaOcupado) return false;
       const fechaClase = new Date(`${fechaModelo}T${cleanH}`);
-      
+
       return fechaClase.getTime() > limite24h;
     });
   });
@@ -168,7 +182,7 @@ const fechaMaxima = computed<string>(() => {
       // Pedimos datos usando formato ISO (YYYY-MM-DD) para Supabase
       const minISO = fechaMinima.value.replace(/\//g, '-');
       const maxISO = fechaMaxima.value.replace(/\//g, '-');
-      
+
       const { data, error } = await supabase
         .from('Calendario')
         .select('fecha, tipo_dia, horario')
@@ -178,83 +192,104 @@ const fechaMaxima = computed<string>(() => {
       if (error) throw error;
       calendario.value = data || [];
       console.log('✅ Calendario cargado (RAW):', data?.length);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-const cargarReservasExistentes = async () => {
+  const cargarReservasExistentes = async () => {
     try {
       const { data, error } = await supabase.rpc('obtener_ocupacion');
-      
+
       if (error) throw error;
 
       if (data) {
         const ocupacion = data as OcupacionAnonima[];
 
         reservasExistentes.value = ocupacion.map((item) => ({
-          id: 'anonimo',       
-          user_id: 'oculto',  
+          id: 'anonimo',
+          user_id: 'oculto',
           estado: 'confirmada',
           fecha: item.fecha,
           hora: item.hora,
-          tipo: 'normal', 
-          precio: 0
+          tipo: 'normal',
+          precio: 0,
         }));
       } else {
         reservasExistentes.value = [];
       }
-      
-    } catch (e) { 
-      console.error('Error cargando ocupación:', e); 
+    } catch (e) {
+      console.error('Error cargando ocupación:', e);
     }
   };
 
   const cargarCursosGrupales = async () => {
     try {
-      const { data } = await supabase.from('cursos_grupales').select('*').eq('estado_curso', 'Activo');
+      const { data } = await supabase
+        .from('cursos_grupales')
+        .select('*')
+        .eq('estado_curso', 'Activo');
       cursosGrupalesActivos.value = data || [];
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+    }
   };
-  
+
   const cargarMisReservas = async () => {
-    if(!user.value?.id) return;
-    const { data } = await supabase.from('reservas').select('*').eq('user_id', user.value.id).eq('estado', 'confirmada');
+    if (!user.value?.id) return;
+    const { data } = await supabase
+      .from('reservas')
+      .select('*')
+      .eq('user_id', user.value.id)
+      .eq('estado', 'confirmada');
     misReservas.value = data || [];
   };
 
   // --- AUXILIARES ---
-  const estaEnCarrito = (h: string) => carrito.value.some(r => r.fecha === fechaSeleccionada.value && r.hora === h);
-  const guardarCarrito = () => localStorage.setItem('carritoReservas', JSON.stringify(carrito.value));
-  const cargarCarrito = () => { const s = localStorage.getItem('carritoReservas'); if(s) carrito.value = JSON.parse(s); };
-  
+  const estaEnCarrito = (h: string) =>
+    carrito.value.some((r) => r.fecha === fechaSeleccionada.value && r.hora === h);
+  const guardarCarrito = () =>
+    localStorage.setItem('carritoReservas', JSON.stringify(carrito.value));
+  const cargarCarrito = () => {
+    const s = localStorage.getItem('carritoReservas');
+    if (s) carrito.value = JSON.parse(s);
+  };
+
   const agregarAlCarrito = (hora: string) => {
-    if (!user.value) return $q.notify({ type: 'warning', message: t('reservasClases.debesIniciarSesion') });
+    if (!user.value)
+      return $q.notify({ type: 'warning', message: t('reservasClases.debesIniciarSesion') });
     carrito.value.push({ fecha: fechaSeleccionada.value, hora, tipo: tipoClase.value });
     guardarCarrito();
   };
-  const quitarDelCarrito = (i: number) => { carrito.value.splice(i, 1); guardarCarrito(); };
+  const quitarDelCarrito = (i: number) => {
+    carrito.value.splice(i, 1);
+    guardarCarrito();
+  };
 
   const formatFecha = (f: string) => {
     if (!f) return '';
-    const fecha = new Date(f).toLocaleDateString(locale.value || 'es-ES', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    const fecha = new Date(f).toLocaleDateString(locale.value || 'es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
     return fecha.charAt(0).toUpperCase() + fecha.slice(1);
   };
-  const getTipoClaseTexto = (r: ReservaConfirmada) => r.tipo === 'normal' ? 'General' : 'Conversación';
+  const getTipoClaseTexto = (r: ReservaConfirmada) =>
+    r.tipo === 'normal' ? 'General' : 'Conversación';
   const getPrecioClase = (r: ReservaConfirmada) => {
     const precio = r.precio ?? (r.tipo === 'normal' ? 32 : 27);
     return precio > 1000 ? precio / 100 : precio;
   };
-  const puedeCancelar = (r: ReservaConfirmada) => (new Date(r.fecha + 'T' + r.hora).getTime() - Date.now()) / 36e5 >= 72;
+  const puedeCancelar = (r: ReservaConfirmada) =>
+    (new Date(r.fecha + 'T' + r.hora).getTime() - Date.now()) / 36e5 >= 72;
 
   const cancelarReserva = (r: ReservaConfirmada) => {
     $q.dialog({ title: 'Cancelar', message: '¿Seguro?', cancel: true }).onOk(() => {
       void (async () => {
         await supabase.functions.invoke('cancel-reserva', { body: { reservaId: r.id } });
-        misReservas.value = misReservas.value.filter(x => x.id !== r.id);
+        misReservas.value = misReservas.value.filter((x) => x.id !== r.id);
         $q.notify({ type: 'positive', message: 'Cancelada' });
       })();
     });
@@ -262,23 +297,58 @@ const cargarReservasExistentes = async () => {
 
   // --- INIT ---
   const inicializar = async () => {
-    await Promise.all([cargarCalendario(), cargarCursosGrupales(), cargarReservasExistentes(), cargarMisReservas()]);
+    await Promise.all([
+      cargarCalendario(),
+      cargarCursosGrupales(),
+      cargarReservasExistentes(),
+      cargarMisReservas(),
+    ]);
     cargarCarrito();
   };
 
   // No necesitamos watch complejo, el computed se encarga
-  const setupWatchers = () => {}; 
+  const setupWatchers = () => {};
 
-  onMounted(() => { void inicializar(); });
-  const activarSeleccionClases = () => { seleccionClases.value = 'activa'; };
+  onMounted(() => {
+    void inicializar();
+  });
+  const activarSeleccionClases = () => {
+    seleccionClases.value = 'activa';
+  };
 
   return {
-    seleccionClases, fechaSeleccionada, horasOcupadas, misReservas, misReservasFuturas, carrito, tipoClase, calendario, 
-    reservasExistentes, cursosGrupalesActivos, opcionesTipoClase, fechaMinima, fechaMaxima, 
-    fechasConEventos, horariosDisponiblesFiltrados, opcionesFechasComputed, 
-    activarSeleccionClases, opcionesFechas: opcionesFechasComputed, 
-    getTipoClaseTexto, getPrecioClase, formatFecha, cargarCalendario, cargarReservasExistentes, 
-    estaEnCarrito, agregarAlCarrito, quitarDelCarrito, guardarCarrito, cargarCarrito, cargarMisReservas, 
-    puedeCancelar, cancelarReserva, inicializar, setupWatchers
+    seleccionClases,
+    fechaSeleccionada,
+    horasOcupadas,
+    misReservas,
+    misReservasFuturas,
+    carrito,
+    tipoClase,
+    calendario,
+    reservasExistentes,
+    cursosGrupalesActivos,
+    opcionesTipoClase,
+    fechaMinima,
+    fechaMaxima,
+    fechasConEventos,
+    horariosDisponiblesFiltrados,
+    opcionesFechasComputed,
+    activarSeleccionClases,
+    opcionesFechas: opcionesFechasComputed,
+    getTipoClaseTexto,
+    getPrecioClase,
+    formatFecha,
+    cargarCalendario,
+    cargarReservasExistentes,
+    estaEnCarrito,
+    agregarAlCarrito,
+    quitarDelCarrito,
+    guardarCarrito,
+    cargarCarrito,
+    cargarMisReservas,
+    puedeCancelar,
+    cancelarReserva,
+    inicializar,
+    setupWatchers,
   };
 }
