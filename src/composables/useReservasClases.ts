@@ -126,10 +126,21 @@ const fechaMaxima = computed<string>(() => {
     const diasSemanaMap = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const nombreDia = diasSemanaMap[fechaObj.getDay()] || '';
 
+    // 🔥 FIX: Los cursos grupales duran 2 horas, bloqueamos hora actual y siguiente
     const horasCursos = cursosGrupalesActivos.value
       .filter(c => c.dias_semana.includes(nombreDia))
       .flatMap(c => c.horarios_curso || [])
-      .map(h => h.slice(0, 5));
+      .flatMap(h => {
+        const horaInicio = h.slice(0, 5);
+        const [horas, minutos] = horaInicio.split(':').map(Number);
+        
+        // Calculamos la hora siguiente
+        const horaSiguiente = new Date(2000, 0, 1, horas + 1, minutos);
+        const horaSiguienteStr = horaSiguiente.toTimeString().slice(0, 5);
+        
+        // Retornamos ambas horas bloqueadas
+        return [horaInicio, horaSiguienteStr];
+      });
 
     const horasReservadas = reservasExistentes.value
       .filter(r => r.fecha === fechaModelo && r.estado === 'confirmada')
