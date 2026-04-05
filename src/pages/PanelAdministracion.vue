@@ -2,9 +2,11 @@
   <q-page class="q-pa-lg">
     <!-- Header -->
     <div class="row items-center flex flex-center q-pa-lg q-mb-md">
-      <p v-if="user?.user_metadata?.nombre" class="subtitulo-responsivo">
-        PANEL DE ADMINISTRACIÓN - {{ seccionActual.toUpperCase() }}
-      </p>
+      <q-no-ssr>
+        <p v-if="user?.user_metadata?.nombre" class="subtitulo-responsivo">
+          PANEL DE ADMINISTRACIÓN - {{ seccionActual.toUpperCase() }}
+        </p>
+      </q-no-ssr>
     </div>
 
     <!-- Menú lateral y contenido -->

@@ -6,25 +6,27 @@
     >
       🛒 {{ t('carrito.carritoDeReservas') }}
 
-      <div style="min-width: 250px" v-if="usuarioLogueado">
-        <SaldoWallet
-          :saldo-normal="saldoNormal"
-          :saldo-conversacion="saldoConversacion"
-          :loading="cargandoSaldo"
-        />
-
-        <div class="q-mt-sm text-right">
-          <q-checkbox
-            v-model="usarCreditosGlobal"
-            :label="t('carrito.utilizarCreditos')"
-            color="green"
-            dense
-            class="checkbox-creditos"
-            @update:model-value="recalcularAplicacionCreditos"
-            :disable="saldoNormal === 0 && saldoConversacion === 0"
+      <q-no-ssr>
+        <div style="min-width: 250px" v-if="usuarioLogueado">
+          <SaldoWallet
+            :saldo-normal="saldoNormal"
+            :saldo-conversacion="saldoConversacion"
+            :loading="cargandoSaldo"
           />
+
+          <div class="q-mt-sm text-right">
+            <q-checkbox
+              v-model="usarCreditosGlobal"
+              :label="t('carrito.utilizarCreditos')"
+              color="green"
+              dense
+              class="checkbox-creditos"
+              @update:model-value="recalcularAplicacionCreditos"
+              :disable="saldoNormal === 0 && saldoConversacion === 0"
+            />
+          </div>
         </div>
-      </div>
+      </q-no-ssr>
     </div>
 
     <div v-if="carrito.length === 0" class="text-center q-mt-xl">
@@ -146,9 +148,11 @@
         />
       </div>
 
-      <q-banner v-if="!usuarioLogueado" class="bg-warning text-dark q-mt-md">
-        ⚠️ {{ t('carrito.debesIniciarSesion') }}
-      </q-banner>
+      <q-no-ssr>
+        <q-banner v-if="!usuarioLogueado" class="bg-warning text-dark q-mt-md">
+          ⚠️ {{ t('carrito.debesIniciarSesion') }}
+        </q-banner>
+      </q-no-ssr>
     </div>
   </q-page>
 </template>
