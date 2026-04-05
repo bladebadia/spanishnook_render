@@ -7,7 +7,7 @@
         <q-space></q-space>        
         <!-- Elementos condicionales envueltos en q-no-ssr para evitar mismatch de hidratación -->
         <q-no-ssr>
-          <div class="row items-center q-gutter-xs">
+          <template>
             <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior">
               {{ t('areaPersonal') }}
             </q-btn>
@@ -30,7 +30,7 @@
                 {{ carritoCount }}
               </q-badge>
             </q-btn>
-          </div>
+          </template>
         </q-no-ssr>
        
         <!-- Selector de idioma con banderas -->
