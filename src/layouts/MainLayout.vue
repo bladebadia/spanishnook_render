@@ -7,28 +7,30 @@
         <q-space></q-space>        
         <!-- Elementos condicionales envueltos en q-no-ssr para evitar mismatch de hidratación -->
         <q-no-ssr>
-          <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior">
-            {{ t('areaPersonal') }}
-          </q-btn>
-          <q-btn to="/Acceder" v-if="!user" flat class="text-white btn-nav-superior">
-            {{ t('acceder') }}
-          </q-btn>
+          <div class="row items-center q-gutter-xs">
+            <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior">
+              {{ t('areaPersonal') }}
+            </q-btn>
+            <q-btn to="/Acceder" v-if="!user" flat class="text-white btn-nav-superior">
+              {{ t('acceder') }}
+            </q-btn>
 
-          <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
-            {{ t('cerrarSesion') }}
-          </q-btn>
+            <q-btn v-if="user" flat class="text-white btn-nav-superior" @click="cerrarSesion">
+              {{ t('cerrarSesion') }}
+            </q-btn>
 
-          <q-btn
-            to="/CarritoCompra"
-            v-if="user"
-            class="text-white carro-btn"
-            icon="shopping_cart"
-            flat
-          >
-            <q-badge v-if="carritoCount > 0" color="red" floating rounded class="badge-notification">
-              {{ carritoCount }}
-            </q-badge>
-          </q-btn>
+            <q-btn
+              to="/CarritoCompra"
+              v-if="user"
+              class="text-white carro-btn"
+              icon="shopping_cart"
+              flat
+            >
+              <q-badge v-if="carritoCount > 0" color="red" floating rounded class="badge-notification">
+                {{ carritoCount }}
+              </q-badge>
+            </q-btn>
+          </div>
         </q-no-ssr>
        
         <!-- Selector de idioma con banderas -->
