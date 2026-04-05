@@ -72,7 +72,7 @@
         />
         </q-no-ssr>
         <div class="q-ma-none q-pa-none">
-          <img round src="/img/Logotexto_200.png" alt="Logo Spanish nook" class="logo-responsivo" />
+          <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
         </div>
         <div>
           <q-toolbar-title class="spanishnook-titl"> SpanishNook </q-toolbar-title>
@@ -205,39 +205,41 @@
         </div>
 
         <!-- Footer condicional con v-show -->
-        <div
-          v-show="showFooterDesktop"
-          class="col-12 col-md-3 flex column items-center q-pa-none q-ma-none"
-        >
-          <p class="text-bold footer-titulo q-py-none q-mt-none q-mb-md">SpanishNook</p>
-          <p class="q-mx-md text-body2">{{ t('footerSpanishnookEs') }}</p>
-          <div class="">
-            <p class="text-bold footer-titulo items-center q-pa-none q-my-none">
-              {{ t('footerRedes') }}
-            </p>
-            <q-btn
-              icon="mdi-youtube"
-              size="lg"
-              flat
-              class="text-red underline-btn q-sm-ml-xl"
-              href="https://www.youtube.com/@SpanishNook"
-            />
-            <q-btn
-              icon="mdi-instagram"
-              size="lg"
-              flat
-              class="text-red underline-btn q-sm-mr-lg q-pr-lg"
-              href="https://www.instagram.com/spanishnook?igsh=MWo2OTJhd2MzM3dmeQ%3D%3D&utm_source=qr"
-            />
-            <q-btn
-              icon="mdi-music-note"
-              size="lg"
-              flat
-              class="text-red underline-btn q-sm-mr-lg q-pr-lg"
-              href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
-            />
+        <q-no-ssr>
+          <div
+            v-if="showFooterDesktop"
+            class="col-12 col-md-3 flex column items-center q-pa-none q-ma-none"
+          >
+            <p class="text-bold footer-titulo q-py-none q-mt-none q-mb-md">SpanishNook</p>
+            <p class="q-mx-md text-body2">{{ t('footerSpanishnookEs') }}</p>
+            <div class="">
+              <p class="text-bold footer-titulo items-center q-pa-none q-my-none">
+                {{ t('footerRedes') }}
+              </p>
+              <q-btn
+                icon="mdi-youtube"
+                size="lg"
+                flat
+                class="text-red underline-btn q-sm-ml-xl"
+                href="https://www.youtube.com/@SpanishNook"
+              />
+              <q-btn
+                icon="mdi-instagram"
+                size="lg"
+                flat
+                class="text-red underline-btn q-sm-mr-lg q-pr-lg"
+                href="https://www.instagram.com/spanishnook?igsh=MWo2OTJhd2MzM3dmeQ%3D%3D&utm_source=qr"
+              />
+              <q-btn
+                icon="mdi-music-note"
+                size="lg"
+                flat
+                class="text-red underline-btn q-sm-mr-lg q-pr-lg"
+                href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
+              />
+            </div>
           </div>
-        </div>
+        </q-no-ssr>
 
         <!-- Columna Mapa del sitio -->
         <div class="col-12 col-md-3 flex column items-center">
@@ -264,35 +266,37 @@
         </div>
 
         <!-- Columna Enlaces de interés con v-show -->
-        <div v-show="showFooterDesktop" class="col-12 col-md-3 flex column items-center">
-          <div class="text-bold q-mx-xs">
-            <p class="text-bold items-center footer-titulo">
-              {{ t('footerEnlacesInteres') }}
-            </p>
+        <q-no-ssr>
+          <div v-if="showFooterDesktop" class="col-12 col-md-3 flex column items-center">
+            <div class="text-bold q-mx-xs">
+              <p class="text-bold items-center footer-titulo">
+                {{ t('footerEnlacesInteres') }}
+              </p>
+            </div>
+            <div class="text-center">
+              <div class="text-center">
+                <a
+                  href="https://www.cervantes.es/"
+                  target="_blank"
+                  rel="noopener"
+                  class="foot-link q-mt-md"
+                >
+                  {{ t('footerInstitutoCervantes') }}
+                </a>
+              </div>
+              <div class="text-center">
+                <a href="https://www.rae.es/" target="_blank" rel="noopener" class="foot-link">
+                  RAE
+                </a>
+              </div>
+              <div class="text-center">
+                <a href="https://www.dele.org/" target="_blank" rel="noopener" class="foot-link">
+                  DELE
+                </a>
+              </div>
+            </div>
           </div>
-          <div class="text-center">
-            <div class="text-center">
-              <a
-                href="https://www.cervantes.es/"
-                target="_blank"
-                rel="noopener"
-                class="foot-link q-mt-md"
-              >
-                {{ t('footerInstitutoCervantes') }}
-              </a>
-            </div>
-            <div class="text-center">
-              <a href="https://www.rae.es/" target="_blank" rel="noopener" class="foot-link">
-                RAE
-              </a>
-            </div>
-            <div class="text-center">
-              <a href="https://www.dele.org/" target="_blank" rel="noopener" class="foot-link">
-                DELE
-              </a>
-            </div>
-          </div>
-        </div>
+        </q-no-ssr>
       </div>
 
       <div class="footer-legal-bar">

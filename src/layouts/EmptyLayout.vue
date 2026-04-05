@@ -196,19 +196,19 @@
         aria-label="WhatsApp"
       />
     </q-page-sticky>
-    <q-footer class="bg-black text-white" data-allow-mismatch="children">
+    <q-footer class="bg-black text-white">
       <q-no-ssr>
-      <div class="footer-legal-bar">
-        <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
-        <div class="footer-legal-links">
-          <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
-          <router-link to="/Privacidad" class="foot-link">{{ t('footerPrivacidad') }}</router-link>
-          <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
-          <router-link to="/Condiciones" class="foot-link">{{
-            t('footerCondiciones')
-          }}</router-link>
+        <div class="footer-legal-bar">
+          <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
+          <div class="footer-legal-links">
+            <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
+            <router-link to="/Privacidad" class="foot-link">{{ t('footerPrivacidad') }}</router-link>
+            <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
+            <router-link to="/Condiciones" class="foot-link">{{
+              t('footerCondiciones')
+            }}</router-link>
+          </div>
         </div>
-      </div>
       </q-no-ssr>
     </q-footer>
   </q-layout>
