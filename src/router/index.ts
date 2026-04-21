@@ -5,6 +5,7 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
+import { watch } from 'vue';
 import routes from './routes';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
@@ -28,21 +29,21 @@ export default defineRouter(function (/* { store, ssrContext } */) {
   const Router = createRouter({
     routes,
     scrollBehavior(to, _from, savedPosition) {
-    if (savedPosition) return savedPosition;
-    if (to.hash) {
-      // Scroll directo (sin animación) con offset del header
-      return new Promise((resolve) => {
-        requestAnimationFrame(() => {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          const el = document.querySelector(to.hash) as HTMLElement | null;
-          if (!el) return resolve({ left: 0, top: 0 });
-          const top = el.getBoundingClientRect().top + window.scrollY - 80;
-          resolve({ left: 0, top, behavior: 'auto' });
+      if (savedPosition) return savedPosition;
+      if (to.hash) {
+        // Scroll directo (sin animación) con offset del header
+        return new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            const el = document.querySelector(to.hash) as HTMLElement | null;
+            if (!el) return resolve({ left: 0, top: 0 });
+            const top = el.getBoundingClientRect().top + window.scrollY - 80;
+            resolve({ left: 0, top, behavior: 'auto' });
+          });
         });
-      });
-    }
-    return { left: 0, top: 0 };
-  },
+      }
+      return { left: 0, top: 0 };
+    },
     // Leave this as is and make changes in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
@@ -52,23 +53,27 @@ export default defineRouter(function (/* { store, ssrContext } */) {
   // GUARDIA GLOBAL DE AUTENTICACIÓN
   // Espera a que Supabase restaure la sesión desde localStorage antes de decidir
   Router.beforeEach(async (to, _from, next) => {
-    const { isInitialized } = useAuth();
+    // Solo en cliente, esperar a la inicialización
+    if (typeof window !== 'undefined') {
+      const { isInitialized } = useAuth();
 
-    // PASO 1: Esperar a que el auth store termine de inicializarse
-    // Esto previene el "flash" de la página de login
-    if (!isInitialized.value) {
-      // Esperar hasta que isInitialized sea true
-      await new Promise<void>((resolve) => {
-        const unwatch = (async () => {
-          const { watch } = await import('vue');
-          return watch(isInitialized, (initialized) => {
-            if (initialized) {
-              unwatch();
-              resolve();
-            }
-          });
-        })();
-      });
+      // PASO 1: Esperar a que el auth store termine de inicializarse
+      // Esto previene el "flash" de la página de login
+      if (!isInitialized.value) {
+        // Esperar hasta que isInitialized sea true
+        await new Promise<void>((resolve) => {
+          const stop = watch(
+            isInitialized,
+            (initialized) => {
+              if (initialized) {
+                stop();
+                resolve();
+              }
+            },
+            { immediate: true }
+          );
+        });
+      }
     }
 
     // PASO 2: Verificar si la ruta requiere autenticación
@@ -76,13 +81,15 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
     if (requiresAuth) {
       // Verificar la sesión actual
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         // No hay sesión válida, redirigir a login
-        next({ 
-          path: '/Acceder', 
-          query: { redirect: to.fullPath } 
+        next({
+          path: '/Acceder',
+          query: { redirect: to.fullPath },
         });
       } else {
         // Hay sesión válida, permitir acceso
