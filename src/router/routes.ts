@@ -1,5 +1,4 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { useAuth } from 'src/stores/auth';
 import { supabase } from 'src/supabaseClient';
 import { jwtDecode } from 'jwt-decode';
 
@@ -19,24 +18,14 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/AreaPersonal',
     component: () => import('pages/AreaPersonal.vue'),
-    beforeEnter: () => {
-      const { user } = useAuth();
-      if (!user.value) {
-        return '/Acceder';
-      }
-    },
     meta: { requiresAuth: true, layout: 'empty', ssr: false },
   },
   {
     path: '/Administracion',
     component: () => import('pages/PanelAdministracion.vue'),
     beforeEnter: async () => {
-      const { user } = useAuth();
-      if (!user.value) {
-        return '/Acceder';
-      }
-      
-      // Verificar si el usuario tiene el rol de admin en app_metadata
+      // La autenticación básica ya se verificó en el beforeEach global
+      // Aquí solo verificamos el rol de admin
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
