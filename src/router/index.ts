@@ -7,6 +7,7 @@ import {
 } from 'vue-router';
 import routes from './routes';
 import { supabase } from 'src/supabaseClient';
+import { useAuth } from 'src/stores/auth';
 
 /*
  * If not building with SSR mode, you can
@@ -51,12 +52,30 @@ export default defineRouter(function (/* { store, ssrContext } */) {
   // GUARDIA GLOBAL DE AUTENTICACIÓN
   // Espera a que Supabase restaure la sesión desde localStorage antes de decidir
   Router.beforeEach(async (to, _from, next) => {
-    // Verificar si la ruta requiere autenticación
+    const { isInitialized } = useAuth();
+
+    // PASO 1: Esperar a que el auth store termine de inicializarse
+    // Esto previene el "flash" de la página de login
+    if (!isInitialized.value) {
+      // Esperar hasta que isInitialized sea true
+      await new Promise<void>((resolve) => {
+        const unwatch = (async () => {
+          const { watch } = await import('vue');
+          return watch(isInitialized, (initialized) => {
+            if (initialized) {
+              unwatch();
+              resolve();
+            }
+          });
+        })();
+      });
+    }
+
+    // PASO 2: Verificar si la ruta requiere autenticación
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
     if (requiresAuth) {
-      // CRÍTICO: Esperamos a que Supabase lea la sesión del localStorage
-      // Esto evita el problema de redirección al recargar la página (F5)
+      // Verificar la sesión actual
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
@@ -67,7 +86,6 @@ export default defineRouter(function (/* { store, ssrContext } */) {
         });
       } else {
         // Hay sesión válida, permitir acceso
-        // El store auth ya se actualiza automáticamente con onAuthStateChange
         next();
       }
     } else {

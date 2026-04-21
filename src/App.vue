@@ -1,5 +1,11 @@
 <template>
-  <component :is="layoutComponent">
+  <!-- Mostrar loader mientras se inicializa la autenticación -->
+  <div v-if="!isAuthInitialized" class="auth-loading-screen">
+    <q-spinner-gears color="primary" size="80px" />
+  </div>
+  
+  <!-- Mostrar app normal una vez inicializada -->
+  <component v-else :is="layoutComponent">
     <router-view />
   </component>
 </template>
@@ -11,6 +17,9 @@ import { useRoute } from 'vue-router';
 import { computed, type Ref } from 'vue';
 import { useMeta } from 'quasar';
 import type { Component } from 'vue';
+import { useAuth } from 'src/stores/auth';
+
+const { isInitialized: isAuthInitialized } = useAuth();
 
 let layoutComponent: Ref<Component>;
 try {
@@ -76,3 +85,18 @@ try {
   }
 }
 </script>
+
+<style scoped>
+.auth-loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  z-index: 9999;
+}
+</style>
