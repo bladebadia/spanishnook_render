@@ -39,6 +39,50 @@
     <link rel="icon" type="image/png" href="https://spanishnook-render.onrender.com/img/Logo_rectangular_320.png" />
   </head>
   <body>
+    <!-- Loader inicial que aparece instantáneamente -->
+    <div id="initial-loader" style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      z-index: 99999;
+      gap: 20px;
+    ">
+      <!-- Spinner CSS puro -->
+      <div style="
+        width: 60px;
+        height: 60px;
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #851319;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      "></div>
+      <div style="
+        font-size: 1.2rem;
+        color: #851319;
+        font-weight: 500;
+        font-family: sans-serif;
+      ">Cargando...</div>
+    </div>
+    
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* Ocultar loader cuando Vue esté montado */
+      [data-app-loaded="true"] #initial-loader {
+        display: none !important;
+      }
+    </style>
+    
     <!-- quasar:entry-point -->
   </body>
 </html>

@@ -1,14 +1,5 @@
 <template>
-  <!-- Mostrar loader mientras se inicializa la autenticación (solo en cliente) -->
-  <div v-if="showLoader" class="auth-loading-screen">
-    <div class="loader-content">
-      <q-spinner-gears color="primary" size="80px" />
-      <div class="loader-text">Cargando...</div>
-    </div>
-  </div>
-  
-  <!-- Mostrar app normal una vez inicializada -->
-  <component v-else :is="layoutComponent">
+  <component :is="layoutComponent">
     <router-view />
   </component>
 </template>
@@ -17,20 +8,26 @@
 import MainLayout from 'layouts/MainLayout.vue';
 import EmptyLayout from 'layouts/EmptyLayout.vue';
 import { useRoute } from 'vue-router';
-import { computed, type Ref } from 'vue';
+import { computed, watch, type Ref } from 'vue';
 import { useMeta } from 'quasar';
 import type { Component } from 'vue';
 import { useAuth } from 'src/stores/auth';
 
 const { isInitialized: isAuthInitialized } = useAuth();
 
-// Solo mostrar loader en cliente y mientras no esté inicializado
-const showLoader = computed(() => {
-  // En SSR, nunca mostrar loader
-  if (typeof window === 'undefined') return false;
-  // En cliente, mostrar solo si no está inicializado
-  return !isAuthInitialized.value;
-});
+// Ocultar el loader HTML del index.html cuando la app esté lista
+if (typeof window !== 'undefined') {
+  watch(
+    isAuthInitialized,
+    (initialized) => {
+      if (initialized) {
+        // Marcar el body como cargado para ocultar el loader inicial
+        document.body.setAttribute('data-app-loaded', 'true');
+      }
+    },
+    { immediate: true }
+  );
+}
 
 let layoutComponent: Ref<Component>;
 try {
@@ -96,31 +93,3 @@ try {
   }
 }
 </script>
-
-<style scoped>
-.auth-loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-  z-index: 9999;
-}
-
-.loader-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.loader-text {
-  font-size: 1.2rem;
-  color: #851319;
-  font-weight: 500;
-}
-</style>
