@@ -1,5 +1,5 @@
 // src/composables/useAnalytics.ts
-import { event } from 'vue-gtag-next';
+import { useGtag } from 'vue-gtag-next';
 
 export function useAnalytics() {
   /**
@@ -8,7 +8,8 @@ export function useAnalytics() {
   const trackEvent = (eventName: string, parameters?: Record<string, unknown>) => {
     if (typeof window === 'undefined') return;
 
-    event(eventName, parameters);
+    const gtag = useGtag();
+    gtag.event(eventName, parameters);
   };
 
   /**

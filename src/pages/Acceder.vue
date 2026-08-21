@@ -163,7 +163,7 @@ const loading = ref(false);
 const credencialesError = ref(false);
 const passwordVisible = ref(false);
 const { t } = useI18n();
-const { login } = useAnalytics();
+const { login: trackLogin } = useAnalytics();
 
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;
@@ -230,7 +230,7 @@ async function login() {
     }
 
     // Track login exitoso
-    void login('email');
+    void trackLogin('email');
 
     // 🔥 CAMBIO: Redirigir a AreaPersonal que es el dashboard
     await router.push('/AreaPersonal');
