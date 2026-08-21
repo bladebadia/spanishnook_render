@@ -25,7 +25,7 @@ export default boot(({ app, router }) => {
     },
     // TEMPORAL: Habilitado también en desarrollo para testing
     // Cambiar a: enabled: process.env.NODE_ENV === 'production' cuando termines de testear
-    enabled: true,
+    enabled: process.env.NODE_ENV === 'production',
   });
 
   console.log('✅ Google Analytics 4 inicializado:', measurementId);
