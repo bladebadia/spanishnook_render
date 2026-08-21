@@ -23,8 +23,9 @@ export default boot(({ app, router }) => {
       send_page_view: true, // Enviar pageviews automáticamente
       anonymize_ip: true, // Anonimizar IPs (GDPR)
     },
-    // Habilitar solo en producción por defecto
-    enabled: process.env.NODE_ENV === 'production',
+    // TEMPORAL: Habilitado también en desarrollo para testing
+    // Cambiar a: enabled: process.env.NODE_ENV === 'production' cuando termines de testear
+    enabled: true,
   });
 
   console.log('✅ Google Analytics 4 inicializado:', measurementId);

@@ -54,7 +54,9 @@ export default defineConfig((ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID || '',
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
