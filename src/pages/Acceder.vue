@@ -152,6 +152,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { supabase } from '../supabaseClient';
 import { useI18n } from 'vue-i18n';
+import { useAnalytics } from 'src/composables/useAnalytics';
 
 defineOptions({ name: 'UserAcceder' });
 
@@ -162,6 +163,7 @@ const loading = ref(false);
 const credencialesError = ref(false);
 const passwordVisible = ref(false);
 const { t } = useI18n();
+const { login } = useAnalytics();
 
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;
@@ -226,6 +228,9 @@ async function login() {
       console.error('Error login:', error.message);
       return;
     }
+
+    // Track login exitoso
+    void login('email');
 
     // 🔥 CAMBIO: Redirigir a AreaPersonal que es el dashboard
     await router.push('/AreaPersonal');

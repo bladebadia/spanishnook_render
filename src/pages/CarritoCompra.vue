@@ -165,12 +165,14 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import SaldoWallet from 'components/SaldoWallet.vue';
 import { useRouter } from 'vue-router';
+import { useAnalytics } from 'src/composables/useAnalytics';
 // ELIMINADO: import { useHorarios } from 'src/composables/useHorarios';
 
 const { t, locale } = useI18n();
 const { user } = useAuth();
 const $q = useQuasar();
 const router = useRouter(); // 2. Inicializar
+const { claseReservada, compraIniciada } = useAnalytics();
 
 // --- 1. FUNCIÓN LOCAL SEGURA (Sustituye a useHorarios) ---
 // Calcula hora local usuario = Hora Madrid + Offset Real. Duración 60 min.
@@ -408,6 +410,13 @@ const confirmarReservasHibridas = async () => {
           tipo: item.tipo === 'normal' ? 'individual' : 'conversacion',
           meet_link: linkGenerado || undefined,
         });
+
+        // A.3.1. Track clase reservada en Google Analytics
+        claseReservada(
+          item.tipo === 'normal' ? 'individual' : 'grupal',
+          item.fecha,
+          item.hora
+        );
       }
 
       // A.4. Enviar Email Resumen
@@ -448,6 +457,10 @@ const confirmarReservasHibridas = async () => {
 };
 
 const irAStripe = async (items: ReservaCarrito[]) => {
+  // Track inicio de compra
+  const totalCompra = items.reduce((sum, item) => sum + (item.tipo === 'normal' ? 32 : 27), 0);
+  compraIniciada(totalCompra);
+
   const {
     data: { session },
   } = await supabase.auth.getSession();
