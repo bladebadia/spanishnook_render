@@ -23,8 +23,7 @@ export default boot(({ app, router }) => {
       send_page_view: true, // Enviar pageviews automáticamente
       anonymize_ip: true, // Anonimizar IPs (GDPR)
     },
-    // TEMPORAL: Habilitado también en desarrollo para testing
-    // Cambiar a: enabled: process.env.NODE_ENV === 'production' cuando termines de testear
+    // Habilitar solo en producción para evitar contaminar datos con desarrollo
     enabled: process.env.NODE_ENV === 'production',
   });
 
