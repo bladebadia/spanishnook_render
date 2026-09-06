@@ -26,17 +26,31 @@ export function useAuth() {
 
 // Solo ejecutar inicialización en el cliente
 if (typeof window !== 'undefined') {
-  // Inicializar sesión
-  supabase.auth
-    .getSession()
-    .then(({ data }) => {
-      user.value = data.session?.user ?? null;
-      isInitialized.value = true;
-    })
-    .catch((err) => {
+  // Inicializar sesión con retry en caso de lock conflict
+  const initializeSession = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        // Si es un error de lock, ignorarlo silenciosamente
+        if (error.message?.includes('LockManager')) {
+          console.warn('Lock conflict detectado, ignorando...');
+        } else {
+          console.error('Error al obtener sesión:', error);
+        }
+      } else {
+        user.value = data.session?.user ?? null;
+      }
+    } catch (err) {
       console.error('Error al obtener sesión:', err);
-      isInitialized.value = true; // Marcar como inicializado incluso con error
-    });
+    } finally {
+      // Siempre marcar como inicializado para no bloquear la UI
+      isInitialized.value = true;
+    }
+  };
+
+  // Ejecutar inicialización
+  void initializeSession();
 
   // Escuchar cambios de sesión (login, logout, refresh)
   supabase.auth.onAuthStateChange((_event, session) => {

@@ -314,10 +314,12 @@ import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useAnalytics } from 'src/composables/useAnalytics';
 
 const $q = useQuasar();
 const router = useRouter();
 const { t } = useI18n();
+const { registroIniciado, registroCompletado } = useAnalytics();
 
 const step = ref(1);
 const cargando = ref(false); // Para el registro final
@@ -409,6 +411,8 @@ const siguientePaso = async () => {
   }
 
   // Si todo está OK, avanzamos
+  // Track inicio de registro
+  registroIniciado();
   step.value++;
 };
 
@@ -439,6 +443,9 @@ const registrarUsuario = async () => {
 
     // Ya no comprobamos !authData.user para lanzar error, porque con confirmación
     // de email a veces la sesión viene nula pero el usuario se creó.
+
+    // Track registro completado
+    registroCompletado('email');
 
     // Si hay usuario pero no sesión, es que requiere confirmación
     if (authData.user && !authData.session) {
