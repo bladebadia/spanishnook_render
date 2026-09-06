@@ -73,6 +73,20 @@
                 <q-item-label>Tarjetas y Noticias</q-item-label>
               </q-item-section>
             </q-item>
+            <q-item
+              clickable
+              v-ripple
+              :active="seccionActual === 'materiales'"
+              @click="cambiarSeccion('materiales')"
+              class="menu-item"
+            >
+              <q-item-section avatar>
+                <q-icon name="menu_book" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Materiales y Cuadernos</q-item-label>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-card>
       </div>
@@ -785,7 +799,7 @@
                       icon="group"
                       color="info"
                       outline
-                      @click="verAlumnosCurso(curso.id!, curso.nombre_curso)"
+                      @click="verAlumnosCurso(curso.id || 0, curso.nombre_curso)"
                       :loading="cargandoAlumnos"
                     />
 
@@ -794,7 +808,7 @@
                       icon="checklist"
                       color="orange"
                       outline
-                      @click="abrirGestorListaEspera(curso.id!, curso.lista_espera || [])"
+                      @click="abrirGestorListaEspera(curso.id || 0, curso.lista_espera || [])"
                     >
                       <q-badge
                         color="orange"
@@ -833,7 +847,7 @@
                       label="Eliminar registro"
                       color="negative"
                       icon="delete"
-                      @click="eliminarCurso(curso.id!)"
+                      @click="eliminarCurso(curso.id || 0)"
                       outline
                     >
                       <q-tooltip>
@@ -1304,7 +1318,7 @@
                     dense
                     icon="delete"
                     color="negative"
-                    @click="eliminarReserva(reserva.id!)"
+                    @click="eliminarReserva(reserva.id || 0)"
                   >
                     <q-tooltip>Eliminar</q-tooltip>
                   </q-btn>
@@ -1489,6 +1503,241 @@
           </q-card>
         </q-dialog>
 
+        <!-- Sección Materiales Didácticos -->
+        <div v-if="seccionActual === 'materiales'">
+          <div class="row items-center justify-between q-mb-md">
+            <div class="text-h4">Gestión de Materiales y Cuadernos</div>
+            <q-btn
+              color="primary"
+              icon="add"
+              label="Nuevo Material"
+              @click="abrirDialogMaterial"
+              unelevated
+            />
+          </div>
+
+          <!-- Lista de Materiales -->
+          <q-card v-if="materiales.length === 0" flat bordered class="q-pa-lg text-center">
+            <q-icon name="menu_book" size="64px" color="grey-5" />
+            <div class="text-h6 text-grey-7 q-mt-md">No hay materiales todavía</div>
+          </q-card>
+
+          <div class="row q-col-gutter-md" v-else>
+            <div class="col-12 col-md-4" v-for="(mat, index) in materiales" :key="mat.id || index">
+              <q-card>
+                <q-img
+                  :src="
+                    mat.imagen_portada || 'https://via.placeholder.com/300x200?text=Sin+Portada'
+                  "
+                  height="200px"
+                />
+                <q-card-section>
+                  <div class="text-h6">{{ mat.titulo }}</div>
+                  <div class="text-subtitle2 text-primary">{{ mat.precio }}€</div>
+                  <div class="text-caption text-grey ellipsis-2-lines">
+                    {{ mat.descripcion_breve }}
+                  </div>
+                </q-card-section>
+                <q-card-actions align="right" class="q-px-md q-pb-md">
+                  <q-chip :color="mat.visible ? 'positive' : 'grey'" text-color="white" size="sm">
+                    {{ mat.visible ? 'Visible' : 'Oculto' }}
+                  </q-chip>
+                  <q-space />
+                  <q-btn flat round color="primary" icon="edit" @click="editarMaterial(mat)" />
+                  <q-btn
+                    flat
+                    round
+                    color="negative"
+                    icon="delete"
+                    @click="eliminarMaterial(mat.id || 0)"
+                  />
+                </q-card-actions>
+              </q-card>
+            </div>
+          </div>
+
+          <!-- Dialog para Crear/Editar Material -->
+          <q-dialog v-model="dialogMaterial" persistent>
+            <q-card style="min-width: 800px; max-width: 90vw">
+              <q-card-section class="row items-center bg-primary text-white">
+                <div class="text-h6">{{ materialForm.id ? 'Editar' : 'Nuevo' }} Material</div>
+                <q-space />
+                <q-btn icon="close" flat round dense v-close-popup />
+              </q-card-section>
+
+              <q-card-section class="scroll" style="max-height: 75vh">
+                <div class="row q-col-gutter-md">
+                  <!-- CONFIGURACIÓN GENERAL -->
+                  <div class="col-12">
+                    <div class="text-subtitle1 text-weight-bold text-grey-8 q-mb-sm">
+                      <q-icon name="settings" class="q-mr-sm" /> Configuración General
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <q-input
+                      v-model.number="materialForm.precio"
+                      label="Precio (€) *"
+                      type="number"
+                      filled
+                      dense
+                    />
+                  </div>
+                  <div class="col-12 col-md-6 flex items-center">
+                    <q-toggle
+                      v-model="materialForm.visible"
+                      label="Visible en web"
+                      color="positive"
+                    />
+                  </div>
+
+                  <!-- TEXTOS EN ESPAÑOL -->
+                  <div class="col-12">
+                    <q-separator class="q-my-md" />
+                    <div class="text-subtitle1 text-weight-bold text-primary q-mb-sm">
+                      🇪🇸 Textos en Español
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-12">
+                    <q-input
+                      v-model="materialForm.titulo"
+                      label="Título del cuaderno *"
+                      filled
+                      dense
+                    />
+                  </div>
+                  <div class="col-12">
+                    <q-input
+                      v-model="materialForm.descripcion_breve"
+                      label="Descripción Breve (Para la tarjeta)"
+                      filled
+                      dense
+                    />
+                  </div>
+                  <div class="col-12">
+                    <q-input
+                      v-model="materialForm.descripcion_larga"
+                      label="Descripción Larga (Para la ficha)"
+                      type="textarea"
+                      rows="4"
+                      filled
+                      dense
+                    />
+                  </div>
+
+                  <!-- TEXTOS EN INGLÉS -->
+                  <div class="col-12">
+                    <q-separator class="q-my-md" />
+                    <div class="text-subtitle1 text-weight-bold text-red-8 q-mb-sm">
+                      🇬🇧 Textos en Inglés (Opcional)
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-12">
+                    <q-input
+                      v-model="materialForm.titulo_en"
+                      label="Título (Inglés)"
+                      filled
+                      dense
+                    />
+                  </div>
+                  <div class="col-12">
+                    <q-input
+                      v-model="materialForm.descripcion_breve_en"
+                      label="Descripción Breve (Inglés)"
+                      filled
+                      dense
+                    />
+                  </div>
+                  <div class="col-12">
+                    <q-input
+                      v-model="materialForm.descripcion_larga_en"
+                      label="Descripción Larga (Inglés)"
+                      type="textarea"
+                      rows="4"
+                      filled
+                      dense
+                    />
+                  </div>
+
+                  <!-- ARCHIVOS Y MULTIMEDIA -->
+                  <div class="col-12">
+                    <q-separator class="q-my-md" />
+                    <div class="text-subtitle1 text-weight-bold text-grey-8 q-mb-sm">
+                      <q-icon name="folder_zip" class="q-mr-sm" /> Archivos y Multimedia
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-12">
+                    <q-input
+                      v-model="materialForm.youtube_url"
+                      label="URL de YouTube (Opcional)"
+                      placeholder="https://youtube.com/watch?v=..."
+                      filled
+                      dense
+                    >
+                      <template v-slot:prepend
+                        ><q-icon name="ondemand_video" color="red"
+                      /></template>
+                    </q-input>
+                  </div>
+
+                  <!-- 1. IMAGEN PORTADA -->
+                  <div class="col-12 col-md-6">
+                    <div class="text-subtitle2 text-grey-8 q-mb-xs">
+                      1. Subir Imagen Portada (JPG/PNG)
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      @change="onPortadaChange"
+                      class="full-width q-pa-sm bg-grey-2"
+                      style="border: 1px solid #ccc; border-radius: 4px; cursor: pointer"
+                    />
+                    <div
+                      v-if="materialForm.imagen_portada"
+                      class="text-caption text-positive q-mt-xs text-weight-bold"
+                    >
+                      <q-icon name="check_circle" size="sm" class="q-mr-xs" /> Ya tiene imagen
+                      guardada
+                    </div>
+                  </div>
+
+                  <!-- 2. ARCHIVO PDF -->
+                  <div class="col-12 col-md-6">
+                    <div class="text-subtitle2 text-grey-8 q-mb-xs">2. Subir Archivo PDF</div>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      @change="onPdfChange"
+                      class="full-width q-pa-sm bg-grey-2"
+                      style="border: 1px solid #ccc; border-radius: 4px; cursor: pointer"
+                    />W
+                    <div
+                      v-if="materialForm.archivo_pdf"
+                      class="text-caption text-positive q-mt-xs text-weight-bold"
+                    >
+                      <q-icon name="check_circle" size="sm" class="q-mr-xs" /> Ya tiene PDF guardado
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+              <q-separator />
+              <q-card-actions align="right" class="q-pa-md">
+                <q-btn flat label="Cancelar" color="grey" v-close-popup />
+                <q-btn
+                  label="Guardar Material"
+                  color="primary"
+                  @click="guardarMaterial"
+                  :loading="guardandoMaterial"
+                  unelevated
+                />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
+        </div>
+
         <!-- Sección Tarjetas -->
         <div v-if="seccionActual === 'tarjetas'">
           <q-card>
@@ -1584,6 +1833,60 @@ import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 
 // Interfaces
+
+const materiales = ref<MaterialDidactico[]>([]);
+const dialogMaterial = ref(false);
+const guardandoMaterial = ref(false);
+const archivoPortada = ref<File | null>(null);
+const archivoPdf = ref<File | null>(null);
+
+interface MaterialDidactico {
+  id?: number;
+  titulo: string;
+  titulo_en?: string;
+  descripcion_breve: string;
+  descripcion_breve_en?: string;
+  descripcion_larga: string;
+  descripcion_larga_en?: string;
+  youtube_url: string;
+  imagen_portada: string;
+  archivo_pdf: string;
+  precio: number;
+  visible: boolean;
+}
+
+const materialForm = ref<MaterialDidactico>({
+  titulo: '',
+  titulo_en: '',
+  descripcion_breve: '',
+  descripcion_breve_en: '',
+  descripcion_larga: '',
+  descripcion_larga_en: '',
+  youtube_url: '',
+  imagen_portada: '',
+  archivo_pdf: '',
+  precio: 0,
+  visible: false,
+});
+
+const onPortadaChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  if (target && target.files && target.files.length > 0) {
+    archivoPortada.value = target.files[0] || null;
+  } else {
+    archivoPortada.value = null;
+  }
+};
+
+const onPdfChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  if (target && target.files && target.files.length > 0) {
+    archivoPdf.value = target.files[0] || null;
+  } else {
+    archivoPdf.value = null;
+  }
+};
+
 interface SubscripcionRow {
   user_id: string;
 }
@@ -2021,7 +2324,6 @@ const getClasesDia = (fecha: Date | null): string => {
 
   const clases = ['dia-calendario'];
 
-  // FIX: Mismo formato local para comparar
   const year = fecha.getFullYear();
   const month = String(fecha.getMonth() + 1).padStart(2, '0');
   const day = String(fecha.getDate()).padStart(2, '0');
@@ -2783,11 +3085,124 @@ const eliminarCurso = (id: number): void => {
   });
 };
 
+// --- FUNCIONES PARA MATERIALES DIDÁCTICOS ---
+const cargarMateriales = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('materiales_didacticos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    materiales.value = data || [];
+  } catch (error) {
+    console.error('Error al cargar materiales en admin:', error);
+  }
+};
+
+const abrirDialogMaterial = () => {
+  materialForm.value = {
+    titulo: '',
+    titulo_en: '',
+    descripcion_breve: '',
+    descripcion_breve_en: '',
+    descripcion_larga: '',
+    descripcion_larga_en: '',
+    youtube_url: '',
+    imagen_portada: '',
+    archivo_pdf: '',
+    precio: 0,
+    visible: false,
+  };
+  archivoPortada.value = null;
+  archivoPdf.value = null;
+  dialogMaterial.value = true;
+};
+
+const editarMaterial = (mat: MaterialDidactico) => {
+  materialForm.value = { ...mat };
+  archivoPortada.value = null;
+  archivoPdf.value = null;
+  dialogMaterial.value = true;
+};
+
+const guardarMaterial = async () => {
+  if (!materialForm.value.titulo || materialForm.value.precio < 0) {
+    $q.notify({ type: 'warning', message: 'Falta el título o el precio' });
+    return;
+  }
+
+  guardandoMaterial.value = true;
+  try {
+    if (archivoPortada.value) {
+      const imgName = `portada_${Date.now()}_${archivoPortada.value.name}`;
+      const { data: imgData, error: imgErr } = await supabase.storage
+        .from('portadas_materiales')
+        .upload(imgName, archivoPortada.value);
+      if (imgErr) throw imgErr;
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('portadas_materiales').getPublicUrl(imgData.path);
+      materialForm.value.imagen_portada = publicUrl;
+    }
+
+    if (archivoPdf.value) {
+      const pdfName = `pdf_${Date.now()}_${archivoPdf.value.name}`;
+      const { data: pdfData, error: pdfErr } = await supabase.storage
+        .from('pdfs_materiales')
+        .upload(pdfName, archivoPdf.value);
+      if (pdfErr) throw pdfErr;
+      materialForm.value.archivo_pdf = pdfData.path;
+    }
+
+    if (materialForm.value.id) {
+      const { error } = await supabase
+        .from('materiales_didacticos')
+        .update(materialForm.value)
+        .eq('id', materialForm.value.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('materiales_didacticos').insert([materialForm.value]);
+      if (error) throw error;
+    }
+
+    $q.notify({ type: 'positive', message: 'Material guardado con éxito' });
+    dialogMaterial.value = false;
+    await cargarMateriales();
+  } catch (error) {
+    console.error(error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'Ha ocurrido un error desconocido';
+    $q.notify({ type: 'negative', message: 'Error: ' + errorMessage });
+  } finally {
+    guardandoMaterial.value = false;
+  }
+};
+
+const eliminarMaterial = (id?: number) => {
+  if (!id) return;
+  $q.dialog({ title: 'Confirmar', message: '¿Borrar este cuaderno?', cancel: true }).onOk(() => {
+    void (async () => {
+      try {
+        const { error } = await supabase.from('materiales_didacticos').delete().eq('id', id);
+        if (error) throw error;
+        $q.notify({ type: 'positive', message: 'Borrado' });
+        await cargarMateriales();
+      } catch (err) {
+        console.error(err);
+        $q.notify({ type: 'negative', message: 'Error al borrar el material' });
+      }
+    })();
+  });
+};
+
 onMounted(async (): Promise<void> => {
   await cargarUsuario();
   await cargarDatosCalendario();
   await cargarCursosGrupales();
   await cargarReservas();
+  void cargarMateriales();
+  await cargarUsuario();
   subscription = supabase
     .channel('calendario-changes')
     .on(

@@ -1,13 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { supabase } from 'src/supabaseClient';
-import { jwtDecode } from 'jwt-decode';
-
-interface SupabaseJwtPayload {
-  app_metadata?: {
-    is_admin?: boolean;
-  };
-  [key: string]: unknown;
-}
 
 const routes: RouteRecordRaw[] = [
   {
@@ -24,24 +16,28 @@ const routes: RouteRecordRaw[] = [
     path: '/Administracion',
     component: () => import('pages/PanelAdministracion.vue'),
     beforeEnter: async () => {
-      // La autenticación básica ya se verificó en el beforeEach global
-      // Aquí solo verificamos el rol de admin
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        
-        if (!token) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        // Si no hay sesión iniciada, a la página de login
+        if (!session || !session.user) {
           return '/Acceder';
         }
-        
-        const payload = jwtDecode<SupabaseJwtPayload>(token);
-        const isAdmin = Boolean(payload.app_metadata?.is_admin);
-        
+
+        // Miramos directamente dentro de la sesión si tiene la chapa de admin
+        const isAdmin = session.user.app_metadata?.is_admin === true;
+
         if (!isAdmin) {
-          return '/'; // Redirigir a home si no es admin
+          console.warn('Acceso denegado: el usuario no es admin.');
+          return '/'; // Patada a la portada
         }
+
+        // Si es admin, le dejamos pasar
+        return true;
       } catch (error) {
-        console.error('Error verificando rol admin:', error);
+        console.error('Error verificando rol admin en la ruta:', error);
         return '/Acceder';
       }
     },
@@ -130,6 +126,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/ReservasCursos',
     component: () => import('pages/ReservasCursos.vue'),
+    meta: { layout: 'empty' },
+  },
+  {
+    path: '/Materiales',
+    component: () => import('pages/MaterialesPage.vue'),
     meta: { layout: 'empty' },
   },
   // Always leave this as last one,

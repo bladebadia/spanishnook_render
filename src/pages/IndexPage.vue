@@ -1,5 +1,5 @@
 <template>
-  <q-page   :style-fn="customStyleFn" >
+  <q-page :style-fn="customStyleFn">
     <div>
       <q-img
         fit="cover"
@@ -83,7 +83,11 @@
       </transition>
     </div>
 
-    <div v-intersect="onPromoIntersect1" class="q-my-xs row justify-center bg-grey-2">
+    <div
+      v-intersect="onPromoIntersect1"
+      class="q-my-xs row justify-center"
+      style="background-color: #fffdf8"
+    >
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
           <div class="col-12 items-center flex flex-center column q-my-md q-mb-md-xl">
@@ -154,6 +158,94 @@
           </div>
         </div>
       </transition>
+    </div>
+
+    <div class="q-py-xl" style="background-color: #fffdf8">
+      <div class="text-center q-mb-lg">
+        <h3 class="text-h4 text-weight-bold text-primary q-my-none">Cuadernos de Práctica</h3>
+        <p class="text-grey-7 q-mt-sm">Refuerza tu nivel con nuestro material exclusivo</p>
+      </div>
+
+      <div v-if="cuadernosCarrusel.length > 0" class="row justify-center">
+        <!-- CARRUSEL DE QUASAR CON INFINITE -->
+        <q-carousel
+          v-model="slideCuadernos"
+          transition-prev="slide-right"
+          transition-next="slide-left"
+          swipeable
+          animated
+          infinite
+          control-color="primary"
+          arrows
+          height="450px"
+          class="bg-transparent col-12 col-md-8 col-lg-6"
+        >
+          <!-- DIAPOSITIVAS -->
+          <q-carousel-slide
+            v-for="(cuaderno, index) in cuadernosCarrusel"
+            :key="cuaderno.id"
+            :name="index"
+            class="column flex-center q-px-xl"
+          >
+            <!-- TARJETA CENTRADA -->
+            <q-card
+              class="carta-contenido shadow-4"
+              style="
+                width: 100%;
+                max-width: 320px;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+              "
+            >
+              <q-img
+                :src="cuaderno.imagen_portada || 'https://via.placeholder.com/300x400?text=PDF'"
+                height="200px"
+              >
+                <template v-slot:error>
+                  <div class="absolute-full flex flex-center bg-grey-3 text-grey-8">Sin Imagen</div>
+                </template>
+                <div
+                  class="badge-hs bg-positive text-white text-weight-bold shadow-3"
+                  v-if="cuaderno.precio === 0 || !cuaderno.precio"
+                >
+                  GRATIS
+                </div>
+                <!-- Etiqueta roja normal si cuesta dinero -->
+                <div class="badge-hs bg-negative text-white text-weight-bold shadow-3" v-else>
+                  {{ cuaderno.precio }} €
+                </div>
+              </q-img>
+
+              <q-card-section class="col-grow text-center q-pa-md flex column justify-center">
+                <div class="text-h6 text-weight-bold q-mb-sm" style="line-height: 1.2">
+                  {{
+                    locale === 'en-US' && cuaderno.titulo_en ? cuaderno.titulo_en : cuaderno.titulo
+                  }}
+                </div>
+                <div class="text-body2 text-grey-8 ellipsis-3-lines">
+                  {{
+                    locale === 'en-US' && cuaderno.descripcion_breve_en
+                      ? cuaderno.descripcion_breve_en
+                      : cuaderno.descripcion_breve
+                  }}
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="center" class="q-pa-md q-pt-none">
+                <q-btn
+                  color="primary"
+                  rounded
+                  unelevated
+                  label="Ver catálogo"
+                  class="full-width text-weight-bold"
+                  to="/Materiales"
+                />
+              </q-card-actions>
+            </q-card>
+          </q-carousel-slide>
+        </q-carousel>
+      </div>
     </div>
 
     <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
@@ -496,9 +588,9 @@ import OpinioneVerificadas from '../components/OpinioneVerificadas.vue';
 const customStyleFn = () => {
   // Ignoramos el offset que Quasar calcula y usamos nuestro valor fijo
   return {
-    minHeight: 'calc(100vh - 100px)'
-  }
-}
+    minHeight: 'calc(100vh - 100px)',
+  };
+};
 type Opinion = {
   name: string;
   country: string;
@@ -555,10 +647,45 @@ const showPromoCard2 = ref(false);
 const showOpiniones = ref(false);
 const showPromoCard4 = ref(false);
 const currentSlide = ref(0);
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const router = useRouter();
 const $q = useQuasar();
 const { user } = useAuth();
+
+// 1. Añadimos el inglés a la plantilla
+interface CuadernoCarrusel {
+  id: number;
+  titulo: string;
+  titulo_en?: string;
+  descripcion_breve: string;
+  descripcion_breve_en?: string;
+  imagen_portada: string;
+  precio: number;
+}
+
+const cuadernosCarrusel = ref<CuadernoCarrusel[]>([]);
+const slideCuadernos = ref(0);
+
+const fetchCuadernosInicio = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('materiales_didacticos')
+      // 2. Pedimos las columnas _en a Supabase
+      .select(
+        'id, titulo, titulo_en, descripcion_breve, descripcion_breve_en, imagen_portada, precio',
+      )
+      .eq('visible', true)
+      .order('created_at', { ascending: false })
+      .limit(6);
+
+    if (error) throw error;
+    if (data) {
+      cuadernosCarrusel.value = data as unknown as CuadernoCarrusel[];
+    }
+  } catch (error) {
+    console.error('Error al cargar los cuadernos para el inicio:', error);
+  }
+};
 
 const defaultAvatar =
   'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png';
@@ -735,10 +862,12 @@ const fetchOpiniones = async () => {
 if (process.env.CLIENT) {
   onMounted(() => {
     void fetchOpiniones();
+    void fetchCuadernosInicio();
   });
 } else {
   onServerPrefetch(async () => {
     await fetchOpiniones();
+    await fetchCuadernosInicio();
   });
 }
 
@@ -778,6 +907,29 @@ function onOpinionesIntersect(entry: IntersectionObserverEntry): boolean {
 }
 </script>
 
-<style>
+<style scoped>
+.carta-contenido {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
 
+.carta-contenido:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Etiqueta roja en la esquina */
+.badge-hs {
+  position: absolute;
+  top: 10px;
+  right: -10px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  transform: rotate(5deg);
+  border: 2px solid white;
+}
 </style>

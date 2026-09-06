@@ -4,10 +4,10 @@
     <q-header elevated ref="headerRef">
       <!-- Inicio barra superior -->
       <q-bar>
-        <q-space></q-space>        
+        <q-space></q-space>
         <!-- Elementos condicionales envueltos en q-no-ssr para evitar mismatch de hidratación -->
         <q-no-ssr>
-          <span style="display: contents;">
+          <span style="display: contents">
             <q-btn to="/AreaPersonal" v-if="user" flat class="text-white btn-nav-superior">
               {{ t('areaPersonal') }}
             </q-btn>
@@ -26,13 +26,19 @@
               icon="shopping_cart"
               flat
             >
-              <q-badge v-if="carritoCount > 0" color="red" floating rounded class="badge-notification">
+              <q-badge
+                v-if="carritoCount > 0"
+                color="red"
+                floating
+                rounded
+                class="badge-notification"
+              >
                 {{ carritoCount }}
               </q-badge>
             </q-btn>
           </span>
         </q-no-ssr>
-       
+
         <!-- Selector de idioma con banderas -->
         <div class="row items-center q-gutter-xs flag-switcher">
           <q-btn
@@ -62,16 +68,16 @@
 
       <q-toolbar>
         <!-- Botón menú hamburguesa - Siempre visible en DOM, oculto con CSS -->
-         <q-no-ssr>
-        <q-btn
-          v-if="showMenuButton"
-          flat
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-          style="font-size: 1rem"
-        />
+        <q-no-ssr>
+          <q-btn
+            v-if="showMenuButton"
+            flat
+            round
+            icon="menu"
+            aria-label="Menu"
+            @click="toggleLeftDrawer"
+            style="font-size: 1rem"
+          />
         </q-no-ssr>
         <div class="q-ma-none q-pa-none">
           <img round src="/img/Logotexto_500.png" alt="Logo Spanish nook" class="logo-responsivo" />
@@ -108,6 +114,16 @@
             :class="{ 'nave-btn-active': activeButton === 'testNivel' }"
           >
             {{ t('testNivel') }}
+          </q-btn>
+
+          <q-btn
+            flat
+            :to="'/Materiales'"
+            exact
+            class="nave-btn"
+            :class="{ 'nave-btn-active': activeButton === 'materiales' }"
+          >
+            Cuadernos
           </q-btn>
 
           <q-btn
@@ -185,7 +201,19 @@
       <router-view />
     </q-page-container>
 
-    <q-page-sticky v-if="!['/Acceder', '/RegistroCuenta', '/CarritoCompra', '/AreaPersonal', '/Administracion'].includes(route.path)" position="bottom-right" :offset="[10, 10]">
+    <q-page-sticky
+      v-if="
+        ![
+          '/Acceder',
+          '/RegistroCuenta',
+          '/CarritoCompra',
+          '/AreaPersonal',
+          '/Administracion',
+        ].includes(route.path)
+      "
+      position="bottom-right"
+      :offset="[10, 10]"
+    >
       <q-btn
         class="whatsapp-sticky-btn enlarged-touch"
         round
@@ -204,7 +232,9 @@
           <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
           <div class="footer-legal-links">
             <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
-            <router-link to="/Privacidad" class="foot-link">{{ t('footerPrivacidad') }}</router-link>
+            <router-link to="/Privacidad" class="foot-link">{{
+              t('footerPrivacidad')
+            }}</router-link>
             <router-link to="/Cookies" class="foot-link">{{ t('footerCookies') }}</router-link>
             <router-link to="/Condiciones" class="foot-link">{{
               t('footerCondiciones')
@@ -299,6 +329,7 @@ watch(
     else if (newPath === '/ClasesIndividuales' || newPath === '/ClasesGrupales')
       activeButton.value = 'clases';
     else if (newPath === '/TestNivel') activeButton.value = 'test';
+    else if (newPath === '/Materiales') activeButton.value = 'materiales';
     else if (newPath === '/sobreSpanish') activeButton.value = 'sobre';
     else if (newPath === '/Contacto') activeButton.value = 'contacto';
     else activeButton.value = '';
@@ -370,15 +401,21 @@ const linksList = computed((): EssentialLinkProps[] => [
     link: '/',
   },
   {
+    title: t('clases'),
+    icon: 'record_voice_over',
+    link: '/Clases',
+  },
+  {
     title: t('testNivel'),
     icon: 'code',
     link: '/TestNivel',
   },
   {
-    title: t('clases'),
-    icon: 'record_voice_over',
-    link: '/Clases',
+    title: 'Cuadernos',
+    icon: 'menu_book',
+    link: '/Materiales',
   },
+
   {
     title: t('sobre'),
     icon: 'rss_feed',

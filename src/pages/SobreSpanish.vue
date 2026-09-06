@@ -9,7 +9,7 @@
           </p>
         </div>
         <!-- Descripción  -->
-        <div class="col-12 items-center text-center" style="width: 70%">
+        <div class="col-12 items-center text-justify" style="width: 70%">
           <p class="texto-responsivo q-pb-xl q-pb-xl">
             <strong>{{ t('SobreSpanish.intro') }}</strong>
           </p>
@@ -17,7 +17,10 @@
         <!-- Video de presentación -->
         <div class="col-12 items-center text-center q-my-md video-responsive">
           <video controls style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08)">
-            <source src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/video/clases_espanol_video_subt.mp4" type="video/mp4" />
+            <source
+              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/video/clases_espanol_video_subt.mp4"
+              type="video/mp4"
+            />
             Tu navegador no soporta el video.
           </video>
         </div>
@@ -42,7 +45,7 @@
             {{ t('SobreSpanish.quien') }}
           </p>
         </div>
-        <div class="col-12 q-my-md content-width">
+        <div class="col-12 q-my-md text-justify content-width">
           <p class="texto-responsivo">
             {{ t('SobreSpanish.soy') }}
           </p>

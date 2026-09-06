@@ -1,20 +1,14 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <div class="row cabecera-row">
-      <div class="col-12 col-md-6">
-        <q-img
-          class="cabecera-img"
-          fit="cover"
-          position="center"
-          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-baner.png"
-        />
-      </div>
-
-      <div class="col-12 col-md-6 text-center align-self-center q-pa-md">
-        <h2 class="text-h4 text-primary text-weight-bold q-mb-md">
+    <div class="row cabecera-row full-width q-mt-xl">
+      <div class="col-12 align-self-center q-pa-md flex column items-center">
+        <h2 class="text-h4 text-primary text-weight-bold q-mb-md text-center">
           {{ t('NuestrasClases.nuestrasClases') }}
         </h2>
-        <p class="texto-responsivo text-justify">
+        <p
+          class="texto-responsivo text-justify"
+          style="max-width: 800px; margin: 0 auto; width: 100%"
+        >
           {{ t('NuestrasClases.textoNuestrasClases') }}
         </p>
       </div>
@@ -46,27 +40,29 @@
 
     <div
       id="clases-conversacion"
-      class="row full-width q-my-xl items-center"
+      class="row full-width q-my-xl items-center justify-center"
       style="gap: 32px; scroll-margin-top: 120px"
     >
-      <div class="col-12 col-md-5 flex justify-center">
+      <!-- Cambiado a col-sm-5 -->
+      <div class="col-12 col-sm-5 flex justify-center">
         <q-img
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
-          style="width: 100%; max-width: 300px; border-radius: 16px"
+          style="width: 100%; max-width: 350px; aspect-ratio: 1 / 1; border-radius: 16px"
           fit="cover"
         />
       </div>
 
-      <div class="col-12 col-md-6 flex justify-center">
+      <!-- Cambiado a col-sm-5 -->
+      <div class="col-12 col-sm-5 flex justify-center">
         <div class="banner-clases-grupales">
-          <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center">
+          <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center q-my-none">
             {{ t('NuestrasClases.clasesGrupalesConversacion') }}
           </h2>
         </div>
       </div>
     </div>
 
-    <div class="row flex q-my-xl" style="width: 100%; gap: 32px">
+    <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
           <div class="titulo-responsivo text-justify-center">
@@ -170,19 +166,25 @@
       />
     </div>
 
-    <div id="clases-individuales" class="row full-width q-my-xl items-center">
-      <div class="col-12 col-md-6 flex justify-center banner-individuales-col">
-        <div class="banner-clases-grupales banner-individuales">
-          <p class="banner-clases-grupales__titulo titulo-responsivo text-center">
+    <div
+      id="clases-individuales"
+      class="row full-width q-mt-sm q-mb-xl items-center justify-center"
+      style="gap: 32px"
+    >
+      <!-- Cambiado a col-sm-5 -->
+      <div class="col-12 col-sm-5 flex justify-center">
+        <div class="banner-clases-grupales">
+          <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center q-my-none">
             {{ t('NuestrasClases.clasesIndividualesPersonalizadas') }}
-          </p>
+          </h2>
         </div>
       </div>
 
-      <div class="col-12 col-md-5 flex justify-center">
+      <!-- Cambiado a col-sm-5 -->
+      <div class="col-12 col-sm-5 flex justify-center">
         <q-img
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-individuales.png"
-          style="width: 100%; max-width: 400px; border-radius: 16px"
+          style="width: 100%; max-width: 350px; aspect-ratio: 1 / 1; border-radius: 16px"
           fit="cover"
         />
       </div>
@@ -383,12 +385,12 @@ async function cargarCursosPromo(): Promise<void> {
     .from('cursos_grupales')
     .select(
       `
-      id, 
-      imagen_tarjeta, 
-      titulo_tarjeta, 
-      texto_tarjeta, 
-      boton_tarjeta, 
-      estado_curso, 
+      id,
+      imagen_tarjeta,
+      titulo_tarjeta,
+      texto_tarjeta,
+      boton_tarjeta,
+      estado_curso,
       visibilidad,
       mostrar_promo,
       texto_promo,
@@ -531,13 +533,13 @@ watch(
 }
 
 .banner-individuales {
-    max-width: 100vw !important;
-    width: 100vw !important;
-    box-sizing: border-box;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: 5% !important;
-  }
+  max-width: 100vw !important;
+  width: 100vw !important;
+  box-sizing: border-box;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 5% !important;
+}
 
 @media (max-width: 600px) {
   .banner-individuales-col {

@@ -61,24 +61,6 @@ export default defineConfig((ctx) => {
       // polyfillModulePreload: true,
       distDir: 'dist/ssr',
 
-      // Configuración específica para contenedores Docker
-      extendViteConf(viteConf) {
-        viteConf.server = {
-          ...viteConf.server,
-          host: '0.0.0.0',
-          port: 9100,
-          watch: {
-            usePolling: true,
-            interval: 1000,
-          },
-        };
-        // Alias explícito para pages (como objeto, compatible con Vite)
-        viteConf.resolve = viteConf.resolve || {};
-        viteConf.resolve.alias = {
-          ...(viteConf.resolve.alias || {}),
-          pages: fileURLToPath(new URL('./src/pages', import.meta.url)),
-        };
-      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
@@ -115,9 +97,11 @@ export default defineConfig((ctx) => {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
-      host: '0.0.0.0', // Permite conexiones desde cualquier IP
-      port: 9200, // Puerto específico
-      open: true,
+      server: {
+        type: 'http',
+      },
+      port: 9000,
+      open: true, // Esto abre el navegador automáticamente
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
