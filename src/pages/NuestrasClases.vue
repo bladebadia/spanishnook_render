@@ -41,10 +41,9 @@
     <div
       id="clases-conversacion"
       class="row full-width q-my-xl items-center justify-center"
-      style="gap: 32px; scroll-margin-top: 120px"
+      style="scroll-margin-top: 120px"
     >
-      <!-- Cambiado a col-sm-5 -->
-      <div class="col-12 col-sm-5 flex justify-center">
+      <div class="col-12 col-md-5 flex justify-center q-pa-md">
         <q-img
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
           style="width: 100%; max-width: 350px; aspect-ratio: 1 / 1; border-radius: 16px"
@@ -52,9 +51,16 @@
         />
       </div>
 
-      <!-- Cambiado a col-sm-5 -->
-      <div class="col-12 col-sm-5 flex justify-center">
-        <div class="banner-clases-grupales">
+      <div class="col-12 col-md-5 flex justify-center q-pa-md">
+        <div
+          class="banner-clases-grupales"
+          style="
+            width: 100% !important;
+            max-width: 500px !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+          "
+        >
           <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center q-my-none">
             {{ t('NuestrasClases.clasesGrupalesConversacion') }}
           </h2>
@@ -169,19 +175,24 @@
     <div
       id="clases-individuales"
       class="row full-width q-mt-sm q-mb-xl items-center justify-center"
-      style="gap: 32px"
     >
-      <!-- Cambiado a col-sm-5 -->
-      <div class="col-12 col-sm-5 flex justify-center">
-        <div class="banner-clases-grupales">
+      <div class="col-12 col-md-5 flex justify-center q-pa-md">
+        <div
+          class="banner-clases-grupales"
+          style="
+            width: 100% !important;
+            max-width: 500px !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+          "
+        >
           <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center q-my-none">
             {{ t('NuestrasClases.clasesIndividualesPersonalizadas') }}
           </h2>
         </div>
       </div>
 
-      <!-- Cambiado a col-sm-5 -->
-      <div class="col-12 col-sm-5 flex justify-center">
+      <div class="col-12 col-md-5 flex justify-center q-pa-md">
         <q-img
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-individuales.png"
           style="width: 100%; max-width: 350px; aspect-ratio: 1 / 1; border-radius: 16px"
