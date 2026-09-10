@@ -9,3 +9,45 @@
   font-size: 2.4rem !important;
   color: #fff !important;
 }
+
+.rectangular-btn {
+  border-radius: 12px !important; /* esquinas redondeadas, no pill */
+  padding: 10px 18px !important; /* tamaño similar al original */
+  min-width: 160px; /* ancho consistente */
+  box-shadow: none !important;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.botones-clases .q-btn {
+  padding: 8px 14px !important; /* reduce el área clicable pero mantiene la letra */
+  min-width: 120px; /* evita que ocupen toda la fila */
+  font-size: 1rem; /* mantiene tamaño de letra legible */
+  border-radius: 12px !important; /* rectangular con esquinas redondeadas */
+  box-shadow: none !important;
+}
+
+/* Más específico: estilos para los botones dentro del contenedor botones-clases */
+.botones-clases .rectangular-btn {
+  font-size: 1.45rem !important;
+  font-weight: 900 !important;
+  padding: 10px 18px !important;
+  min-width: 150px !important;
+}
+
+.botones-clases .small-rect-btn {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  padding: 8px 12px !important;
+  min-width: 110px !important;
+}
+
+.botones-align-to-image {
+  /* Contenedor alineado al ancho de la imagen (ajusta 350px si tu imagen es otro ancho) */
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  max-width: 350px; /* coincide con el max-width de la imagen en la plantilla */
+  margin-left: 0; /* alinear a la izquierda del contenedor padre */
+}

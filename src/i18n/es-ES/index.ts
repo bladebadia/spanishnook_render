@@ -12,6 +12,7 @@ export default {
   clasesIndividuales: 'Clases Individuales',
   clasesGrupales: 'Clases Grupales',
   clases: 'Clases',
+  cuadernos: 'CUADERNOS',
   footerSpanishnookEs: 'SpanishNook - El rincón donde el español se aprende sin prisa, pero bien.',
   footerAvisoLegal: 'Aviso Legal',
   footerPrivacidad: 'Política de Privacidad',
@@ -115,6 +116,8 @@ export default {
   indexErrorEnviarOpinion: 'Error al enviar la opinión. Inténtalo de nuevo.',
   indexPais: 'País',
   indexNombre: 'Nombre',
+  indexMateriales: 'Materiales Didácticos y Actividades',
+  indexMateriales1: 'Refuerza tu aprendizaje con nuestro material exclusivo',
 
   reservasClases: {
     reservaTuClase: 'Reserva tu clase',
@@ -145,7 +148,8 @@ export default {
     cadaPreguntaTiene:
       'Cada pregunta tiene 3 opciones de respuesta; selecciona una. Cuando creas que no sabes o no puedes continuar con el test, deja las preguntas en blanco y avanza hasta completarlo.',
     alCompletar: 'Al finalizar, recibirás una orientación aproximada de tu nivel de español.',
-    esteTest: 'Este test no sustituye una evaluación oficial, pero te ayudará a encontrar el curso que mejor se adapta a ti.',
+    esteTest:
+      'Este test no sustituye una evaluación oficial, pero te ayudará a encontrar el curso que mejor se adapta a ti.',
     comenzarTest: 'Comenzar Test',
     elTestToma: 'El test dura aproximadamente 5 minutos.',
     pregunta: 'Pregunta',
@@ -191,8 +195,9 @@ export default {
     promoPromoPacks: '¡Más créditos, más ahorro!',
     botonReservaUnica: 'RESERVA TU CLASE',
     nuestrasClases: 'Nuestras Clases',
+    textoNuestrasClasesbold: 'En SpanishNook no hay un único camino.',
     textoNuestrasClases:
-      'En SpanishNook no hay un único camino: cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
+      'Cada estudiante tiene sus metas, su tiempo y su forma de aprender. Por eso, te ofrecemos opciones flexibles para que elijas la que mejor encaje contigo: clases privadas o cursos en grupos reducidos.',
     botonClasesIndividuales: 'CLASES INDIVIDUALES',
     botonClasesConversacion: 'CLASES DE CONVERSACION EN GRUPO',
     recuerdaHacerTest: 'Recuerda hacer tu test',
@@ -430,6 +435,31 @@ export default {
     actualizada: 'Contraseña actualizada con éxito.',
   },
 
+  MaterialesPage: {
+    titulo1: 'Materiales didácticos y actividades',
+    descripcion:
+      'Aprende español real a tu ritmo con materiales prácticos creados para desarrollar las destrezas del español de forma autónoma y complementaria a tu aprendizaje de forma efectiva efectiva.',
+    descripcion2:
+      'Aquí encontrarás cuadernos de actividades en formato PDF diseñados para transformar el contenido audiovisual en una experiencia de aprendizaje interactiva, profunda y estructurada. Cada cuaderno ha sido elaborado para trabajar de forma equilibrada las distintas destrezas del español: desde la comprensión auditiva y el léxico coloquial hasta la expresión escrita y la gramática en contexto.',
+    claim: 'Descarga tus cuadernos de actividades y continúa aprendiendo.',
+    carga: 'Cargando materiales...',
+    quehay: '¿Qué encontrarás en cada cuaderno?📚',
+    contenido1bold: 'Léxico y expresiones reales:',
+    contenido1:
+      'Glosarios con contextualización de modismos, vocabulario coloquial y ejemplos de uso diario.',
+    contenido2bold: 'Comprensión auditiva:',
+    contenido2:
+      'Ejercicios basados en vídeos y audios auténticos para mejorar la capacidad de entender el español hablado.',
+    contenido3bold: 'Comprensión y expresión escritas:',
+    contenido3:
+      'Actividades que fomentan la comprensión y escritura de textos breves en distintos contextos.',
+    contenido4bold: 'Gramática en contexto:',
+    contenido4:
+      'Explicaciones sencillas aplicadas al uso real de la lengua, sin memorización aburrida.',
+    contenido5bold: 'Solucionario completo:',
+    contenido5:
+      'Clave de respuestas al final del documento para que puedas comprobar tu progreso y estudiar de forma 100 % autónoma.',
+  },
   registro: {
     nombreOApodo: 'Nombre o Apodo',
     correoElectronico: 'Correo Electrónico',

@@ -201,11 +201,13 @@
 /* Banner clases grupales */
 .banner-clases-grupales {
   background: linear-gradient(135deg, #851319 0%, #a31820 100%);
-  border-radius: 20px;
-  padding: 48px 32px;
+  border-radius: 16px;
+  padding: 16px 14px; /* menos espacio para apariencia más compacta */
   width: 100%;
+  max-width: 360px; /* limitar al ancho de la imagen */
+  margin: 0; /* alinear al inicio de la columna */
   text-align: center;
-  box-shadow: 0 12px 40px rgba(133, 19, 25, 0.35);
+  box-shadow: 0 8px 24px rgba(133, 19, 25, 0.25);
   position: relative;
   overflow: hidden;
 }
@@ -220,12 +222,12 @@
   pointer-events: none;
 }
 .banner-clases-grupales__titulo {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 1.25rem; /* mucho más pequeño */
+  font-weight: 700;
   color: white;
   line-height: 1.2;
   margin: 0;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   position: relative;
   z-index: 1;
 }
@@ -273,7 +275,7 @@
 
   .banner-clases-grupales {
     padding: 32px 24px;
-    margin:  16px;
+    margin: 16px;
   }
   .banner-clases-grupales__titulo {
     font-size: 1.6rem;

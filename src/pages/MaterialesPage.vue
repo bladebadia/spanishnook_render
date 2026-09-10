@@ -1,12 +1,56 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="row justify-center">
-      <div class="col-12 col-md-10 col-lg-8">
+    <div class="row cabecera-row full-width q-mt-xl">
+      <div class="col-12 align-self-center q-pa-md flex column items-center">
         <div class="text-center q-mb-xl q-mt-md">
-          <h1 class="text-h3 text-weight-bold text-primary q-mb-sm">Materiales y Cuadernos</h1>
-          <p class="text-h6 text-grey-7">
-            Descarga ejercicios, resúmenes y plantillas para mejorar tu español.
+          <h1 class="text-h3 text-primary q-mb-sm">
+            {{ $t('MaterialesPage.titulo1') }}
+          </h1>
+          <br />
+          <br />
+          <p class="texto-responsivo text-justify text-weight-bold">
+            {{ $t('MaterialesPage.descripcion') }}
           </p>
+          <br />
+          <p class="texto-responsivo text-justify">{{ $t('MaterialesPage.descripcion2') }}</p>
+          <br />
+          <p class="texto-responsivo text-center text-primary text-weight-bold">
+            {{ $t('MaterialesPage.claim') }}
+          </p>
+          <br />
+          <br />
+          <br />
+          <br />
+          <p class="subtitulo-responsivo text-center text-weight-bold">
+            {{ $t('MaterialesPage.quehay') }}
+          </p>
+
+          <q-card class="q-mt-sm">
+            <q-card-section class="texto-responsivo text-justify">
+              <ul class="q-pl-md text-justify">
+                <li>
+                  <strong>{{ $t('MaterialesPage.contenido1bold') }}</strong>
+                  {{ $t('MaterialesPage.contenido1') }}
+                </li>
+                <li>
+                  <strong>{{ $t('MaterialesPage.contenido2bold') }}</strong>
+                  {{ $t('MaterialesPage.contenido2') }}
+                </li>
+                <li>
+                  <strong>{{ $t('MaterialesPage.contenido3bold') }}</strong>
+                  {{ $t('MaterialesPage.contenido3') }}
+                </li>
+                <li>
+                  <strong>{{ $t('MaterialesPage.contenido4bold') }}</strong>
+                  {{ $t('MaterialesPage.contenido4') }}
+                </li>
+                <li>
+                  <strong>{{ $t('MaterialesPage.contenido5bold') }}</strong>
+                  {{ $t('MaterialesPage.contenido5') }}
+                </li>
+              </ul>
+            </q-card-section>
+          </q-card>
         </div>
 
         <!-- Pantalla de carga -->
@@ -157,7 +201,9 @@ import { useI18n } from 'vue-i18n'; // <-- IMPORTAMOS EL IDIOMA
 
 const $q = useQuasar();
 const { user } = useAuth();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
+// `t` se utiliza desde la plantilla; evitamos la regla de "no-unused-vars" referenciándola aquí
+void t;
 
 // Añadimos las columnas _en a la interfaz
 interface Material {

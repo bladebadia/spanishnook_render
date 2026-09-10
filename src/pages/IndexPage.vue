@@ -10,10 +10,10 @@
     </div>
 
     <div class="items-center text-center q-my-xl">
-      <p class="titulo-responsivo font-weight: 700" style="color: #851319">
+      <p class="titulo-responsivo q-mb-xl" style="color: #851319">
         {{ t('indexeUnLugarDonde') }}
       </p>
-
+      <br />
       <p class="texto-responsivo text-justify" style="margin-left: 13%; margin-right: 13%">
         {{ t('indexAprenderEspañolPuede') }}
       </p>
@@ -162,8 +162,10 @@
 
     <div class="q-py-xl" style="background-color: #fffdf8">
       <div class="text-center q-mb-lg">
-        <h3 class="text-h4 text-weight-bold text-primary q-my-none">Cuadernos de Práctica</h3>
-        <p class="text-grey-7 q-mt-sm">Refuerza tu nivel con nuestro material exclusivo</p>
+        <h3 class="text-h4 text-weight-bold text-primary q-my-none">
+          Materiales Didácticos y Actividades
+        </h3>
+        <p class="text-grey-7 q-mt-sm">Refuerza tu aprendizaje con nuestro material exclusivo</p>
       </div>
 
       <div v-if="cuadernosCarrusel.length > 0" class="row justify-center">
@@ -931,5 +933,14 @@ function onOpinionesIntersect(entry: IntersectionObserverEntry): boolean {
   border-radius: 20px;
   transform: rotate(5deg);
   border: 2px solid white;
+}
+
+.rectangular-btn {
+  border-radius: 12px !important; /* esquinas redondeadas, no pill */
+  padding: 10px 18px !important; /* tamaño similar al original */
+  min-width: 160px; /* ancho consistente */
+  box-shadow: none !important;
+  font-size: 1.5rem;
+  font-weight: 800;
 }
 </style>

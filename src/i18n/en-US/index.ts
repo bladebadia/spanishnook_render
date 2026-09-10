@@ -14,6 +14,7 @@ export default {
   clasesIndividuales: 'Private Classes',
   clasesGrupales: 'Group Classes',
   clases: 'Classes',
+  cuadernos: 'WORKBOOKS',
   footerSpanishnookEs:
     'SpanishNook - The nook where Spanish is learned without haste, but properly.',
   footerAvisoLegal: 'Legal Notice',
@@ -121,6 +122,8 @@ export default {
   indexErrorEnviarOpinion: 'Error sending opinion. Please try again.',
   indexPais: 'Country',
   indexNombre: 'Name',
+  indexMateriales: 'Didactic Materials and Activities',
+  indexMateriales1: 'Reinforce your learning with our exclusive material',
 
   reservasClases: {
     reservaTuClase: 'Book your Private Class',
@@ -148,9 +151,11 @@ export default {
     evaluaTuNivel: '🏆 Find out your Spanish level',
     instrucciones: 'Instructions',
     elTestConsta: 'The test consists of 25 questions arranged by levels.',
-    cadaPreguntaTiene:'Each question has 3 answer options. Select one. If you feel you can’t continue with the test, leave the remaining questions blank and complete the test.',
-    alCompletar:'At the end, you will receive an approximate indication of your Spanish level.',
-    esteTest: 'This test does not replace an official evaluation, but it will help you find the course that best suits you.',
+    cadaPreguntaTiene:
+      'Each question has 3 answer options. Select one. If you feel you can’t continue with the test, leave the remaining questions blank and complete the test.',
+    alCompletar: 'At the end, you will receive an approximate indication of your Spanish level.',
+    esteTest:
+      'This test does not replace an official evaluation, but it will help you find the course that best suits you.',
     comenzarTest: 'Start the Level Test',
     elTestToma: 'The test takes approximately 5 minutes.',
     pregunta: 'Question',
@@ -177,8 +182,9 @@ export default {
     promoPromoPacks: 'More credits, more saving!',
     botonReservaUnica: 'BOOK YOUR CLASS',
     nuestrasClases: 'Our Classes',
+    textoNuestrasClasesbold: "At SpanishNook, there isn't just one path.",
     textoNuestrasClases:
-      "At SpanishNook, there isn't just one path: every student has their own goals, schedule, and way of learning. That's why we offer flexible options, so you can choose what fits you best: private classes or small group courses.",
+      "Every student has their own goals, schedule, and way of learning. That's why we offer flexible options, so you can choose what fits you best: private classes or small group courses.",
     botonClasesIndividuales: 'PRIVATE CLASSES',
     botonClasesConversacion: 'GROUP CONVERSATION CLASSES',
     recuerdaHacerTest: 'Remember to take the test',
@@ -422,6 +428,32 @@ export default {
     errorDesconocido: 'Unknown error. Please try again later.',
     sinDefinir: 'Undefined',
   },
+
+  MaterialesPage: {
+    titulo1: 'Didactic Materials and Activities',
+    descripcion:
+      'Learn real Spanish at your own pace with practical materials designed to develop Spanish skills autonomously and complementarily to your learning in an effective way.',
+    descripcion2:
+      'Here you will find activity notebooks in PDF format designed to transform audiovisual content into an interactive, deep, and structured learning experience. Each notebook has been created to work on the different Spanish skills in a balanced way: from listening comprehension and colloquial vocabulary to writing and grammar in context.',
+    claim: 'Download your activity notebooks and continue learning.',
+    carga: 'Loading materials...',
+    quehay: 'What is inside each workbook?📚',
+    contenido1bold: 'Real vocabulary and expressions:',
+    contenido1:
+      'Glossaries with contextualization of idioms, colloquial vocabulary, and daily usage examples.',
+    contenido2bold: 'Listening comprehension:',
+    contenido2:
+      'Exercises based on authentic videos and audios to improve the ability to understand spoken Spanish.',
+    contenido3bold: 'Reading and writing comprehension:',
+    contenido3:
+      'Activities that promote the understanding and writing of short texts in different contexts.',
+    contenido4bold: 'Grammar in context:',
+    contenido4: 'Simple explanations applied to real language use, without boring memorization.',
+    contenido5bold: 'Complete answer key:',
+    contenido5:
+      'Answers at the end of the file so you can check your progress and study independently.',
+  },
+
   registro: {
     nombreOApodo: 'Name or Nickname',
     correoElectronico: 'Email',

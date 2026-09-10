@@ -123,7 +123,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'materiales' }"
           >
-            Cuadernos
+            {{ t('cuadernos') }}
           </q-btn>
 
           <q-btn

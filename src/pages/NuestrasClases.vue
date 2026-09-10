@@ -2,9 +2,16 @@
   <q-page class="row items-center justify-evenly">
     <div class="row cabecera-row full-width q-mt-xl">
       <div class="col-12 align-self-center q-pa-md flex column items-center">
-        <h2 class="text-h4 text-primary text-weight-bold q-mb-md text-center">
+        <h1 class="text-h3 text-primary q-mb-sm">
           {{ t('NuestrasClases.nuestrasClases') }}
-        </h2>
+        </h1>
+        <br />
+        <p
+          class="texto-responsivo text-center text-weight-bold"
+          style="max-width: 800px; margin: 0 auto; width: 100%"
+        >
+          {{ t('NuestrasClases.textoNuestrasClasesbold') }}
+        </p>
         <p
           class="texto-responsivo text-justify"
           style="max-width: 800px; margin: 0 auto; width: 100%"
@@ -13,10 +20,11 @@
         </p>
       </div>
     </div>
-
+    <br />
+    <br />
     <div class="row q-pa-xl q-my-md justify-evenly botones-clases">
       <q-btn
-        class="oval-btn"
+        class="rectangular-btn"
         items-center
         color="primary"
         unelevated
@@ -27,7 +35,7 @@
       </q-btn>
 
       <q-btn
-        class="oval-btn"
+        class="rectangular-btn"
         items-center
         color="primary"
         unelevated
@@ -51,12 +59,12 @@
         />
       </div>
 
-      <div class="col-12 col-md-5 flex justify-center q-pa-md">
+      <div class="col-12 col-md-5 flex justify-start q-pa-md">
         <div
           class="banner-clases-grupales"
           style="
             width: 100% !important;
-            max-width: 500px !important;
+            max-width: 360px !important;
             margin: 0 !important;
             box-sizing: border-box !important;
           "
@@ -176,12 +184,12 @@
       id="clases-individuales"
       class="row full-width q-mt-sm q-mb-xl items-center justify-center"
     >
-      <div class="col-12 col-md-5 flex justify-center q-pa-md">
+      <div class="col-12 col-md-5 flex justify-start q-pa-md">
         <div
           class="banner-clases-grupales"
           style="
             width: 100% !important;
-            max-width: 500px !important;
+            max-width: 360px !important;
             margin: 0 !important;
             box-sizing: border-box !important;
           "
@@ -497,11 +505,13 @@ watch(
   gap: 100px;
   flex-wrap: nowrap;
   justify-content: center;
+  margin-bottom: 2.5rem; /* espacio entre botones y primer banner */
 
   @media (min-width: 1024px) {
     max-width: 500px;
     margin: 0 auto;
     gap: 250px;
+    margin-bottom: 4rem;
   }
 
   @media (max-width: 599px) {
@@ -586,5 +596,23 @@ watch(
   min-width: 220px;
   padding-left: 32px;
   padding-right: 32px;
+}
+
+/* Párrafos principales un poco más grandes y responsive */
+.hero-text {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .hero-text {
+    font-size: 1.15rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero-text {
+    font-size: 1.25rem;
+  }
 }
 </style>

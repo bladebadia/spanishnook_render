@@ -9,9 +9,9 @@
             <div style="font-size: 3.5rem; margin-bottom: 0px">📝</div>
           </q-card-section>
           <q-card-section class="text-center q-pt-none">
-            <h2 class="text-primary text-weight-bold q-mb-md" style="font-size: 3rem">
+            <h1 class="text-h3 text-primary q-mb-sm">
               {{ t('test.deNivel') }}
-            </h2>
+            </h1>
             <p class="text-h6 text-grey-7 q-mb-lg">{{ t('test.evaluaTuNivel') }}</p>
 
             <div class="text-left q-mb-lg">
