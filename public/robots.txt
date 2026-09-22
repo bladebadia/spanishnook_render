@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Páginas privadas que no deben indexarse
+Disallow: /AreaPersonal
+Disallow: /Administracion
+Disallow: /Acceder
+Disallow: /RegistroCuenta
+Disallow: /AuthCallback
+Disallow: /ResetPassword
+Disallow: /CheckEmail
+Disallow: /CarritoCompra
+
+# Sitemap
+Sitemap: https://www.spanishnook.es/sitemap.xml
