@@ -12,4 +12,4 @@ Disallow: /CheckEmail
 Disallow: /CarritoCompra
 
 # Sitemap
-Sitemap: https://www.spanishnook.es/sitemap.xml
+Sitemap: https://www.spanishnook.com/sitemap.xml
