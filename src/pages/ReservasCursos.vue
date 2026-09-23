@@ -261,7 +261,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useQuasar } from 'quasar';
+import { useQuasar, useMeta } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
@@ -271,6 +271,43 @@ const $q = useQuasar();
 const route = useRoute();
 const { procesando, handleSubscribe } = useSuscripciones();
 const { locale, t } = useI18n();
+
+useMeta(() => ({
+  title: 'Cursos Grupales de Español | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Reserva cursos grupales de español online en grupos reducidos de máximo 6 personas. Aprende con profesores nativos en SpanishNook.',
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'cursos grupales español online, clases en grupo español, grupos reducidos español, curso español A1 A2 B1 B2 C1, SpanishNook',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: 'Cursos Grupales de Español | SpanishNook',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        'Cursos grupales de español online en grupos reducidos de máximo 6 personas con profesores nativos.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: 'https://spanishnook.com/img/Logo_rectangular_320.png',
+    },
+    ogUrl: {
+      property: 'og:url',
+      content: 'https://spanishnook.com/ReservasCursos',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 
 const zonaHorariaUsuario = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

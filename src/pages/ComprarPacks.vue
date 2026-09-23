@@ -181,12 +181,49 @@
 import { ref, computed } from 'vue';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
-import { useQuasar } from 'quasar';
+import { useQuasar, useMeta } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const { user } = useAuth();
 const $q = useQuasar();
+
+useMeta(() => ({
+  title: 'Comprar Packs de Clases | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Compra packs de clases de español online con créditos. Ahorra en clases particulares y de conversación con profesores nativos en SpanishNook.',
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'comprar clases español, packs de clases español, créditos clases español, bonos clases conversación, precios clases español, SpanishNook',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: 'Comprar Packs de Clases | SpanishNook',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        'Compra packs de clases de español online y ahorra en tus clases particulares y de conversación.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: 'https://spanishnook.com/img/Logo_rectangular_320.png',
+    },
+    ogUrl: {
+      property: 'og:url',
+      content: 'https://spanishnook.com/ComprarPacks',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 
 const tab = ref('normal');
 const loading = ref<string | null>(null);

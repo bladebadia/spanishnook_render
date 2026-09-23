@@ -195,7 +195,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { supabase } from 'src/supabaseClient';
-import { useQuasar } from 'quasar';
+import { useQuasar, useMeta } from 'quasar';
 import { useAuth } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n'; // <-- IMPORTAMOS EL IDIOMA
 
@@ -204,6 +204,43 @@ const { user } = useAuth();
 const { locale, t } = useI18n();
 // `t` se utiliza desde la plantilla; evitamos la regla de "no-unused-vars" referenciándola aquí
 void t;
+
+useMeta(() => ({
+  title: 'Materiales de Español | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Materiales y recursos para aprender español online. Ejercicios, gramática, vocabulario y actividades prácticas de SpanishNook.',
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'materiales español, recursos aprender español, ejercicios español, gramática español, vocabulario español, actividades español, SpanishNook',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: 'Materiales de Español | SpanishNook',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        'Materiales y recursos para aprender español online: ejercicios, gramática y vocabulario.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: 'https://spanishnook.com/img/Logo_rectangular_320.png',
+    },
+    ogUrl: {
+      property: 'og:url',
+      content: 'https://spanishnook.com/Materiales',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 
 // Añadimos las columnas _en a la interfaz
 interface Material {

@@ -207,7 +207,7 @@ import { useReservasClases } from 'src/composables/useReservasClases';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
 import SaldoWallet from 'components/SaldoWallet.vue';
-import { useQuasar } from 'quasar';
+import { useQuasar, useMeta } from 'quasar';
 
 import '../css/pages/ClasesIndividuales.css';
 import '../css/pages/EstilosGenerales.css';
@@ -216,6 +216,43 @@ import '../css/pages/EstilosGenerales.css';
 const $q = useQuasar();
 const { t } = useI18n();
 const { user } = useAuth();
+
+useMeta(() => ({
+  title: 'Reservar Clases Individuales | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Reserva clases individuales de español online con profesores nativos. Clases particulares y de conversación con horarios flexibles en SpanishNook.',
+    },
+    keywords: {
+      name: 'keywords',
+      content:
+        'reservar clase español, clases particulares español online, clases conversación español, horarios clases español, profesor nativo español, SpanishNook',
+    },
+    ogTitle: {
+      property: 'og:title',
+      content: 'Reservar Clases Individuales | SpanishNook',
+    },
+    ogDescription: {
+      property: 'og:description',
+      content:
+        'Reserva clases individuales y de conversación de español online con profesores nativos y horarios flexibles.',
+    },
+    ogImage: {
+      property: 'og:image',
+      content: 'https://spanishnook.com/img/Logo_rectangular_320.png',
+    },
+    ogUrl: {
+      property: 'og:url',
+      content: 'https://spanishnook.com/Reservas',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 
 // --- Estados Locales ---
 const cargando = ref(true);

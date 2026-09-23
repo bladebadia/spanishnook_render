@@ -247,6 +247,25 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { useMeta } from 'quasar';
+
+useMeta(() => ({
+  title: 'Términos y Condiciones | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Términos y condiciones de contratación de los servicios educativos online de SpanishNook.',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
+</script>
+
 <style scoped>
 .legal-page {
   max-width: 85%;

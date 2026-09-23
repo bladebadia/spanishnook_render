@@ -196,7 +196,24 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useMeta } from 'quasar';
+
+useMeta(() => ({
+  title: 'Política de Privacidad | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Política de privacidad de SpanishNook. Cómo tratamos tus datos personales, tus derechos y la protección de tu información.',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
+</script>
 
 <style scoped>
 .legal-page {

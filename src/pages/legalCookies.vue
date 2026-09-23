@@ -64,7 +64,24 @@
     </p>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useMeta } from 'quasar';
+
+useMeta(() => ({
+  title: 'Política de Cookies | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Política de cookies de SpanishNook. Información sobre las cookies que utilizamos, su finalidad y cómo gestionarlas.',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
+</script>
 
 <style scoped>
 .legal-page {

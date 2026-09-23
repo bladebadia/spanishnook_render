@@ -47,7 +47,23 @@
 </template>
 
 <script setup lang="ts">
+import { useMeta } from 'quasar';
 import '../css/pages/EstilosGenerales.css';
+
+useMeta(() => ({
+  title: 'Aviso Legal | SpanishNook',
+  meta: {
+    description: {
+      name: 'description',
+      content:
+        'Aviso legal de SpanishNook. Información sobre la titularidad del sitio web, datos de contacto y condiciones de uso de spanishnook.com.',
+    },
+    robots: {
+      name: 'robots',
+      content: 'index,follow',
+    },
+  },
+}));
 </script>
 
 <style scoped>
