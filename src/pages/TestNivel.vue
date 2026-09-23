@@ -229,8 +229,7 @@ useMeta(() => ({
     },
     ogImage: {
       property: 'og:image',
-      content:
-        'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png',
+      content: pageImage,
     },
     ogUrl: {
       property: 'og:url',

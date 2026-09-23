@@ -364,7 +364,11 @@ useMeta(() => ({
     },
     ogImage: {
       property: 'og:image',
-      content: '/img/Logo_rectangular_320.png',
+      content: 'https://spanishnook.com/img/Logo_rectangular_320.png',
+    },
+    ogUrl: {
+      property: 'og:url',
+      content: 'https://spanishnook.com/Clases',
     },
     robots: {
       name: 'robots',

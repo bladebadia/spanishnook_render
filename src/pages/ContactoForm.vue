@@ -220,8 +220,11 @@ useMeta(() => ({
     },
     ogImage: {
       property: 'og:image',
-      content:
-        'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png',
+      content: 'https://spanishnook.com/img/Logo_rectangular_320.png',
+    },
+    ogUrl: {
+      property: 'og:url',
+      content: 'https://spanishnook.com/Contacto',
     },
     robots: {
       name: 'robots',

@@ -143,6 +143,10 @@ useMeta(() => ({
       property: 'og:image',
       content: 'https://spanishnook.com/img/Home/banner_1920.webp',
     },
+    ogUrl: {
+      property: 'og:url',
+      content: 'https://spanishnook.com/SobreSpanish',
+    },
     robots: {
       name: 'robots',
       content: 'index,follow',
