@@ -257,7 +257,7 @@ useMeta(() => ({
     },
     robots: {
       name: 'robots',
-      content: 'noindex,nofollow',
+      content: 'index,follow',
     },
   },
   link: {
