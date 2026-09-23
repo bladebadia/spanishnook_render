@@ -1,5 +1,114 @@
 # 📊 Google Analytics 4 - Guía de Uso
 
+## 📋 Proceso Realizado (Estado Actual)
+
+Documento del trabajo de analítica y SEO completado en SpanishNook.
+
+### 1. Google Analytics 4 (GA4)
+
+- ✅ Instalado `vue-gtag-next` para GA4
+- ✅ Boot file `src/boot/analytics.ts` con inicialización SSR-safe
+- ✅ Composable `src/composables/useAnalytics.ts` con eventos de negocio
+- ✅ Measurement ID: `G-RCCWDHKLK9`
+- ✅ Tracking automático de pageviews (Vue Router)
+- ✅ Habilitado solo en producción (`process.env.NODE_ENV === 'production'`)
+- ✅ IPs anonimizadas (GDPR)
+
+**Eventos implementados:**
+- `sign_up_started` / `sign_up` — RegistroCuenta.vue
+- `login` — Acceder.vue
+- `clase_reservada` — CarritoCompra.vue
+- `begin_checkout` — CarritoCompra.vue (redirección a Stripe)
+
+### 2. SEO Técnico
+
+- ✅ `public/robots.txt` — permite rastreo, bloquea páginas privadas (login, admin, carrito)
+- ✅ `public/sitemap.xml` — 13 URLs públicas con prioridades
+- ✅ Schema.org JSON-LD — `EducationalOrganization` + `WebSite` (en `index.html`)
+- ✅ Meta tags únicos (title, description, keywords, Open Graph) en **13 páginas**
+- ✅ Eliminadas URLs de Supabase/onrender de los meta tags
+
+### 3. Dominio Canónico
+
+- ✅ Dominio canónico: `https://www.spanishnook.com`
+- ✅ El servidor redirige `spanishnook.com` → `www.spanishnook.com` (301)
+- ✅ Todos los archivos SEO usan `www` consistentemente
+
+### 4. Google Search Console
+
+- ✅ Verificación por meta tag en `index.html`
+- ✅ Sitemap enviado y correcto
+- ⏳ Vinculación con GA4 (para ver keywords en Analytics)
+- ⏳ Indexación en curso (Google tarda días/semanas)
+
+### 5. Próximos Pasos
+
+1. ⏳ Vincular Search Console ↔ GA4 (Admin → Vinculaciones)
+2. ⏳ Solicitar indexación de páginas clave (Inspección de URL)
+3. 📊 **En unas semanas:** generar informes y evaluar si merece la pena publicidad (Google Ads)
+
+---
+
+## 🔑 Keywords Recomendadas para SpanishNook
+
+Keywords objetivo para posicionar y para futuras campañas de publicidad. Organizadas por intención de búsqueda.
+
+### Aprender español (intención general)
+- aprender español online
+- aprender español gratis
+- cómo aprender español rápido
+- mejores páginas para aprender español
+
+### Clases (intención transaccional)
+- clases de español online
+- clases particulares de español
+- clases de español para extranjeros
+- clases de conversación en español
+
+### Profesor / tutor (intención de contratación)
+- profesor nativo de español
+- tutor de español online
+- profesores de español particulares
+- clases 1 a 1 español
+
+### Curso (intención formativa)
+- curso de español online
+- curso de español para principiantes
+- curso intensivo de español
+- curso español A1 A2 B1 B2 C1
+
+### Conversación (intención práctica)
+- practicar conversación en español
+- hablar español con fluidez
+- intercambio de idiomas español
+- mejora tu español hablado
+
+### Nivel / test (intención de evaluación)
+- test de nivel de español
+- qué nivel de español tengo
+- examen de nivel español online
+- prueba de español A1 C1
+
+### Precio / packs (intención de compra)
+- cuánto cuesta una clase de español
+- precio clases de español online
+- packs de clases de español
+- clases de español baratas
+
+### Long-tail (menos volumen, más conversión)
+- clases de español online con profesor nativo
+- clases de conversación en grupo reducido
+- aprender español desde cero online
+- preparación DELE online
+
+### Herramientas gratuitas para investigar keywords
+- **Google Autocompletar** — sugerencias al escribir en Google
+- **"La gente también pregunta"** — caja de preguntas en resultados
+- **Google Keyword Planner** — volumen mensual (ads.google.com/keywordplanner)
+- **AnswerThePublic** — preguntas y comparaciones (answerthepublic.com)
+
+---
+
 ## 🚀 Configuración Inicial
 
 ### 1. Crear cuenta de Google Analytics 4
