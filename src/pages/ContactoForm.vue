@@ -220,11 +220,11 @@ useMeta(() => ({
     },
     ogImage: {
       property: 'og:image',
-      content: 'https://spanishnook.com/img/Logo_rectangular_320.png',
+      content: 'https://www.spanishnook.com/img/Logo_rectangular_320.png',
     },
     ogUrl: {
       property: 'og:url',
-      content: 'https://spanishnook.com/Contacto',
+      content: 'https://www.spanishnook.com/Contacto',
     },
     robots: {
       name: 'robots',

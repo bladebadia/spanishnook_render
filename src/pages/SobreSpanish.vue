@@ -141,11 +141,11 @@ useMeta(() => ({
     },
     ogImage: {
       property: 'og:image',
-      content: 'https://spanishnook.com/img/Home/banner_1920.webp',
+      content: 'https://www.spanishnook.com/img/Home/banner_1920.webp',
     },
     ogUrl: {
       property: 'og:url',
-      content: 'https://spanishnook.com/SobreSpanish',
+      content: 'https://www.spanishnook.com/SobreSpanish',
     },
     robots: {
       name: 'robots',

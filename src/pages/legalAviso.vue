@@ -56,7 +56,7 @@ useMeta(() => ({
     description: {
       name: 'description',
       content:
-        'Aviso legal de SpanishNook. Información sobre la titularidad del sitio web, datos de contacto y condiciones de uso de spanishnook.com.',
+        'Aviso legal de SpanishNook. Información sobre la titularidad del sitio web, datos de contacto y condiciones de uso de www.spanishnook.com.',
     },
     robots: {
       name: 'robots',

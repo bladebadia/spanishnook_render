@@ -204,8 +204,8 @@ const { t } = useI18n();
 const pageTitle = 'Test de nivel de español online | SpanishNook';
 const pageDescription =
   'Haz el test de nivel gratuito de SpanishNook (A1-C1) y obtén tu resultado al instante con recomendaciones de siguiente paso.';
-const pageUrl = 'https://spanishnook.com/TestNivel';
-const pageImage = 'https://spanishnook.com/img/Home/banner_1920.webp';
+const pageUrl = 'https://www.spanishnook.com/TestNivel';
+const pageImage = 'https://www.spanishnook.com/img/Home/banner_1920.webp';
 
 useMeta(() => ({
   title: pageTitle,

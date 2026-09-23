@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://spanishnook.com/</loc>
+    <loc>https://www.spanishnook.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Clases</loc>
+    <loc>https://www.spanishnook.com/Clases</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/ComprarPacks</loc>
+    <loc>https://www.spanishnook.com/ComprarPacks</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Reservas</loc>
+    <loc>https://www.spanishnook.com/Reservas</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/ReservasCursos</loc>
+    <loc>https://www.spanishnook.com/ReservasCursos</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Materiales</loc>
+    <loc>https://www.spanishnook.com/Materiales</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/SobreSpanish</loc>
+    <loc>https://www.spanishnook.com/SobreSpanish</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Contacto</loc>
+    <loc>https://www.spanishnook.com/Contacto</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Aviso</loc>
+    <loc>https://www.spanishnook.com/Aviso</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Privacidad</loc>
+    <loc>https://www.spanishnook.com/Privacidad</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Cookies</loc>
+    <loc>https://www.spanishnook.com/Cookies</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://spanishnook.com/Condiciones</loc>
+    <loc>https://www.spanishnook.com/Condiciones</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
