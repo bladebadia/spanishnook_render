@@ -70,16 +70,28 @@
         </q-card>
 
         <!-- Catálogo de materiales -->
-        <div v-else class="row q-col-gutter-xl">
+        <div
+          v-else
+          class="row q-col-gutter-xl full-width justify-center"
+          style="max-width: 1200px; margin: 0 auto"
+        >
           <div class="col-12 col-sm-6 col-md-4" v-for="mat in materiales" :key="mat.id">
-            <!-- AL HACER CLIC ABRIMOS LA VENTANA -->
             <q-card
-              class="column full-height material-card cursor-pointer"
+              class="carta-contenido shadow-4 cursor-pointer"
+              style="
+                width: 100%;
+                max-width: 320px;
+                min-width: 280px;
+                margin: 0 auto;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+              "
               @click="abrirMaterial(mat)"
             >
               <q-img
                 :src="mat.imagen_portada || 'https://via.placeholder.com/300x200?text=Sin+Portada'"
-                height="250px"
+                height="200px"
               >
                 <div
                   class="badge-hs bg-positive text-white text-weight-bold shadow-3"
@@ -87,17 +99,16 @@
                 >
                   GRATIS
                 </div>
-
                 <div class="badge-hs bg-negative text-white text-weight-bold shadow-3" v-else>
                   {{ mat.precio }} €
                 </div>
               </q-img>
 
-              <q-card-section class="col-grow">
-                <div class="text-h6 text-weight-bold q-mb-xs">
+              <q-card-section class="col-grow text-center q-pa-md flex column justify-center">
+                <div class="text-h6 text-weight-bold q-mb-sm" style="line-height: 1.2">
                   {{ locale === 'en-US' && mat.titulo_en ? mat.titulo_en : mat.titulo }}
                 </div>
-                <div class="text-body2 text-grey-8">
+                <div class="text-body2 text-grey-8 ellipsis-3-lines">
                   {{
                     locale === 'en-US' && mat.descripcion_breve_en
                       ? mat.descripcion_breve_en
@@ -106,10 +117,14 @@
                 </div>
               </q-card-section>
 
-              <q-separator />
-
-              <q-card-actions align="center" class="q-pa-md bg-grey-1">
-                <div class="text-primary text-weight-bold">VER DETALLES</div>
+              <q-card-actions align="center" class="q-pa-md q-pt-none">
+                <q-btn
+                  color="primary"
+                  rounded
+                  unelevated
+                  label="VER DETALLES"
+                  class="full-width text-weight-bold"
+                />
               </q-card-actions>
             </q-card>
           </div>
@@ -118,46 +133,59 @@
     </div>
 
     <q-dialog v-model="modalVisible">
+      <!-- 1. Tarjeta normal, sin clase column ni alturas raras -->
       <q-card style="max-width: 700px; width: 100%; border-radius: 12px; overflow: hidden">
-        <q-img
-          :src="
-            materialSeleccionado?.imagen_portada ||
-            'https://via.placeholder.com/700x300?text=Sin+Portada'
-          "
-          height="280px"
-        />
-        <q-card-section class="q-pt-lg q-pb-none">
-          <div class="row items-center justify-between q-mb-sm">
-            <div class="text-h5 text-weight-bold text-primary">
-              <!-- Título dinámico -->
+        <!-- 2. Aquí está el truco: le decimos a esta sección que ocupe máximo el 70% de la pantalla (70vh). Si se pasa, hace scroll interno -->
+        <q-card-section class="scroll q-pa-none" style="max-height: 70vh">
+          <q-img
+            :src="
+              materialSeleccionado?.imagen_portada ||
+              'https://via.placeholder.com/700x300?text=Sin+Portada'
+            "
+            height="280px"
+          />
+          <div class="q-pa-lg">
+            <div class="row items-center justify-between q-mb-sm">
+              <div class="text-h5 text-weight-bold text-primary">
+                {{
+                  locale === 'en-US' && materialSeleccionado?.titulo_en
+                    ? materialSeleccionado?.titulo_en
+                    : materialSeleccionado?.titulo
+                }}
+              </div>
+              <q-chip color="primary" text-color="white" size="lg" class="text-weight-bold">
+                {{ materialSeleccionado?.precio }}€
+              </q-chip>
+            </div>
+
+            <!-- VÍDEO DE YOUTUBE INCRUSTADO (Solo sale si hay enlace) -->
+            <div v-if="materialSeleccionado?.youtube_url" class="q-my-md">
+              <q-video
+                :src="getYoutubeEmbedUrl(materialSeleccionado.youtube_url)"
+                style="height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)"
+              />
+            </div>
+
+            <div
+              class="text-body1 text-grey-9 q-mt-md"
+              style="white-space: pre-line; line-height: 1.6"
+            >
               {{
-                locale === 'en-US' && materialSeleccionado?.titulo_en
-                  ? materialSeleccionado?.titulo_en
-                  : materialSeleccionado?.titulo
+                locale === 'en-US'
+                  ? materialSeleccionado?.descripcion_larga_en ||
+                    materialSeleccionado?.descripcion_breve_en ||
+                    materialSeleccionado?.descripcion_larga ||
+                    materialSeleccionado?.descripcion_breve
+                  : materialSeleccionado?.descripcion_larga ||
+                    materialSeleccionado?.descripcion_breve
               }}
             </div>
-            <q-chip color="primary" text-color="white" size="lg" class="text-weight-bold">
-              {{ materialSeleccionado?.precio }}€
-            </q-chip>
-          </div>
-
-          <!-- Descripción larga dinámica respetando saltos de línea -->
-          <div
-            class="text-body1 text-grey-9 q-mt-md"
-            style="white-space: pre-line; line-height: 1.6"
-          >
-            {{
-              locale === 'en-US'
-                ? materialSeleccionado?.descripcion_larga_en ||
-                  materialSeleccionado?.descripcion_breve_en ||
-                  materialSeleccionado?.descripcion_larga ||
-                  materialSeleccionado?.descripcion_breve
-                : materialSeleccionado?.descripcion_larga || materialSeleccionado?.descripcion_breve
-            }}
           </div>
         </q-card-section>
 
-        <q-card-actions align="right" class="q-pa-md q-mt-md bg-grey-2">
+        <!-- 3. Los botones ahora están a salvo fuera del área de scroll -->
+        <q-separator />
+        <q-card-actions align="right" class="q-pa-md bg-grey-2">
           <q-btn flat label="Cerrar" color="grey-8" v-close-popup />
 
           <q-btn
@@ -255,6 +283,7 @@ interface Material {
   imagen_portada?: string;
   archivo_pdf?: string;
   visible: boolean;
+  youtube_url?: string;
 }
 
 const materiales = ref<Material[]>([]);
@@ -265,6 +294,19 @@ const cargando = ref(true);
 const modalVisible = ref(false);
 const materialSeleccionado = ref<Material | null>(null);
 const procesandoPago = ref(false);
+
+const getYoutubeEmbedUrl = (url?: string) => {
+  if (!url) return '';
+  // Expresión regular limpia para complacer a ESLint
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+
+  // Condición segura para TypeScript
+  if (match && match[2] && match[2].length === 11) {
+    return `https://www.youtube.com/embed/${match[2]}`;
+  }
+  return '';
+};
 
 const cargarCatalogo = async () => {
   cargando.value = true;
