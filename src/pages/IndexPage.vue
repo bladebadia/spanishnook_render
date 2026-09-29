@@ -162,7 +162,7 @@
 
     <div class="q-py-xl" style="background-color: #fffdf8">
       <div class="text-center q-mb-lg">
-        <h3 class="text-h4 text-weight-bold text-primary q-my-none">
+        <h3 class="titulo-responsivo text-weight-bold text-primary q-my-none">
           Materiales Didácticos y Actividades
         </h3>
         <p class="text-grey-7 q-mt-sm">Refuerza tu aprendizaje con nuestro material exclusivo</p>

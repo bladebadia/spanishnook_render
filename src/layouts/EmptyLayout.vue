@@ -201,31 +201,6 @@
       <router-view />
     </q-page-container>
 
-    <q-page-sticky
-      v-if="
-        ![
-          '/Acceder',
-          '/RegistroCuenta',
-          '/CarritoCompra',
-          '/AreaPersonal',
-          '/Administracion',
-        ].includes(route.path)
-      "
-      position="bottom-right"
-      :offset="[10, 10]"
-    >
-      <q-btn
-        class="whatsapp-sticky-btn enlarged-touch"
-        round
-        color="green-6"
-        icon="mdi-whatsapp"
-        size="lg"
-        href="https://wa.me/34694280178"
-        target="_blank"
-        rel="noopener"
-        aria-label="WhatsApp"
-      />
-    </q-page-sticky>
     <q-footer class="bg-black text-white">
       <q-no-ssr>
         <div class="footer-legal-bar">
@@ -702,15 +677,6 @@ defineExpose({ $q, t });
     gap: 80px;
     justify-content: flex-end;
     width: auto;
-  }
-}
-
-.whatsapp-sticky-btn {
-  .enlarged-touch {
-    min-width: 72px;
-    min-height: 72px;
-    padding: 12px !important;
-    box-sizing: content-box;
   }
 }
 

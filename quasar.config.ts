@@ -102,6 +102,7 @@ export default defineConfig((ctx) => {
       server: {
         type: 'http',
       },
+      host: '0.0.0.0',
       port: 9000,
       open: true, // Esto abre el navegador automáticamente
     },

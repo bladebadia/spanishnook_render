@@ -2,7 +2,7 @@
   <q-page class="row items-center justify-evenly">
     <div class="row cabecera-row full-width q-mt-xl">
       <div class="col-12 align-self-center q-pa-md flex column items-center">
-        <h1 class="text-h3 text-primary q-mb-sm">
+        <h1 class="titulo-responsivo text-primary q-mb-sm">
           {{ t('NuestrasClases.nuestrasClases') }}
         </h1>
         <br />
@@ -20,32 +20,6 @@
         </p>
       </div>
     </div>
-    <br />
-    <br />
-    <div class="row q-pa-xl q-my-md justify-evenly botones-clases">
-      <q-btn
-        class="rectangular-btn"
-        items-center
-        color="primary"
-        unelevated
-        style="font-weight: 800"
-        @click="scrollToSection('clases-conversacion')"
-      >
-        {{ t('NuestrasClases.botonClasesConversacion') }}
-      </q-btn>
-
-      <q-btn
-        class="rectangular-btn"
-        items-center
-        color="primary"
-        unelevated
-        style="font-weight: 800"
-        @click="scrollToSection('clases-individuales')"
-      >
-        {{ t('NuestrasClases.botonClasesIndividuales') }}
-      </q-btn>
-    </div>
-
     <div
       id="clases-conversacion"
       class="row full-width q-my-xl items-center justify-center"
@@ -69,7 +43,7 @@
             box-sizing: border-box !important;
           "
         >
-          <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center q-my-none">
+          <h2 class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
             {{ t('NuestrasClases.clasesGrupalesConversacion') }}
           </h2>
         </div>
@@ -194,7 +168,7 @@
             box-sizing: border-box !important;
           "
         >
-          <h2 class="banner-clases-grupales__titulo titulo-responsivo text-center q-my-none">
+          <h2 class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
             {{ t('NuestrasClases.clasesIndividualesPersonalizadas') }}
           </h2>
         </div>
@@ -474,17 +448,6 @@ async function cargarCursosPromo(): Promise<void> {
   });
 }
 
-//Función para scroll suave a sección
-function scrollToSection(sectionId: string) {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  }
-}
-
 onMounted(async () => {
   await cargarCursosPromo();
   if (route.hash) {
@@ -504,36 +467,6 @@ watch(
 </script>
 
 <style>
-.botones-clases {
-  width: 100%;
-  gap: 100px;
-  flex-wrap: nowrap;
-  justify-content: center;
-  margin-bottom: 2.5rem; /* espacio entre botones y primer banner */
-
-  @media (min-width: 1024px) {
-    max-width: 500px;
-    margin: 0 auto;
-    gap: 250px;
-    margin-bottom: 4rem;
-  }
-
-  @media (max-width: 599px) {
-    gap: 8px;
-  }
-}
-
-.botones-clases .q-btn {
-  flex: 0 0 auto;
-  min-width: 0;
-  padding: 10px 18px;
-
-  @media (max-width: 767px) {
-    flex: 1 1 0;
-    padding: 10px 12px;
-  }
-}
-
 .modalidad-card {
   background: #fffbe6;
   border-radius: 12px;

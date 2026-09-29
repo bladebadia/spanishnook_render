@@ -648,6 +648,14 @@ const previousQuestion = () => {
   .text-h5 {
     font-size: 1.3rem;
   }
+
+  .test-card-size.fixed-test-card {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 480px;
+    padding: 16px 12px;
+  }
 }
 
 /* Botón comenzar test en negrita */
@@ -683,20 +691,7 @@ const previousQuestion = () => {
 
 /* Unificar tamaño de tarjetas del test de nivel */
 .test-card-size.fixed-test-card {
-  width: 600px;
-  height: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-  overflow: hidden;
-  padding: 24px 16px;
-}
-/* Unificar tamaño de tarjetas del test de nivel y fijar posiciones internas */
-.test-card-size.fixed-test-card {
-  min-width: 340px;
+  width: 100%;
   max-width: 500px;
   height: 520px;
   margin-left: auto;
@@ -707,6 +702,15 @@ const previousQuestion = () => {
   align-items: stretch;
   overflow: hidden;
   padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+/* La tarjeta de resultados se adapta a su contenido (altura variable) */
+.results-card.test-card-size.fixed-test-card {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  justify-content: flex-start;
 }
 .test-card-content {
   display: flex;

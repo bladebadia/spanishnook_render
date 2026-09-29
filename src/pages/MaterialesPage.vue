@@ -2,8 +2,8 @@
   <q-page class="q-pa-md">
     <div class="row cabecera-row full-width q-mt-xl">
       <div class="col-12 align-self-center q-pa-md flex column items-center">
-        <div class="text-center q-mb-xl q-mt-md">
-          <h1 class="text-h3 text-primary q-mb-sm">
+        <div class="text-center q-mb-xl  q-mt-md">
+          <h1 class="titulo-responsivo text-primary q-mb-sm">
             {{ $t('MaterialesPage.titulo1') }}
           </h1>
           <br />
@@ -226,6 +226,7 @@ import { supabase } from 'src/supabaseClient';
 import { useQuasar, useMeta } from 'quasar';
 import { useAuth } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n'; // <-- IMPORTAMOS EL IDIOMA
+import '../css/pages/EstilosGenerales.css';
 
 const $q = useQuasar();
 const { user } = useAuth();
@@ -442,5 +443,26 @@ onMounted(() => {
   transform: rotate(5deg);
   border: 2px solid white;
   z-index: 2;
+}
+
+/* Ajustes de márgenes para móviles */
+@media (max-width: 768px) {
+  .q-page {
+    padding: 8px !important;
+  }
+
+  .cabecera-row {
+    margin-top: 8px !important;
+  }
+
+  .cabecera-row > .col-12 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .cabecera-row .text-center {
+    margin-top: 0 !important;
+    margin-bottom: 16px !important;
+  }
 }
 </style>

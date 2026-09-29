@@ -222,7 +222,7 @@
   pointer-events: none;
 }
 .banner-clases-grupales__titulo {
-  font-size: 1.25rem; /* mucho más pequeño */
+ 
   font-weight: 700;
   color: white;
   line-height: 1.2;
@@ -277,9 +277,7 @@
     padding: 32px 24px;
     margin: 16px;
   }
-  .banner-clases-grupales__titulo {
-    font-size: 1.6rem;
-  }
+  
 
   .tarjeta-formativos {
     width: 100% !important;
