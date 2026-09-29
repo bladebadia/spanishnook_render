@@ -28,7 +28,8 @@
       <div class="col-12 col-md-5 flex justify-center q-pa-md">
         <q-img
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
-          style="width: 100%; max-width: 350px; aspect-ratio: 1 / 1; border-radius: 16px"
+          style="width: 100%; max-width: 350px; border-radius: 16px"
+          :ratio="1"
           fit="cover"
         />
       </div>
@@ -158,7 +159,7 @@
       id="clases-individuales"
       class="row full-width q-mt-sm q-mb-xl items-center justify-center"
     >
-      <div class="col-12 col-md-5 flex justify-start q-pa-md">
+      <div class="col-12 col-md-5 flex justify-end q-pa-md">
         <div
           class="banner-clases-grupales"
           style="
@@ -177,7 +178,8 @@
       <div class="col-12 col-md-5 flex justify-center q-pa-md">
         <q-img
           src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-individuales.png"
-          style="width: 100%; max-width: 350px; aspect-ratio: 1 / 1; border-radius: 16px"
+          style="width: 100%; max-width: 350px; border-radius: 16px"
+          :ratio="1"
           fit="cover"
         />
       </div>
