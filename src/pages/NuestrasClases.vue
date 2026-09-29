@@ -1,5 +1,5 @@
 <template>
-  <q-page class="row items-center justify-evenly">
+  <q-page>
     <div class="row cabecera-row full-width q-mt-xl">
       <div class="col-12 align-self-center q-pa-md flex column items-center">
         <h1 class="titulo-responsivo text-primary q-mb-sm">
@@ -21,33 +21,23 @@
       </div>
     </div>
     <div
-      id="clases-conversacion"
-      class="row full-width q-my-xl items-center justify-center"
-      style="scroll-margin-top: 120px"
+      class="full-width q-my-xl"
+      style="scroll-margin-top: 120px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; padding: 0 16px"
     >
-      <div class="col-12 col-md-5 flex justify-center q-pa-md">
-        <q-img
-          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
-          style="width: 100%; max-width: 350px; border-radius: 16px"
-          :ratio="1"
-          fit="cover"
-        />
-      </div>
+      <q-img
+        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
+        style="width: 350px; max-width: 100%; border-radius: 16px"
+        :ratio="1"
+        fit="cover"
+      />
 
-      <div class="col-12 col-md-5 flex justify-start q-pa-md">
-        <div
-          class="banner-clases-grupales"
-          style="
-            width: 100% !important;
-            max-width: 360px !important;
-            margin: 0 !important;
-            box-sizing: border-box !important;
-          "
-        >
-          <h2 class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
-            {{ t('NuestrasClases.clasesGrupalesConversacion') }}
-          </h2>
-        </div>
+      <div
+        class="banner-clases-grupales"
+        style="width: 360px; max-width: 100%; margin: 0 !important; box-sizing: border-box !important;"
+      >
+        <p class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
+          {{ t('NuestrasClases.clasesGrupalesConversacion') }}
+        </p>
       </div>
     </div>
 
@@ -156,33 +146,24 @@
     </div>
 
     <div
-      id="clases-individuales"
-      class="row full-width q-mt-sm q-mb-xl items-center justify-center"
+      class="full-width q-mt-sm q-mb-xl"
+      style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; padding: 0 16px"
     >
-      <div class="col-12 col-md-5 flex justify-end q-pa-md">
-        <div
-          class="banner-clases-grupales"
-          style="
-            width: 100% !important;
-            max-width: 360px !important;
-            margin: 0 !important;
-            box-sizing: border-box !important;
-          "
-        >
-          <h2 class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
-            {{ t('NuestrasClases.clasesIndividualesPersonalizadas') }}
-          </h2>
-        </div>
+      <div
+        class="banner-clases-grupales"
+        style="width: 360px; max-width: 100%; margin: 0 !important; box-sizing: border-box !important;"
+      >
+        <p class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
+          {{ t('NuestrasClases.clasesIndividualesPersonalizadas') }}
+        </p>
       </div>
 
-      <div class="col-12 col-md-5 flex justify-center q-pa-md">
-        <q-img
-          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-individuales.png"
-          style="width: 100%; max-width: 350px; border-radius: 16px"
-          :ratio="1"
-          fit="cover"
-        />
-      </div>
+      <q-img
+        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-individuales.png"
+        style="width: 350px; max-width: 100%; border-radius: 16px"
+        :ratio="1"
+        fit="cover"
+      />
     </div>
 
     <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
