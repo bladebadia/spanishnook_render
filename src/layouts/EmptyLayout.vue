@@ -128,7 +128,7 @@
 
           <q-btn
             flat
-            :to="'/sobreSpanish'"
+            :to="'/SobreSpanish'"
             exact
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
@@ -305,7 +305,7 @@ watch(
       activeButton.value = 'clases';
     else if (newPath === '/TestNivel') activeButton.value = 'test';
     else if (newPath === '/Materiales') activeButton.value = 'materiales';
-    else if (newPath === '/sobreSpanish') activeButton.value = 'sobre';
+    else if (newPath === '/SobreSpanish') activeButton.value = 'sobre';
     else if (newPath === '/Contacto') activeButton.value = 'contacto';
     else activeButton.value = '';
   },

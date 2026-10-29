@@ -128,7 +128,7 @@
 
           <q-btn
             flat
-            :to="'/sobreSpanish'"
+            :to="'/SobreSpanish'"
             exact
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'sobreSpanish' }"
@@ -275,7 +275,7 @@
               <router-link to="/TestNivel" class="foot-link">{{ t('testNivel') }}</router-link>
             </div>
             <div class="text-center">
-              <router-link to="/sobreSpanish" class="foot-link">{{ t('sobre') }}</router-link>
+              <router-link to="/SobreSpanish" class="foot-link">{{ t('sobre') }}</router-link>
             </div>
             <div class="text-center">
               <router-link to="/Contacto" class="foot-link">{{ t('contacto') }}</router-link>
@@ -415,7 +415,7 @@ watch(
     else if (newPath === '/ClasesIndividuales' || newPath === '/ClasesGrupales')
       activeButton.value = 'clases';
     else if (newPath === '/TestNivel') activeButton.value = 'test';
-    else if (newPath === '/sobreSpanish') activeButton.value = 'sobre';
+    else if (newPath === '/SobreSpanish') activeButton.value = 'sobre';
     else if (newPath === '/Contacto') activeButton.value = 'contacto';
     else activeButton.value = '';
   },
