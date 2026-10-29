@@ -122,7 +122,7 @@ const formatFecha = (fecha: string): string => {
 const onImageError = (event: Event) => {
   const target = event.target as HTMLImageElement;
   console.warn('Error cargando imagen:', target.src);
-  target.src = '/img/estudiante_1024.jpg';
+  target.src = '/img/Logo_rectangular_320.png';
 };
 </script>
 
