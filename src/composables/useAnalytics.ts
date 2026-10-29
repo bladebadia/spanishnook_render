@@ -1,5 +1,8 @@
 // src/composables/useAnalytics.ts
-import { useGtag } from 'vue-gtag-next';
+// Nota: no importamos vue-gtag-next aquí para no meterlo en el bundle
+// de las páginas. Usamos window.gtag directamente (lo registra el boot).
+
+type GtagFn = (command: string, ...args: unknown[]) => void;
 
 export function useAnalytics() {
   /**
@@ -8,8 +11,10 @@ export function useAnalytics() {
   const trackEvent = (eventName: string, parameters?: Record<string, unknown>) => {
     if (typeof window === 'undefined') return;
 
-    const gtag = useGtag();
-    gtag.event(eventName, parameters);
+    const gtag = (window as unknown as { gtag?: GtagFn }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', eventName, parameters);
+    }
   };
 
   /**
