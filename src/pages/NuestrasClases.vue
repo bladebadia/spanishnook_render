@@ -25,7 +25,7 @@
       style="scroll-margin-top: 120px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; padding: 0 16px"
     >
       <q-img
-        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-conversacion-intro.png"
+        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-conversacion-intro.png?width=700&format=webp"
         style="width: 350px; max-width: 100%; border-radius: 16px"
         :ratio="1"
         fit="cover"
@@ -159,7 +159,7 @@
       </div>
 
       <q-img
-        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-individuales.png"
+        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-individuales.png?width=700&format=webp"
         style="width: 350px; max-width: 100%; border-radius: 16px"
         :ratio="1"
         fit="cover"
@@ -193,7 +193,7 @@
               <div class="col-12 col-md-6">
                 <div class="modalidad-card bg-yellow-2">
                   <q-img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/modalidad-conversacion2.png"
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-conversacion2.png?width=600&format=webp"
                     style="width: 70%; max-width: 300px; border-radius: 16px"
                     fit="cover"
                   />
@@ -208,7 +208,7 @@
               <div class="col-12 col-md-6">
                 <div class="modalidad-card bg-yellow-2">
                   <q-img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/modalidad-general2.png"
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-general2.png?width=600&format=webp"
                     style="width: 70%; max-width: 300px; border-radius: 16px"
                     fit="cover"
                   />
@@ -268,7 +268,7 @@
     <div class="row justify-center q-my-xl">
       <div class="col-12 col-md-6">
         <PromoCard
-          image-src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/CTA_reserva.png"
+          image-src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/CTA_reserva.png?width=600&format=webp"
           :title="t('NuestrasClases.nuestrosPacks')"
           :description="t('NuestrasClases.ahorra')"
           :button-text="t('NuestrasClases.comprarPacks')"

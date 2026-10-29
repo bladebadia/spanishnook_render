@@ -45,7 +45,7 @@
               "
             >
               <img
-                src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/inicio_principal_OK.png"
+                src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/inicio_principal_OK.png?width=800&format=webp"
                 fit="cover"
                 style="
                   width: 50%;
@@ -112,7 +112,7 @@
             "
           >
             <PromoCard
-              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-individuales.png'"
+              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-inicio-individuales.png?width=600&format=webp'"
               :title="t('indexClasesPrivadas')"
               :description="t('indexAvanzaEnTu')"
               :button-text="t('indexQuieroMiClase')"
@@ -121,7 +121,7 @@
             />
 
             <PromoCard
-              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-inicio-conversacion.png'"
+              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-inicio-conversacion.png?width=600&format=webp'"
               :title="t('indexClasesDeConversacion')"
               :description="t('indexMejoraTuConfianza')"
               :button-text="t('indexUneteALaLista')"
@@ -262,7 +262,7 @@
               <q-item-section avatar>
                 <q-avatar>
                   <img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/clases-spanish-sobre-perfil.png"
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=200&format=webp"
                   />
                 </q-avatar>
               </q-item-section>
@@ -697,7 +697,7 @@ const fetchCuadernosInicio = async () => {
 };
 
 const defaultAvatar =
-  'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png';
+  'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/Logotexto_circ.png?width=200&format=webp';
 
 // Estados para los diálogos
 const showLoginDialog = ref(false);
