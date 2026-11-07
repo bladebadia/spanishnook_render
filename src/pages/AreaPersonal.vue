@@ -233,7 +233,7 @@
 
                       <q-item-section>
                         <q-item-label class="text-weight-bold text-subtitle1">{{
-                          formatFecha(reserva.fecha)
+                          formatFecha(reserva.fecha, reserva.hora)
                         }}</q-item-label>
 
                         <q-item-label class="text-primary q-mb-xs">
@@ -330,7 +330,12 @@
                             <div class="text-subtitle2 text-grey-8 q-mb-sm">
                               <q-icon name="schedule" class="q-mr-xs" />
                               {{ traducirDiasSemana(suscripcion.cursos_grupales?.dias_semana) }} •
-                              {{ formatHorarios(suscripcion.cursos_grupales?.horarios_curso) }}
+                              {{
+                                formatHorarios(
+                                  suscripcion.cursos_grupales?.horarios_curso,
+                                  suscripcion.cursos_grupales?.dias_semana,
+                                )
+                              }}
                             </div>
                             <div class="row items-center q-gutter-x-sm">
                               <q-badge
@@ -630,7 +635,7 @@
                     <q-item v-for="reserva in reservasPasadas" :key="reserva.id">
                       <q-item-section>
                         <q-item-label class="text-weight-bold">{{
-                          formatFecha(reserva.fecha)
+                          formatFecha(reserva.fecha, reserva.hora)
                         }}</q-item-label>
                         <q-item-label caption>
                           <span class="text-weight-bold text-black">
@@ -699,6 +704,17 @@ import '../css/pages/EstilosGenerales.css';
 import { useI18n } from 'vue-i18n';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
 import SaldoWallet from 'components/SaldoWallet.vue';
+import {
+  compararClases,
+  esClaseFutura,
+  faltanAlMenos,
+  formatFechaCalendario,
+  formatFechaClaseLocal,
+  hoyMadridISO,
+  proximaFechaDiaSemana,
+  rangoHoraLocal,
+  rangoHoraMadrid,
+} from 'src/utils/zonaHoraria';
 
 const $q = useQuasar();
 const { user, logout } = useAuth();
@@ -859,11 +875,8 @@ const getIconoPersonalizado = (tipo: string | undefined) => {
 };
 
 // --- FUNCIONES SELECCIÓN ---
-const puedeCancelar = (reserva: Reserva): boolean => {
-  const fechaReserva = new Date(reserva.fecha + 'T' + reserva.hora);
-  const ahora = new Date();
-  return (fechaReserva.getTime() - ahora.getTime()) / (1000 * 60 * 60) >= 24;
-};
+// Política de cancelación: 24 h, medidas sobre el instante real de la clase (hora de Madrid)
+const puedeCancelar = (reserva: Reserva): boolean => faltanAlMenos(reserva.fecha, reserva.hora, 24);
 
 const cancelarSeleccionadas = () => {
   if (seleccionadas.value.length === 0) return;
@@ -987,106 +1000,21 @@ const formatearFechaSuscripcion = (fecha: string | number) => {
 };
 
 // --- FUNCIÓN LOCAL SEGURA PARA CURSOS (90 MINUTOS) ---
-const formatHorarios = (horarios?: string[]) => {
-  if (!horarios || !Array.isArray(horarios) || horarios.length === 0) return 'Por definir';
-
-  const horaInicio = horarios[0];
+const formatHorarios = (horarios?: string[], dias?: string[]) => {
+  const horaInicio = horarios?.[0];
   if (!horaInicio) return 'Por definir';
-
-  try {
-    // CORRECCIÓN: Separar y comprobar antes de convertir
-    const partes = horaInicio.split(':');
-    if (partes.length < 2) return horaInicio;
-
-    const h = Number(partes[0]);
-    const m = Number(partes[1]);
-
-    if (isNaN(h) || isNaN(m)) return horaInicio;
-
-    // Calcular offset Madrid
-    const now = new Date();
-    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
-    const dateMadrid = new Date(strMadrid);
-    const diff = now.getTime() - dateMadrid.getTime();
-
-    // Fecha base con la hora del curso
-    const base = new Date();
-    base.setHours(h, m, 0, 0);
-
-    // Ajustar a hora local usuario
-    const localStart = new Date(base.getTime() + diff);
-    // Sumar 90 minutos
-    const localEnd = new Date(localStart.getTime() + 90 * 60000);
-
-    const fmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    return `${fmt(localStart)} - ${fmt(localEnd)}`;
-  } catch (e) {
-    console.warn(e); // Usar 'e' para que el linter no se queje
-    return horaInicio;
-  }
+  // Próxima fecha real del curso para aplicar el horario de verano correcto
+  const fechaRef = proximaFechaDiaSemana(dias?.[0] ?? '') ?? hoyMadridISO();
+  return rangoHoraLocal(fechaRef, horaInicio, 90);
 };
 
 // --- FUNCIÓN LOCAL SEGURA PARA CLASES INDIVIDUALES (60 MINUTOS) ---
-const formatoHorarioLocal = (fechaStr: string | undefined, horaStr: string | undefined) => {
-  if (!fechaStr || !horaStr) return '...';
-
-  try {
-    // CORRECCIÓN: Separar y comprobar antes de convertir
-    const partes = horaStr.split(':');
-    if (partes.length < 2) return horaStr;
-
-    const h = Number(partes[0]);
-    const m = Number(partes[1]);
-
-    if (isNaN(h) || isNaN(m)) return horaStr;
-
-    // Calcular offset Madrid
-    const now = new Date();
-    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
-    const dateMadrid = new Date(strMadrid);
-    const diff = now.getTime() - dateMadrid.getTime();
-
-    // Fecha base
-    const base = new Date(fechaStr);
-    base.setHours(h, m, 0, 0);
-
-    // Ajustar a hora local usuario
-    const localStart = new Date(base.getTime() + diff);
-    // Sumar 60 minutos
-    const localEnd = new Date(localStart.getTime() + 60 * 60000);
-
-    const fmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    return `${fmt(localStart)} - ${fmt(localEnd)}`;
-  } catch (e) {
-    console.warn(e); // Usar 'e'
-    return horaStr;
-  }
-};
+const formatoHorarioLocal = (fechaStr: string | undefined, horaStr: string | undefined) =>
+  fechaStr && horaStr ? rangoHoraLocal(fechaStr, horaStr, 60) : '...';
 
 // --- FORMATO SIMPLE PARA MOSTRAR LA HORA DE MADRID (TEXTO) ---
-const formatHorarioIndividual = (horaInicio: string) => {
-  if (!horaInicio) return '';
-  const limpia = horaInicio.slice(0, 5);
-  const partes = limpia.split(':');
-  if (partes.length < 2) return limpia;
-
-  const h = Number(partes[0]);
-  const m = Number(partes[1]);
-
-  if (isNaN(h) || isNaN(m)) return limpia;
-
-  // Cálculo simple manual
-  const mTotal = h * 60 + m + 60; // +60 minutos duración
-  const hFin = Math.floor(mTotal / 60) % 24;
-  const mFin = mTotal % 60;
-
-  const hFinStr = hFin.toString().padStart(2, '0');
-  const mFinStr = mFin.toString().padStart(2, '0');
-
-  return `${limpia} - ${hFinStr}:${mFinStr}`;
-};
+const formatHorarioIndividual = (horaInicio: string) =>
+  horaInicio ? rangoHoraMadrid(horaInicio, 60) : '';
 
 const eliminarCuenta = async () => {
   if (!user.value?.email || !user.value?.id) return;
@@ -1211,7 +1139,7 @@ const cargarReservasPasadas = async () => {
       .select('*')
       .eq('user_id', user.value.id)
       .eq('estado', 'confirmada')
-      .lt('fecha', new Date().toISOString().split('T')[0])
+      .lt('fecha', hoyMadridISO())
       .order('fecha', { ascending: false });
 
     const { data: hoy } = await supabase
@@ -1219,22 +1147,14 @@ const cargarReservasPasadas = async () => {
       .select('*')
       .eq('user_id', user.value.id)
       .eq('estado', 'confirmada')
-      .eq('fecha', new Date().toISOString().split('T')[0]);
+      .eq('fecha', hoyMadridISO());
 
     let pasadasHoy: Reserva[] = [];
     if (hoy) {
-      const ahora = new Date();
-      pasadasHoy = hoy.filter((r) => {
-        const fechaClase = new Date(`${r.fecha}T${r.hora}`);
-        return fechaClase <= ahora;
-      });
+      pasadasHoy = hoy.filter((r) => !esClaseFutura(r.fecha, r.hora));
     }
     const total = [...(antiguas || []), ...pasadasHoy];
-    reservasPasadas.value = total.sort((a, b) => {
-      return (
-        new Date(`${b.fecha}T${b.hora}`).getTime() - new Date(`${a.fecha}T${a.hora}`).getTime()
-      );
-    });
+    reservasPasadas.value = total.sort((a, b) => compararClases(b, a));
   } catch (error) {
     console.error(error);
   }
@@ -1248,16 +1168,12 @@ const cargarReservasConfirmadas = async () => {
       .select('*')
       .eq('user_id', user.value.id)
       .eq('estado', 'confirmada')
-      .gte('fecha', new Date().toISOString().split('T')[0])
+      .gte('fecha', hoyMadridISO())
       .order('fecha', { ascending: true })
       .order('hora', { ascending: true });
 
     if (data) {
-      const ahora = new Date();
-      reservasConfirmadas.value = data.filter((r) => {
-        const fechaClase = new Date(`${r.fecha}T${r.hora}`);
-        return fechaClase > ahora;
-      });
+      reservasConfirmadas.value = data.filter((r) => esClaseFutura(r.fecha, r.hora));
     }
   } catch (error) {
     console.error(error);
@@ -1309,16 +1225,9 @@ const diasSemanaMap: Record<string, Record<string, string>> = {
   Doming: { 'es-ES': 'Domingo', 'en-US': 'Sunday' },
 };
 
-const formatFecha = (fecha: string) => {
-  const fechaFormateada = new Date(fecha).toLocaleDateString(locale.value, {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-
-  return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-};
+// Con hora: fecha tal como la vive el alumno (puede ser otro día que en Madrid)
+const formatFecha = (fecha: string, hora?: string) =>
+  hora ? formatFechaClaseLocal(fecha, hora, locale.value) : formatFechaCalendario(fecha, locale.value);
 
 const traducirDiasSemana = (dias?: string[]) => {
   if (!dias || dias.length === 0) return '';

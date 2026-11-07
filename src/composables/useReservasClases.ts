@@ -3,6 +3,15 @@ import { useAuth } from 'src/stores/auth';
 import { supabase } from 'src/supabaseClient';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import {
+  diaSemanaMadrid,
+  esClaseFutura,
+  faltanAlMenos,
+  formatFechaCalendario,
+  hoyMadridISO,
+  sumarDiasISO,
+  sumarMesesISO,
+} from 'src/utils/zonaHoraria';
 
 // --- INTERFACES ---
 export interface ReservaCarrito {
@@ -58,33 +67,24 @@ export function useReservasClases() {
 
   // --- COMPUTED ---
 
-  const misReservasFuturas = computed(() => {
-    const ahora = new Date();
-    return misReservas.value.filter((r) => {
-      // Creamos la fecha completa (Fecha + Hora)
-      const fechaClase = new Date(`${r.fecha}T${r.hora}`);
-      return fechaClase > ahora;
-    });
-  });
+  // Fecha y hora guardadas en hora de Madrid → instante real
+  const misReservasFuturas = computed(() =>
+    misReservas.value.filter((r) => esClaseFutura(r.fecha, r.hora)),
+  );
 
   const opcionesTipoClase = computed(() => [
     { label: `${t('reservasClases.claseNormal')} (32€)`, value: 'normal' },
     { label: `${t('reservasClases.claseConversacion')} (27€)`, value: 'conversacion' },
   ]);
 
-  const fechaMinima = computed<string>(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 1);
-    const isoDate = d.toISOString().split('T')[0] || ''; // <--- AÑADIDO "|| ''"
-    return isoDate.replace(/-/g, '/');
-  });
+  // Rango del calendario calculado sobre el "hoy" de Madrid (formato Quasar YYYY/MM/DD)
+  const fechaMinima = computed<string>(() =>
+    sumarDiasISO(hoyMadridISO(), 1).replace(/-/g, '/'),
+  );
 
-  const fechaMaxima = computed<string>(() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() + 9);
-    const isoDate = d.toISOString().split('T')[0] || ''; // <--- AÑADIDO "|| ''"
-    return isoDate.replace(/-/g, '/');
-  });
+  const fechaMaxima = computed<string>(() =>
+    sumarMesesISO(hoyMadridISO(), 9).replace(/-/g, '/'),
+  );
 
   // 🔥 CORE FIX: Set de días disponibles NORMALIZADO a YYYY/MM/DD
   const diasValidosSet = computed(() => {
@@ -125,18 +125,8 @@ export function useReservasClases() {
     const diaCalendario = calendario.value.find((d) => d.fecha === fechaModelo);
     if (!diaCalendario || !diaCalendario.horario || diaCalendario.horario.length === 0) return [];
 
-    // Lógica para filtrar cursos grupales (días de la semana)
-    const fechaObj = new Date(fechaModelo + 'T12:00:00');
-    const diasSemanaMap = [
-      'Domingo',
-      'Lunes',
-      'Martes',
-      'Miércoles',
-      'Jueves',
-      'Viernes',
-      'Sábado',
-    ];
-    const nombreDia = diasSemanaMap[fechaObj.getDay()] || '';
+    // Lógica para filtrar cursos grupales (día de la semana en Madrid)
+    const nombreDia = diaSemanaMadrid(fechaModelo);
 
     // 🔥 FIX: Los cursos grupales duran 2 horas, bloqueamos hora actual y siguiente
     const horasCursos = cursosGrupalesActivos.value
@@ -160,9 +150,6 @@ export function useReservasClases() {
     const horasReservadas = reservasExistentes.value
       .filter((r) => r.fecha === fechaModelo && r.estado === 'confirmada')
       .map((r) => r.hora.slice(0, 5));
-    const ahora = new Date();
-    const limite24h = ahora.getTime() + 24 * 60 * 60 * 1000;
-
     return diaCalendario.horario.filter((h) => {
       const cleanH = h.slice(0, 5);
 
@@ -170,9 +157,9 @@ export function useReservasClases() {
         horasReservadas.includes(cleanH) || horasCursos.includes(cleanH) || estaEnCarrito(cleanH);
 
       if (estaOcupado) return false;
-      const fechaClase = new Date(`${fechaModelo}T${cleanH}`);
 
-      return fechaClase.getTime() > limite24h;
+      // Antelación mínima de 24 h, medida sobre el instante real de la clase
+      return faltanAlMenos(fechaModelo, cleanH, 24);
     });
   });
 
@@ -266,24 +253,15 @@ export function useReservasClases() {
     guardarCarrito();
   };
 
-  const formatFecha = (f: string) => {
-    if (!f) return '';
-    const fecha = new Date(f).toLocaleDateString(locale.value || 'es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    return fecha.charAt(0).toUpperCase() + fecha.slice(1);
-  };
+  const formatFecha = (f: string) => (f ? formatFechaCalendario(f, locale.value || 'es-ES') : '');
   const getTipoClaseTexto = (r: ReservaConfirmada) =>
     r.tipo === 'normal' ? 'General' : 'Conversación';
   const getPrecioClase = (r: ReservaConfirmada) => {
     const precio = r.precio ?? (r.tipo === 'normal' ? 32 : 27);
     return precio > 1000 ? precio / 100 : precio;
   };
-  const puedeCancelar = (r: ReservaConfirmada) =>
-    (new Date(r.fecha + 'T' + r.hora).getTime() - Date.now()) / 36e5 >= 72;
+  // Política de cancelación: 24 h (condiciones de venta)
+  const puedeCancelar = (r: ReservaConfirmada) => faltanAlMenos(r.fecha, r.hora, 24);
 
   const cancelarReserva = (r: ReservaConfirmada) => {
     $q.dialog({ title: 'Cancelar', message: '¿Seguro?', cancel: true }).onOk(() => {

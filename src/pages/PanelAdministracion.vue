@@ -1830,6 +1830,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
+import { hoyMadridISO } from 'src/utils/zonaHoraria';
 import type { User } from '@supabase/supabase-js';
 
 // Interfaces
@@ -1987,7 +1988,7 @@ const seccionActual = ref<string>('calendario');
 const user = ref<User | null>(null);
 const seleccionMultiple = ref<boolean>(true);
 const guardando = ref<boolean>(false);
-const mesActual = ref<string>(new Date().toISOString().slice(0, 7));
+const mesActual = ref<string>(hoyMadridISO().slice(0, 7));
 const fechasSeleccionadas = ref<string[]>([]);
 const datosCalendario = ref<EntradaCalendario[]>([]);
 const cursosGrupales = ref<CursoGrupal[]>([]);
@@ -2073,7 +2074,7 @@ const verDetalleReservaCompleto = async (reserva: Reserva) => {
 const filtroReservas = ref({
   userId: '',
   tipo: 'Todos',
-  fechaDesde: new Date().toISOString().split('T')[0],
+  fechaDesde: hoyMadridISO(),
 });
 
 const reservaFormulario = ref<Reserva>({
@@ -2190,12 +2191,10 @@ const cambiarSeccion = (seccion: string): void => {
 
 // Funciones del calendario
 const mesAnterior = (): void => {
-  const fecha = new Date(mesActual.value + '-01');
-  fecha.setMonth(fecha.getMonth() - 1);
-
-  const minDate = new Date(2024, 0, 1);
-  if (fecha >= minDate) {
-    mesActual.value = fecha.toISOString().slice(0, 7);
+  const [y = 2024, m = 1] = mesActual.value.split('-').map(Number);
+  const anterior = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, '0')}`;
+  if (anterior >= '2024-01') {
+    mesActual.value = anterior;
   }
 };
 
@@ -3542,7 +3541,7 @@ const eliminarReserva = (id: number): void => {
 // Cargar reservas desde Supabase
 const cargarReservas = async (): Promise<void> => {
   try {
-    const fechaActual = new Date().toISOString().split('T')[0];
+    const fechaActual = hoyMadridISO();
 
     const { data, error } = await supabase
       .from('reservas')

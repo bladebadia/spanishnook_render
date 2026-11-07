@@ -52,7 +52,7 @@
 
             <div class="col-grow">
               <div class="resumen-fecha" :class="{ 'text-white': esReservaConflictiva(reserva) }">
-                <div>{{ formatFecha(reserva.fecha) }}</div>
+                <div>{{ formatFecha(reserva.fecha, reserva.hora) }}</div>
 
                 <div class="text-weight-bold" style="font-size: 1.3rem; line-height: 1.2">
                   {{ obtenerRangoLocalSeguro(reserva.fecha, reserva.hora) }}
@@ -166,6 +166,12 @@ import { useQuasar } from 'quasar';
 import SaldoWallet from 'components/SaldoWallet.vue';
 import { useRouter } from 'vue-router';
 import { useAnalytics } from 'src/composables/useAnalytics';
+import {
+  formatFechaCalendario,
+  formatFechaClaseLocal,
+  rangoHoraLocal,
+  rangoHoraMadrid,
+} from 'src/utils/zonaHoraria';
 // ELIMINADO: import { useHorarios } from 'src/composables/useHorarios';
 
 const { t, locale } = useI18n();
@@ -176,72 +182,12 @@ const { claseReservada, compraIniciada } = useAnalytics();
 
 // --- 1. FUNCIÓN LOCAL SEGURA (Sustituye a useHorarios) ---
 // Calcula hora local usuario = Hora Madrid + Offset Real. Duración 60 min.
-const obtenerRangoLocalSeguro = (fechaStr: string, horaStr: string) => {
-  if (!fechaStr || !horaStr) return '...';
-
-  try {
-    // 1. Validar y parsear hora (HH:MM)
-    const partes = horaStr.split(':');
-    if (partes.length < 2) return horaStr;
-
-    const h = Number(partes[0]);
-    const m = Number(partes[1]);
-
-    if (isNaN(h) || isNaN(m)) return horaStr;
-
-    // 2. Calcular diferencia horaria con Madrid
-    const now = new Date();
-    // Forzamos interpretación en Madrid para saber qué hora es allí
-    const strEnMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
-    const fechaEnMadrid = new Date(strEnMadrid);
-
-    // Diferencia en ms (Local - Madrid)
-    const diffMs = now.getTime() - fechaEnMadrid.getTime();
-
-    // 3. Crear fecha base usando la fecha de la reserva y la hora seleccionada
-    const fechaBase = new Date(fechaStr);
-    fechaBase.setHours(h, m, 0, 0);
-
-    // 4. Aplicar la diferencia para obtener la hora de inicio local
-    const fechaLocalInicio = new Date(fechaBase.getTime() + diffMs);
-
-    // 5. Calcular fin (+60 minutos para clases individuales)
-    const fechaLocalFin = new Date(fechaLocalInicio.getTime() + 60 * 60000);
-
-    // 6. Formatear
-    const fmt = (d: Date) =>
-      d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
-    return `${fmt(fechaLocalInicio)} - ${fmt(fechaLocalFin)}`;
-  } catch (e) {
-    console.warn('Error calculando rango local:', e);
-    return horaStr;
-  }
-};
+const obtenerRangoLocalSeguro = (fechaStr: string, horaStr: string) =>
+  fechaStr && horaStr ? rangoHoraLocal(fechaStr, horaStr, 60) : '...';
 
 // --- FORMATO MADRID (Para referencia visual) ---
-const formatHorarioMadrid = (horaInicio: string) => {
-  if (!horaInicio) return '';
-  const limpia = horaInicio.slice(0, 5);
-  const partes = limpia.split(':');
-
-  if (partes.length < 2) return limpia;
-
-  const h = Number(partes[0]);
-  const m = Number(partes[1]);
-
-  if (isNaN(h) || isNaN(m)) return limpia;
-
-  // Calculamos fin (+60 minutos matemáticamente)
-  const totalMinutos = h * 60 + m + 60;
-  const hFin = Math.floor(totalMinutos / 60) % 24;
-  const mFin = totalMinutos % 60;
-
-  const hFinStr = hFin.toString().padStart(2, '0');
-  const mFinStr = mFin.toString().padStart(2, '0');
-
-  return `${limpia} - ${hFinStr}:${mFinStr}`;
-};
+const formatHorarioMadrid = (horaInicio: string) =>
+  horaInicio ? rangoHoraMadrid(horaInicio, 60) : '';
 
 interface ReservaCarrito {
   fecha: string;
@@ -521,15 +467,9 @@ const quitarDelCarrito = (index: number) => {
   }
 };
 
-const formatFecha = (fecha: string) => {
-  const fechaFormateada = new Date(fecha).toLocaleDateString(locale.value, {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-  return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-};
+// Con hora: fecha tal como la vive el alumno (puede ser otro día que en Madrid)
+const formatFecha = (fecha: string, hora?: string) =>
+  hora ? formatFechaClaseLocal(fecha, hora, locale.value) : formatFechaCalendario(fecha, locale.value);
 
 const verificarDisponibilidad = async () => {
   try {

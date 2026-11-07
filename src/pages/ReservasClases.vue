@@ -26,7 +26,7 @@
               <q-item v-for="(reserva, index) in carrito" :key="index">
                 <q-item-section>
                   <q-item-label class="fecha-hora-carrito">
-                    {{ formatFechaSeguro(reserva.fecha) }}
+                    {{ formatFechaClaseSegura(reserva.fecha, reserva.hora) }}
                   </q-item-label>
 
                   <q-item-label>
@@ -85,7 +85,7 @@
 
                 <q-item-section>
                   <q-item-label class="text-weight-bold">
-                    {{ formatFechaSeguro(reserva.fecha) }}
+                    {{ formatFechaClaseSegura(reserva.fecha, reserva.hora) }}
                   </q-item-label>
 
                   <q-item-label>
@@ -208,13 +208,20 @@ import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
 import SaldoWallet from 'components/SaldoWallet.vue';
 import { useQuasar, useMeta } from 'quasar';
+import {
+  formatFechaCalendario,
+  formatFechaClaseLocal,
+  horaInicioLocal,
+  rangoHoraLocal,
+  zonaUsuario,
+} from 'src/utils/zonaHoraria';
 
 import '../css/pages/ClasesIndividuales.css';
 import '../css/pages/EstilosGenerales.css';
 
 // --- Inicialización ---
 const $q = useQuasar();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { user } = useAuth();
 
 useMeta(() => ({
@@ -285,80 +292,18 @@ const {
 
 // --- FUNCIONES SEGURAS + ZONA HORARIA REAL ---
 
-const formatFechaSeguro = (fechaStr: string | undefined | null) => {
-  if (!fechaStr) return '...';
-  try {
-    const fecha = new Date(fechaStr);
-    if (isNaN(fecha.getTime())) return fechaStr;
+const formatFechaSeguro = (fechaStr: string | undefined | null) =>
+  fechaStr ? formatFechaCalendario(fechaStr, locale.value) : '...';
 
-    return new Intl.DateTimeFormat('es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(fecha);
-  } catch (e) {
-    console.warn(e);
-    return fechaStr;
-  }
-};
+// Fecha de la clase tal como la vive el alumno (puede ser otro día que en Madrid)
+const formatFechaClaseSegura = (fechaStr: string | undefined, horaStr: string | undefined) =>
+  fechaStr && horaStr ? formatFechaClaseLocal(fechaStr, horaStr, locale.value) : '...';
 
-const formatoRangoSeguro = (fechaStr: string | undefined, horaStr: string | undefined) => {
-  if (!fechaStr || !horaStr) return '...';
+const formatoRangoSeguro = (fechaStr: string | undefined, horaStr: string | undefined) =>
+  fechaStr && horaStr ? rangoHoraLocal(fechaStr, horaStr, 60) : '...';
 
-  try {
-    const partes = horaStr.split(':');
-    if (partes.length < 2) return horaStr;
-    const h = Number(partes[0]);
-    const m = Number(partes[1]);
-    if (isNaN(h) || isNaN(m)) return horaStr;
-
-    const now = new Date();
-    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
-    const dateMadrid = new Date(strMadrid);
-    const diff = now.getTime() - dateMadrid.getTime();
-
-    const baseDate = new Date(fechaStr);
-    baseDate.setHours(h, m, 0, 0);
-
-    const localStart = new Date(baseDate.getTime() + diff);
-    const localEnd = new Date(localStart.getTime() + 60 * 60000);
-
-    const fmt = (d: Date) =>
-      d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
-    return `${fmt(localStart)} - ${fmt(localEnd)}`;
-  } catch (e) {
-    console.warn(e);
-    return horaStr;
-  }
-};
-
-const formatoHoraInicioSegura = (fechaStr: string | undefined, horaStr: string | undefined) => {
-  if (!fechaStr || !horaStr) return '--:--';
-  try {
-    const partes = horaStr.split(':');
-    if (partes.length < 2) return horaStr;
-    const h = Number(partes[0]);
-    const m = Number(partes[1]);
-    if (isNaN(h) || isNaN(m)) return horaStr;
-
-    const now = new Date();
-    const strMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
-    const dateMadrid = new Date(strMadrid);
-    const diff = now.getTime() - dateMadrid.getTime();
-
-    const baseDate = new Date(fechaStr);
-    baseDate.setHours(h, m, 0, 0);
-
-    const localStart = new Date(baseDate.getTime() + diff);
-
-    return localStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-  } catch (e) {
-    console.warn(e);
-    return horaStr.slice(0, 5);
-  }
-};
+const formatoHoraInicioSegura = (fechaStr: string | undefined, horaStr: string | undefined) =>
+  fechaStr && horaStr ? horaInicioLocal(fechaStr, horaStr) : '--:--';
 
 // --- Métodos Auxiliares ---
 const getIconoPersonalizado = (tipo: string | undefined) => {
@@ -404,7 +349,7 @@ onMounted(async () => {
     cargando.value = true;
 
     // Obtenemos la zona horaria en el cliente para no pelear con el servidor
-    zonaHorariaUsuario.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    zonaHorariaUsuario.value = zonaUsuario();
 
     await inicializar();
     if (user.value) {

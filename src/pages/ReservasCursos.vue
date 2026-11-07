@@ -266,6 +266,12 @@ import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
 import { useI18n } from 'vue-i18n';
+import {
+  hoyMadridISO,
+  proximaFechaDiaSemana,
+  rangoHoraLocal,
+  zonaUsuario,
+} from 'src/utils/zonaHoraria';
 
 const $q = useQuasar();
 const route = useRoute();
@@ -309,7 +315,8 @@ useMeta(() => ({
   },
 }));
 
-const zonaHorariaUsuario = Intl.DateTimeFormat().resolvedOptions().timeZone;
+// Se rellena en cliente: en el servidor (UTC) provocaba un desajuste al hidratar
+const zonaHorariaUsuario = ref('');
 
 interface Curso {
   id: number;
@@ -411,44 +418,10 @@ const traducirDia = (dia: string) => {
 // Ahora acepta 'string | undefined' explícitamente.
 const convertirHorarioLocal = (horaMadridStr: string | undefined) => {
   if (!horaMadridStr) return '...';
-
-  try {
-    const partes = horaMadridStr.split(':');
-
-    if (partes.length < 2) return horaMadridStr;
-
-    const h = Number(partes[0]);
-    const m = Number(partes[1]);
-
-    if (isNaN(h) || isNaN(m)) return horaMadridStr;
-
-    // 1. Offset Madrid
-    const now = new Date();
-    const strEnMadrid = now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
-    const fechaEnMadrid = new Date(strEnMadrid);
-
-    // 2. Diff
-    const diffMs = now.getTime() - fechaEnMadrid.getTime();
-
-    // 3. Base
-    const fechaBase = new Date();
-    fechaBase.setHours(h, m, 0, 0);
-
-    // 4. Inicio Real
-    const fechaLocalInicio = new Date(fechaBase.getTime() + diffMs);
-
-    // 5. Fin (+90min)
-    const fechaLocalFin = new Date(fechaLocalInicio.getTime() + 90 * 60000);
-
-    // 6. Formato
-    const fmt = (date: Date) =>
-      date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-
-    return `${fmt(fechaLocalInicio)} - ${fmt(fechaLocalFin)}`;
-  } catch (e) {
-    console.error(e);
-    return horaMadridStr;
-  }
+  // Se usa la próxima fecha real del curso para aplicar el horario de verano correcto
+  const fechaRef =
+    proximaFechaDiaSemana(curso.value?.dias_semana?.[0] ?? '') ?? hoyMadridISO();
+  return rangoHoraLocal(fechaRef, horaMadridStr, 90);
 };
 
 // --- CARGAS DE DATOS ---
@@ -564,6 +537,7 @@ const reservarAutenticado = async () => {
 };
 
 onMounted(async () => {
+  zonaHorariaUsuario.value = zonaUsuario();
   await cargarUsuario();
   await cargarCurso();
   if (autenticado.value) await comprobarSuscripcion();
