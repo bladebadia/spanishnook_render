@@ -13,7 +13,7 @@
           {{ t('NuestrasClases.textoNuestrasClasesbold') }}
         </p>
         <p
-          class="texto-responsivo text-justify"
+          class="texto-responsivo text-left"
           style="max-width: 800px; margin: 0 auto; width: 100%"
         >
           {{ t('NuestrasClases.textoNuestrasClases') }}
@@ -44,30 +44,30 @@
     <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
       <div class="col-12 flex flex-center">
         <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-justify-center">
+          <div class="titulo-responsivo text-left-center">
             {{ t('NuestrasClases.nuestrasClasesConversacion') }}
           </div>
           <br />
           <div>
-            <p class="texto-responsivo text-justify text-weight-bold">
+            <p class="texto-responsivo text-left text-weight-bold">
               {{ t('NuestrasClases.tePasaQue') }}
             </p>
             <br />
-            <p class="texto-responsivo text-justify text-weight-bold" style="color: #851319">
+            <p class="texto-responsivo text-left text-weight-bold" style="color: #851319">
               {{ t('NuestrasClases.esteCursoEsParaTi') }}
             </p>
             <br />
-            <p class="texto-responsivo text-justify">
+            <p class="texto-responsivo text-left">
               {{ t('NuestrasClases.cadaSemanaNos') }}
             </p>
-            <p class="texto-responsivo text-justify">
+            <p class="texto-responsivo text-left">
               {{ t('NuestrasClases.aquiHablamos') }}
             </p>
-            <p class="texto-responsivo text-justify">
+            <p class="texto-responsivo text-left">
               {{ t('NuestrasClases.esUnPrograma') }}
             </p>
             <br />
-            <p class="texto-responsivo text-justify text-weight-bold" style="color: #851319">
+            <p class="texto-responsivo text-left text-weight-bold" style="color: #851319">
               {{ t('NuestrasClases.uneteALa') }}
             </p>
           </div>
@@ -78,8 +78,8 @@
             class="q-my-xl"
           >
             <q-card>
-              <q-card-section class="texto-responsivo text-justify">
-                <ul class="q-pl-md text-justify">
+              <q-card-section class="texto-responsivo text-left">
+                <ul class="q-pl-md text-left">
                   <li>
                     <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos1Bold') }}</strong>
                     {{ t('NuestrasClases.ListaComoFuncionanGrupos1') }}
@@ -111,7 +111,7 @@
             class="q-my-lg"
           >
             <q-card>
-              <q-card-section class="texto-responsivo text-justify">
+              <q-card-section class="texto-responsivo text-left">
                 <ul class="q-pl-md">
                   <li>{{ t('NuestrasClases.Logro1Grupales') }}</li>
                   <li>{{ t('NuestrasClases.Logro2Grupales') }}</li>
@@ -174,7 +174,7 @@
               {{ t('NuestrasClases.nuestrasClasesIndividuales') }}
             </div>
             <br />
-            <p class="texto-responsivo text-justify q-mb-none">
+            <p class="texto-responsivo text-left q-mb-none">
               <strong>{{ t('NuestrasClases.IntroIndividuales1Bold') }}</strong>
               <br /><br />
               {{ t('NuestrasClases.IntroIndividuales2') }}
@@ -191,7 +191,7 @@
 
             <div class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
-                <div class="modalidad-card bg-yellow-2">
+                <div class="modalidad-card sn-sello-conversacion sn-sello-fondo">
                   <q-img
                     src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-conversacion2.png?width=600&format=webp"
                     style="width: 70%; max-width: 300px; border-radius: 16px"
@@ -200,13 +200,13 @@
                   <div class="subtitulo-responsivo text-center q-my-xl">
                     {{ t('NuestrasClases.Modalidad1') }}
                   </div>
-                  <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
+                  <p class="text-body1 text-left q-mt-lg text-grey-8" style="font-weight: bold">
                     {{ t('NuestrasClases.TextoModalidad1') }}
                   </p>
                 </div>
               </div>
               <div class="col-12 col-md-6">
-                <div class="modalidad-card bg-yellow-2">
+                <div class="modalidad-card sn-sello-general sn-sello-fondo">
                   <q-img
                     src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-general2.png?width=600&format=webp"
                     style="width: 70%; max-width: 300px; border-radius: 16px"
@@ -215,7 +215,7 @@
                   <div class="subtitulo-responsivo text-center q-my-xl">
                     {{ t('NuestrasClases.Modalidad2') }}
                   </div>
-                  <p class="text-body1 text-justify q-mt-lg text-grey-8" style="font-weight: bold">
+                  <p class="text-body1 text-left q-mt-lg text-grey-8" style="font-weight: bold">
                     {{ t('NuestrasClases.TextoModalidad2') }}
                   </p>
                 </div>
@@ -240,7 +240,7 @@
               {{ t('NuestrasClases.TextoComoFuncionanIndividuales') }}
             </div>
             <br />
-            <ul class="texto-responsivo text-justify q-pl-md lista-funcionamiento">
+            <ul class="texto-responsivo text-left q-pl-md lista-funcionamiento">
               <li>
                 <strong>{{ t('NuestrasClases.ListaComoFuncionanInd1Bold') }}</strong>
                 {{ t('NuestrasClases.ListaComoFuncionanInd1') }}
@@ -451,11 +451,10 @@ watch(
 
 <style>
 .modalidad-card {
-  background: #fffbe6;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: var(--sn-r-tarjeta);
+  padding: 24px 20px;
   height: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  text-align: center;
 }
 
 .lista-funcionamiento {
@@ -473,44 +472,7 @@ watch(
   justify-content: center;
 }
 
-.banner-individuales {
-  max-width: 100vw !important;
-  width: 100vw !important;
-  box-sizing: border-box;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  margin-left: 5% !important;
-}
-
-@media (max-width: 600px) {
-  .banner-individuales-col {
-    margin-left: 5% !important;
-    margin-right: 0 !important;
-    max-width: 100vw !important;
-    width: 100vw !important;
-    overflow-x: hidden;
-  }
-  .banner-individuales {
-    max-width: 100vw !important;
-    width: 100vw !important;
-    box-sizing: border-box;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  .cabecera-row {
-    width: 100vw !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    overflow-x: hidden;
-  }
-  .cabecera-img {
-    width: 100vw !important;
-    min-width: 0 !important;
-    max-width: 100vw !important;
-    height: auto !important;
-    display: block;
-  }
-}
+/* Eliminados los anchos 100vw forzados: desbordaban la página y pegaban el texto a los bordes */
 
 .oval-btn-lg {
   min-width: 220px;

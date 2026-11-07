@@ -1,27 +1,22 @@
 // Quasar SCSS (& Sass) Variables
 // --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+// Colores de Quasar alineados con el sistema "Papel y tinta" (src/css/app.scss).
+// color="primary", "secondary", etc. en los componentes usan estos valores.
 
-// Check documentation for full list of Quasar variables
+$primary: #851319; // burdeos: tinta principal
+$secondary: #557a16; // oliva: legible sobre blanco (el #7aa329 anterior no llegaba a 3:1)
+$accent: #7b4f96; // lila del sello de conversación
+$accent2: #fff4c7; // nota adhesiva
+$accent3: #7aa329; // verde de marca decorativo
 
-// Your own variables (that are declared here) and Quasar's own
-// ones will be available out of the box in your .vue/.scss/.sass files
+$dark: #2b1d1f; // tinta
+$dark-page: #1f1517;
 
-// It's highly recommended to change the default colors
-// to match your app's branding.
-// Tip: Use the "Theme Builder" on Quasar's documentation website.
+$positive: #2e7d32;
+$negative: #b3261e;
+$info: #2f6e9f; // azul del sello de clases generales
+$warning: #e0a100;
 
-$primary: #851319;
-$secondary: #7aa329;
-$accent: #bbadff;
-$accent2: #ffd95c;
-$accent3: #7aa329;
-
-$dark: #1d1d1d;
-$dark-page: #121212;
-
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+// Texto general en Nunito Sans (sustituye a Roboto)
+$typography-font-family: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+$generic-border-radius: 10px;

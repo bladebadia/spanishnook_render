@@ -8,11 +8,11 @@
           </h1>
           <br />
           <br />
-          <p class="texto-responsivo text-justify text-weight-bold">
+          <p class="texto-responsivo text-left text-weight-bold">
             {{ $t('MaterialesPage.descripcion') }}
           </p>
           <br />
-          <p class="texto-responsivo text-justify">{{ $t('MaterialesPage.descripcion2') }}</p>
+          <p class="texto-responsivo text-left">{{ $t('MaterialesPage.descripcion2') }}</p>
           <br />
           <p class="texto-responsivo text-center text-primary text-weight-bold">
             {{ $t('MaterialesPage.claim') }}
@@ -26,8 +26,8 @@
           </p>
 
           <q-card class="q-mt-sm">
-            <q-card-section class="texto-responsivo text-justify">
-              <ul class="q-pl-md text-justify">
+            <q-card-section class="texto-responsivo text-left">
+              <ul class="q-pl-md text-left">
                 <li>
                   <strong>{{ $t('MaterialesPage.contenido1bold') }}</strong>
                   {{ $t('MaterialesPage.contenido1') }}
@@ -437,7 +437,7 @@ onMounted(() => {
 .badge-hs {
   position: absolute;
   top: 10px;
-  right: -10px;
+  right: 12px;
   padding: 6px 16px;
   border-radius: 20px;
   transform: rotate(5deg);

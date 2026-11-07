@@ -19,7 +19,7 @@
 
       <div class="row q-col-gutter-sm">
         <div class="col-6">
-          <q-card flat class="text-white text-center q-py-xs" style="background-color: #60aad8ff">
+          <q-card flat class="sn-sello-general sn-sello-banda text-center q-py-xs">
             <div v-if="loading" class="flex flex-center" style="height: 24px">
               <q-spinner-dots size="1em" />
             </div>
@@ -31,7 +31,7 @@
         </div>
 
         <div class="col-6">
-          <q-card flat class="text-white text-center q-py-xs" style="background-color: #b897cbff">
+          <q-card flat class="sn-sello-conversacion sn-sello-banda text-center q-py-xs">
             <div v-if="loading" class="flex flex-center" style="height: 24px">
               <q-spinner-dots size="1em" />
             </div>

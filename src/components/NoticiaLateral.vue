@@ -21,7 +21,7 @@
     <!-- Contenido -->
     <q-card-section>
       <div class="text-h6">{{ title }}</div>
-      <div class="text-body2 q-mt-sm text-justify">{{ text }}</div>
+      <div class="text-body2 q-mt-sm text-left">{{ text }}</div>
     </q-card-section>
 
     <!-- Botón (opcional) -->

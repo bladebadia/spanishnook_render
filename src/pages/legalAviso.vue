@@ -2,7 +2,7 @@
   <div class="legal-page q-pa-lg">
     <p class="text-primary text-bold text-center titulo-responsivo">Aviso Legal</p>
     <p class="text-primary text-bold texto-responsivo">Responsable de la web</p>
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       De conformidad con la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la
       Información y Comercio Electrónico (LSSICE), se informa que la titularidad de este Sitio Web
       <span style="color: firebrick">www.spanishnook.com</span> corresponde a:
@@ -16,12 +16,12 @@
       <li>Email: paulaf@spanishnook.com</li>
     </ul>
     <p class="q-pt-md text-primary text-bold texto-responsivo">Objeto</p>
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       La presente web tiene como finalidad ofrecer servicios de enseñanza de español online mediante
       clases en vivo y venta de productos relacionados.
     </p>
     <p class="q-pt-md text-bold text-primary texto-responsivo">Condiciones de uso</p>
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       El acceso, navegación y uso del Sitio Web atribuye la condición de Usuario, por lo que se
       aceptan, desde dicho acceso, todas las condiciones de uso aquí establecidas, sin perjuicio de
       la aplicación de la correspondiente normativa legal de obligado cumplimiento.
@@ -34,7 +34,7 @@
     <p class="q-pt-md text-primary text-bold texto-responsivo">
       Propiedad intelectual e industrial
     </p>
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       Todos los contenidos del Sitio Web, incluyendo textos, vídeos, imágenes, material didáctico,
       logotipos y diseño gráfico, son titularidad de SpanishNook o se dispone de los derechos
       necesarios para su uso, y están protegidos por la normativa de propiedad intelectual e

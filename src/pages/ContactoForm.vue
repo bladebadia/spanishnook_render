@@ -4,7 +4,7 @@
         class="texto-responsivo text-primary text-bold text-center q-mb-md"
         style="margin-bottom: 30px"
       >
-        📬 {{ t('Contacto.rellena') }}
+        {{ t('Contacto.rellena') }}
       </p>
       <q-card flat bordered class="q-pa-md">
         <q-card-section>

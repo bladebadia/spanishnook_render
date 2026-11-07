@@ -156,46 +156,7 @@
     </q-drawer>
 
     <q-page-container>
-      <q-banner
-        v-if="showCookiesBanner"
-        class="bg-primary text-white shadow-2 cookies-banner"
-        style="
-          position: fixed;
-          left: 50%;
-          bottom: 96px;
-          transform: translateX(-50%);
-          width: 70vw;
-          max-width: 900px;
-          z-index: 9999;
-          font-size: 1.25rem;
-          border-radius: 18px;
-          padding: 24px 32px;
-        "
-        icon="cookie"
-      >
-        <div class="row items-center justify-between">
-          <div style="line-height: 1.5">
-            Este sitio web utiliza cookies propias y de terceros para mejorar la experiencia de
-            usuario y analizar el tráfico. Si continúas navegando, consideramos que aceptas su uso.
-            <q-btn
-              flat
-              dense
-              color="white"
-              label="Política de Cookies"
-              to="/Cookies"
-              class="q-ml-sm"
-            />
-          </div>
-          <q-btn
-            color="white"
-            text-color="primary"
-            label="Aceptar"
-            @click="aceptarCookies"
-            class="q-ml-md text-weight-bold"
-            style="font-size: 1.1rem; padding: 8px 24px; border-radius: 8px"
-          />
-        </div>
-      </q-banner>
+      <AvisoCookies />
 
       <!-- Pasar la altura calculada a las páginas -->
       <router-view />
@@ -205,8 +166,8 @@
       <q-btn
         class="whatsapp-sticky-btn enlarged-touch"
         round
-        color="green-6"
-        icon="mdi-whatsapp"
+        color="green-7"
+        :icon="iconoWhatsapp"
         size="lg"
         href="https://wa.me/34694280178"
         target="_blank"
@@ -215,7 +176,7 @@
       />
     </q-page-sticky>
 
-    <q-footer class="bg-black text-white">
+    <q-footer class="sn-pie text-white">
       <div class="row flex q-pa-md">
         <div class="col-12 col-md-3 flex column items-center align-center q-pt-lg">
           <q-img src="/img/Logotexto_500.png" class="img-responsiv" />
@@ -235,24 +196,27 @@
                 {{ t('footerRedes') }}
               </p>
               <q-btn
-                icon="mdi-youtube"
+                :icon="iconosRedes.youtube"
+                aria-label="YouTube"
                 size="lg"
                 flat
-                class="text-red underline-btn q-sm-ml-xl"
+                class="text-white underline-btn q-sm-ml-xl"
                 href="https://www.youtube.com/@SpanishNook"
               />
               <q-btn
-                icon="mdi-instagram"
+                :icon="iconosRedes.instagram"
+                aria-label="Instagram"
                 size="lg"
                 flat
-                class="text-red underline-btn q-sm-mr-lg q-pr-lg"
+                class="text-white underline-btn q-sm-mr-lg q-pr-lg"
                 href="https://www.instagram.com/spanishnook?igsh=MWo2OTJhd2MzM3dmeQ%3D%3D&utm_source=qr"
               />
               <q-btn
-                icon="mdi-music-note"
+                :icon="iconosRedes.tiktok"
+                aria-label="TikTok"
                 size="lg"
                 flat
-                class="text-red underline-btn q-sm-mr-lg q-pr-lg"
+                class="text-white underline-btn q-sm-mr-lg q-pr-lg"
                 href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
               />
             </div>
@@ -335,6 +299,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import AvisoCookies from 'components/AvisoCookies.vue';
+import { mdiInstagram, mdiMusicNote, mdiWhatsapp, mdiYoutube } from '@quasar/extras/mdi-v6';
 import { useI18n } from 'vue-i18n';
 import { useAuth } from 'src/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
@@ -343,6 +309,8 @@ import { useQuasar } from 'quasar';
 
 const { user } = useAuth();
 const { locale, t } = useI18n();
+const iconoWhatsapp = mdiWhatsapp;
+const iconosRedes = { youtube: mdiYoutube, instagram: mdiInstagram, tiktok: mdiMusicNote };
 const router = useRouter();
 const { logout } = useAuth();
 const headerRef = ref<HTMLElement | null>(null);
@@ -356,14 +324,6 @@ const showDesktopNav = ref(false);
 const showFooterDesktop = ref(false);
 const headerHeight = ref(50); // Altura por defecto para servidor
 
-// Banner de cookies
-const showCookiesBanner = ref(false);
-function aceptarCookies() {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('cookies_accepted', 'true');
-  }
-  showCookiesBanner.value = false;
-}
 
 // Contador del carrito
 const carritoCount = ref(0);
@@ -434,8 +394,6 @@ onMounted(() => {
       headerHeight.value = headerRef.value.offsetHeight;
     }
 
-    // Banner de cookies
-    showCookiesBanner.value = localStorage.getItem('cookies_accepted') !== 'true';
 
     // NO eliminar el carrito al montar (comentado)
     // localStorage.removeItem('carritoReservas');
@@ -745,7 +703,7 @@ defineExpose({ $q, t });
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.18);
   color: white;
   width: 100%;
   box-sizing: border-box;

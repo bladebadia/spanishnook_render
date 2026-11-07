@@ -4,7 +4,7 @@
     <p class="text-h5 text-primary text-left q-mt-md subtitulo-responsivo">
       I. POLÍTICA DE PRIVACIDAD Y PROTECCIÓN DE DATOS
     </p>
-    <p class="text-h6 q-mt-md text-justify text-black texto-responsivo">
+    <p class="text-h6 q-mt-md text-left text-black texto-responsivo">
       Respetando lo establecido en la legislación vigente, (en adelante, también SpanishNook) se
       compromete a adoptar las medidas técnicas y organizativas necesarias, según el nivel de
       seguridad adecuado al riesgo de los datos recogidos. <br />
@@ -12,7 +12,7 @@
       la normativa española y europea vigente en materia de protección de datos personales en
       internet. En concreto, la misma respeta las siguientes normas:
     </p>
-    <p style="padding-left: 2em" class="text-h6 q-mt-md text-justify texto-responsivo text-primary">
+    <p style="padding-left: 2em" class="text-h6 q-mt-md text-left texto-responsivo text-primary">
       &#8226; El Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo, de 27 de abril de
       2016, relativo a la protección de las personas físicas en lo que respecta al tratamiento de
       datos personales y a la libre circulación de estos datos según el Reglamento General de
@@ -24,10 +24,10 @@
       &#8226; La Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de
       Comercio Electrónico (LSSI-CE).
     </p>
-    <p class="text-h6 text-justify text-bold texto-responsivo text-primary">
+    <p class="text-h6 text-left text-bold texto-responsivo text-primary">
       <span>Identidad del responsable del tratamiento de los datos personales</span>
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       El responsable del tratamiento de los datos personales recogidos en es Paula Fortes Esparza,
       con NIF: 77127036D (en adelante, Responsable del tratamiento).
       <br />
@@ -39,11 +39,11 @@
       <br />
       Email de contacto: paulaf@spanishnook.com
     </p>
-    <p class="text-h6 text-justify text-bold texto-responsivo text-primary">
+    <p class="text-h6 text-left text-bold texto-responsivo text-primary">
       Registro de Datos de Carácter Personal
     </p>
 
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       En cumplimiento de lo establecido en el RGPD y la LOPD-GDD, le informamos que los datos
       personales recabados por Spanishnook, mediante los formularios extendidos en sus páginas
       quedarán incorporados y serán tratados en nuestro fichero con el fin de poder facilitar,
@@ -60,7 +60,7 @@
       <br />
     </p>
 
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       El tratamiento de los datos personales del Usuario se someterá a los siguientes principios
       recogidos en el artículo 5 del RGPD y en el artículo 4 y siguientes de la Ley Orgánica 3/2018,
       de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales.
@@ -70,7 +70,7 @@
       Categorías de datos personales
       <br />
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       Las categorías de datos que se tratan son datos identificativos, de contacto y, en su caso,
       datos necesarios para la gestión de pagos y el acceso a los servicios ofrecidos. En ningún
       caso se tratan categorías especiales de datos personales en el sentido del artículo 9 del
@@ -80,7 +80,7 @@
       Base legal para el tratamiento de los datos personales
       <br />
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       La base legal para el tratamiento de los datos personales es el consentimiento del Usuario, la
       ejecución de un contrato o la aplicación de medidas precontractuales, así como el cumplimiento
       de obligaciones legales aplicables. SpanishNook recabará el consentimiento expreso del Usuario
@@ -102,7 +102,7 @@
       Finalidad del tratamiento de los datos personales
     </p>
 
-    <p class="text-h6 text-justify texto-responsivo text-black" style="padding-left: 2em">
+    <p class="text-h6 text-left texto-responsivo text-black" style="padding-left: 2em">
       Gestionar la creación de cuentas de usuario.
       <br />
       Facilitar el acceso a clases en vivo.
@@ -111,7 +111,7 @@
       <br />
       Mantener comunicación administrativa y de soporte.
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       Igualmente, los datos podrán ser utilizados con una finalidad comercial de personalización,
       operativa y estadística, y actividades propias del objeto social de SpanishNook, así como para
       la extracción, almacenamiento de datos y estudios de marketing para adecuar el Contenido
@@ -122,7 +122,7 @@
       Períodos de retención de los datos personales.
       <br />
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       Los datos personales solo serán retenidos durante el tiempo mínimo necesario para los fines de
       su tratamiento o hasta que el Usuario solicite su supresión.
       <br />
@@ -131,7 +131,7 @@
       Destinatarios de los datos personales
       <br />
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       Los datos no se ceden a terceros salvo obligación legal.
       <br />
       Algunos proveedores de servicios, como Stripe, actúan como encargados del tratamiento y
@@ -145,7 +145,7 @@
       Secreto y seguridad de los datos personales
       <br />
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       El Sitio Web cuenta con un certificado SSL (Secure Socket Layer), que asegura que los datos
       personales se transmiten de forma segura y confidencial, al ser la transmisión de los datos
       entre el servidor y el Usuario, y en retroalimentación, totalmente cifrada o encriptada.
@@ -160,7 +160,7 @@
       Enlaces a sitios web de terceros
       <br />
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       El Sitio Web puede incluir hipervínculos o enlaces que permiten acceder a páginas web de
       terceros distintos de SpanishNook, y que por tanto no son operados por este. Los titulares de
       dichos sitios web dispondrán de sus propias políticas de protección de datos, siendo ellos
@@ -170,7 +170,7 @@
       Derechos del Usuario
       <br />
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       El Usuario podrá ejercer en cualquier momento sus derechos de acceso, rectificación,
       supresión, limitación, portabilidad y oposición enviando un correo a paulaf@spanishnook.com.
       Si considera que no se han atendido correctamente sus derechos, puede presentar una
@@ -180,7 +180,7 @@
     <p class="text-h6 q-pt-xl q-pb-md text-left subtitulo-responsivo text-primary">
       II. ACEPTACIÓN Y CAMBIOS EN LA POLÍTICA DE PRIVACIDAD
     </p>
-    <p class="text-h6 text-justify texto-responsivo text-black">
+    <p class="text-h6 text-left texto-responsivo text-black">
       Se reserva el derecho a modificar la Política de Privacidad, de acuerdo al propio criterio del
       Sitio Web, o motivado por un cambio legislativo, jurisprudencial o doctrinal de la Agencia
       Española de Protección de Datos. Los cambios o actualizaciones de esta Política de Privacidad

@@ -1,6 +1,6 @@
 <!-- filepath: /workspaces/Spanishnook/Spanishnook/src/components/OpinioneVerificadas.vue -->
 <template>
-  <q-card class="opinion-card bg-yellow-2">
+  <q-card flat class="opinion-card sn-nota">
     <q-card-section class="row items-center q-pb-none">
       <div class="col">
         <div class="text-h6 text-weight-bold">{{ opinion.name }}</div>

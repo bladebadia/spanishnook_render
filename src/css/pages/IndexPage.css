@@ -1,3 +1,32 @@
+/*  PORTADA */
+
+/* Banner: en escritorio ocupaba toda la primera pantalla y escondía el titular */
+.sn-hero-banner {
+  max-height: min(56vh, 540px);
+}
+
+/* Bloque "Test de nivel" sobre fondo burdeos */
+.sn-bloque-test {
+  max-width: var(--sn-ancho);
+  margin-inline: auto;
+  padding: clamp(40px, 7vw, 72px) var(--sn-margen);
+  color: #fff;
+}
+.sn-bloque-test__titulo {
+  font-size: var(--sn-t-h2);
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 0.5em;
+  max-width: 22ch;
+}
+.sn-bloque-test__texto {
+  font-size: var(--sn-t-entrada);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 60ch;
+  margin: 0;
+}
+
 /*  TARJETAS */
 
 .tarjeta-quien {

@@ -1,202 +1,129 @@
-/*  TEXTOS GENERALES RESPONSIVOS  */
+/* =============================================================================
+   Clases de texto y botones compartidas por las páginas.
+   Los valores salen de los tokens --sn-* de src/css/app.scss (sistema "Papel y tinta").
+   Los tamaños son fluidos con clamp(): no hacen falta media queries por tamaño.
+   ============================================================================= */
 
+/* ---------- Títulos ---------- */
+
+/* Título de sección (y <h1> de la home) */
 .titulo-responsivo {
-  font-size: 3rem;
-  font-weight: bold;
-  margin: 1px 0px;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
   line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 auto;
+  padding-inline: var(--sn-margen);
+  max-width: 24ch;
+  text-wrap: balance;
 }
-/* Si el título es un <h1>/<h2>, anula la tipografía por defecto de Quasar */
+h1.titulo-responsivo {
+  font-size: var(--sn-t-h1);
+  max-width: 20ch;
+}
 h1.titulo-responsivo,
 h2.titulo-responsivo {
-  letter-spacing: normal;
+  letter-spacing: -0.01em;
 }
 
+/* Título de tarjeta o bloque */
 .titulo-responsivo1 {
-  font-size: 1.6rem;
-  font-weight: 700 !important;
-  margin: 10px 20px;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.5em 0;
+  text-wrap: balance;
 }
 
 .titulo-responsivo2 {
-  font-size: 1.9rem;
-  font-weight: 600 !important;
-  margin: 10px 20px;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0.5em 0;
+  text-wrap: balance;
 }
 
-/* Subtítulos responsivo */
+/* Subtítulos */
 .subtitulo-responsivo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0px 20px !important;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h4);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 var(--sn-margen);
+  text-wrap: balance;
 }
 
 .subtitulo2-responsivo {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin: 0 20px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0;
 }
 
-/* Texto principal responsivo */
+/* ---------- Texto ---------- */
+
+/* Párrafo de entrada: centrado en la página, ancho de lectura cómodo */
 .texto-responsivo {
-  font-size: 1.2rem;
-  margin: 0 50px;
+  font-size: var(--sn-t-entrada);
+  line-height: 1.6;
+  max-width: var(--sn-prosa);
+  margin: 0 auto;
+  padding-inline: var(--sn-margen);
 }
 
-/* Texto principal responsivo */
 .texto2-responsivo {
-  font-size: 1rem;
-  margin: 0 50px;
+  font-size: var(--sn-t-cuerpo);
+  line-height: 1.6;
+  max-width: var(--sn-prosa);
+  margin: 0 auto;
+  padding-inline: var(--sn-margen);
 }
 
-/*Titulo tarjetas*/
 .titulo-tarjeta {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  line-height: 1.25;
 }
 
-/*Texto tarjetas*/
 .texto-tarjeta {
-  font-size: 1.3rem;
+  font-size: var(--sn-t-cuerpo);
+  line-height: 1.6;
 }
 
-@media (max-width: 900px) {
-  .titulo-responsivo {
-    font-size: 2rem;
-  }
+/* ---------- Botones ---------- */
 
-  .subtitulo-responsivo {
-    font-size: 1.3rem;
-  }
-
-  .subtitulo2-responsivo {
-    font-size: 0.9rem;
-  }
-
-  .texto-responsivo {
-    font-size: 1rem;
-    margin: 0 30px;
-  }
-
-  .texto2-responsivo {
-    font-size: 1rem;
-    margin: 0 30px;
-  }
-  .titulo-tarjeta {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  .texto-tarjeta {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .titulo-responsivo {
-    font-size: 1.6rem;
-    font-weight: bold;
-  }
-
-  .subtitulo-responsivo {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-
-  .subtitulo2-responsivo {
-    font-size: 1rem;
-    font-weight: bold;
-  }
-  .texto-responsivo {
-    font-size: 1rem;
-    margin: 0 50px;
-  }
-  .texto2-responsivo {
-    font-size: 0.8rem;
-    margin: 0 30px;
-  }
-  .titulo-tarjeta {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  .texto-tarjeta {
-    font-size: 1.3rem;
-  }
-}
-
-/*  BOTONES GENERALES RESPONSIVOS  */
-
-/* Botón ovalado responsivo */
-.oval-btn {
-  border-radius: 64px !important;
-  padding-left: 12px;
-  padding-right: 12px;
-  font-weight: bold;
-  font-size: 1.3rem;
-  margin-top: 30px;
-}
-
+/* Antes había botón ovalado y cuadrado: ahora ambos son la píldora de la marca */
+.oval-btn,
 .cuadrado-btn {
-  padding-left: 32px;
-  padding-right: 32px;
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-top: 20px;
+  border-radius: var(--sn-r-boton) !important;
+  padding-inline: 28px !important;
+  min-height: 48px;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 24px;
 }
 
-/* Clase para botones centrados en la parte inferior de las tarjetas */
+/* Botón centrado en la parte inferior de una tarjeta */
 .btn-tarjeta-fixed {
   position: absolute;
-  bottom: 8px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   width: auto;
   margin: 0;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-/* Móvil  pequeño */
+/* ---------- Fondos ---------- */
 
-@media (max-width: 900) {
-  .oval-btn {
-    border-radius: 64px !important;
-    padding-left: 25px;
-    padding-right: 25px;
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-top: 30px;
-  }
-  .cuadrado-btn {
-    padding-left: 25px;
-    padding-right: 25px;
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-top: 30px;
-  }
-}
-@media (max-width: 600px) {
-  .oval-btn {
-    border-radius: 64px !important;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
-    font-size: 0.8rem !important;
-    margin-top: 30px;
-  }
-  .cuadrado-btn {
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
-    font-size: 0.8rem;
-    margin-top: 30px;
-  }
-  .btn-tarjeta-fixed {
-    bottom: 12px;
-    width: auto;
-  }
-}
-
-/* Fondo degradado rojo oscuro */
+/* Bloque destacado en burdeos (se mantiene el nombre por compatibilidad) */
 .degradado-fondo {
-  background: #851319;
+  background: var(--sn-burdeos);
+  color: #fff;
 }

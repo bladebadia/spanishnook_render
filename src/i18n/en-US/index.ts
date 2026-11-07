@@ -14,7 +14,7 @@ export default {
   clasesIndividuales: 'Private Classes',
   clasesGrupales: 'Group Classes',
   clases: 'Classes',
-  cuadernos: 'WORKBOOKS',
+  cuadernos: 'Workbooks',
   footerSpanishnookEs:
     'SpanishNook - The nook where Spanish is learned without haste, but properly.',
   footerAvisoLegal: 'Legal Notice',
@@ -58,7 +58,7 @@ export default {
   indexMejoraTuConfianza:
     'Improve your confidence and fluency by speaking Spanish in small groups, in a relaxed yet fun environment.',
   indexUneteALaLista: 'Start now',
-  indexDescubreTuPunto: 'Discover your starting point ➡️ take the free level test',
+  indexDescubreTuPunto: 'Discover your starting point: take the free level test',
   indexEnSolo:
     'In just 5 minutes, you’ll find out your Spanish level and which option suits you best. The first step towards learning at your own pace.',
   indexHacerTest: 'Take the test',
@@ -98,8 +98,8 @@ export default {
   indexAunTienesDudas: 'Still have questions?',
   indexEstamosAlOtroLado:
     'We’re on the other side. Get in touch with us through any of our available channels and we’ll get back to you as soon as possible.',
-  indexContactanos: 'contact us',
-  indexOpinionesVerificadas: 'Verified Reviews ⭐',
+  indexContactanos: 'Contact us',
+  indexOpinionesVerificadas: 'Verified reviews',
   indexConoceExperiencias: 'Get to know the experiences of our students',
   indexVerMasOpiniones: 'See more reviews',
   indexSeElPrimeroEnOpinar: 'Be the first one to leave a review',
@@ -148,7 +148,7 @@ export default {
 
   test: {
     deNivel: 'Spanish Level Test',
-    evaluaTuNivel: '🏆 Find out your Spanish level',
+    evaluaTuNivel: 'Find out your Spanish level',
     instrucciones: 'Instructions',
     elTestConsta: 'The test consists of 25 questions arranged by levels.',
     cadaPreguntaTiene:
@@ -241,13 +241,13 @@ export default {
       'Every week, we meet in small groups to practice Spanish in a real, practical, and enjoyableway. We work with current topics and activities designed to help you speak more, loosen up, and feel comfortable from day one. Here we speak a lot, make mistakes without fear, laugh, learn useful vocabulary, and improve step by step.',
     TextoNuestrosCursosGrupo1: 'How do the group classes work?',
     ListaComoFuncionanGrupos1Bold: '1 class per week',
-    ListaComoFuncionanGrupos1: '➡️ 90 minutes',
+    ListaComoFuncionanGrupos1: '90 minutes',
     ListaComoFuncionanGrupos2Bold: 'Small groups so everyone can truly participate',
-    ListaComoFuncionanGrupos2: '➡️ Maximum 6 people',
+    ListaComoFuncionanGrupos2: 'Maximum 6 people',
     ListaComoFuncionanGrupos3Bold: 'Monthly subscription (€65)',
-    ListaComoFuncionanGrupos3: '➡️ Simple and commitment-free. Cancel anytime',
+    ListaComoFuncionanGrupos3: 'Simple and commitment-free. Cancel anytime',
     ListaComoFuncionanGrupos4Bold: 'Communicative Approach',
-    ListaComoFuncionanGrupos4: '➡️ Live, dynamic and practical lessons',
+    ListaComoFuncionanGrupos4: 'Live, dynamic and practical lessons',
     ListaComoFuncionanGrupos5Bold: 'Level-based groups',
     ListaComoFuncionanGrupos5: '',
     LogrosGrupales: 'What will you achieve?',
@@ -271,13 +271,13 @@ export default {
     TextoModalidad2:
       'Our general classes cover grammar, vocabulary, listening and reading comprehension, as well as spoken and written expression. Progress in a well-rounded way and take your Spanish to the next level.',
     TextoComoFuncionanIndividuales: 'How private classes work:',
-    ListaComoFuncionanInd1Bold: 'Live 55-minute online sessions 🕒',
+    ListaComoFuncionanInd1Bold: 'Live 55-minute online sessions',
     ListaComoFuncionanInd1: 'With 100% personalized materials',
-    ListaComoFuncionanInd2Bold: 'Total flexibility 🗓️',
+    ListaComoFuncionanInd2Bold: 'Total flexibility',
     ListaComoFuncionanInd2: 'Book your classes whenever you want',
-    ListaComoFuncionanInd3Bold: 'Choose your focus 🎯',
+    ListaComoFuncionanInd3Bold: 'Choose your focus',
     ListaComoFuncionanInd3: 'Conversation or General Spanish',
-    ListaComoFuncionanInd4Bold: 'Ongoing feedback and progress tracking 📈',
+    ListaComoFuncionanInd4Bold: 'Ongoing feedback and progress tracking',
     ListaComoFuncionanInd4: 'Shared repository (Google Classroom and Google Drive)',
     ListaComoFuncionanInd5:
       'Cancellations up to 24 hours in advance. The class will be rescheduled for another day at no extra cost',
@@ -285,7 +285,7 @@ export default {
     inicio: 'Start',
     tePasaQue:
       'Do you understand Spanish but find it hard to speak naturally? Want to feel more confident without worrying about making mistakes?',
-    esteCursoEsParaTi: '⭐ This courses are for you.',
+    esteCursoEsParaTi: 'These courses are for you.',
     cadaSemanaNos:
       'Every week we meet in small groups to practise Spanish in a real, practical and enjoyable way. We work with current topics and activities designed to help you speak more, feel relaxed and gain confidence from day one.',
     aquiHablamos:
@@ -437,7 +437,7 @@ export default {
       'Here you will find activity notebooks in PDF format designed to transform audiovisual content into an interactive, deep, and structured learning experience. Each notebook has been created to work on the different Spanish skills in a balanced way: from listening comprehension and colloquial vocabulary to writing and grammar in context.',
     claim: 'Download your activity notebooks and continue learning.',
     carga: 'Loading materials...',
-    quehay: 'What is inside each workbook?📚',
+    quehay: 'What is inside each workbook?',
     contenido1bold: 'Real vocabulary and expressions:',
     contenido1:
       'Glossaries with contextualization of idioms, colloquial vocabulary, and daily usage examples.',
@@ -508,7 +508,7 @@ export default {
   },
 
   comprarPacks: {
-    packsCreditos: '💎 Credit Packs',
+    packsCreditos: 'Class packs',
     compraClases: 'Buy classes in advance, save money, and use your credits whenever you want.',
     clasesGenerales: 'General Classes',
     clasesConversacion: 'Conversation Classes',
@@ -555,7 +555,7 @@ export default {
   },
   SobreSpanish: {
     sobre: 'About SpanishNook',
-    conoce: '✨Get to know SpanishNook✨',
+    conoce: 'Get to know SpanishNook',
     intro:
       "Behind every class, there's a person, a story, and a way of teaching designed just for you. In a fast-paced world, learning can also be a refuge.",
     tulug: 'Your place',
@@ -590,7 +590,7 @@ export default {
     redesSociales: 'Social Media',
     tienesPreg: '¿Do you have any questions or want more information?',
     rellena: 'Fill the following contact form or write us through our social media',
-    formulario: '👉 Contact form',
+    formulario: 'Contact form',
     nombre: 'Name',
     hintNombre: 'Your name',
     errorNombre: 'Name is required',
@@ -630,7 +630,7 @@ export default {
     canjear: 'Redeem credits',
     seguir: 'Continue booking',
     credito: 'credit(s)',
-    confirmadas: '¡Bookings confirmed! 📧',
+    confirmadas: 'Bookings confirmed!',
   },
   wallet: {
     wallet: 'Wallet',
@@ -707,5 +707,13 @@ export default {
     minimo6: 'Password must be at least 6 characters long',
     numero: 'Password must contain at least one number',
     mayuscula: 'Password must contain at least one vowel',
+  },
+  avisoCookies: {
+    titulo: 'Cookie notice',
+    texto:
+      'We use our own cookies to make the site work and, if you accept them, Google analytics cookies to see which pages are visited.',
+    politica: 'Cookie policy',
+    aceptar: 'Accept',
+    rechazar: 'Reject',
   },
 };

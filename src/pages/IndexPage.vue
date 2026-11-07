@@ -2,8 +2,13 @@
   <q-page :style-fn="customStyleFn">
     <div>
       <q-img
+        class="sn-hero-banner"
         fit="cover"
         position="center"
+        loading="eager"
+        fetchpriority="high"
+        no-spinner
+        alt="Spanish at your pace, in your place"
         src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/banner_1920.webp"
       >
       </q-img>
@@ -14,7 +19,7 @@
         {{ t('indexeUnLugarDonde') }}
       </h1>
       <br />
-      <p class="texto-responsivo text-justify" style="margin-left: 13%; margin-right: 13%">
+      <p class="texto-responsivo text-left">
         {{ t('indexAprenderEspañolPuede') }}
       </p>
 
@@ -58,7 +63,7 @@
               <q-card-section class="subtitulo-responsivo text-center">{{
                 t('indexDescubreNuestrasClases')
               }}</q-card-section>
-              <q-card-section class="texto-responsivo text-justify">
+              <q-card-section class="texto-responsivo text-left">
                 {{ t('indexDescubreNuestrasClasesTexto') }}
               </q-card-section>
               <q-card-actions class="flex justify-center">
@@ -91,9 +96,9 @@
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
           <div class="col-12 items-center flex flex-center column q-my-md q-mb-md-xl">
-            <p class="titulo-responsivo2 text-center q-mb-md" text-color="#851319">
+            <h2 class="titulo-responsivo2 text-center text-primary q-mb-md">
               {{ t('indexDiferentesCaminos') }}
-            </p>
+            </h2>
 
             <p class="texto-responsivo text-center text-bold" style="color: #525553">
               {{ t('indexAprendeEnDirecto') }}
@@ -136,7 +141,7 @@
     <div
       v-intersect="onPromoIntersect2"
       class="q-mt-xl q-mb-xl row degradado-fondo"
-      style="min-height: 300px; width: 100%"
+      style="min-height: 260px; width: 100%"
     >
       <transition enter-active-class="animated fadeInUpBig slower ">
         <div
@@ -145,16 +150,17 @@
           style="width: 100%; position: relative"
           enter-active-class="animated fadeInUpBig slower "
         >
-          <div class="col-12 q-pa-none q-pa-md-lg" style="position: absolute; top: 15%">
-            <p class="titulo-responsivo1" style="color: #fff">
-              <strong>{{ t('indexDescubreTuPunto') }}</strong>
-            </p>
-            <p class="texto-responsivo" style="color: #fffdf8; margin-left: 1.45%; padding-left: 0">
-              {{ t('indexEnSolo') }}
-            </p>
-            <q-btn color="black" to="/TestNivel" class="oval-btn q-mx-lg" unelevated>{{
-              t('indexHacerTest')
-            }}</q-btn>
+          <div class="col-12 sn-bloque-test">
+            <h2 class="sn-bloque-test__titulo">{{ t('indexDescubreTuPunto') }}</h2>
+            <p class="sn-bloque-test__texto">{{ t('indexEnSolo') }}</p>
+            <q-btn
+              color="white"
+              text-color="primary"
+              to="/TestNivel"
+              class="oval-btn"
+              unelevated
+              :label="t('indexHacerTest')"
+            />
           </div>
         </div>
       </transition>
@@ -162,9 +168,9 @@
 
     <div class="q-py-xl" style="background-color: #fffdf8">
       <div class="text-center q-mb-lg">
-        <h3 class="titulo-responsivo text-weight-bold text-primary q-my-none">
+        <h2 class="titulo-responsivo text-primary q-my-none">
           Materiales Didácticos y Actividades
-        </h3>
+        </h2>
         <p class="text-grey-7 q-mt-sm">Refuerza tu aprendizaje con nuestro material exclusivo</p>
       </div>
 
@@ -272,7 +278,7 @@
             </q-item>
             <q-separator />
             <q-item class="flex flex-justify q-pa-md">
-              <q-item-label class="text-justify" style="width: 100%; font-size: 1rem">
+              <q-item-label class="text-left" style="width: 100%; font-size: 1rem">
                 {{ t('indexDetrasDeSpanishnook1') }}
                 <br /><br />
                 {{ t('indexDetrasDeSpanishnook2') }}
@@ -301,9 +307,9 @@
       <transition enter-active-class="animated fadeInUpBig slower">
         <div v-if="showOpiniones" class="q-py-xl q-px-md">
           <div class="text-center q-mb-xl">
-            <p class="subtitulo-responsivo" style="color: #851319">
+            <h2 class="titulo-responsivo2 text-primary q-mb-sm">
               {{ t('indexOpinionesVerificadas') }}
-            </p>
+            </h2>
             <p class="texto-responsivo">
               {{ t('indexConoceExperiencias') }}
             </p>
@@ -328,7 +334,7 @@
               animated
               control-color="primary"
               :autoplay="5000"
-              arrows
+              :arrows="$q.screen.gt.sm"
               height="300px"
               class="opinions-carousel"
             >
@@ -407,9 +413,9 @@
     </div>
 
     <div class="faqs-section">
-      <p class="subtitulo-responsivo" style="margin-bottom: 40px">
+      <h2 class="titulo-responsivo2 text-primary" style="margin-bottom: 32px">
         {{ t('indexPreguntasFrecuentes') }}
-      </p>
+      </h2>
       <q-expansion-item class="q-mb-md" expand-separator>
         <template v-slot:header>
           <q-item-section avatar>
@@ -417,7 +423,7 @@
           </q-item-section>
           <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexComoFuncionanClases') }}</p>
         </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
           {{ t('indexTodasClasesEnVivo') }}
         </div>
       </q-expansion-item>
@@ -429,7 +435,7 @@
           </q-item-section>
           <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexQueNecesitoParaEmpezar') }}</p>
         </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
           {{ t('indexSoloNecesito') }}
         </div>
       </q-expansion-item>
@@ -441,7 +447,7 @@
           </q-item-section>
           <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexPuedoCambiarDeModalidad') }}</p>
         </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
           {{ t('indexClaroQueremos') }}
         </div>
       </q-expansion-item>
@@ -453,7 +459,7 @@
           </q-item-section>
           <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexQueNivelDeEspañol') }}</p>
         </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
           {{ t('indexNoNecesitoNingun') }}
         </div>
       </q-expansion-item>
@@ -465,14 +471,14 @@
           </q-item-section>
           <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexQuePasaSiNoPuedoAsistir') }}</p>
         </template>
-        <div class="texto2-responsivo text-justify q-px-xl q-mx-md">
+        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
           {{ t('indexDependeraDeLaModalidad') }}
         </div>
       </q-expansion-item>
     </div>
 
     <div class="q-my-xl contacto-section flex flex-center column items-center">
-      <p class="titulo-responsivo" style="color: #851319">{{ t('indexAunTienesDudas') }}</p>
+      <h2 class="titulo-responsivo text-primary">{{ t('indexAunTienesDudas') }}</h2>
       <p class="texto-responsivo">
         {{ t('indexEstamosAlOtroLado') }}
       </p>
@@ -934,8 +940,8 @@ function onOpinionesIntersect(entry: IntersectionObserverEntry): boolean {
 /* Etiqueta roja en la esquina */
 .badge-hs {
   position: absolute;
-  top: 10px;
-  right: -10px;
+  top: 12px;
+  right: 12px;
   padding: 6px 16px;
   border-radius: 20px;
   transform: rotate(5deg);

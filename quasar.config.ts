@@ -20,14 +20,14 @@ export default defineConfig((ctx) => {
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
       // 'ionicons-v4',
-      'mdi-v6',
+      // 'mdi-v6', // iconos de redes como SVG (@quasar/extras/mdi-v6) en los layouts
       // 'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font', // optional, you are not bound to it
+      // 'roboto-font', // el texto usa Nunito Sans (src/css/app.scss)
       'material-icons', // optional, you are not bound to it
     ],
 

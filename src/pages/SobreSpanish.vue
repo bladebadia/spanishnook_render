@@ -3,12 +3,12 @@
       <!-- Sección introductoria -->
       <div class="row q-my-xl flex flex-center">
         <div class="col-12 text-center content-width">
-          <p class="titulo-responsivo" style="color: #77b308ed; margin-bottom: 1rem">
+          <h1 class="titulo-responsivo text-primary" style="margin-bottom: 1rem">
             {{ t('SobreSpanish.conoce') }}
-          </p>
+          </h1>
         </div>
         <!-- Descripción  -->
-        <div class="col-12 items-center text-justify" style="width: 70%">
+        <div class="col-12 sn-prosa">
           <p class="texto-responsivo q-pb-xl q-pb-xl">
             <strong>{{ t('SobreSpanish.intro') }}</strong>
           </p>
@@ -29,7 +29,7 @@
           </p>
         </div>
 
-        <div class="col-12 text-justify q-my-md content-width">
+        <div class="col-12 text-left q-my-md content-width">
           <p class="texto-responsivo">
             {{ t('SobreSpanish.aprender') }}
           </p>
@@ -44,7 +44,7 @@
             {{ t('SobreSpanish.quien') }}
           </p>
         </div>
-        <div class="col-12 q-my-md text-justify content-width">
+        <div class="col-12 q-my-md text-left content-width">
           <p class="texto-responsivo">
             {{ t('SobreSpanish.soy') }}
           </p>
@@ -63,15 +63,15 @@
           </p>
         </div>
         <div class="col-12 text-center q-my-md content-width">
-          <p class="texto-responsivo text-justify">{{ t('SobreSpanish.mipropuesta') }}</p>
+          <p class="texto-responsivo text-left">{{ t('SobreSpanish.mipropuesta') }}</p>
         </div>
-        <div class="col-12 items-center text-center q-my-md" style="width: 70%">
+        <div class="col-12 sn-prosa text-center q-my-md">
           <p class="subtitulo-responsivo" style="color: #851319">
             {{ t('SobreSpanish.loque') }}
           </p>
         </div>
         <div class="col-12 text-center q-my-md content-width">
-          <ul class="texto-responsivo text-justify">
+          <ul class="texto-responsivo text-left">
             <li>
               <strong>{{ t('SobreSpanish.cercaniaBold') }}</strong
               >: {{ t('SobreSpanish.cercania') }}

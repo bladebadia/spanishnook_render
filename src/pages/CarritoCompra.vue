@@ -4,7 +4,7 @@
       class="titulo-responsivo2 row items-center justify-between q-mb-md"
       style="font-size: 2.3rem; font-weight: 800"
     >
-      🛒 {{ t('carrito.carritoDeReservas') }}
+      {{ t('carrito.carritoDeReservas') }}
 
       <q-no-ssr>
         <div style="min-width: 250px" v-if="usuarioLogueado">
@@ -108,7 +108,7 @@
         </q-item>
       </q-list>
 
-      <div class="bg-yellow-2 q-pa-md rounded-borders q-mb-lg">
+      <div class="sn-nota q-pa-md q-mb-lg">
         <h6 class="resumen-titulo">{{ t('carrito.resumenDelPedido') }}</h6>
         <div class="row justify-between items-center">
           <span class="numero-reservas"

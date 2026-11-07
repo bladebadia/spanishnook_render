@@ -153,8 +153,8 @@
                   </div>
                   <q-chip
                     :label="testLevel"
-                    color="yellow-2"
-                    text-color="black"
+                    color="primary"
+                    text-color="white"
                     size="xl"
                     class="q-pa-md chip-nivel"
                   />
@@ -684,7 +684,7 @@ const previousQuestion = () => {
 
 /* Descripción del nivel en negro y justificado */
 .descripcion-nivel {
-  text-align: justify;
+  text-align: left;
 }
 
 /* Unificar tamaño de tarjetas del test de nivel */

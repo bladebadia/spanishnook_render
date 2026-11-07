@@ -1,5 +1,9 @@
 // src/boot/analytics.ts
 import { boot } from 'quasar/wrappers';
+import {
+  EVENTO_COOKIES_ACEPTADAS,
+  leerConsentimiento,
+} from 'src/composables/useConsentimientoCookies';
 
 export default boot(({ app, router }) => {
   // Solo inicializar en cliente y si existe el ID de medición
@@ -12,7 +16,11 @@ export default boot(({ app, router }) => {
     return;
   }
 
+  let cargado = false;
+
   const cargarAnalytics = () => {
+    if (cargado) return;
+    cargado = true;
     // Carga diferida: no incluye vue-gtag-next en el bundle principal
     void import('vue-gtag-next')
       .then(({ default: VueGtag }) => {
@@ -37,10 +45,19 @@ export default boot(({ app, router }) => {
       });
   };
 
-  // Cargar Analytics cuando el navegador esté ocioso (o tras 3s como máximo)
-  if (typeof window.requestIdleCallback === 'function') {
-    window.requestIdleCallback(cargarAnalytics, { timeout: 3000 });
+  // Cargar cuando el navegador esté ocioso (o tras 3 s como máximo)
+  const programarCarga = () => {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(cargarAnalytics, { timeout: 3000 });
+    } else {
+      setTimeout(cargarAnalytics, 2000);
+    }
+  };
+
+  // Analytics solo con consentimiento expreso (botón "Aceptar" del aviso de cookies)
+  if (leerConsentimiento() === 'aceptadas') {
+    programarCarga();
   } else {
-    setTimeout(cargarAnalytics, 2000);
+    window.addEventListener(EVENTO_COOKIES_ACEPTADAS, programarCarga, { once: true });
   }
 });

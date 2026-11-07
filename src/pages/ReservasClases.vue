@@ -2,9 +2,9 @@
   <q-page class="q-pa-lg">
     <div class="row q-col-gutter-lg">
       <div class="col-12">
-        <h2 class="text-h4 text-primary text-weight-bold q-mb-xl text-center">
+        <h1 class="text-h2 text-primary q-mb-xl text-center">
           {{ t('reservasClases.reservaTuClase') }}
-        </h2>
+        </h1>
       </div>
 
       <div class="col-12 col-md-5">
@@ -19,9 +19,9 @@
 
           <div
             v-if="carrito && carrito.length > 0"
-            class="q-mb-lg bg-yellow-2 q-pa-md rounded-borders shadow-2"
+            class="q-mb-lg sn-nota q-pa-md"
           >
-            <h5 class="carrito-titulo">🛒 {{ t('reservasClases.carritoDeReservas') }}</h5>
+            <h5 class="carrito-titulo">{{ t('reservasClases.carritoDeReservas') }}</h5>
             <q-list separator>
               <q-item v-for="(reserva, index) in carrito" :key="index">
                 <q-item-section>
@@ -151,8 +151,8 @@
             :max="fechaMaxima"
             :events="fechasConEventos"
             event-color="red-9"
-            landscape
-            class="custom-calendar shadow-1 rounded-borders"
+            :landscape="$q.screen.gt.sm"
+            class="custom-calendar"
             today-btn
             mask="YYYY-MM-DD"
             color="primary"

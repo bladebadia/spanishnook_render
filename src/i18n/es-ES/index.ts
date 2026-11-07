@@ -12,7 +12,7 @@ export default {
   clasesIndividuales: 'Clases Individuales',
   clasesGrupales: 'Clases Grupales',
   clases: 'Clases',
-  cuadernos: 'CUADERNOS',
+  cuadernos: 'Cuadernos',
   footerSpanishnookEs: 'SpanishNook - El rincón donde el español se aprende sin prisa, pero bien.',
   footerAvisoLegal: 'Aviso Legal',
   footerPrivacidad: 'Política de Privacidad',
@@ -56,7 +56,7 @@ export default {
   indexMejoraTuConfianza:
     'Mejora tu confianza y fluidez conversando en español en grupos pequeños en un ambiente relajado y estimulante.',
   indexUneteALaLista: 'Empezar ahora',
-  indexDescubreTuPunto: 'Descubre tu punto de partida ➡️ test de nivel gratuito',
+  indexDescubreTuPunto: 'Descubre tu punto de partida: test de nivel gratuito',
   indexEnSolo:
     'En solo 5 minutos sabrás cuál es tu nivel de español y qué opción es mejor para ti. El primer paso para aprender a tu ritmo.',
   indexHacerTest: 'Hacer el test',
@@ -93,7 +93,7 @@ export default {
   indexEstamosAlOtroLadoOk:
     'Estamos al otro lado. Ponte en contacto con nosotros a través de cualquiera de nuestros canales disponibles y te responderemos lo antes posible.',
   indexContactanosCon: 'Contacta con nosotros',
-  indexOpinionesVerificadas: 'Opiniones verificadas ⭐',
+  indexOpinionesVerificadas: 'Opiniones verificadas',
   indexConoceExperiencias: 'Conoce las experiencias de nuestros estudiantes',
   indexVerMasOpiniones: 'Ver más reseñas.',
   indexSeElPrimeroEnOpinar: 'Sé el primero en dejar tu reseña',
@@ -135,14 +135,14 @@ export default {
     precio: 'Precio:',
     cargandoDisponibilidad: 'Cargando disponibilidad...',
     horariosDisponiblesPara: 'Horarios disponibles para',
-    claseConversacion: 'Clase conversacion',
+    claseConversacion: 'Clase de conversación',
     noHayHuecosLibres: 'No hay huecos libres (revisa si hay un curso grupal ese día)',
     debesIniciarSesion: 'Debes iniciar sesión para reservar',
   },
 
   test: {
     deNivel: 'Test de nivel',
-    evaluaTuNivel: '🏆 Evalúa tu nivel de español',
+    evaluaTuNivel: 'Evalúa tu nivel de español',
     instrucciones: 'Instrucciones',
     elTestConsta: 'El test consta de 25 preguntas organizadas por niveles.',
     cadaPreguntaTiene:
@@ -188,7 +188,7 @@ export default {
   indexAunTienesDudasOk: '¿Aún tienes dudas?',
   indexEstamosAlOtroLado:
     'Estamos al otro lado: ponte en contacto con nosotros a través de alguno de nuestros canales disponibles y te responderemos lo antes posible.',
-  indexContactanos: 'contáctanos',
+  indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
   NuestrasClases: {
@@ -252,16 +252,16 @@ export default {
       'Cada semana nos reunimos en grupos reducidos para practicar español de forma real, dinámica y divertida. Trabajamos con temas actuales y actividades diseñadas para ayudarte a hablar más, soltarte y sentirte cómodo desde el primer día. Aquí hablamos mucho, nos equivocamos sin miedo, reímos, aprendemos vocabulario útil y mejoramos paso a paso.',
     TextoNuestrosCursosGrupo1: '¿Cómo funcionan las clases grupales?',
     ListaComoFuncionanGrupos1Bold: '1 clase a la semana',
-    ListaComoFuncionanGrupos1: '➡️ 90 minutos',
+    ListaComoFuncionanGrupos1: '90 minutos',
     ListaComoFuncionanGrupos2Bold: 'Grupos reducidos para que todos participéis de verdad',
-    ListaComoFuncionanGrupos2: '➡️ Máximo 6 personas',
+    ListaComoFuncionanGrupos2: 'Máximo 6 personas',
     ListaComoFuncionanGrupos3Bold: 'Suscripción mensual (65 €)',
-    ListaComoFuncionanGrupos3: '➡️ Sencilla y sin compromiso. Cancela cuando quieras',
+    ListaComoFuncionanGrupos3: 'Sencilla y sin compromiso. Cancela cuando quieras',
     ListaComoFuncionanGrupos4Bold: 'Enfoque comunicativo',
-    ListaComoFuncionanGrupos4: '➡️ Clases en vivo, dinámicas y prácticas',
+    ListaComoFuncionanGrupos4: 'Clases en vivo, dinámicas y prácticas',
     ListaComoFuncionanGrupos5Bold: 'Grupos por nivel',
     ListaComoFuncionanGrupos5: '',
-    LogrosGrupales: '⭐ ¿Qué vas a lograr?',
+    LogrosGrupales: '¿Qué vas a lograr?',
     Logro1Grupales: 'Hablar con más confianza y fluidez',
     Logro2Grupales: 'Ampliar vocabulario útil para tu día a día',
     Logro3Grupales: 'Expresar opiniones, gustos e ideas con naturalidad',
@@ -282,13 +282,13 @@ export default {
     TextoModalidad2:
       'Nuestras clases generales cubren gramática, vocabulario, comprensión y expresión oral y escrita. Progresa de forma integral en tu dominio del español y sube de nivel.',
     TextoComoFuncionanIndividuales: 'Cómo funcionan las clases individuales:',
-    ListaComoFuncionanInd1Bold: 'Sesiones online en vivo de 55 min 🕒',
+    ListaComoFuncionanInd1Bold: 'Sesiones online en vivo de 55 min',
     ListaComoFuncionanInd1: 'Materiales 100% personalizados',
-    ListaComoFuncionanInd2Bold: 'Flexibilidad total 🗓️',
+    ListaComoFuncionanInd2Bold: 'Flexibilidad total',
     ListaComoFuncionanInd2: 'Reserva tus clases cuando quieras',
-    ListaComoFuncionanInd3Bold: 'Elige la modalidad 🎯',
+    ListaComoFuncionanInd3Bold: 'Elige la modalidad',
     ListaComoFuncionanInd3: 'Conversación o General',
-    ListaComoFuncionanInd4Bold: 'Feedback y seguimiento continuo 📈',
+    ListaComoFuncionanInd4Bold: 'Feedback y seguimiento continuo',
     ListaComoFuncionanInd4: 'Repositorio compartido (Google Classroom y Google Drive)',
     ListaComoFuncionanInd5:
       'Cancelaciones hasta con 24 h de antelación. La clase se agendará para otro día sin coste adicional',
@@ -296,7 +296,7 @@ export default {
     inicio: 'Inicio',
     tePasaQue:
       '¿Te pasa que entiendes español pero te cuesta hablar con naturalidad? ¿Quieres ganar confianza al hablar español sin miedo a equivocarte?',
-    esteCursoEsParaTi: '⭐ Este curso es para ti.',
+    esteCursoEsParaTi: 'Este curso es para ti.',
     cadaSemanaNos:
       'Cada semana nos reunimos en grupos reducidos para practicar español de forma real, divertida y práctica. Trabajamos con temas actuales y actividades diseñadas para ayudarte a hablar más, soltarte y sentirte cómodo desde el primer día.',
     aquiHablamos:
@@ -438,12 +438,12 @@ export default {
   MaterialesPage: {
     titulo1: 'Materiales didácticos y actividades',
     descripcion:
-      'Aprende español real a tu ritmo con materiales prácticos creados para desarrollar las destrezas del español de forma autónoma y complementaria a tu aprendizaje de forma efectiva efectiva.',
+      'Aprende español real a tu ritmo con materiales prácticos creados para desarrollar las destrezas del español de forma autónoma y complementaria a tu aprendizaje de forma efectiva.',
     descripcion2:
       'Aquí encontrarás cuadernos de actividades en formato PDF diseñados para transformar el contenido audiovisual en una experiencia de aprendizaje interactiva, profunda y estructurada. Cada cuaderno ha sido elaborado para trabajar de forma equilibrada las distintas destrezas del español: desde la comprensión auditiva y el léxico coloquial hasta la expresión escrita y la gramática en contexto.',
     claim: 'Descarga tus cuadernos de actividades y continúa aprendiendo.',
     carga: 'Cargando materiales...',
-    quehay: '¿Qué encontrarás en cada cuaderno?📚',
+    quehay: '¿Qué encontrarás en cada cuaderno?',
     contenido1bold: 'Léxico y expresiones reales:',
     contenido1:
       'Glosarios con contextualización de modismos, vocabulario coloquial y ejemplos de uso diario.',
@@ -511,7 +511,7 @@ export default {
   },
 
   comprarPacks: {
-    packsCreditos: '💎 Packs de Créditos',
+    packsCreditos: 'Packs de clases',
     compraClases:
       'Compra clases por adelantado, ahorra dinero y gasta tus créditos cuando quieras.',
     clasesGenerales: 'Clases Generales',
@@ -558,7 +558,7 @@ export default {
   },
   SobreSpanish: {
     sobre: 'Sobre SpanishNook',
-    conoce: '✨Conoce SpanishNook✨',
+    conoce: 'Conoce SpanishNook',
     intro:
       'Detrás de cada clase hay una persona, una historia y una forma de enseñar pensada para ti. En un mundo frenético, aprender también puede ser un refugio.',
     tulug: 'Tu lugar',
@@ -593,7 +593,7 @@ export default {
     tienesPreg: '¿Tienes preguntas o quieres más información?',
     rellena:
       'Rellena el formulario de contacto o escríbenos en cualquiera de nuestras redes sociales',
-    formulario: '👉 Formulario de contacto',
+    formulario: 'Formulario de contacto',
     nombre: 'Nombre',
     hintNombre: 'Tu nombre completo',
     errorNombre: 'El nombre es obligatorio',
@@ -633,7 +633,7 @@ export default {
     canjear: 'Canjear créditos',
     seguir: 'Seguir reservando',
     credito: 'crédito(s)',
-    confirmadas: '¡Reservas confirmadas! 📧',
+    confirmadas: '¡Reservas confirmadas!',
   },
   wallet: {
     wallet: 'Monedero',
@@ -711,5 +711,13 @@ export default {
     minimo6: 'La contraseña debe tener al menos 6 caracteres',
     numero: 'La contraseña debe contener al menos un número',
     mayuscula: 'La contraseña debe contener al menos una vocal',
+  },
+  avisoCookies: {
+    titulo: 'Aviso de cookies',
+    texto:
+      'Usamos cookies propias para que la web funcione y, si las aceptas, cookies de análisis de Google para saber qué páginas se visitan.',
+    politica: 'Política de cookies',
+    aceptar: 'Aceptar',
+    rechazar: 'Rechazar',
   },
 };

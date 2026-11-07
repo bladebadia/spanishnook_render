@@ -1,130 +1,356 @@
-// app global css in SCSS form
+// =============================================================================
+// SpanishNook · Sistema de diseño "Papel y tinta"
+// -----------------------------------------------------------------------------
+// Lo memorable son las ilustraciones a mano y el papel arrugado.
+// La interfaz es tinta sobre papel: discreta, coherente y sin adornos sueltos.
+//
+// Úsalo así:
+//   - Colores, tipos, espacios y radios: variables --sn-* (abajo).
+//   - Colores de Quasar (color="primary", etc.): src/css/quasar.variables.scss.
+//   - Clases utilitarias: .sn-contenedor, .sn-prosa, .sn-seccion, .sn-nota,
+//     .sn-sello-general, .sn-sello-conversacion.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// 1. Fuentes (WOFF recortadas a latín: 66 KB en total frente a 3 MB de TTF)
+// -----------------------------------------------------------------------------
+@font-face {
+  font-family: 'Nunito Sans';
+  src: url('/fonts/nunito-sans-variable-latin.woff') format('woff');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-semibold-latin.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-bold-latin.woff') format('woff');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Nombres antiguos: apuntan a los mismos archivos para no descargar los TTF.
 @font-face {
   font-family: 'nunitosans';
-  src: url('/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+  src: url('/fonts/nunito-sans-variable-latin.woff') format('woff');
+  font-weight: 400 800;
   font-display: swap;
 }
-.nunitosans {
-  font-family: 'NunitoSans-VariableFont_YTLC,opsz,wdth,wght', sans-serif;
+@each $antiguo,
+  $archivo
+    in (
+      'Montserrat-ExtraBold': 'bold',
+      'Montserrat-Bold': 'bold',
+      'Montserrat-SemiBold': 'semibold',
+      'Montserrat-Medium': 'semibold',
+      'Montserrat-regular': 'semibold',
+      'Montserrat-Regular': 'semibold',
+      'Montserrat-thin': 'semibold',
+      'Montserrat-Thin': 'semibold',
+      'Montserrat-light': 'semibold',
+      'Montserrat-Light': 'semibold',
+      'Anton': 'bold'
+    )
+{
+  @font-face {
+    font-family: $antiguo;
+    src: url('/fonts/montserrat-#{$archivo}-latin.woff') format('woff');
+    font-display: swap;
+  }
 }
 
-@font-face {
-  font-family: 'Montserrat-ExtraBold';
-  src: url('/fonts/Montserrat-ExtraBold.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Montserrat-ExtraBold {
-  font-family: 'Montserrat-ExtraBold', sans-serif;
+// -----------------------------------------------------------------------------
+// 2. Tokens
+// -----------------------------------------------------------------------------
+:root {
+  // Color: tinta sobre papel
+  --sn-burdeos: #851319; // tinta principal, botones, enlaces
+  --sn-burdeos-hondo: #5c0e13; // pie, cabeceras oscuras, hover
+  --sn-burdeos-tenue: #f7e9e6; // fondos suaves de realce
+  --sn-papel: #fffdf8; // fondo de página
+  --sn-hoja: #ffffff; // tarjetas
+  --sn-tinta: #2b1d1f; // texto principal
+  --sn-tinta-suave: #67585a; // texto secundario
+  --sn-borde: #eadfd5; // líneas y bordes cálidos
+  --sn-oliva: #557a16; // checks y estados positivos (texto)
+  --sn-oliva-vivo: #7aa329; // verde de marca decorativo
+
+  // Color de cada tipo de clase: el de su sello de cera
+  --sn-sello-general: #2f6e9f;
+  --sn-sello-general-tenue: #eaf2f9;
+  --sn-sello-conversacion: #7b4f96;
+  --sn-sello-conversacion-tenue: #f3edf7;
+
+  // Nota adhesiva: único amarillo de la web
+  --sn-nota: #fff4c7;
+  --sn-nota-borde: #ecd98c;
+
+  --sn-foco: #e0a100;
+
+  // Tipografía
+  --sn-fuente-titulos: 'Montserrat', 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --sn-fuente-texto: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  // Escala fluida (móvil → escritorio)
+  --sn-t-h1: clamp(2rem, 1.35rem + 2.8vw, 3.25rem);
+  --sn-t-h2: clamp(1.625rem, 1.25rem + 1.6vw, 2.375rem);
+  --sn-t-h3: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --sn-t-h4: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --sn-t-entrada: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --sn-t-cuerpo: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --sn-t-peq: 0.875rem;
+
+  // Espacio y medidas
+  --sn-margen: clamp(16px, 4vw, 32px); // margen lateral de página
+  --sn-seccion: clamp(48px, 8vw, 96px); // separación vertical entre secciones
+  --sn-ancho: 1120px; // ancho máximo de contenido
+  --sn-prosa: 65ch; // ancho máximo de lectura
+
+  // Formas
+  --sn-r-boton: 999px;
+  --sn-r-tarjeta: 16px;
+  --sn-r-imagen: 12px;
+  --sn-r-campo: 10px;
+  --sn-sombra: 0 1px 2px rgba(92, 14, 19, 0.06), 0 8px 24px -10px rgba(92, 14, 19, 0.18);
+  --sn-sombra-alta: 0 2px 4px rgba(92, 14, 19, 0.08), 0 16px 40px -12px rgba(92, 14, 19, 0.24);
 }
 
-@font-face {
-  font-family: 'Montserrat-Bold';
-  src: url('/fonts/Montserrat-Bold.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Montserrat-Bold {
-  font-family: 'Montserrat-Bold', sans-serif;
-}
-
-@font-face {
-  font-family: 'Montserrat-SemiBold';
-  src: url('/fonts/Montserrat-SemiBold.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Montserrat-SemiBold {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-}
-
-@font-face {
-  font-family: 'Montserrat-Medium';
-  src: url('/fonts/Montserrat-Medium.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Montserrat-Medium {
-  font-family: 'Montserrat-Medium', sans-serif;
-}
-
-@font-face {
-  font-family: 'Montserrat-regular';
-  src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Montserrat-regular {
-  font-family: 'Montserrat-Regular', sans-serif;
-}
-
-@font-face {
-  font-family: 'Montserrat-thin';
-  src: url('/fonts/Montserrat-Thin.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Montserrat-thin {
-  font-family: 'Montserrat-Thin', sans-serif;
-}
-@font-face {
-  font-family: 'Montserrat-Light';
-  src: url('/fonts/Montserrat-Light.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Montserrat-light {
-  font-family: 'Montserrat-Light', sans-serif;
-}
-@font-face {
-  font-family: 'Anton';
-  src: url('/fonts/Anton-Regular.ttf') format('truetype');
-  font-style: normal;
-  font-display: swap;
-}
-.Anton {
-  font-family: 'Anton', sans-serif;
-}
-
-// Puedes usar la fuente en todo el proyecto:
+// -----------------------------------------------------------------------------
+// 3. Base
+// -----------------------------------------------------------------------------
 body {
-  font-family: 'nunitosans';
-  background-color: #fffdf8;
+  font-family: var(--sn-fuente-texto);
+  font-size: var(--sn-t-cuerpo);
+  line-height: 1.6;
+  color: var(--sn-tinta);
+  background-color: var(--sn-papel);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .q-header,
-.q-footer {
-  font-family: 'nunitosans' !important;
-  
+.q-footer,
+.q-drawer {
+  font-family: var(--sn-fuente-texto);
 }
 
-h1 {
-  font-family: 'Montserrat-ExtraBold';
+// Títulos: Montserrat, alineación equilibrada y sin la escala gigante de Quasar
+h1,
+h2,
+h3,
+h4,
+.text-h1,
+.text-h2,
+.text-h3,
+.text-h4 {
+  font-family: var(--sn-fuente-titulos);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
-h2 {
-  font-family: 'Montserrat-Bold';
+h1,
+.text-h1 {
+  font-size: var(--sn-t-h1);
+  line-height: 1.1;
+  font-weight: 700;
 }
-h3 {
-  font-family: 'Montserrat-SemiBold';
+h2,
+.text-h2 {
+  font-size: var(--sn-t-h2);
+  line-height: 1.15;
+  font-weight: 700;
 }
-h4 {
-  font-family: 'Montserrat-Medium';
+h3,
+.text-h3 {
+  font-size: var(--sn-t-h3);
+  line-height: 1.25;
+  font-weight: 700;
 }
-h5 {
-  font-family: 'Montserrat-regular';
+h4,
+.text-h4 {
+  font-size: var(--sn-t-h4);
+  line-height: 1.3;
+  font-weight: 600;
 }
-h6 {
-  font-family: 'Anton';
-}
-h7 {
-  font-family: 'Montserrat-thin';
+h5,
+h6,
+.text-h5,
+.text-h6 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: 1.0625rem;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
-h8 {
-  font-family: 'Montserrat-light';
+p {
+  text-wrap: pretty;
 }
 
+strong,
+b {
+  font-weight: 800;
+}
 
-// Estilos globales adicionales
+a {
+  color: var(--sn-burdeos);
+  text-underline-offset: 0.18em;
+}
+
+// El texto justificado deja huecos enormes en móvil: siempre a la izquierda
+.text-justify {
+  text-align: left !important;
+}
+
+// -----------------------------------------------------------------------------
+// 4. Componentes de Quasar con el estilo de la marca
+// -----------------------------------------------------------------------------
+
+// Botones: píldora, sin mayúsculas, área táctil mínima de 44 px
+.q-btn {
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.q-btn.q-btn--rectangle:not(.q-btn--flat):not(.q-btn--dense):not(.flag-btn) {
+  border-radius: var(--sn-r-boton);
+  min-height: 44px;
+  padding-inline: 22px;
+}
+.q-btn--standard::before {
+  box-shadow: none;
+}
+.q-btn--outline::before {
+  border-width: 2px;
+}
+
+// Pestañas: sin mayúsculas y con texto que puede partirse en móvil
+.q-tab {
+  text-transform: none;
+}
+.q-tab__label {
+  font-weight: 700;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+}
+
+// Tarjetas: hojas de papel
+.q-card:not(.q-card--flat) {
+  border-radius: var(--sn-r-tarjeta);
+  border: 1px solid var(--sn-borde);
+  box-shadow: var(--sn-sombra);
+}
+.q-card > .q-img:first-child,
+.q-card > img:first-child {
+  border-top-left-radius: calc(var(--sn-r-tarjeta) - 1px);
+  border-top-right-radius: calc(var(--sn-r-tarjeta) - 1px);
+}
+
+// Campos de formulario
+.q-field--outlined .q-field__control {
+  border-radius: var(--sn-r-campo);
+}
+
+// Barra superior: enlaces en una sola línea
+.q-bar .q-btn {
+  white-space: nowrap;
+}
+@media (max-width: 420px) {
+  .q-bar .btn-nav-superior {
+    padding-inline: 6px;
+  }
+}
+
+// Pie de página: burdeos hondo en lugar de negro puro
+.q-footer.sn-pie {
+  background-color: var(--sn-burdeos-hondo);
+}
+
+// Desplegables (FAQ): flecha visible en color de marca
+.q-expansion-item__toggle-icon {
+  color: var(--sn-burdeos);
+}
+
+// Fechas: días con eventos y seleccionado en burdeos
+.q-date {
+  border-radius: var(--sn-r-tarjeta);
+}
+
+// -----------------------------------------------------------------------------
+// 5. Utilidades del sistema
+// -----------------------------------------------------------------------------
+.sn-contenedor {
+  width: 100%;
+  max-width: var(--sn-ancho);
+  margin-inline: auto;
+  padding-inline: var(--sn-margen);
+}
+.sn-prosa {
+  max-width: var(--sn-prosa);
+  margin-inline: auto;
+}
+.sn-seccion {
+  padding-block: var(--sn-seccion);
+}
+.sn-texto-suave {
+  color: var(--sn-tinta-suave);
+}
+
+// Nota adhesiva: cajas destacadas, carrito, opiniones
+.sn-nota {
+  background-color: var(--sn-nota) !important;
+  border: 1px solid var(--sn-nota-borde);
+  border-radius: var(--sn-r-tarjeta);
+}
+
+// Color de cada tipo de clase (el de su sello de cera)
+.sn-sello-general {
+  --sn-sello: var(--sn-sello-general);
+  --sn-sello-tenue: var(--sn-sello-general-tenue);
+}
+.sn-sello-conversacion {
+  --sn-sello: var(--sn-sello-conversacion);
+  --sn-sello-tenue: var(--sn-sello-conversacion-tenue);
+}
+.sn-sello-fondo {
+  background-color: var(--sn-sello-tenue) !important;
+}
+.sn-sello-banda {
+  background-color: var(--sn-sello) !important;
+  color: #fff;
+}
+.sn-sello-texto {
+  color: var(--sn-sello) !important;
+}
+
+// -----------------------------------------------------------------------------
+// 6. Accesibilidad
+// -----------------------------------------------------------------------------
+a:focus-visible,
+.q-btn:focus-visible,
+.q-tab:focus-visible,
+.q-item:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--sn-foco);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

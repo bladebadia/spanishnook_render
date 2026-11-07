@@ -10,7 +10,7 @@
 
     <p class="text-h5 text-primary text-center subtitulo-responsivo">Información general</p>
     <br />
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       El presente documento regula los términos y condiciones de contratación de los servicios
       ofrecidos a través de www.spanishnook.com (en adelante, el “Sitio Web”), titularidad de
       SpanishNook. Los datos identificativos y de contacto del titular se encuentran disponibles en
@@ -37,7 +37,7 @@
       &#8226; Cursos o programas formativos online.
     </p>
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Requisitos del usuario</p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       El Usuario declara ser mayor de 18 años y tener capacidad legal suficiente para contratar los
       servicios ofrecidos y asume la responsabilidad del buen uso del Sitio Web.
       <br />
@@ -46,7 +46,7 @@
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Proceso de contratación</p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       La contratación de los servicios se realiza a través del Sitio Web, mediante la selección del
       servicio correspondiente y la finalización del proceso de pago. Una vez completado el pago, el
       Usuario recibirá una confirmación por correo electrónico.
@@ -57,7 +57,7 @@
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Precios y forma de pago</p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Todos los precios indicados en el Sitio Web se expresan en euros (€) e incluyen los impuestos
       legalmente aplicables. El pago se realiza principalmente a través de la pasarela segura
       Stripe. SpanishNook no almacena datos bancarios ni de tarjetas de crédito.
@@ -70,11 +70,11 @@
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
       Tipos de servicios y condiciones específicas
     </p>
-    <p class="text-h6 text-justify text-bold text-black texto-responsivo">
+    <p class="text-h6 text-left text-bold text-black texto-responsivo">
       Servicios por suscripción
       <br />
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Algunos servicios de SpanishNook se ofrecen bajo modalidad de suscripción periódica.
       <br />
       &#8226; La suscripción se cobra de forma recurrente según el período seleccionado.
@@ -94,7 +94,7 @@
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
       Clases privadas o individuales
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Las clases privadas son servicios personalizados, reservados para un Usuario concreto en una
       fecha y hora determinadas.
       <br />
@@ -102,7 +102,7 @@
       desistimiento, detalladas más adelante.
     </p>
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Derecho de desistimiento</p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       De conformidad con la normativa vigente en materia de consumidores y usuarios, el Usuario
       dispone de un plazo de 14 días naturales para ejercer su derecho de desistimiento desde la
       contratación del servicio,
@@ -128,11 +128,11 @@
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
       Cancelaciones, devoluciones y sistema de créditos
     </p>
-    <p class="text-h6 text-justify text-bold text-black texto-responsivo">
+    <p class="text-h6 text-left text-bold text-black texto-responsivo">
       Suscripciones
       <br />
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       &#8226; No se realizan reembolsos por períodos de suscripción ya iniciados.
       <br />
       &#8226; El Usuario puede cancelar la renovación automática de la suscripción en cualquier
@@ -140,11 +140,11 @@
       <br />
       &#8226; La cancelación surtirá efecto al finalizar el período en curso.
     </p>
-    <p class="text-h6 text-justify text-bold text-black texto-responsivo">
+    <p class="text-h6 text-left text-bold text-black texto-responsivo">
       Clases privadas o individuales
       <br />
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Las clases privadas son servicios personalizados reservados para un Usuario concreto, por lo
       que se aplican las siguientes condiciones de cancelación:
       <br />
@@ -160,7 +160,7 @@
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Créditos y excepciones</p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Con carácter general, <strong>no se realizan devoluciones monetarias automáticas</strong> una
       vez iniciado el servicio. En determinados casos justificados (fuerza mayor, incidencias
       técnicas graves u otras circunstancias debidamente acreditadas), SpanishNook podrá:
@@ -176,7 +176,7 @@
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
       Procedimiento para solicitudes
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Las solicitudes de cancelación, cambio, crédito o reembolso deberán realizarse por correo
       electrónico e incluir, al menos:
       <br />
@@ -195,7 +195,7 @@
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Responsabilidad</p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       SpanishNook no garantiza resultados concretos de aprendizaje, ya que estos dependen del
       esfuerzo, dedicación y circunstancias personales del Usuario. Asimismo, no será responsable
       de:
@@ -209,7 +209,7 @@
     </p>
 
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">Propiedad intelectual</p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Todos los materiales proporcionados por SpanishNook son para uso personal y educativo del
       Usuario. Queda prohibida su reproducción, distribución o explotación sin autorización expresa.
     </p>
@@ -217,7 +217,7 @@
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
       Modificación de las condiciones
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       SpanishNook se reserva el derecho a modificar los presentes Términos y Condiciones en
       cualquier momento. Las modificaciones entrarán en vigor desde la fecha de publicación en el
       Sitio Web.
@@ -226,7 +226,7 @@
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
       Legislación aplicable y jurisdicción
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       Las presentes condiciones se rigen por la legislación española.
       <br />
       En caso de conflicto, las partes se someterán a los juzgados y tribunales españoles, sin
@@ -236,7 +236,7 @@
     <p class="text-h5 text-primary text-bold q-mt-md texto-responsivo">
       Aceptación de los términos y condiciones
     </p>
-    <p class="text-h6 text-justify text-black texto-responsivo">
+    <p class="text-h6 text-left text-black texto-responsivo">
       La contratación de cualquiera de los servicios ofrecidos en el Sitio Web implica la lectura,
       comprensión y aceptación expresa de los presentes Términos y Condiciones. Se recomienda al
       Usuario conservar una copia de este documento.

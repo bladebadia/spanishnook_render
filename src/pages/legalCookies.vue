@@ -8,7 +8,7 @@
     </p>
 
     <p class="q-pt-md text-primary text-bold texto-responsivo">Qué son las cookies</p>
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       El acceso a este Sitio Web puede implicar la utilización de cookies. Las cookies son pequeños
       archivos de información que se almacenan en el navegador del Usuario —en los distintos
       dispositivos que pueda utilizar para navegar— y que permiten al Sitio Web recordar cierta
@@ -17,7 +17,7 @@
       a información personal almacenada en el mismo.
     </p>
     <p class="q-pt-md text-primary text-bold texto-responsivo">Tipos de cookies utilizadas</p>
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       En este Sitio Web se utilizan los siguientes tipos de cookies:
       <br />
       <br />
@@ -42,7 +42,7 @@
     <p class="q-pt-md text-primary text-bold texto-responsivo">
       Consentimiento para el uso de cookies
     </p>
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       <br />
       Las cookies que permiten identificar a una persona se consideran datos personales. Para la
       utilización de cookies no necesarias será necesario el consentimiento previo del Usuario, que
@@ -55,7 +55,7 @@
       Cómo deshabilitar o eliminar cookies
     </p>
     <br />
-    <p class="text-left text-justify texto-responsivo">
+    <p class="text-left text-left texto-responsivo">
       El Usuario puede deshabilitar, rechazar o eliminar las cookies instaladas en su dispositivo
       mediante la configuración de las opciones del navegador que esté utilizando (por ejemplo,
       Chrome, Firefox, Safari o Edge).

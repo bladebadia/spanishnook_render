@@ -1,9 +1,9 @@
 <template>
-  <q-page class="q-pa-lg bg-grey-1">
+  <q-page class="q-pa-lg">
     <div class="text-center q-mb-xl">
-      <h4 class="text-weight-bold q-mb-sm">
+      <h1 class="text-h2 text-primary q-mt-md q-mb-sm">
         {{ t('comprarPacks.packsCreditos') }}
-      </h4>
+      </h1>
       <p class="text-subtitle1">
         {{ t('comprarPacks.compraClases') }}
       </p>
@@ -16,19 +16,19 @@
         align="justify"
         narrow-indicator
         indicator-color="transparent"
-        class="text-grey-5"
+        class="text-grey-8"
       >
         <q-tab
           name="normal"
           :label="t('comprarPacks.clasesGenerales')"
           icon="school"
-          :style="tab === 'normal' ? 'color: #469fcf; font-weight: 900' : ''"
+          :class="tab === 'normal' ? 'sn-sello-general sn-sello-texto' : ''"
         />
         <q-tab
           name="conversacion"
           :label="t('comprarPacks.clasesConversacion')"
           icon="forum"
-          :style="tab === 'conversacion' ? 'color: #a479bcff; font-weight: 900' : ''"
+          :class="tab === 'conversacion' ? 'sn-sello-conversacion sn-sello-texto' : ''"
         />
       </q-tabs>
     </div>
@@ -39,8 +39,7 @@
           <div class="col-12 col-md-4" v-for="pack in packsNormales" :key="pack.id">
             <q-card class="card-pack column">
               <div
-                class="pack-header text-white q-pa-md text-center"
-                style="background-color: #60aad8"
+                class="pack-header sn-sello-general sn-sello-banda q-pa-md text-center"
               >
                 <div class="text-h5 text-weight-bold">{{ pack.nombre }}</div>
                 <div class="text-subtitle2">{{ pack.creditosTexto }}</div>
@@ -73,7 +72,7 @@
                   {{ pack.precioOriginal }}€
                 </div>
 
-                <div class="text-h3 text-weight-bolder q-mb-sm" style="color: #469fcf">
+                <div class="text-h3 text-weight-bolder q-mb-sm sn-sello-general sn-sello-texto">
                   {{ pack.precio }}€
                 </div>
 
@@ -89,14 +88,13 @@
               <q-card-section>
                 <q-btn
                   :label="t('comprarPacks.comprar')"
-                  class="full-width shadow-2"
+                  class="full-width"
                   size="lg"
                   :loading="loading === pack.id"
                   @click="comprarPack(pack)"
                   icon="shopping_cart"
                   unelevated
-                  text-color="white"
-                  style="background-color: #60aad8"
+                  color="primary"
                 />
               </q-card-section>
             </q-card>
@@ -109,8 +107,7 @@
           <div class="col-12 col-md-4" v-for="pack in packsConversacion" :key="pack.id">
             <q-card class="card-pack column">
               <div
-                class="pack-header text-white q-pa-md text-center"
-                style="background-color: #b897cbff"
+                class="pack-header sn-sello-conversacion sn-sello-banda q-pa-md text-center"
               >
                 <div class="text-h5 text-weight-bold">{{ pack.nombre }}</div>
                 <div class="text-subtitle2">{{ pack.creditosTexto }}</div>
@@ -143,7 +140,7 @@
                   {{ pack.precioOriginal }}€
                 </div>
 
-                <div class="text-h3 text-weight-bolder q-mb-sm" style="color: #a479bcff">
+                <div class="text-h3 text-weight-bolder q-mb-sm sn-sello-conversacion sn-sello-texto">
                   {{ pack.precio }}€
                 </div>
 
@@ -159,14 +156,13 @@
               <q-card-section>
                 <q-btn
                   :label="t('comprarPacks.comprar')"
-                  class="full-width shadow-2"
+                  class="full-width"
                   size="lg"
                   :loading="loading === pack.id"
                   @click="comprarPack(pack)"
                   icon="shopping_cart"
                   unelevated
-                  text-color="white"
-                  style="background-color: #b897cbff"
+                  color="primary"
                 />
               </q-card-section>
             </q-card>
@@ -346,6 +342,11 @@ const comprarPack = async (pack: PackCreditos) => {
 </script>
 
 <style scoped>
+/* El precio es lo primero que se busca: grande y en el color del sello */
+.card-pack .text-h3 {
+  font-size: clamp(2.25rem, 1.75rem + 2vw, 3rem);
+  line-height: 1.1;
+}
 .card-pack {
   border-radius: 16px;
   overflow: hidden;
