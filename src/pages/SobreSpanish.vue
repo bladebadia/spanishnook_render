@@ -1,5 +1,4 @@
 <template>
-  <q-no-ssr>
     <q-page>
       <!-- Sección introductoria -->
       <div class="row q-my-xl flex flex-center">
@@ -106,7 +105,6 @@
         </div>
       </div>
     </q-page>
-  </q-no-ssr>
 </template>
 
 <script setup lang="ts">

@@ -6,6 +6,11 @@
   margin: 1px 0px;
   line-height: 1.15;
 }
+/* Si el título es un <h1>/<h2>, anula la tipografía por defecto de Quasar */
+h1.titulo-responsivo,
+h2.titulo-responsivo {
+  letter-spacing: normal;
+}
 
 .titulo-responsivo1 {
   font-size: 1.6rem;

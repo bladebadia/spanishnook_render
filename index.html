@@ -1,41 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <title><%= productName %></title>
     <meta charset="utf-8" />
     <meta name="google-site-verification" content="DvqOtKzFMxqNL6uCuNk3TMB5NAaVVZj28VmfDd83WV8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
     <meta
       name="viewport"
-      content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
+      content="width=device-width, initial-scale=1<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
     />
-    <meta
-      name="description"
-      content="Clases de español online con profesores nativos. Reserva clases particulares y grupales, aprende desde cualquier lugar con SpanishNook."
-    />
-    <meta
-      name="keywords"
-      content="español online, clases de español, profesores nativos, clases grupales, clases individuales, aprender español, SpanishNook"
-    />
-    <meta property="og:title" content="SpanishNook | Clases de español online" />
-    <meta
-      property="og:description"
-      content="Reserva clases particulares y grupales de español online. Aprende con profesores nativos y grupos reducidos."
-    />
-    <meta property="og:image" content="https://www.spanishnook.com/img/Logo_rectangular_320.png" />
-    <meta property="og:url" content="https://www.spanishnook.com/" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="SpanishNook | Clases de español online" />
-    <meta
-      name="twitter:description"
-      content="Reserva clases particulares y grupales de español online. Aprende con profesores nativos y grupos reducidos."
-    />
-    <meta name="twitter:image" content="https://www.spanishnook.com/img/Logo_rectangular_320.png" />
+    <meta name="theme-color" content="#851319" />
+    <!-- title, description, Open Graph y canonical: se generan por ruta en src/App.vue (useMeta) -->
     <link rel="icon" type="image/png" href="/img/favicon.ico.png" />
     <link rel="apple-touch-icon" href="/img/favicon.ico.png" />
-    <link rel="canonical" href="https://www.spanishnook.com/" />
 
     <!-- Datos estructurados Schema.org: Organización educativa -->
     <script type="application/ld+json">
@@ -78,50 +55,6 @@
     </script>
   </head>
   <body>
-    <!-- Loader inicial que aparece instantáneamente -->
-    <div id="initial-loader" style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #ffffff;
-      z-index: 99999;
-      gap: 20px;
-    ">
-      <!-- Spinner CSS puro -->
-      <div style="
-        width: 60px;
-        height: 60px;
-        border: 6px solid #f3f3f3;
-        border-top: 6px solid #851319;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      "></div>
-      <div style="
-        font-size: 1.2rem;
-        color: #851319;
-        font-weight: 500;
-        font-family: sans-serif;
-      ">Cargando...</div>
-    </div>
-    
-    <style>
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      
-      /* Ocultar loader cuando Vue esté montado */
-      [data-app-loaded="true"] #initial-loader {
-        display: none !important;
-      }
-    </style>
-    
     <!-- quasar:entry-point -->
   </body>
 </html>

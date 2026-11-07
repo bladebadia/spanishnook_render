@@ -10,9 +10,9 @@
     </div>
 
     <div class="items-center text-center q-my-xl">
-      <p class="titulo-responsivo q-mb-xl" style="color: #851319">
+      <h1 class="titulo-responsivo q-mb-xl" style="color: #851319">
         {{ t('indexeUnLugarDonde') }}
-      </p>
+      </h1>
       <br />
       <p class="texto-responsivo text-justify" style="margin-left: 13%; margin-right: 13%">
         {{ t('indexAprenderEspañolPuede') }}
@@ -262,7 +262,7 @@
               <q-item-section avatar>
                 <q-avatar>
                   <img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=200&format=webp"
+                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=280&height=280&resize=cover&format=webp"
                   />
                 </q-avatar>
               </q-item-section>
@@ -697,7 +697,7 @@ const fetchCuadernosInicio = async () => {
 };
 
 const defaultAvatar =
-  'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/Logotexto_circ.png?width=200&format=webp';
+  'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/Logotexto_circ.png?width=160&height=160&resize=cover&format=webp';
 
 // Estados para los diálogos
 const showLoginDialog = ref(false);

@@ -5,91 +5,52 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useMeta } from 'quasar';
 import MainLayout from 'layouts/MainLayout.vue';
 import EmptyLayout from 'layouts/EmptyLayout.vue';
-import { useRoute } from 'vue-router';
-import { computed, watch, type Ref } from 'vue';
-import { useMeta } from 'quasar';
-import type { Component } from 'vue';
-import { useAuth } from 'src/stores/auth';
 
-const { isInitialized: isAuthInitialized } = useAuth();
+const SITIO = 'https://www.spanishnook.com';
+const TITULO = 'SpanishNook | Clases de español online';
+const DESCRIPCION =
+  'Clases de español online con profesores nativos. Reserva clases particulares y grupales, aprende desde cualquier lugar con SpanishNook.';
+const IMAGEN = `${SITIO}/img/Logo_rectangular_320.png`;
 
-// Ocultar el loader HTML del index.html cuando la app esté lista
-if (typeof window !== 'undefined') {
-  watch(
-    isAuthInitialized,
-    (initialized) => {
-      if (initialized) {
-        // Marcar el body como cargado para ocultar el loader inicial
-        document.body.setAttribute('data-app-loaded', 'true');
-      }
-    },
-    { immediate: true }
-  );
-}
+const route = useRoute();
 
-let layoutComponent: Ref<Component>;
-try {
-  if (typeof window !== 'undefined') {
-    const route = useRoute();
-    layoutComponent = computed(() => (route.meta.layout === 'empty' ? EmptyLayout : MainLayout));
+// Mismo layout en servidor y en cliente.
+// Antes el servidor pintaba siempre MainLayout y el navegador lo cambiaba al hidratar.
+const layoutComponent = computed(() =>
+  route.meta.layout === 'empty' ? EmptyLayout : MainLayout,
+);
 
-    useMeta(() => ({
-      title: 'SpanishNook | Clases de español online',
-      meta: {
-        description: {
-          name: 'description',
-          content:
-            'Clases de español online con profesores nativos. Reserva clases particulares y grupales, aprende desde cualquier lugar con SpanishNook.',
-        },
-        keywords: {
-          name: 'keywords',
-          content:
-            'español online, clases de español, profesores nativos, clases grupales, clases individuales, aprender español, SpanishNook',
-        },
-        ogTitle: {
-          property: 'og:title',
-          content: 'SpanishNook | Clases de español online',
-        },
-        ogDescription: {
-          property: 'og:description',
-          content:
-            'Reserva clases particulares y grupales de español online. Aprende con profesores nativos y grupos reducidos.',
-        },
-        ogImage: {
-          property: 'og:image',
-          content: '/img/Logo_rectangular_320.png',
-        },
-        robots: {
-          name: 'robots',
-          content: 'index,follow',
-        },
-      },
-    }));
-  } else {
-    // SSR: fallback seguro
-    layoutComponent = computed(() => MainLayout);
-  }
-} catch (e: unknown) {
-  // Mostrar el error en consola y en el navegador si es posible
-  console.error('Error en setup de App.vue:', e);
-  if (typeof window !== 'undefined') {
-    let errorMsg = '';
-    function hasStack(err: unknown): err is { stack: string } {
-      return (
-        typeof err === 'object' &&
-        err !== null &&
-        'stack' in err &&
-        typeof (err as { stack: unknown }).stack === 'string'
-      );
-    }
-    if (hasStack(e)) {
-      errorMsg = e.stack;
-    } else {
-      errorMsg = String(e);
-    }
-    document.body.innerHTML = '<pre style="color:red;white-space:pre-wrap;">' + errorMsg + '</pre>';
-  }
-}
+// URL canónica de la ruta actual, sin query ni barra final
+const urlCanonica = computed(() => {
+  const ruta = route.path.replace(/\/+$/, '');
+  return `${SITIO}${ruta || '/'}`;
+});
+
+// Valores por defecto. Cada página puede sobrescribir cualquier clave con su propio useMeta.
+useMeta(() => ({
+  title: TITULO,
+  meta: {
+    description: { name: 'description', content: DESCRIPCION },
+    robots: { name: 'robots', content: 'index,follow' },
+    ogType: { property: 'og:type', content: 'website' },
+    ogSiteName: { property: 'og:site_name', content: 'SpanishNook' },
+    ogLocale: { property: 'og:locale', content: 'es_ES' },
+    ogTitle: { property: 'og:title', content: TITULO },
+    ogDescription: { property: 'og:description', content: DESCRIPCION },
+    ogImage: { property: 'og:image', content: IMAGEN },
+    ogUrl: { property: 'og:url', content: urlCanonica.value },
+    twitterCard: { name: 'twitter:card', content: 'summary_large_image' },
+    twitterTitle: { name: 'twitter:title', content: TITULO },
+    twitterDescription: { name: 'twitter:description', content: DESCRIPCION },
+    twitterImage: { name: 'twitter:image', content: IMAGEN },
+  },
+  link: {
+    canonical: { rel: 'canonical', href: urlCanonica.value },
+  },
+}));
 </script>

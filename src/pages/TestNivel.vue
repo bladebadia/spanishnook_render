@@ -1,6 +1,5 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
-  <q-no-ssr>
     <q-page class="row items-center justify-evenly">
       <!-- Pagina de instrucciones -->
       <div v-if="!testCompleted && currentQuestion === 0 && !showResults" class="col-12">
@@ -192,7 +191,6 @@
         </div>
       </div>
     </q-page>
-  </q-no-ssr>
 </template>
 
 <script setup lang="ts">

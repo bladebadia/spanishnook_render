@@ -12,6 +12,11 @@
 .tarjeta-quien .q-avatar {
   font-size: 140px !important;
 }
+/* Nunca deformar fotos dentro de un avatar */
+.tarjeta-quien .q-avatar img,
+.opinion-card .q-avatar img {
+  object-fit: cover;
+}
 
 @media (max-width: 768px) {
   .tarjeta-quien .q-avatar {

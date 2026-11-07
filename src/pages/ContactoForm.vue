@@ -1,5 +1,4 @@
 <template>
-  <q-no-ssr>
     <q-page class="q-pa-lg">
       <p
         class="texto-responsivo text-primary text-bold text-center q-mb-md"
@@ -133,7 +132,6 @@
         </q-card-section>
       </q-card>
     </q-page>
-  </q-no-ssr>
 </template>
 
 <script setup lang="ts">
