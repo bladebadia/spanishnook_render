@@ -66,7 +66,7 @@
           class="q-pa-xl text-center bg-grey-1"
         >
           <q-icon name="inventory_2" size="64px" color="grey-5" />
-          <div class="text-h6 text-grey-7 q-mt-md">Próximamente nuevos materiales...</div>
+          <div class="text-h6 text-grey-7 q-mt-md">{{ $t('MaterialesPage.proximamente') }}</div>
         </q-card>
 
         <!-- Catálogo de materiales -->
@@ -97,7 +97,7 @@
                   class="badge-hs bg-positive text-white text-weight-bold shadow-3"
                   v-if="mat.precio === 0 || !mat.precio"
                 >
-                  GRATIS
+                  {{ $t('MaterialesPage.gratis') }}
                 </div>
                 <div class="badge-hs bg-negative text-white text-weight-bold shadow-3" v-else>
                   {{ mat.precio }} €
@@ -122,7 +122,7 @@
                   color="primary"
                   rounded
                   unelevated
-                  label="VER DETALLES"
+                  :label="$t('MaterialesPage.verDetalles')"
                   class="full-width text-weight-bold"
                 />
               </q-card-actions>
@@ -186,7 +186,7 @@
         <!-- 3. Los botones ahora están a salvo fuera del área de scroll -->
         <q-separator />
         <q-card-actions align="right" class="q-pa-md bg-grey-2">
-          <q-btn flat label="Cerrar" color="grey-8" v-close-popup />
+          <q-btn flat :label="$t('MaterialesPage.cerrar')" color="grey-8" v-close-popup />
 
           <q-btn
             v-if="
@@ -198,8 +198,8 @@
             icon="download"
             :label="
               materialSeleccionado?.precio === 0 || !materialSeleccionado?.precio
-                ? 'Descargar Gratis'
-                : 'Descargar PDF'
+                ? $t('MaterialesPage.descargarGratis')
+                : $t('MaterialesPage.descargarPdf')
             "
             unelevated
             @click="descargarPdf(materialSeleccionado)"
@@ -209,7 +209,7 @@
             v-else
             color="primary"
             icon="shopping_cart"
-            :label="`Comprar por ${materialSeleccionado?.precio}€`"
+            :label="$t('MaterialesPage.comprarPor', { precio: materialSeleccionado?.precio })"
             unelevated
             :loading="procesandoPago"
             @click="comprarConStripe(materialSeleccionado)"
@@ -322,7 +322,7 @@ const cargarCatalogo = async () => {
     materiales.value = data || [];
   } catch (error) {
     console.error('Error cargando materiales:', error);
-    $q.notify({ type: 'negative', message: 'No se pudo cargar el catálogo.' });
+    $q.notify({ type: 'negative', message: t('MaterialesPage.errorCatalogo') });
   } finally {
     cargando.value = false;
   }
@@ -356,11 +356,11 @@ const yaLoTieneComprado = (id?: number) => {
 
 const descargarPdf = async (mat: Material | null) => {
   if (!user.value) {
-    $q.notify({ type: 'warning', message: 'Debes iniciar sesión para descargar este material.' });
+    $q.notify({ type: 'warning', message: t('MaterialesPage.loginDescargar') });
     return;
   }
   if (!mat?.archivo_pdf) {
-    $q.notify({ type: 'warning', message: 'Este material no tiene PDF adjunto.' });
+    $q.notify({ type: 'warning', message: t('MaterialesPage.sinPdf') });
     return;
   }
 
@@ -371,7 +371,7 @@ const descargarPdf = async (mat: Material | null) => {
 
   if (error) {
     console.error('Error al generar el enlace seguro:', error);
-    $q.notify({ type: 'negative', message: 'Error al autorizar la descarga.' });
+    $q.notify({ type: 'negative', message: t('MaterialesPage.errorDescarga') });
     return;
   }
 
@@ -385,7 +385,7 @@ const comprarConStripe = async (mat: Material | null) => {
   if (!mat) return;
 
   if (!user.value) {
-    $q.notify({ type: 'warning', message: 'Debes iniciar sesión para comprar.' });
+    $q.notify({ type: 'warning', message: t('MaterialesPage.loginComprar') });
     return;
   }
 
@@ -410,7 +410,7 @@ const comprarConStripe = async (mat: Material | null) => {
     }
   } catch (error) {
     console.error('Fallo en Stripe:', error);
-    $q.notify({ type: 'negative', message: 'Error conectando con la pasarela de pago.' });
+    $q.notify({ type: 'negative', message: t('MaterialesPage.errorPasarela') });
   } finally {
     procesandoPago.value = false;
   }

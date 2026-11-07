@@ -46,7 +46,7 @@
           <div class="row full-width items-center">
             <div class="col-auto q-pr-md">
               <q-avatar size="100px" square>
-                <img :src="getIconoPersonalizado(reserva.tipo)" alt="Icono Clase" />
+                <img :src="getIconoPersonalizado(reserva.tipo)" :alt="t('carrito.iconoClase')" />
               </q-avatar>
             </div>
 
@@ -88,7 +88,9 @@
                   <span class="text-caption text-grey strike-through">{{
                     reserva.tipo === 'normal' ? '32€' : '27€'
                   }}</span>
-                  <q-badge color="green" floating transparent rounded>CREDIT</q-badge>
+                  <q-badge color="green" floating transparent rounded>{{
+                    t('carrito.creditoBadge')
+                  }}</q-badge>
                 </div>
                 <div v-else class="text-h6 text-primary">
                   {{ reserva.tipo === 'normal' ? '32€' : '27€' }}
@@ -117,7 +119,7 @@
 
           <div class="text-right">
             <div class="total-precio text-primary text-weight-bold">
-              Total: {{ totalPagarDinero }}€
+              {{ t('carrito.total') }}: {{ totalPagarDinero }}€
             </div>
             <div v-if="totalGastarCreditos > 0" class="text-caption text-green">
               ({{ t('carrito.seCanjearan') }} {{ totalGastarCreditos }}
@@ -290,7 +292,7 @@ const confirmarReservasHibridas = async () => {
   // 2. RE-VERIFICACIÓN DE SEGURIDAD
   await verificarDisponibilidad();
   if (reservasConflictivas.value.length > 0) {
-    $q.notify({ type: 'warning', message: '¡Vaya! Alguien se ha adelantado en una clase.' });
+    $q.notify({ type: 'warning', message: t('carrito.alguienSeHaAdelantado') });
     confirmando.value = false;
     return;
   }
@@ -318,7 +320,7 @@ const confirmarReservasHibridas = async () => {
         });
 
         if (error || !data.success) {
-          throw new Error(data?.message || error?.message || 'Error desconocido');
+          throw new Error(data?.message || error?.message || t('errorDesconocido'));
         }
 
         // A.2. Generar Link de Google Meet
@@ -395,7 +397,7 @@ const confirmarReservasHibridas = async () => {
     }
   } catch (err: unknown) {
     console.error('Error pago:', err);
-    const mensaje = err instanceof Error ? err.message : 'Error procesando la reserva';
+    const mensaje = err instanceof Error ? err.message : t('carrito.errorProcesando');
     $q.notify({ type: 'negative', message: mensaje });
   } finally {
     confirmando.value = false;
@@ -430,11 +432,11 @@ const irAStripe = async (items: ReservaCarrito[]) => {
 
   if (!res.ok) {
     const errorData = await res.json();
-    throw new Error(errorData.error || 'Error conectando con Stripe');
+    throw new Error(errorData.error || t('carrito.errorStripe'));
   }
 
   const responseData = await res.json();
-  if (!responseData.url) throw new Error('No se obtuvo URL de Stripe');
+  if (!responseData.url) throw new Error(t('carrito.sinUrlStripe'));
 
   window.location.href = responseData.url;
 };

@@ -3,9 +3,9 @@
     <q-card class="q-pa-none shadow-2 my-card" bordered style="width: 100%; max-width: 450px">
       <q-card-section class="q-pt-xl q-pb-md text-center">
         <div class="text-h5 text-primary text-weight-bold">
-          {{ t('accederForm.entrar') || 'Iniciar Sesión' }}
+          {{ t('accederForm.entrar') }}
         </div>
-        <div class="text-caption text-grey-7">Bienvenido de nuevo / Welcome back</div>
+        <div class="text-caption text-grey-7">{{ t('accederForm.bienvenidoDeNuevo') }}</div>
       </q-card-section>
 
       <q-card-section class="q-px-lg">
@@ -105,7 +105,7 @@
         </q-card-section>
 
         <q-card-actions align="right" class="q-pa-md">
-          <q-btn flat :label="t('cancelar')" color="grey-8" v-close-popup />
+          <q-btn flat :label="t('personal.cancelar')" color="grey-8" v-close-popup />
           <q-btn
             :label="t('accederForm.enviar')"
             color="primary"
@@ -184,7 +184,7 @@ const olvidarPassword = () => {
 
 const enviarLinkRecuperacion = async () => {
   if (!emailRecuperacion.value) {
-    errorRecuperacion.value = 'Por favor, introduce tu correo electrónico';
+    errorRecuperacion.value = t('accederForm.introduceCorreo');
     return;
   }
 
@@ -206,7 +206,7 @@ const enviarLinkRecuperacion = async () => {
     if (error instanceof Error) {
       errorRecuperacion.value = error.message;
     } else {
-      errorRecuperacion.value = 'Error al enviar el email';
+      errorRecuperacion.value = t('accederForm.errorEnviarEmail');
     }
   } finally {
     loadingRecuperacion.value = false;

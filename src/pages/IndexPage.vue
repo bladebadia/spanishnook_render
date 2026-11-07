@@ -169,9 +169,9 @@
     <div class="q-py-xl" style="background-color: #fffdf8">
       <div class="text-center q-mb-lg">
         <h2 class="titulo-responsivo text-primary q-my-none">
-          Materiales Didácticos y Actividades
+          {{ t('indexMateriales') }}
         </h2>
-        <p class="text-grey-7 q-mt-sm">Refuerza tu aprendizaje con nuestro material exclusivo</p>
+        <p class="text-grey-7 q-mt-sm">{{ t('indexMateriales1') }}</p>
       </div>
 
       <div v-if="cuadernosCarrusel.length > 0" class="row justify-center">
@@ -211,13 +211,15 @@
                 height="200px"
               >
                 <template v-slot:error>
-                  <div class="absolute-full flex flex-center bg-grey-3 text-grey-8">Sin Imagen</div>
+                  <div class="absolute-full flex flex-center bg-grey-3 text-grey-8">
+                    {{ t('indexSinImagen') }}
+                  </div>
                 </template>
                 <div
                   class="badge-hs bg-positive text-white text-weight-bold shadow-3"
                   v-if="cuaderno.precio === 0 || !cuaderno.precio"
                 >
-                  GRATIS
+                  {{ t('MaterialesPage.gratis') }}
                 </div>
                 <!-- Etiqueta roja normal si cuesta dinero -->
                 <div class="badge-hs bg-negative text-white text-weight-bold shadow-3" v-else>
@@ -245,7 +247,7 @@
                   color="primary"
                   rounded
                   unelevated
-                  label="Ver catálogo"
+                  :label="t('MaterialesPage.verCatalogo')"
                   class="full-width text-weight-bold"
                   to="/Materiales"
                 />
@@ -320,7 +322,7 @@
               <div class="row justify-center full-height items-center">
                 <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 text-center q-pa-xl">
                   <div class="texto-responsivo text-grey-7">
-                    {{ t('indexSeElPrimeroEnOpinar', 'Sé el primero en dejar tu reseña') }}
+                    {{ t('indexSeElPrimeroEnOpinar') }}
                   </div>
                 </div>
               </div>
@@ -853,7 +855,7 @@ const fetchOpiniones = async () => {
     todasLasOpiniones.value = (data as SupabaseOpinion[])
       .filter((row): row is SupabaseOpinion => Boolean(row))
       .map((row: SupabaseOpinion) => ({
-        name: row.nombre ?? 'Anónimo',
+        name: row.nombre ?? t('indexAnonimo'),
         country: row.pais ?? '—',
         avatar: defaultAvatar,
         rating: row.rating ?? 0,

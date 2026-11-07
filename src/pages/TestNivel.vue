@@ -516,11 +516,11 @@ const evaluateTestByLevel = (): string => {
   percentage.value = levelTotal.value > 0 ? (levelCorrect.value / levelTotal.value) * 100 : 0;
 
   const nivelDescriptions: NivelDescription = {
-    C1: 'Dominio',
-    B2: 'Avanzado',
-    B1: 'Intermedio',
-    A2: 'Plataforma',
-    A1: 'Acceso',
+    C1: t('test.nivelC1'),
+    B2: t('test.nivelB2'),
+    B1: t('test.nivelB1'),
+    A2: t('test.nivelA2'),
+    A1: t('test.nivelA1'),
   };
 
   return `${assignedLevel} - ${nivelDescriptions[assignedLevel]}`;

@@ -107,7 +107,7 @@
                 </q-item-section>
 
                 <q-item-section side>
-                  <q-badge color="positive" outline label="Reservada" />
+                  <q-badge color="positive" outline :label="t('reservasClases.reservada')" />
                 </q-item-section>
               </q-item>
             </q-list>
@@ -359,7 +359,7 @@ onMounted(async () => {
     console.error('Error inicializando la página:', e);
     $q.notify({
       type: 'negative',
-      message: 'Error cargando datos de la página',
+      message: t('reservasClases.errorCargando'),
     });
   } finally {
     cargando.value = false;

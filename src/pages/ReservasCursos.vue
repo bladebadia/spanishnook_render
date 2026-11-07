@@ -71,7 +71,7 @@
                           {{ convertirHorarioLocal(curso.horarios_curso[0]) }}
                         </div>
                         <div class="text-caption text-grey">
-                          (Madrid: {{ curso.horarios_curso[0] }})
+                          ({{ t('reservasCursos.horaMadrid') }}: {{ curso.horarios_curso[0] }})
                         </div>
                       </q-item-section>
                     </q-item>
@@ -464,10 +464,10 @@ const cargarCurso = async () => {
 
 const iniciarSuscripcion = async () => {
   if (!curso.value?.stripe_price_id)
-    return $q.notify({ type: 'negative', message: 'Error configuración' });
+    return $q.notify({ type: 'negative', message: t('reservasCursos.errorConfiguracion') });
 
   if (ocupacionActual.value >= (curso.value.max_estudiantes || 100)) {
-    return $q.notify({ type: 'negative', message: '¡Plazas agotadas!' });
+    return $q.notify({ type: 'negative', message: t('reservasCursos.plazasAgotadas') });
   }
   await handleSubscribe(curso.value.stripe_price_id, curso.value.id.toString());
 };
@@ -486,7 +486,8 @@ const comprobarSuscripcion = async () => {
 
 // --- RESERVAS ---
 const confirmarReservaGuest = () => {
-  if (!formGuestValido.value) return $q.notify({ type: 'warning', message: 'Rellena los campos' });
+  if (!formGuestValido.value)
+    return $q.notify({ type: 'warning', message: t('reservasCursos.rellenaCampos') });
   dialogGuestConfirm.value = true;
 };
 
@@ -500,11 +501,11 @@ const reservarGuest = async () => {
       p_email_or_id: formGuest.value.email,
     });
     if (error) throw error;
-    $q.notify({ type: 'positive', message: 'Apuntado a la lista de espera.' });
+    $q.notify({ type: 'positive', message: t('reservasCursos.añadido') });
     await cargarCurso();
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error desconocido';
-    $q.notify({ type: 'negative', message: 'Error al registrar: ' + msg });
+    const msg = err instanceof Error ? err.message : t('errorDesconocido');
+    $q.notify({ type: 'negative', message: t('reservasCursos.errorRegistrar', { mensaje: msg }) });
   } finally {
     reservando.value = false;
   }
@@ -512,7 +513,7 @@ const reservarGuest = async () => {
 
 const confirmarReservaAutenticado = () => {
   if (!aceptaCondiciones.value)
-    return $q.notify({ type: 'warning', message: 'Acepta las condiciones' });
+    return $q.notify({ type: 'warning', message: t('reservasCursos.aceptaCondiciones') });
   dialogConfirm.value = true;
 };
 
@@ -529,8 +530,8 @@ const reservarAutenticado = async () => {
     $q.notify({ type: 'positive', message: t('reservasCursos.anadido') });
     await cargarCurso();
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error desconocido';
-    $q.notify({ type: 'negative', message: 'Error al registrar: ' + msg });
+    const msg = err instanceof Error ? err.message : t('errorDesconocido');
+    $q.notify({ type: 'negative', message: t('reservasCursos.errorRegistrar', { mensaje: msg }) });
   } finally {
     reservando.value = false;
   }

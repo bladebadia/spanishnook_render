@@ -39,7 +39,7 @@
             outlined
             dense
             :error="confirmarError && mostrarErrores"
-            :error-message="confirmarError && mostrarErrores ? 'Las contraseñas no coinciden' : ''"
+            :error-message="confirmarError && mostrarErrores ? t('registro.lasContrasenasNo') : ''"
           >
             <template v-slot:prepend>
               <q-icon name="lock" color="primary" />
@@ -117,7 +117,7 @@ const confirmarError = computed(() => confirmarPassword.value !== nuevaPassword.
 const obtenerMensajeErrorPassword = computed(() => {
   if (passwordError.value && mostrarErrores.value) {
     // 🔥 MENSAJE COHERENTE CON EL REGISTRO
-    return 'Mínimo 6 caracteres, un número y una vocal.';
+    return t('flecos.requisitosPassword');
   }
   if (serverPasswordError.value) {
     return serverPasswordError.value;
@@ -149,7 +149,7 @@ const resetPassword = async () => {
     }, 2500);
   } catch (error: unknown) {
     console.error('Error reset:', error);
-    let msg = 'Error al restablecer la contraseña';
+    let msg = t('flecos.error');
 
     if (error instanceof Error) msg = error.message;
     else if (typeof error === 'object' && error !== null && 'message' in error) {
@@ -158,7 +158,7 @@ const resetPassword = async () => {
 
     // Gestionar error de "misma contraseña" de forma elegante
     if (msg.toLowerCase().includes('different from the old')) {
-      serverPasswordError.value = 'La nueva contraseña no puede ser igual a la anterior.';
+      serverPasswordError.value = t('flecos.igualAnterior');
     } else {
       errorMessage.value = msg;
     }

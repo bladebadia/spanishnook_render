@@ -54,8 +54,8 @@
                   floating
                   rounded
                   style="
-                    top: 10px;
-                    right: 10px;
+                    top: 14px;
+                    right: 16px;
                     font-size: 0.8rem;
                     font-weight: bold;
                     transform: rotate(5deg);
@@ -93,6 +93,7 @@
                   :loading="loading === pack.id"
                   @click="comprarPack(pack)"
                   icon="shopping_cart"
+                  no-wrap
                   unelevated
                   color="primary"
                 />
@@ -122,8 +123,8 @@
                   floating
                   rounded
                   style="
-                    top: 10px;
-                    right: 10px;
+                    top: 14px;
+                    right: 16px;
                     font-size: 0.8rem;
                     font-weight: bold;
                     transform: rotate(5deg);
@@ -161,6 +162,7 @@
                   :loading="loading === pack.id"
                   @click="comprarPack(pack)"
                   icon="shopping_cart"
+                  no-wrap
                   unelevated
                   color="primary"
                 />
@@ -326,13 +328,13 @@ const comprarPack = async (pack: PackCreditos) => {
 
     const data = await response.json();
 
-    if (!response.ok) throw new Error(data.error || 'Error de conexión');
+    if (!response.ok) throw new Error(data.error || t('comprarPacks.errorConexion'));
     if (data.url) {
       window.location.href = data.url;
     }
   } catch (error: unknown) {
     console.error(error);
-    let mensaje = 'Error desconocido';
+    let mensaje = t('errorDesconocido');
     if (error instanceof Error) mensaje = error.message;
     $q.notify({ type: 'negative', message: mensaje });
   } finally {

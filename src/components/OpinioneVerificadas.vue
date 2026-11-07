@@ -8,7 +8,7 @@
         <q-rating :model-value="opinion.rating" readonly size="sm" color="amber" class="q-mt-xs" />
       </div>
       <q-icon v-if="opinion.verified" name="verified" color="primary" size="md">
-        <q-tooltip>Opinión verificada</q-tooltip>
+        <q-tooltip>{{ t('indexOpinionVerificada') }}</q-tooltip>
       </q-icon>
     </q-card-section>
 
@@ -27,6 +27,8 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 interface Opinion {
   name: string;
   country: string;
@@ -44,6 +46,8 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   showAvatar: true,
 });
+
+const { t } = useI18n();
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);

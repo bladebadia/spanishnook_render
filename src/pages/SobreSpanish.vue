@@ -20,7 +20,7 @@
               src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/video/clases_espanol_video_subt.mp4"
               type="video/mp4"
             />
-            Tu navegador no soporta el video.
+            {{ t('SobreSpanish.navegadorNoSoportaVideo') }}
           </video>
         </div>
         <div class="col-12 text-center q-mt-lg">

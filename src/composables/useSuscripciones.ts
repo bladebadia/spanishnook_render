@@ -3,10 +3,12 @@ import { ref } from 'vue';
 import { supabase } from 'src/supabaseClient';
 import { useAuth } from 'src/stores/auth';
 import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 export function useSuscripciones() {
   const { user } = useAuth();
   const $q = useQuasar();
+  const { t } = useI18n();
   const procesando = ref(false);
 
   /**
@@ -14,7 +16,7 @@ export function useSuscripciones() {
    */
   const handleSubscribe = async (priceId: string, courseId: string) => {
     if (!user.value) {
-      $q.notify({ type: 'warning', message: 'Debes iniciar sesión para suscribirte.' });
+      $q.notify({ type: 'warning', message: t('suscripciones.debesIniciarSesion') });
       return;
     }
 
@@ -44,7 +46,7 @@ export function useSuscripciones() {
       console.error('Error suscripción:', err);
       $q.notify({
         type: 'negative',
-        message: 'No se pudo iniciar el pago. Inténtalo de nuevo.',
+        message: t('suscripciones.errorIniciarPago'),
       });
     } finally {
       procesando.value = false;
@@ -73,8 +75,8 @@ export function useSuscripciones() {
       $q.notify({
         type: 'positive',
         message: cancelar 
-          ? 'Suscripción cancelada. Tendrás acceso hasta el final del periodo.' 
-          : '¡Suscripción reactivada correctamente!',
+          ? t('suscripciones.cancelada') 
+          : t('suscripciones.reactivada'),
         icon: cancelar ? 'event_busy' : 'check_circle'
       });
       
@@ -84,7 +86,7 @@ export function useSuscripciones() {
       console.error('Error gestionando suscripción:', err);
       $q.notify({
         type: 'negative',
-        message: 'Error al actualizar el estado de la suscripción.',
+        message: t('suscripciones.errorActualizar'),
       });
       return false;
     } finally {

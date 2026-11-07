@@ -22,7 +22,7 @@ const { t } = useI18n();
 onMounted(async () => {
   const { error: authError } = await supabase.auth.getSession();
   if (authError) {
-    error.value = 'Error al procesar el enlace de autenticación: ' + authError.message;
+    error.value = t('authCallback.errorEnlace', { mensaje: authError.message });
     loading.value = false;
     return;
   }

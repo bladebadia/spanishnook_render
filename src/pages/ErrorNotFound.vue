@@ -31,8 +31,8 @@ if (process.env.SERVER) {
   if (ssrContext?.res) ssrContext.res.statusCode = 404;
 }
 
-useMeta({
-  title: 'Página no encontrada | SpanishNook',
+useMeta(() => ({
+  title: `${t('flecos.paginaNoEncontrada')} | SpanishNook`,
   meta: { robots: { name: 'robots', content: 'noindex, follow' } },
-});
+}));
 </script>

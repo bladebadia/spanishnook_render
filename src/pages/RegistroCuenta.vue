@@ -12,16 +12,16 @@
       >
         <q-step :name="1" :title="t('registro.cuenta')" icon="lock" :done="step > 1">
           <div class="text-h5 text-center q-mb-md text-primary text-weight-bold">
-            Crea tu cuenta / Create account
+            {{ t('registro.creaTuCuenta') }}
           </div>
           <p class="text-center text-grey-7 q-mb-lg">
-            Empezamos por lo básico / Let's start with the basics
+            {{ t('registro.empezamosPorLoBasico') }}
           </p>
 
           <q-form @submit="siguientePaso" class="q-gutter-md q-px-md-lg">
             <q-input
               v-model="form.email"
-              label="Email *"
+              :label="t('personal.email') + ' *'"
               type="email"
               outlined
               dense
@@ -36,7 +36,7 @@
 
             <q-input
               v-model="form.password"
-              label="Contraseña / Password *"
+              :label="t('registro.contrasena') + ' *'"
               :type="mostrarPass ? 'text' : 'password'"
               outlined
               dense
@@ -58,7 +58,7 @@
 
             <q-input
               v-model="form.confirmPassword"
-              label="Repetir Contraseña / Confirm Password *"
+              :label="t('registro.repetirContrasena') + ' *'"
               :type="mostrarConfirmPass ? 'text' : 'password'"
               outlined
               dense
@@ -86,7 +86,7 @@
 
             <div class="row justify-end q-mt-xl">
               <q-btn
-                label="Siguiente / Next"
+                :label="t('test.siguiente')"
                 type="submit"
                 color="primary"
                 unelevated
@@ -108,10 +108,10 @@
 
         <q-step :name="2" :title="t('registro.sobreTi')" icon="person" :done="step > 2">
           <div class="text-h5 text-center q-mb-sm text-primary text-weight-bold">
-            Cuéntanos sobre ti
+            {{ t('registro.cuentanosSobreTi') }}
           </div>
           <div class="text-caption text-center text-grey-7 q-mb-xl">
-            Tell us a bit about yourself
+            {{ t('registro.cuentanosSobreTiTexto') }}
           </div>
 
           <q-form @submit="siguientePaso" class="q-gutter-md q-px-md-lg">
@@ -119,7 +119,7 @@
               <div class="col-12 col-md-6">
                 <q-input
                   v-model="form.nombre"
-                  label="Nombre / Name *"
+                  :label="t('personal.nombre') + ' *'"
                   outlined
                   dense
                   :rules="[(val) => !!val || t('registro.requerido')]"
@@ -128,7 +128,7 @@
                 </q-input>
               </div>
               <div class="col-12 col-md-6">
-                <q-input v-model="form.apellido1" label="Apellido / Last Name " outlined dense>
+                <q-input v-model="form.apellido1" :label="t('personal.apellido')" outlined dense>
                   <template v-slot:prepend><q-icon name="badge" /></template>
                 </q-input>
               </div>
@@ -137,7 +137,7 @@
             <q-select
               v-model="form.idiomaNativo"
               :options="idiomasComunes"
-              label="Lengua Materna / Native Language *"
+              :label="t('registro.lenguaMaterna') + ' *'"
               outlined
               dense
               use-input
@@ -150,9 +150,15 @@
             </q-select>
 
             <div class="row justify-between q-mt-xl">
-              <q-btn label="Atrás / Back" flat color="grey-8" @click="step = 1" icon="arrow_back" />
               <q-btn
-                label="Siguiente / Next"
+                :label="t('registro.atras')"
+                flat
+                color="grey-8"
+                @click="step = 1"
+                icon="arrow_back"
+              />
+              <q-btn
+                :label="t('test.siguiente')"
                 type="submit"
                 color="primary"
                 unelevated
@@ -170,15 +176,10 @@
                 <q-icon name="sentiment_satisfied_alt" color="primary" size="md" class="q-mr-md" />
                 <div>
                   <div class="text-subtitle1 text-primary text-weight-bold">
-                    Antes de tu primera clase... / Before we start...
+                    {{ t('registro.antesDeEmpezar') }}
                   </div>
                   <div class="text-caption text-grey-9" style="line-height: 1.4">
-                    Queremos conocerte un poco más para ofrecerte la mejor experiencia. No es un
-                    examen, solo responde de forma honesto/a 😊<br />
-                    <i class="text-grey-7"
-                      >We’d like to get to know you a little better so we can offer you the best
-                      experience. It's not a test, just answer honestly.</i
-                    >
+                    {{ t('registro.antesDeEmpezarTexto') }}
                   </div>
                 </div>
               </q-card-section>
@@ -186,8 +187,8 @@
 
             <div class="q-mb-xl">
               <div class="text-subtitle1 q-mb-sm flex items-center text-weight-bold">
-                <q-icon name="equalizer" color="primary" class="q-mr-sm" size="sm" /> 1. ¿Qué nivel
-                crees que tienes de Español? / What's your current Spanish level?
+                <q-icon name="equalizer" color="primary" class="q-mr-sm" size="sm" /> 1.
+                {{ t('registro.preguntaNivel') }}
               </div>
               <q-btn-toggle
                 v-model="form.nivelEstimado"
@@ -199,9 +200,9 @@
                 color="grey-3"
                 text-color="grey-9"
                 :options="[
-                  { label: 'Principiante / Beginner', value: 'Principiante' },
-                  { label: 'Intermedio / Intermediate', value: 'Intermedio' },
-                  { label: 'Avanzado / Advanced', value: 'Avanzado' },
+                  { label: t('registro.nivelPrincipiante'), value: 'Principiante' },
+                  { label: t('registro.nivelIntermedio'), value: 'Intermedio' },
+                  { label: t('registro.nivelAvanzado'), value: 'Avanzado' },
                 ]"
                 class="q-mt-sm nursing-toggle"
               />
@@ -209,21 +210,21 @@
 
             <div class="q-mb-xl">
               <div class="text-subtitle1 q-mb-sm flex items-center text-weight-bold">
-                <q-icon name="history_edu" color="primary" class="q-mr-sm" size="sm" /> 2. ¿Has
-                estudiado español antes? / Have you studied Spanish before?
+                <q-icon name="history_edu" color="primary" class="q-mr-sm" size="sm" /> 2.
+                {{ t('registro.preguntaEstudiadoAntes') }}
               </div>
               <div class="q-gutter-md q-ml-none">
                 <q-radio
                   v-model="form.haEstudiadoAntes"
                   :val="true"
-                  label="Sí / Yes"
+                  :label="t('registro.si')"
                   color="primary"
                   keep-color
                 />
                 <q-radio
                   v-model="form.haEstudiadoAntes"
                   :val="false"
-                  label="No, nunca / No, never"
+                  :label="t('registro.noNunca')"
                   color="primary"
                   keep-color
                 />
@@ -233,7 +234,7 @@
                 <div v-if="form.haEstudiadoAntes" class="q-mt-md">
                   <q-input
                     v-model="form.detallesEstudio"
-                    label="¿Dónde y cuánto tiempo? / Where and for how long?"
+                    :label="t('registro.dondeYCuantoTiempo')"
                     outlined
                     dense
                     bg-color="white"
@@ -246,10 +247,10 @@
 
             <div class="q-mb-xl">
               <div class="text-subtitle1 q-mb-sm flex items-center text-weight-bold">
-                <q-icon name="interests" color="primary" class="q-mr-sm" size="sm" /> 3. ¿Qué te
-                interesa aprender? / What are your areas of interest?
+                <q-icon name="interests" color="primary" class="q-mr-sm" size="sm" /> 3.
+                {{ t('registro.preguntaIntereses') }}
                 <span class="text-caption text-grey-6 q-ml-sm"
-                  >(Selecciona todas las que apliquen / Select all that apply)</span
+                  >({{ t('registro.seleccionaTodas') }})</span
                 >
               </div>
 
@@ -270,13 +271,13 @@
 
             <div class="q-mb-lg">
               <div class="text-subtitle1 q-mb-sm flex items-center text-weight-bold">
-                <q-icon name="flag" color="primary" class="q-mr-sm" size="sm" /> 4. Tus objetivos /
-                Your goals
+                <q-icon name="flag" color="primary" class="q-mr-sm" size="sm" /> 4.
+                {{ t('registro.tusObjetivos') }}
               </div>
               <q-input
                 v-model="form.usoEspanol"
-                label="¿Para qué quieres usar el español? (Viajes, trabajo...)"
-                hint="In real life, what do you want to use Spanish for?"
+                :label="t('registro.paraQueEspanol')"
+                :hint="t('registro.paraQueEspanolHint')"
                 outlined
                 dense
                 type="textarea"
@@ -288,10 +289,16 @@
             <q-separator class="q-my-lg" />
 
             <div class="row justify-between items-center q-mt-lg">
-              <q-btn label="Atrás" flat color="grey-8" @click="step = 2" icon="arrow_back" />
+              <q-btn
+                :label="t('registro.atras')"
+                flat
+                color="grey-8"
+                @click="step = 2"
+                icon="arrow_back"
+              />
               <div class="text-center q-mx-md hidden"></div>
               <q-btn
-                label="Finalizar Registro / Finish"
+                :label="t('registro.finalizarRegistro')"
                 type="submit"
                 color="positive"
                 size="lg"
@@ -309,7 +316,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import { useRouter } from 'vue-router';
@@ -347,14 +354,14 @@ const form = ref({
 
 const idiomasComunes = ['English', 'Français', 'Deutsch', 'Italiano', 'Português', 'Otro/Another'];
 
-const tagsIntereses = [
-  { label: 'Conversación / Conversation', val: 'Conversación' },
-  { label: 'Gramática / Grammar', val: 'Gramática' },
-  { label: 'Trabajo / Business', val: 'Trabajo' },
-  { label: 'Viajes / Travel', val: 'Viajes' },
-  { label: 'Cultura / Culture', val: 'Cultura' },
-  { label: 'Exámenes / Exams', val: 'Exámenes' },
-];
+const tagsIntereses = computed(() => [
+  { label: t('registro.interesConversacion'), val: 'Conversación' },
+  { label: t('registro.interesGramatica'), val: 'Gramática' },
+  { label: t('registro.interesTrabajo'), val: 'Trabajo' },
+  { label: t('registro.interesViajes'), val: 'Viajes' },
+  { label: t('registro.interesCultura'), val: 'Cultura' },
+  { label: t('registro.interesExamenes'), val: 'Exámenes' },
+]);
 
 // 🔥 FUNCIÓN MODIFICADA: AHORA ES ASÍNCRONA Y COMPRUEBA EL EMAIL
 const siguientePaso = async () => {

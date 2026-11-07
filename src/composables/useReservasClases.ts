@@ -255,7 +255,7 @@ export function useReservasClases() {
 
   const formatFecha = (f: string) => (f ? formatFechaCalendario(f, locale.value || 'es-ES') : '');
   const getTipoClaseTexto = (r: ReservaConfirmada) =>
-    r.tipo === 'normal' ? 'General' : 'Conversación';
+    r.tipo === 'normal' ? t('wallet.clases') : t('reservasClases.conversacion');
   const getPrecioClase = (r: ReservaConfirmada) => {
     const precio = r.precio ?? (r.tipo === 'normal' ? 32 : 27);
     return precio > 1000 ? precio / 100 : precio;
@@ -264,11 +264,15 @@ export function useReservasClases() {
   const puedeCancelar = (r: ReservaConfirmada) => faltanAlMenos(r.fecha, r.hora, 24);
 
   const cancelarReserva = (r: ReservaConfirmada) => {
-    $q.dialog({ title: 'Cancelar', message: '¿Seguro?', cancel: true }).onOk(() => {
+    $q.dialog({
+      title: t('reservasClases.cancelarReserva'),
+      message: t('reservasClases.seguro'),
+      cancel: true,
+    }).onOk(() => {
       void (async () => {
         await supabase.functions.invoke('cancel-reserva', { body: { reservaId: r.id } });
         misReservas.value = misReservas.value.filter((x) => x.id !== r.id);
-        $q.notify({ type: 'positive', message: 'Cancelada' });
+        $q.notify({ type: 'positive', message: t('personal.estadoCancelada') });
       })();
     });
   };

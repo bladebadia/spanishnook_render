@@ -274,7 +274,7 @@
           :button-text="t('NuestrasClases.comprarPacks')"
           description-class="description-small-bold"
           :show-promo="false"
-          :promo-text="t('NuestrasClases.promoPromoPacks', '¡Más créditos, más ahorro!')"
+          :promo-text="t('NuestrasClases.promoPromoPacks')"
           :show-price="false"
           to="/ComprarPacks"
         />
@@ -419,9 +419,9 @@ async function cargarCursosPromo(): Promise<void> {
       imagen_tarjeta: (c.imagen_tarjeta ?? '').replace(/^['"]|['"]$/g, '').trim(),
       titulo_tarjeta: c.titulo_tarjeta ?? '',
       texto_tarjeta: c.texto_tarjeta ?? '',
-      boton_tarjeta: c.boton_tarjeta ?? 'Reservar',
+      boton_tarjeta: c.boton_tarjeta ?? t('NuestrasClases.reservar'),
       showPromo: c.mostrar_promo ?? false,
-      promoText: c.texto_promo ?? '¡Prueba tu clase gratis!',
+      promoText: c.texto_promo ?? t('NuestrasClases.pruebaTuClaseGratis'),
       showPrice: c.mostrar_precio ?? false,
       price: c.precio_curso ?? '',
       originalPrice: c.precio_original ?? '',

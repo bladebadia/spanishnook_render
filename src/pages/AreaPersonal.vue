@@ -7,7 +7,7 @@
             <h4 class="text-h4 text-weight-bold text-primary q-my-none">
               {{
                 user?.user_metadata?.nombre
-                  ? `¡Hola, ${user.user_metadata.nombre}!`
+                  ? t('personal.holaNombre', { nombre: user.user_metadata.nombre })
                   : t('personal.holaUsuario')
               }}
             </h4>
@@ -16,7 +16,7 @@
             </p>
           </div>
         </div>
-        <div class="row">
+        <div class="row q-col-gutter-lg">
           <div class="col-12 col-md-3">
             <SaldoWallet
               :saldo-normal="formDatos.saldo_normal"
@@ -53,7 +53,7 @@
                   header
                   class="text-weight-bold text-uppercase text-grey-7 text-caption q-pt-md"
                 >
-                  Mi Formación
+                  {{ t('personal.miFormacion') }}
                 </q-item-label>
 
                 <q-item
@@ -97,7 +97,7 @@
                   header
                   class="text-weight-bold text-uppercase text-grey-7 text-caption q-mt-sm"
                 >
-                  Recursos
+                  {{ t('personal.recursos') }}
                 </q-item-label>
 
                 <q-item
@@ -108,7 +108,7 @@
                   active-class="text-primary bg-red-1"
                 >
                   <q-item-section avatar><q-icon name="menu_book" /></q-item-section>
-                  <q-item-section>Mis Cuadernos</q-item-section>
+                  <q-item-section>{{ t('personal.misCuadernos') }}</q-item-section>
                 </q-item>
 
                 <!-- GRUPO 3: CUENTA -->
@@ -156,7 +156,7 @@
                     ><q-icon name="admin_panel_settings" color="negative"
                   /></q-item-section>
                   <q-item-section class="text-weight-bold text-negative"
-                    >PANEL ADMIN</q-item-section
+                    >{{ t('personal.panelAdmin') }}</q-item-section
                   >
                 </q-item>
               </q-list>
@@ -226,7 +226,7 @@
                       <q-item-section avatar v-else style="min-width: 100px">
                         <img
                           :src="getIconoPersonalizado(reserva.tipo)"
-                          alt="Clase"
+                          :alt="t('personal.iconoClase')"
                           style="width: 90px; height: 90px; object-fit: contain"
                         />
                       </q-item-section>
@@ -255,7 +255,7 @@
                           class="text-negative text-caption q-mt-xs flex items-center"
                         >
                           <q-icon name="lock" size="xs" class="q-mr-xs" />
-                          {{ t('personal.noSePuedeCancelar') || 'Menos de 24h' }}
+                          {{ t('personal.noSePuedeCancelar') }}
                         </div>
                       </q-item-section>
 
@@ -275,7 +275,7 @@
                           color="grey-3"
                           text-color="grey-8"
                           icon="hourglass_empty"
-                          label="Pendiente"
+                          :label="t('personal.pendiente')"
                           size="sm"
                         />
                       </q-item-section>
@@ -325,7 +325,10 @@
                               class="text-h6 text-primary cursor-pointer hover-underline"
                               @click="router.push(`/ReservasCursos?id=${suscripcion.course_id}`)"
                             >
-                              {{ suscripcion.cursos_grupales?.nombre_curso || 'Curso sin nombre' }}
+                              {{
+                                suscripcion.cursos_grupales?.nombre_curso ||
+                                t('personal.cursoSinNombre')
+                              }}
                             </div>
                             <div class="text-subtitle2 text-grey-8 q-mb-sm">
                               <q-icon name="schedule" class="q-mr-xs" />
@@ -414,7 +417,9 @@
             <div v-if="menuActivo === 'materiales'">
               <q-card class="shadow-1 rounded-borders">
                 <q-card-section class="row items-center justify-between">
-                  <div class="text-h6 text-primary">Mis Cuadernos y Materiales</div>
+                  <div class="text-h6 text-primary">
+                    {{ t('personal.misCuadernosYMateriales') }}
+                  </div>
                   <q-btn flat icon="refresh" round color="primary" @click="cargarMisCuadernos" />
                 </q-card-section>
 
@@ -447,7 +452,7 @@
                               <q-btn
                                 color="positive"
                                 icon="download"
-                                label="Descargar PDF"
+                                :label="t('MaterialesPage.descargarPdf')"
                                 size="sm"
                                 unelevated
                                 @click="descargarPdfSeguro(mat.archivo_pdf)"
@@ -461,11 +466,11 @@
 
                   <div v-else class="column flex-center q-pa-xl text-grey-6">
                     <q-icon name="menu_book" size="60px" class="q-mb-md opacity-50" />
-                    <div class="text-h6">Aún no tienes cuadernos.</div>
+                    <div class="text-h6">{{ t('personal.sinCuadernos') }}</div>
                     <q-btn
                       outline
                       color="primary"
-                      label="Ver catálogo"
+                      :label="t('MaterialesPage.verCatalogo')"
                       to="/Materiales"
                       class="q-mt-md"
                     />
@@ -532,7 +537,14 @@
                       >
                         <template v-slot:prepend><q-icon name="language" /></template>
                       </q-select>
-                      <q-field label="Email" dense outlined stack-label readonly bg-color="grey-1">
+                      <q-field
+                        :label="t('personal.email')"
+                        dense
+                        outlined
+                        stack-label
+                        readonly
+                        bg-color="grey-1"
+                      >
                         <template v-slot:control
                           ><div class="self-center full-width no-outline">
                             {{ formDatos.email }}
@@ -833,7 +845,7 @@ const descargarPdfSeguro = async (archivo_pdf: string) => {
     .createSignedUrl(archivo_pdf, 60);
 
   if (error) {
-    $q.notify({ type: 'negative', message: 'Error al autorizar la descarga.' });
+    $q.notify({ type: 'negative', message: t('MaterialesPage.errorDescarga') });
     return;
   }
 
@@ -882,7 +894,7 @@ const cancelarSeleccionadas = () => {
   if (seleccionadas.value.length === 0) return;
 
   $q.dialog({
-    title: t('personal.cancelarReserva') || 'Cancelar Clases',
+    title: t('personal.cancelarReserva'),
     message: `${t('personal.vasA')} ${seleccionadas.value.length} ${t('personal.clase')}. <br>${t('personal.seDevolvera')}`,
     html: true,
     cancel: true,
@@ -933,7 +945,7 @@ const cargarSuscripciones = async () => {
     const cursosTemp = data.map((sub) => ({
       ...sub,
       cursos_grupales: sub.cursos_grupales || {
-        nombre_curso: 'Curso no encontrado',
+        nombre_curso: t('personal.cursoNoEncontrado'),
         dias_semana: [],
         horarios_curso: [],
         estado_curso: 'Desconocido',
@@ -951,12 +963,12 @@ const cargarSuscripciones = async () => {
 const confirmarCancelacion = (sub: Suscripcion) => {
   const fechaFin = formatearFechaSuscripcion(sub.current_period_end);
   $q.dialog({
-    title: `¿${t('personal.cancelarSuscripcion')}?`,
+    title: t('personal.cancelarSuscripcionPregunta'),
     message: `${t('personal.seguirasTeniendoAcceso')} <b>${fechaFin}</b>.`,
     html: true,
     persistent: true,
-    ok: { label: 'Sí, cancelar', color: 'negative', flat: true },
-    cancel: { label: 'Volver', color: 'primary' },
+    ok: { label: t('personal.siCancelar'), color: 'negative', flat: true },
+    cancel: { label: t('personal.volver'), color: 'primary' },
   }).onOk(() => {
     void (async () => {
       const exito = await cambiarEstadoCancelacion(sub.stripe_subscription_id, true);
@@ -996,13 +1008,13 @@ const formatearFechaSuscripcion = (fecha: string | number) => {
       year: 'numeric',
     });
   }
-  return 'Fecha inválida';
+  return t('personal.fechaInvalida');
 };
 
 // --- FUNCIÓN LOCAL SEGURA PARA CURSOS (90 MINUTOS) ---
 const formatHorarios = (horarios?: string[], dias?: string[]) => {
   const horaInicio = horarios?.[0];
-  if (!horaInicio) return 'Por definir';
+  if (!horaInicio) return t('reservasCursos.porDefinir');
   // Próxima fecha real del curso para aplicar el horario de verano correcto
   const fechaRef = proximaFechaDiaSemana(dias?.[0] ?? '') ?? hoyMadridISO();
   return rangoHoraLocal(fechaRef, horaInicio, 90);
@@ -1100,8 +1112,7 @@ const cargarDatosPersonales = async () => {
       if (error.code === '406') {
         $q.notify({
           type: 'negative',
-          message:
-            'Error 406: No se puede obtener el perfil. Revisa las políticas RLS o el formato de la petición.',
+          message: t('personal.errorPerfil406'),
         });
       }
       if (error.code !== 'PGRST116') return;
@@ -1254,7 +1265,7 @@ onMounted(() => {
     }
     $q.notify({
       type: 'positive',
-      message: '¡Pago completado! Tus reservas han sido confirmadas.',
+      message: t('personal.pagoCompletado'),
       icon: 'check_circle',
       position: 'top',
     });

@@ -74,7 +74,7 @@
             flat
             round
             icon="menu"
-            aria-label="Menu"
+            :aria-label="t('menu')"
             @click="toggleLeftDrawer"
             style="font-size: 1rem"
           />
@@ -200,7 +200,7 @@
                 aria-label="YouTube"
                 size="lg"
                 flat
-                class="text-white underline-btn q-sm-ml-xl"
+                class="text-white underline-btn"
                 href="https://www.youtube.com/@SpanishNook"
               />
               <q-btn
@@ -208,7 +208,7 @@
                 aria-label="Instagram"
                 size="lg"
                 flat
-                class="text-white underline-btn q-sm-mr-lg q-pr-lg"
+                class="text-white underline-btn"
                 href="https://www.instagram.com/spanishnook?igsh=MWo2OTJhd2MzM3dmeQ%3D%3D&utm_source=qr"
               />
               <q-btn
@@ -216,7 +216,7 @@
                 aria-label="TikTok"
                 size="lg"
                 flat
-                class="text-white underline-btn q-sm-mr-lg q-pr-lg"
+                class="text-white underline-btn"
                 href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
               />
             </div>
@@ -454,7 +454,7 @@ const linksList = computed((): EssentialLinkProps[] => [
     link: '/TestNivel',
   },
   {
-    title: 'Cuadernos',
+    title: t('cuadernos'),
     icon: 'menu_book',
     link: '/Materiales',
   },

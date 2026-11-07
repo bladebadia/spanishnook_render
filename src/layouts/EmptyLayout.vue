@@ -74,7 +74,7 @@
             flat
             round
             icon="menu"
-            aria-label="Menu"
+            :aria-label="t('menu')"
             @click="toggleLeftDrawer"
             style="font-size: 1rem"
           />
@@ -123,7 +123,7 @@
             class="nave-btn"
             :class="{ 'nave-btn-active': activeButton === 'materiales' }"
           >
-            Cuadernos
+            {{ t('cuadernos') }}
           </q-btn>
 
           <q-btn
@@ -354,7 +354,7 @@ const linksList = computed((): EssentialLinkProps[] => [
     link: '/TestNivel',
   },
   {
-    title: 'Cuadernos',
+    title: t('cuadernos'),
     icon: 'menu_book',
     link: '/Materiales',
   },

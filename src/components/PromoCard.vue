@@ -15,13 +15,13 @@
         <!-- Badge de promoción -->
         <div v-if="showPromo" class="promo-badge">
           <q-icon name="star" size="18px" class="q-mr-xs" />
-          <span>{{ promoText }}</span>
+          <span>{{ promoText ?? t('NuestrasClases.pruebaTuClaseGratis') }}</span>
         </div>
       </div>
       <!-- Badge de precio -->
       <div v-if="showPrice && price" class="price-badge">
         <div v-if="originalPrice" class="original-price">{{ originalPrice }}</div>
-        <div class="current-price">{{ price }}€/mes</div>
+        <div class="current-price">{{ price }}€{{ t('reservasCursos.mes') }}</div>
       </div>
       <q-card-section class="title subtitulo-responsivo">
         {{ title }}
@@ -80,7 +80,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   showPromo: false,
-  promoText: '¡Prueba tu clase gratis!',
   showPrice: false,
   price: ' ',
   originalPrice: '',
