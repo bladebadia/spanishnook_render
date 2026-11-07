@@ -180,7 +180,8 @@
                 color="primary"
                 size="lg"
                 icon="credit_card"
-                class="oval-btn q-px-xl q-mt-lg"
+                no-wrap
+                class="oval-btn q-mt-lg"
                 unelevated
                 :label="
                   autenticado
