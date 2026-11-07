@@ -95,12 +95,13 @@ as $$
   )
   select dd.fecha, s::time as hora, dd.id as curso_id
     from dias dd
-   cross join lateral unnest(dd.horarios_curso) h
+   cross join lateral (
+           select x as h from unnest(dd.horarios_curso) x where x ~ '^\d{1,2}:\d{2}'
+         ) hh
    cross join lateral generate_series(
-           date_trunc('hour', ('2000-01-01 ' || left(h, 5))::timestamp),
-           ('2000-01-01 ' || left(h, 5))::timestamp + make_interval(mins => dd.duracion_minutos) - interval '1 minute',
-           interval '1 hour') s
-   where h ~ '^\d{1,2}:\d{2}';
+           date_trunc('hour', ('2000-01-01 ' || left(hh.h, 5))::timestamp),
+           ('2000-01-01 ' || left(hh.h, 5))::timestamp + make_interval(mins => dd.duracion_minutos) - interval '1 minute',
+           interval '1 hour') s;
 $$;
 
 revoke execute on function public.franjas_cursos(date, date) from public, anon;
