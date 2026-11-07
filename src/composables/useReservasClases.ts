@@ -4,7 +4,6 @@ import { supabase } from 'src/supabaseClient';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import {
-  diaSemanaMadrid,
   esClaseFutura,
   faltanAlMenos,
   formatFechaCalendario,
@@ -43,12 +42,6 @@ export interface DiaCalendario {
   horario: string[];
 }
 
-export interface CursoBloqueo {
-  dias_semana: string[];
-  horarios_curso: string[];
-  estado_curso: string;
-}
-
 export function useReservasClases() {
   const $q = useQuasar();
   const { t, locale } = useI18n();
@@ -63,7 +56,6 @@ export function useReservasClases() {
   const tipoClase = ref<'normal' | 'conversacion'>('normal');
   const calendario = ref<DiaCalendario[]>([]);
   const reservasExistentes = ref<ReservaConfirmada[]>([]);
-  const cursosGrupalesActivos = ref<CursoBloqueo[]>([]);
 
   // --- COMPUTED ---
 
@@ -115,7 +107,7 @@ export function useReservasClases() {
   });
 
   // --- LÓGICA DE HORARIOS ---
-  // --- LÓGICA DE HORARIOS ---
+  // Las horas de los cursos llegan ya en obtener_ocupacion (solo entre sus fechas)
   const horariosDisponiblesFiltrados = computed(() => {
     if (!fechaSeleccionada.value) return [];
 
@@ -125,36 +117,13 @@ export function useReservasClases() {
     const diaCalendario = calendario.value.find((d) => d.fecha === fechaModelo);
     if (!diaCalendario || !diaCalendario.horario || diaCalendario.horario.length === 0) return [];
 
-    // Lógica para filtrar cursos grupales (día de la semana en Madrid)
-    const nombreDia = diaSemanaMadrid(fechaModelo);
-
-    // 🔥 FIX: Los cursos grupales duran 2 horas, bloqueamos hora actual y siguiente
-    const horasCursos = cursosGrupalesActivos.value
-      .filter((c) => c.dias_semana.includes(nombreDia))
-      .flatMap((c) => c.horarios_curso || [])
-      .flatMap((h) => {
-        const horaInicio = h.slice(0, 5);
-        const partes = horaInicio.split(':');
-        const horas = Number(partes[0] ?? 0);
-        const minutos = Number(partes[1] ?? 0);
-        if (!Number.isFinite(horas) || !Number.isFinite(minutos)) return [horaInicio];
-
-        // Calculamos la hora siguiente
-        const horaSiguiente = new Date(2000, 0, 1, horas + 1, minutos);
-        const horaSiguienteStr = horaSiguiente.toTimeString().slice(0, 5);
-
-        // Retornamos ambas horas bloqueadas
-        return [horaInicio, horaSiguienteStr];
-      });
-
     const horasReservadas = reservasExistentes.value
       .filter((r) => r.fecha === fechaModelo && r.estado === 'confirmada')
       .map((r) => r.hora.slice(0, 5));
     return diaCalendario.horario.filter((h) => {
       const cleanH = h.slice(0, 5);
 
-      const estaOcupado =
-        horasReservadas.includes(cleanH) || horasCursos.includes(cleanH) || estaEnCarrito(cleanH);
+      const estaOcupado = horasReservadas.includes(cleanH) || estaEnCarrito(cleanH);
 
       if (estaOcupado) return false;
 
@@ -210,18 +179,6 @@ export function useReservasClases() {
     }
   };
 
-  const cargarCursosGrupales = async () => {
-    try {
-      const { data } = await supabase
-        .from('cursos_grupales')
-        .select('*')
-        .eq('estado_curso', 'Activo');
-      cursosGrupalesActivos.value = data || [];
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const cargarMisReservas = async () => {
     if (!user.value?.id) return;
     const { data } = await supabase
@@ -270,7 +227,13 @@ export function useReservasClases() {
       cancel: true,
     }).onOk(() => {
       void (async () => {
-        await supabase.functions.invoke('cancel-reserva', { body: { reservaId: r.id } });
+        const { error } = await supabase.functions.invoke('cancel-reserva', {
+          body: { reservaId: r.id },
+        });
+        if (error) {
+          $q.notify({ type: 'negative', message: t('reservasClases.errorCancelar') });
+          return;
+        }
         misReservas.value = misReservas.value.filter((x) => x.id !== r.id);
         $q.notify({ type: 'positive', message: t('personal.estadoCancelada') });
       })();
@@ -279,12 +242,7 @@ export function useReservasClases() {
 
   // --- INIT ---
   const inicializar = async () => {
-    await Promise.all([
-      cargarCalendario(),
-      cargarCursosGrupales(),
-      cargarReservasExistentes(),
-      cargarMisReservas(),
-    ]);
+    await Promise.all([cargarCalendario(), cargarReservasExistentes(), cargarMisReservas()]);
     cargarCarrito();
   };
 
@@ -308,7 +266,6 @@ export function useReservasClases() {
     tipoClase,
     calendario,
     reservasExistentes,
-    cursosGrupalesActivos,
     opcionesTipoClase,
     fechaMinima,
     fechaMaxima,

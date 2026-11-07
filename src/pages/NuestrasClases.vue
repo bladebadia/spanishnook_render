@@ -142,6 +142,8 @@
         :original-price="curso.originalPrice"
         :button-link="curso.buttonLink"
         :fecha-inicio="curso.fechaInicio"
+        :precio-total="precioTotalCurso(curso)"
+        :fechas-curso="fechasCursoCerrado(curso)"
       />
     </div>
 
@@ -292,10 +294,11 @@ import '../css/pages/ClasesGrupales.css';
 import { supabase } from 'src/supabaseClient';
 import { useRoute } from 'vue-router';
 import { scroll, useMeta } from 'quasar';
+import { formatFechaCorta } from 'src/utils/zonaHoraria';
 import '../css/pages/NuestrasClases.css';
 const route = useRoute();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 useMeta(() => ({
   title: 'Nuestras Clases | SpanishNook',
@@ -357,8 +360,32 @@ const cursosPromo = ref<
     originalPrice: string;
     buttonLink: string;
     fechaInicio: string;
+    tipoCurso: string;
+    precioTotalCentimos: number | null;
+    fechaFin: string;
   }>
 >([]);
+
+type CursoPromo = (typeof cursosPromo.value)[number];
+
+// Cursos de fechas cerradas: precio total y fechas en vez del precio mensual
+const precioTotalCurso = (c: CursoPromo): string => {
+  if (c.tipoCurso !== 'cerrado' || c.precioTotalCentimos == null) return '';
+  const decimales = c.precioTotalCentimos % 100 === 0 ? 0 : 2;
+  return new Intl.NumberFormat(locale.value, {
+    style: 'currency',
+    currency: 'EUR',
+    // '120 €' para importes redondos, '119,50 €' con céntimos
+    minimumFractionDigits: decimales,
+    maximumFractionDigits: decimales,
+  }).format(c.precioTotalCentimos / 100);
+};
+
+const fechasCursoCerrado = (c: CursoPromo): string => {
+  if (c.tipoCurso !== 'cerrado' || !c.fechaInicio) return '';
+  const inicio = formatFechaCorta(c.fechaInicio, locale.value);
+  return c.fechaFin ? `${inicio} – ${formatFechaCorta(c.fechaFin, locale.value)}` : inicio;
+};
 
 async function cargarCursosPromo(): Promise<void> {
   const { data, error } = await supabase
@@ -379,7 +406,10 @@ async function cargarCursosPromo(): Promise<void> {
       precio_original,
       usuarios,
       max_estudiantes,
-      fecha_inicio
+      fecha_inicio,
+      fecha_fin,
+      tipo_curso,
+      precio_total_centimos
     `,
     )
     .eq('visibilidad', true)
@@ -427,6 +457,9 @@ async function cargarCursosPromo(): Promise<void> {
       originalPrice: c.precio_original ?? '',
       buttonLink,
       fechaInicio: c.fecha_inicio ?? '',
+      tipoCurso: c.tipo_curso ?? 'suscripcion',
+      precioTotalCentimos: c.precio_total_centimos ?? null,
+      fechaFin: c.fecha_fin ?? '',
     };
   });
 }

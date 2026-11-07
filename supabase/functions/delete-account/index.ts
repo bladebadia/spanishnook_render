@@ -1,211 +1,107 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+/**
+ * delete-account — El usuario borra su propia cuenta.
+ *
+ * 1. Valida el JWT del llamante.
+ * 2. Cancela YA en Stripe sus suscripciones vivas (si alguna falla, no se borra la cuenta:
+ *    así nunca queda una suscripción cobrando a una cuenta inexistente).
+ * 3. Borra el usuario de Auth (las tablas con ON DELETE CASCADE se limpian solas).
+ * 4. Correo de despedida.
+ *
+ * Petición: POST { idioma?: 'es'|'en' }
+ * Respuesta: { message }
+ */
+import { clienteAdmin, errores, json, leerJson, preflight, usuarioDesdePeticion } from "../_shared/auth.ts";
+import { clienteStripe, MOTIVO_BAJA } from "../_shared/stripe.ts";
+import { enviarCorreo } from "../_shared/resend.ts";
+import { nota, parrafo, plantillaCorreo } from "../_shared/plantilla-correo.ts";
+import { resolverIdioma, saludo, SITIO, type Idioma } from "../_shared/correo-comun.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Estados de Stripe en los que una suscripción todavía puede cobrar
+const ESTADOS_VIVOS = ["active", "trialing", "past_due", "unpaid", "incomplete"];
 
-// =====================================================================
-// 🎨 1. PLANTILLA HTML CORPORATIVA
-// =====================================================================
-function generarEmailHTML({ idioma = 'es', tema, titulo, nombre, contenido }: any) {
-  const t = {
-    es: {
-      despedida: '',
-      equipo: 'El equipo de SpanishNook',
-      derechos: 'Todos los derechos reservados.',
-      slogan: 'Creating your SpanishNook, at your pace.'
-    },
-    en: {
-      despedida: '',
-      equipo: 'El equipo de SpanishNook',
-      derechos: 'Todos los derechos reservados.',
-      slogan: 'Creating your SpanishNook, at your pace.'
-    }
-  }[idioma] || t.en;
-
-  return `
-  <!DOCTYPE html>
-  <html>
-  <body style="margin: 0; padding: 0; background-color: #f9f9f9;">
-    <div style="font-family: 'Montserrat', Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 40px 20px; color: #333333; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <img src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png" alt="Spanish Nook Logo" style="width: 80px; height: auto; border: 0; display: block; margin: 0 auto;">
-        <p style="margin: 10px 0 0 0; color: #333333; font-weight: 800; font-size: 18px; letter-spacing: -0.5px;">SpanishNook</p>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <span style="color: #851319; text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;">${tema}</span>
-        <h1 style="color: #333333; font-size: 26px; margin: 10px 0 0 0; font-weight: 800;">${titulo}</h1>
-      </div>
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        ${nombre ? `<p>Hola <strong>${nombre}</strong>,</p>` : ''}
-        ${contenido}
-      </div>
-
-      <div style="margin-top: 40px; font-size: 16px; color: #525553;">
-        <p>${t.despedida}</p>
-        <p style="margin-bottom: 5px;"><strong>${t.equipo}</strong></p>
-        <p style="margin-top: 0; font-size: 14px; color: #888888;">${t.slogan}</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-      <div style="text-align: center; font-size: 12px; color: #999999; line-height: 1.5;">
-        <p style="margin: 0 0 10px 0;">© 2025 Spanish Nook. ${t.derechos}</p>
-        <p style="margin: 0;">
-          <a href="mailto:contacto@spanishnook.com" style="color: #851319; text-decoration: none;">contacto@spanishnook.com</a> |
-          <a href="https://www.spanishnook.com" style="color: #851319; text-decoration: none;">www.spanishnook.com</a>
-        </p>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
-}
-
-// =====================================================================
-// 📝 2. LÓGICA DEL CONTENIDO (DICCIONARIO)
-// =====================================================================
-function obtenerPlantillaEliminarCuenta() {
-  // Aquí no dependemos de la variable idioma porque mandamos los dos a la vez
+function correoDespedida(nombre: string | null, idioma: Idioma) {
+  const en = idioma === "en";
   return {
-    asunto: 'Eliminar cuenta / Delete account',
-    tema: 'Cuenta Eliminada',
-    titulo: '¡No es un adiós... Es un hasta luego! / It\'s not a goodbye... It\'s a see you later!',
-    contenido: `
-      <div style="margin-bottom: 30px;">
-         <p>Hemos procesado tu solicitud de eliminación de cuenta.</p>
-         <p>Recuerda que esta acción es irreversible. Tus datos ya han sido eliminados.</p>
-         <p>¡Esperamos verte de nuevo!</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px dashed #eeeeee; margin: 40px 0;">
-
-      <div>
-         <p>We have processed your account deletion request.</p>
-         <p>Please note that this action is irreversible. Your data has now been deleted.</p>
-         <p>We hope to see you again!</p>
-      </div>
-    `
+    asunto: en ? "Your account has been deleted" : "Tu cuenta se ha eliminado",
+    html: plantillaCorreo({
+      idioma,
+      titulo: en ? "It's not goodbye, it's see you later" : "No es un adiós, es un hasta luego",
+      resumen: en ? "We have deleted your SpanishNook account." : "Hemos eliminado tu cuenta de SpanishNook.",
+      cuerpo:
+        parrafo(saludo(nombre, idioma)) +
+        parrafo(en ? "We have processed your request to delete your account." : "Hemos procesado tu solicitud para eliminar tu cuenta.") +
+        nota(en
+          ? "This action cannot be undone. Your data has been deleted and any active course subscription has been cancelled."
+          : "Esta acción no se puede deshacer. Tus datos se han eliminado y cualquier suscripción activa a un curso se ha cancelado.") +
+        parrafo(en ? "We hope to see you again." : "Esperamos verte de nuevo."),
+      boton: { texto: en ? "Visit SpanishNook" : "Visitar SpanishNook", url: SITIO },
+    }),
   };
 }
 
-// =====================================================================
-// 🚀 3. EL SERVIDOR (LA FUNCIÓN PRINCIPAL)
-// =====================================================================
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  const pre = preflight(req);
+  if (pre) return pre;
+  if (req.method !== "POST") return errores.metodo();
 
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Método no permitido" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const serviceRoleKey = Deno.env.get("SERVICE_ROLE_KEY");
-
-  if (!supabaseUrl || !serviceRoleKey) {
-    return new Response(JSON.stringify({ error: "Configuración del servidor incompleta" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  const authHeader = req.headers.get("authorization") ?? "";
-  const token = authHeader.replace("Bearer ", "");
-
-  const admin = createClient(supabaseUrl, serviceRoleKey);
-
-  // 1. OBTENEMOS AL USUARIO ANTES DE BORRARLO
-  const { data: userData, error: getUserErr } = await admin.auth.getUser(token);
-
-  if (getUserErr || !userData?.user?.id) {
-    return new Response(JSON.stringify({ error: "No autorizado" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  const userId = userData.user.id;
-  const emailUsuario = userData.user.email;
-  let nombreUsuario = "";
-  let idiomaUsuario = "es"; // Por defecto
-
-  // Intentamos obtener su nombre e idioma desde la tabla de datos_usuarios (opcional pero queda mejor)
   try {
-    const { data: perfil } = await admin
-      .from('datos_usuarios')
-      .select('nombre')
-      .eq('user_id', userId)
+    const user = await usuarioDesdePeticion(req);
+    if (!user) return errores.sinSesion();
+
+    const body = (await leerJson(req)) ?? {};
+    const supabase = clienteAdmin();
+
+    const { data: perfil } = await supabase
+      .from("datos_usuarios")
+      .select("nombre, idioma_nativo")
+      .eq("user_id", user.id)
       .maybeSingle();
 
-    if (perfil?.nombre) nombreUsuario = perfil.nombre;
+    // 1. Cancelar suscripciones de Stripe antes de borrar nada
+    const { data: subs, error: errSubs } = await supabase
+      .from("user_subscriptions")
+      .select("stripe_subscription_id, estado")
+      .eq("user_id", user.id)
+      .not("stripe_subscription_id", "is", null)
+      .in("estado", ESTADOS_VIVOS);
+    if (errSubs) throw errSubs;
 
-    // Si tu frontend envía el idioma en el body, lo usamos. Si no, usamos el fallback.
-    const bodyText = await req.text();
-    if (bodyText) {
-      const bodyParams = JSON.parse(bodyText);
-      if (bodyParams.idioma) idiomaUsuario = bodyParams.idioma;
-    }
-  } catch (e) {
-    console.error("No se pudo obtener datos extra del usuario:", e);
-  }
-
-  // 2. BORRAMOS LA CUENTA
-  const { error: delErr } = await admin.auth.admin.deleteUser(userId);
-
-  if (delErr) {
-    return new Response(JSON.stringify({ error: delErr.message }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  // 3. ENVIAMOS EL CORREO CON RESEND
-  if (emailUsuario) {
-    try {
-      const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-      if (RESEND_API_KEY) {
-        const plantilla = obtenerPlantillaEliminarCuenta();
-        const htmlFinal = generarEmailHTML({
-          idioma: idiomaUsuario,
-          tema: plantilla.tema,
-          titulo: plantilla.titulo,
-          nombre: nombreUsuario,
-          contenido: plantilla.contenido
-        });
-
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${RESEND_API_KEY}`,
-          },
-          body: JSON.stringify({
-            from: "SpanishNook <hola@spanishnook.com>", // Recuerda que usa el alias de envío
-            to: [emailUsuario],
-            subject: plantilla.asunto,
-            html: htmlFinal,
-          }),
-        });
-        console.log(`Correo de eliminación enviado a ${emailUsuario}`);
+    if (subs && subs.length > 0) {
+      const stripe = clienteStripe();
+      for (const s of subs) {
+        try {
+          await stripe.subscriptions.cancel(s.stripe_subscription_id, {
+            prorate: false,
+            // subscription-webhook ve este motivo y no manda el correo de "suscripción finalizada"
+            cancellation_details: { comment: MOTIVO_BAJA.cuentaEliminada },
+          });
+        } catch (e) {
+          // Si ya no existe o ya estaba cancelada, se sigue; cualquier otro error para el borrado
+          const codigo = (e as { code?: string })?.code;
+          const msg = e instanceof Error ? e.message : String(e);
+          if (codigo === "resource_missing" || /canceled|cancelled/i.test(msg)) continue;
+          console.error(`[delete-account] No se pudo cancelar la suscripción ${s.stripe_subscription_id}: ${msg}`);
+          return json({ error: "No se pudo cancelar tu suscripción. Inténtalo de nuevo o escríbenos." }, 502);
+        }
       }
-    } catch (e) {
-      console.error("Error enviando email de eliminación (No bloqueante):", e);
     }
-  }
 
-  // 4. RESPONDEMOS AL FRONTEND
-  return new Response(JSON.stringify({ message: "Cuenta eliminada y correo enviado" }), {
-    status: 200,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    // 2. Borrar la cuenta
+    const { error: errDel } = await supabase.auth.admin.deleteUser(user.id);
+    if (errDel) {
+      console.error("[delete-account] Error borrando usuario:", errDel.message);
+      return errores.interno("No se pudo eliminar la cuenta.");
+    }
+
+    // 3. Correo de despedida (no bloquea)
+    if (user.email) {
+      const correo = correoDespedida(perfil?.nombre ?? null, resolverIdioma(body.idioma, perfil?.idioma_nativo));
+      await enviarCorreo({ to: user.email, subject: correo.asunto, html: correo.html });
+    }
+
+    return json({ message: "Cuenta eliminada y correo enviado" });
+  } catch (e) {
+    console.error("[delete-account] Error:", e instanceof Error ? e.message : String(e));
+    return errores.interno();
+  }
 });

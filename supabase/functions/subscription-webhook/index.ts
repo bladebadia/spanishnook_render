@@ -1,478 +1,403 @@
-// supabase/functions/subscription-webhook/index.ts
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import Stripe from "npm:stripe@^14.20.0";
-import { createClient } from "jsr:@supabase/supabase-js@2";
+/**
+ * subscription-webhook — Suscripciones mensuales a cursos grupales. Doble uso:
+ *
+ * A) Con cabecera stripe-signature: webhook de Stripe (STRIPE_SUBSCRIPTION_WEBHOOK_SECRET).
+ *    customer.subscription.created/updated, invoice.payment_succeeded → sincroniza user_subscriptions.
+ *    created → invita al alumno al evento del curso (vía crear-meet) y correo de bienvenida + aviso a Paula.
+ *    customer.subscription.deleted → estado 'canceled' y correo de despedida.
+ *
+ * B) Sin firma, desde la web (requiere sesión):
+ *    { action: 'toggle_cancel', subscriptionId, cancel: boolean }  → solo el dueño (o admin).
+ *    { action: 'get_price_details', priceId }                      → importe de un precio.
+ *    { course_id | courseId, idioma? }                             → Checkout de suscripción.
+ *      El precio sale de cursos_grupales.stripe_price_id (se ignora priceId de la web).
+ */
+import {
+  clienteAdmin,
+  enteroPositivo,
+  errores,
+  esAdmin,
+  json,
+  leerJson,
+  llamarFuncionInterna,
+  origenSeguro,
+  preflight,
+  usuarioDesdePeticion,
+} from "../_shared/auth.ts";
+import { clienteStripe, eventoVerificado, idDe, MOTIVO_BAJA, type Stripe } from "../_shared/stripe.ts";
+import { CORREO_INTERNO, enviarCorreo } from "../_shared/resend.ts";
+import { escapar, nota, parrafo, plantillaCorreo, tablaDatos } from "../_shared/plantilla-correo.ts";
+import { enlaceSeguro, idiomaDesde, primeraHora, resolverIdioma, saludo, textoDias, URL_AREA, URL_CURSOS, type Idioma } from "../_shared/correo-comun.ts";
+import { rangoHoraMadrid } from "../_shared/fechas.ts";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-  apiVersion: "2024-06-20",
-  httpClient: Stripe.createFetchHttpClient(),
-});
+// Estados en los que la suscripción ocupa plaza
+const ESTADOS_ACTIVOS = new Set(["active", "trialing", "past_due"]);
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") || "",
-  Deno.env.get("SERVICE_ROLE_KEY") || ""
-);
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, Stripe-Signature, x-client-info, apikey",
-  "Content-Type": "application/json",
-};
-
-// URL DEL LOGO Y APP
-const LOGO_URL = "https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png";
-const URL_APP = "https://spanishnook.com";
+const toISO = (ts: number | null | undefined) => (ts ? new Date(ts * 1000).toISOString() : new Date().toISOString());
 
 // =====================================================================
-// 🎨 1. PLANTILLAS DE CORREO - BILINGÜES PARA CURSOS
+// Base de datos
 // =====================================================================
-function generarEmailSuscripcionCreada(nombre: string, nombreCurso: string, diasStrES: string, diasStrEN: string, horaStr: string, linkMaestro: string) {
-  return `
-  <!DOCTYPE html>
-  <html>
-  <body style="margin: 0; padding: 0; background-color: #f9f9f9;">
-    <div style="font-family: 'Montserrat', Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 40px 20px; color: #333333; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
 
-      <div style="text-align: center; margin-bottom: 30px;">
-        <img src="${LOGO_URL}" alt="Spanish Nook Logo" style="width: 80px; height: auto; border: 0; display: block; margin: 0 auto;">
-        <p style="margin: 10px 0 0 0; color: #333333; font-weight: 800; font-size: 18px; letter-spacing: -0.5px;">SpanishNook</p>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <span style="color: #851319; text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;">Suscripción confirmada / Subscription confirmed</span>
-        <h1 style="color: #333333; font-size: 26px; margin: 10px 0 0 0; font-weight: 800;">¡Gracias por unirte al curso! / Thank you for joining the course!</h1>
-      </div>
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hola <strong>${nombre}</strong>,</p>
-        <p>¡Qué alegría tenerte con nosotros!</p>
-        <p>¡Gracias por suscribirte al curso!</p>
-
-        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0;">
-           <p style="margin-top: 0;">A partir de ahora nos veremos cada semana en <strong>${nombreCurso}</strong>.</p>
-           <p style="margin-bottom: 0;">Todos los <strong>${diasStrES}</strong> a las <strong>${horaStr}</strong></p>
-        </div>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${linkMaestro !== '#' ? linkMaestro : `${URL_APP}/AreaPersonal`}" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Unirme al curso</a>
-        </div>
-
-        <p style="font-size: 14px; color: #888888;">* Este enlace es único para el curso.</p>
-        <p style="font-size: 14px; color: #888888;">* Recuerda: también puedes encontrar esta información en tu área personal.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px dashed #eeeeee; margin: 40px 0;">
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hi <strong>${nombre}</strong>,</p>
-        <p>We are happy to have you!</p>
-        <p>Thank you for subscribing to the course!</p>
-
-        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0;">
-           <p style="margin-top: 0;">From now on we will see each other every week at <strong>${nombreCurso}</strong>.</p>
-           <p style="margin-bottom: 0;">Every <strong>${diasStrEN}</strong> at <strong>${horaStr}</strong></p>
-        </div>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${linkMaestro !== '#' ? linkMaestro : `${URL_APP}/AreaPersonal`}" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Join course</a>
-        </div>
-
-        <p style="font-size: 14px; color: #888888;">* This is the permanent link for the course.</p>
-        <p style="font-size: 14px; color: #888888;">* Reminder: you can also find this data in your personal dashboard.</p>
-      </div>
-
-      <div style="margin-top: 40px; font-size: 16px; color: #525553; text-align: center;">
-        <p>¡Nos vemos en las aulas! / See you in class!</p>
-        <p style="margin-bottom: 5px;"><strong>El equipo de SpanishNook</strong></p>
-        <p style="margin-top: 0; font-size: 14px; color: #888888;">Creating your SpanishNook, at your pace.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-      <div style="text-align: center; font-size: 12px; color: #999999; line-height: 1.5;">
-        <p style="margin: 0 0 10px 0;">© 2025 Spanish Nook. Todos los derechos reservados.</p>
-        <p style="margin: 0;">
-          <a href="mailto:contacto@spanishnook.com" style="color: #851319; text-decoration: none;">contacto@spanishnook.com</a> |
-          <a href="${URL_APP}" style="color: #851319; text-decoration: none;">www.spanishnook.com</a>
-        </p>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
-}
-
-function generarEmailDespedidaCurso(nombre: string, nombreCurso: string) {
-  return `
-  <!DOCTYPE html>
-  <html>
-  <body style="margin: 0; padding: 0; background-color: #f9f9f9;">
-    <div style="font-family: 'Montserrat', Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 40px 20px; color: #333333; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <img src="${LOGO_URL}" alt="Spanish Nook Logo" style="width: 80px; height: auto; border: 0; display: block; margin: 0 auto;">
-        <p style="margin: 10px 0 0 0; color: #333333; font-weight: 800; font-size: 18px; letter-spacing: -0.5px;">SpanishNook</p>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <span style="color: #851319; text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;">Fin de Suscripción / End of Subscription</span>
-        <h1 style="color: #333333; font-size: 26px; margin: 10px 0 0 0; font-weight: 800;">¡Hasta pronto! / See you soon!</h1>
-      </div>
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hola <strong>${nombre}</strong>,</p>
-        <p>El periodo de tu suscripción a <strong>${nombreCurso}</strong> ha terminado hoy.</p>
-        <p>Esperamos verte de nuevo muy pronto. Tu plaza te estará esperando.</p>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/Cursos" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Ver Cursos</a>
-        </div>
-      </div>
-
-      <hr style="border: none; border-top: 1px dashed #eeeeee; margin: 40px 0;">
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hi <strong>${nombre}</strong>,</p>
-        <p>Your subscription period for <strong>${nombreCurso}</strong> has ended today.</p>
-        <p>We hope to see you again very soon. Your spot will be waiting for you.</p>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/Cursos" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">View Courses</a>
-        </div>
-      </div>
-
-      <div style="margin-top: 40px; font-size: 16px; color: #525553; text-align: center;">
-        <p>¡Nos vemos en las aulas! / See you in class!</p>
-        <p style="margin-bottom: 5px;"><strong>El equipo de SpanishNook</strong></p>
-        <p style="margin-top: 0; font-size: 14px; color: #888888;">Creating your SpanishNook, at your pace.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-      <div style="text-align: center; font-size: 12px; color: #999999; line-height: 1.5;">
-        <p style="margin: 0 0 10px 0;">© 2025 Spanish Nook. Todos los derechos reservados.</p>
-        <p style="margin: 0;">
-          <a href="mailto:contacto@spanishnook.com" style="color: #851319; text-decoration: none;">contacto@spanishnook.com</a> |
-          <a href="${URL_APP}" style="color: #851319; text-decoration: none;">www.spanishnook.com</a>
-        </p>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
-}
-
-// 📧 HELPER EMAILS
-async function sendEmail(to: string, subject: string, htmlContent: string) {
-  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-  if (!RESEND_API_KEY) return console.error("❌ Falta RESEND_API_KEY");
-
-  try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "SpanishNook <hola@spanishnook.com>",
-        to: [to],
-        subject: subject,
-        html: htmlContent,
-      }),
-    });
-    console.log(`📧 Email enviado a ${to}`);
-  } catch (err) {
-    console.error("❌ Error enviando email:", err);
-  }
-}
-
-const toISO = (ts: number | null | undefined) =>
-  ts ? new Date(ts * 1000).toISOString() : new Date().toISOString();
-
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
-
-  try {
-    const stripeSig = req.headers.get("stripe-signature");
-
-    if (stripeSig) {
-      const rawBody = await req.text();
-      const webhookSecret = Deno.env.get("STRIPE_SUBSCRIPTION_WEBHOOK_SECRET");
-      let event;
-
-      try {
-        event = await stripe.webhooks.constructEventAsync(rawBody, stripeSig, webhookSecret!);
-      } catch (err) {
-        return new Response(`Webhook Error: ${err.message}`, { status: 400 });
-      }
-
-      try {
-        switch (event.type) {
-          case "customer.subscription.created":
-          case "customer.subscription.updated":
-            const sub = event.data.object;
-            await syncSubscription(sub.id);
-
-            // 📧 BIENVENIDA (CREATED)
-            if (event.type === "customer.subscription.created") {
-                const customer = await stripe.customers.retrieve(sub.customer as string);
-
-                // @ts-ignore
-                if (customer.email) {
-
-                    // ===============================================
-                    // CORRECCIÓN: Obtener nombre real
-                    // ===============================================
-                    let nombre = "Estudiante";
-                    if (sub.metadata?.user_id) {
-                        const { data: usuarioBD } = await supabase
-                            .from('datos_usuarios')
-                            .select('nombre')
-                            .eq('user_id', sub.metadata.user_id)
-                            .maybeSingle();
-                        if (usuarioBD?.nombre) nombre = usuarioBD.nombre;
-                    } else {
-                        // @ts-ignore
-                        nombre = customer.name || "Estudiante";
-                    }
-
-                    // ===============================================
-                    // LÓGICA DE CURSO Y HORA
-                    // ===============================================
-                    const { data: cursoData, error: errCurso } = await supabase
-                      .from('cursos_grupales')
-                      .select('nombre_curso, meet_link, google_event_id, dias_semana, horarios_curso')
-                      .eq('id', sub.metadata.course_id)
-                      .single();
-
-                    if (errCurso) {
-                        console.error("❌ Error DB buscando curso:", errCurso);
-                    }
-
-                    const nombreCurso = cursoData?.nombre_curso || "tu curso";
-                    const linkMaestro = cursoData?.meet_link || '#';
-
-                    // ======================================================
-                    // 🔥 LOS DÍAS TRADUCIDOS
-                    // ======================================================
-                    let diasStrES = "los días acordados";
-                    let diasStrEN = "the agreed days";
-
-                    const diccDias: Record<string, string> = {
-                        'lunes': 'Monday', 'martes': 'Tuesday', 'miercoles': 'Wednesday', 'miércoles': 'Wednesday',
-                        'jueves': 'Thursday', 'viernes': 'Friday', 'sabado': 'Saturday', 'sábado': 'Saturday', 'domingo': 'Sunday'
-                    };
-
-                    const rawDias = cursoData?.dias_semana;
-                    if (rawDias) {
-                        let arrayDias: string[] = [];
-                        if (Array.isArray(rawDias)) {
-                            arrayDias = rawDias;
-                        } else if (typeof rawDias === 'string') {
-                            try { arrayDias = JSON.parse(rawDias); }
-                            catch(e) { arrayDias = [rawDias]; }
-                        }
-
-                        if (arrayDias.length > 0) {
-                            diasStrES = arrayDias.join(', ');
-                            diasStrEN = arrayDias.map(d => {
-                                const limpio = d.toLowerCase().trim();
-                                return diccDias[limpio] || d;
-                            }).join(', ');
-                        }
-                    }
-
-                    // ======================================================
-                    // 🔥 LA HORA (EXTRACCIÓN BLINDADA CON EXPRESIÓN REGULAR)
-                    // ======================================================
-                    let horaStr = "la hora acordada";
-                    const rawHora = cursoData?.horarios_curso;
-
-                    if (rawHora) {
-                        const horaStringified = String(rawHora);
-                        const matchHora = horaStringified.match(/\d{2}:\d{2}/);
-
-                        if (matchHora) {
-                            horaStr = matchHora[0];
-                        } else {
-                            horaStr = horaStringified.substring(0, 5);
-                        }
-                    } // <-- Aquí faltaba esta llave de cierre en el código anterior
-
-                    // 📅 INVITACIÓN A GOOGLE CALENDAR
-                    // @ts-ignore
-                    if (cursoData?.google_event_id && customer.email) {
-                        // @ts-ignore
-                        console.log(`📅 Intentando invitar a ${customer.email} al evento ${cursoData.google_event_id}...`);
-                        try {
-                            const inviteUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/crear-meet`;
-
-                            const resInvite = await fetch(inviteUrl, {
-                                method: 'POST',
-                                headers: {
-                                    'Authorization': `Bearer ${Deno.env.get("SERVICE_ROLE_KEY")}`,
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    action: 'add_attendee',
-                                    eventId: cursoData.google_event_id,
-                                    // @ts-ignore
-                                    email: customer.email
-                                })
-                            });
-
-                            if (!resInvite.ok) {
-                                const errorText = await resInvite.text();
-                                console.error(`❌ FALLÓ LA INVITACIÓN AL CALENDARIO: ${resInvite.status} - ${errorText}`);
-                            } else {
-                                console.log("✅ Invitación de calendario aceptada por Google.");
-                            }
-
-                        } catch (calErr) {
-                            console.error("⚠️ Error de red invitando al calendario:", calErr);
-                        }
-                    }
-
-                    // 📨 ENVIAR CORREO HTML
-                    const htmlSuscripcion = generarEmailSuscripcionCreada(nombre, nombreCurso, diasStrES, diasStrEN, horaStr, linkMaestro);
-                    // @ts-ignore
-                    await sendEmail(customer.email, `Suscripción confirmada / Subscription confirmed 🎓`, htmlSuscripcion);
-
-                    // 🔥 B. Email a PAULA
-                    await sendEmail("paulaf@spanishnook.com", "🔔 ¡Nuevo Alumno en Curso!", `
-                        <div style="font-family: sans-serif; color: #333;">
-                          <h2 style="color: #60aad8;">¡Tienes clase nueva!</h2>
-                          <p><strong>${nombre}</strong> (${customer.email}) se ha apuntado a <strong>${nombreCurso}</strong>.</p>
-                        </div>
-                    `);
-                }
-            }
-            break;
-
-          case "invoice.payment_succeeded":
-            const invoice = event.data.object;
-            if (invoice.subscription) await syncSubscription(invoice.subscription as string);
-            break;
-
-          case "customer.subscription.deleted":
-            const deletedSub = event.data.object;
-            await deleteSubscription(deletedSub.id);
-
-            // 📧 DESPEDIDA (DELETED)
-            const customerDeleted = await stripe.customers.retrieve(deletedSub.customer as string);
-            // @ts-ignore
-            if (customerDeleted.email) {
-                // Obtener nombre real
-                let nombreDel = "Estudiante";
-                if (deletedSub.metadata?.user_id) {
-                    const { data: usuarioBD } = await supabase.from('datos_usuarios').select('nombre').eq('user_id', deletedSub.metadata.user_id).maybeSingle();
-                    if (usuarioBD?.nombre) nombreDel = usuarioBD.nombre;
-                } else {
-                    // @ts-ignore
-                    nombreDel = customerDeleted.name || "Estudiante";
-                }
-
-                const { data: cursoDel } = await supabase
-                    .from('cursos_grupales')
-                    .select('nombre_curso')
-                    .eq('id', deletedSub.metadata.course_id)
-                    .single();
-
-                const nombreCursoDel = cursoDel?.nombre_curso || "el curso";
-
-                const htmlDespedida = generarEmailDespedidaCurso(nombreDel, nombreCursoDel);
-                // @ts-ignore
-                await sendEmail(customerDeleted.email, "Tu suscripción ha finalizado / Subscription Ended 👋", htmlDespedida);
-            }
-            break;
-        }
-      } catch (err) {
-        console.error("❌ Error DB/Email:", err);
-      }
-
-      return new Response(JSON.stringify({ received: true }), { status: 200, headers: corsHeaders });
-    }
-
-    // ---------------------------------------------------------
-    // 2. FRONTEND API (CREAR SESIÓN DE PAGO)
-    // ---------------------------------------------------------
-    const body = await req.json();
-
-    if (body.action === 'toggle_cancel') {
-      const { subscriptionId, cancel } = body;
-      try {
-        const updatedSub = await stripe.subscriptions.update(subscriptionId, { cancel_at_period_end: cancel });
-        await syncSubscription(updatedSub.id);
-        return new Response(JSON.stringify({ success: true, status: updatedSub.status, cancel_at_period_end: updatedSub.cancel_at_period_end }), { status: 200, headers: corsHeaders });
-      } catch (err: any) { return new Response(JSON.stringify({ error: err.message }), { status: 400, headers: corsHeaders }); }
-    }
-
-    if (body.action === 'get_price_details') {
-      try {
-        const price = await stripe.prices.retrieve(body.priceId);
-        return new Response(JSON.stringify({ amount: price.unit_amount, currency: price.currency }), { status: 200, headers: corsHeaders });
-      } catch { return new Response(JSON.stringify({ error: "No encontrado" }), { status: 400, headers: corsHeaders }); }
-    }
-
-    const { priceId, user_id, customer_email, customer_name, course_id } = body;
-    if (!priceId) return new Response("Faltan datos", { status: 400, headers: corsHeaders });
-
-    const customers = await stripe.customers.list({ email: customer_email, limit: 1 });
-    let customer = customers.data[0];
-
-    // Si creamos cliente nuevo, guardamos metadatos también
-    if (!customer) customer = await stripe.customers.create({
-        email: customer_email,
-        name: customer_name,
-        metadata: { user_id }
-    });
-
-    const origin = req.headers.get("origin") || "http://localhost:9000";
-    const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
-      payment_method_types: ["card"],
-      mode: "subscription",
-      line_items: [{ price: priceId, quantity: 1 }],
-      subscription_data: {
-          metadata: {
-              user_id,
-              course_id: String(course_id)
-          }
-      },
-      success_url: `${origin}/AreaPersonal?success=true`,
-      cancel_url: `${origin}/AreaPersonal?canceled=true`,
-    });
-
-    return new Response(JSON.stringify({ url: session.url }), { status: 200, headers: corsHeaders });
-
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
-  }
-});
-
-// FUNCIONES DB
-async function syncSubscription(subId: string) {
+/**
+ * Sincroniza user_subscriptions con Stripe.
+ * La tabla tiene UNIQUE(user_id, course_id): si el alumno se vuelve a suscribir al mismo
+ * curso tras cancelar, se actualiza su fila existente con la suscripción nueva.
+ * Un evento tardío de la suscripción antigua no pisa una nueva que esté activa.
+ */
+async function syncSubscription(subId: string): Promise<void> {
+  const stripe = clienteStripe();
+  const supabase = clienteAdmin();
   const sub = await stripe.subscriptions.retrieve(subId);
-  const { user_id, course_id } = sub.metadata;
-
-  if (!user_id || !course_id) {
-      console.error("❌ Subscription missing metadata:", subId);
-      return;
+  const userId = sub.metadata?.user_id;
+  const courseId = enteroPositivo(sub.metadata?.course_id);
+  if (!userId || !courseId) {
+    console.error(`[subscription-webhook] Suscripción sin metadata user_id/course_id: ${subId}`);
+    return;
   }
 
-  await supabase.from("user_subscriptions").upsert({
-    user_id,
-    course_id: parseInt(course_id),
+  const fila = {
+    user_id: userId,
+    course_id: courseId,
     stripe_subscription_id: sub.id,
-    stripe_customer_id: sub.customer as string,
+    stripe_customer_id: idDe(sub.customer),
     estado: sub.status,
     cancel_at_period_end: sub.cancel_at_period_end,
     current_period_start: toISO(sub.current_period_start),
     current_period_end: toISO(sub.current_period_end),
     updated_at: new Date().toISOString(),
-  }, { onConflict: "stripe_subscription_id" });
+  };
+
+  const { data: existente, error: errSel } = await supabase
+    .from("user_subscriptions")
+    .select("id, stripe_subscription_id, estado")
+    .eq("user_id", userId)
+    .eq("course_id", courseId)
+    .maybeSingle();
+  if (errSel) throw errSel;
+
+  if (!existente) {
+    const { error } = await supabase.from("user_subscriptions").insert(fila);
+    if (!error) return;
+    if (error.code !== "23505") throw error;
+    // Carrera con otro evento: la fila ya existe, se actualiza
+    const { error: errUpd } = await supabase.from("user_subscriptions").update(fila).eq("user_id", userId).eq("course_id", courseId);
+    if (errUpd) throw errUpd;
+    return;
+  }
+
+  const esOtra = existente.stripe_subscription_id && existente.stripe_subscription_id !== sub.id;
+  if (esOtra && ESTADOS_ACTIVOS.has(existente.estado ?? "") && !ESTADOS_ACTIVOS.has(sub.status)) {
+    console.warn(`[subscription-webhook] Evento antiguo de ${sub.id} ignorado: el alumno ya tiene otra suscripción activa`);
+    return;
+  }
+
+  const { error } = await supabase.from("user_subscriptions").update(fila).eq("id", existente.id);
+  if (error) throw error;
 }
 
-async function deleteSubscription(subId: string) {
-  await supabase.from("user_subscriptions").update({ estado: "canceled", updated_at: new Date().toISOString() }).eq("stripe_subscription_id", subId);
+async function marcarCancelada(subId: string): Promise<void> {
+  await clienteAdmin()
+    .from("user_subscriptions")
+    .update({ estado: "canceled", updated_at: new Date().toISOString() })
+    .eq("stripe_subscription_id", subId);
 }
+
+async function datosAlumno(userId: string | undefined) {
+  if (!userId) return null;
+  const { data } = await clienteAdmin()
+    .from("datos_usuarios")
+    .select("nombre, idioma_nativo")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return data;
+}
+
+async function emailCliente(customer: unknown): Promise<{ email: string | null; nombre: string | null }> {
+  const id = idDe(customer);
+  if (!id) return { email: null, nombre: null };
+  const c = await clienteStripe().customers.retrieve(id);
+  if ((c as { deleted?: boolean }).deleted) return { email: null, nombre: null };
+  const cli = c as Stripe.Customer;
+  return { email: cli.email ?? null, nombre: cli.name ?? null };
+}
+
+// =====================================================================
+// Correos
+// =====================================================================
+
+function correoBienvenida(nombre: string | null, curso: { nombre_curso: string; dias_semana: unknown; horarios_curso: unknown; meet_link: string | null }, idioma: Idioma) {
+  const en = idioma === "en";
+  const hora = primeraHora(curso.horarios_curso);
+  const meet = enlaceSeguro(curso.meet_link);
+  const filas: Array<[string, string]> = [
+    [en ? "Course" : "Curso", escapar(curso.nombre_curso)],
+    [en ? "Days" : "Días", escapar(textoDias(curso.dias_semana, idioma))],
+    [en ? "Time (Madrid)" : "Hora (Madrid)", escapar(hora ? rangoHoraMadrid(hora, 90) : en ? "the agreed time" : "la hora acordada")],
+  ];
+  return {
+    asunto: en ? "Subscription confirmed" : "Suscripción confirmada",
+    html: plantillaCorreo({
+      idioma,
+      titulo: en ? "Welcome to the course" : "Te damos la bienvenida al curso",
+      resumen: en ? `You are now subscribed to ${curso.nombre_curso}.` : `Ya estás suscrito/a a ${curso.nombre_curso}.`,
+      cuerpo:
+        parrafo(saludo(nombre, idioma)) +
+        parrafo(en ? "Thank you for subscribing. We will see each other every week:" : "Gracias por suscribirte. Nos veremos cada semana:") +
+        tablaDatos(filas) +
+        nota(meet
+          ? (en ? "The button below is the permanent link for every class of the course. You will also find it in your personal area." : "El botón de abajo es el enlace fijo para todas las clases del curso. También lo tienes en tu área personal.")
+          : (en ? "You will find the class link in your personal area." : "Tendrás el enlace de la clase en tu área personal.")),
+      boton: meet
+        ? { texto: en ? "Join the class" : "Entrar en la clase", url: meet }
+        : { texto: en ? "Go to my area" : "Ir a mi área", url: URL_AREA },
+    }),
+  };
+}
+
+function correoDespedida(nombre: string | null, curso: string, idioma: Idioma) {
+  const en = idioma === "en";
+  return {
+    asunto: en ? "Your subscription has ended" : "Tu suscripción ha finalizado",
+    html: plantillaCorreo({
+      idioma,
+      titulo: en ? "See you soon" : "Hasta pronto",
+      resumen: en ? `Your subscription to ${curso} has ended.` : `Tu suscripción a ${curso} ha finalizado.`,
+      cuerpo:
+        parrafo(saludo(nombre, idioma)) +
+        parrafo(en
+          ? `Your subscription to <strong>${escapar(curso)}</strong> has ended. You will not be charged again.`
+          : `Tu suscripción a <strong>${escapar(curso)}</strong> ha finalizado. No se te cobrará más.`) +
+        parrafo(en ? "We hope to see you again soon." : "Esperamos verte de nuevo pronto."),
+      boton: { texto: en ? "See courses" : "Ver cursos", url: URL_CURSOS },
+    }),
+  };
+}
+
+// =====================================================================
+// A) Webhook
+// =====================================================================
+
+async function alCrearSuscripcion(sub: Stripe.Subscription): Promise<void> {
+  const supabase = clienteAdmin();
+  const { email, nombre: nombreStripe } = await emailCliente(sub.customer);
+  if (!email) return;
+
+  const alumno = await datosAlumno(sub.metadata?.user_id);
+  const nombre = alumno?.nombre || nombreStripe;
+  const idioma = resolverIdioma(sub.metadata?.idioma, alumno?.idioma_nativo);
+
+  const courseId = enteroPositivo(sub.metadata?.course_id);
+  const { data: curso, error } = courseId
+    ? await supabase
+      .from("cursos_grupales")
+      .select("nombre_curso, meet_link, google_event_id, dias_semana, horarios_curso")
+      .eq("id", courseId)
+      .maybeSingle()
+    : { data: null, error: null };
+  if (error) console.error("[subscription-webhook] Error leyendo curso:", error.message);
+
+  // Invitación al evento recurrente de Google Calendar
+  if (curso?.google_event_id) {
+    try {
+      const res = await llamarFuncionInterna("crear-meet", { action: "add_attendee", eventId: curso.google_event_id, email });
+      if (!res.ok) console.error(`[subscription-webhook] Falló la invitación al calendario: ${res.status}`);
+    } catch (e) {
+      console.error("[subscription-webhook] Error de red invitando al calendario:", e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  const datosCurso = curso ?? { nombre_curso: idioma === "en" ? "your course" : "tu curso", dias_semana: null, horarios_curso: null, meet_link: null };
+  const correo = correoBienvenida(nombre, datosCurso, idioma);
+  await enviarCorreo({ to: email, subject: correo.asunto, html: correo.html });
+
+  await enviarCorreo({
+    to: CORREO_INTERNO,
+    subject: "Nuevo alumno en un curso",
+    html: plantillaCorreo({
+      idioma: "es",
+      titulo: "Nuevo alumno en un curso",
+      resumen: `${nombre ?? "Un alumno"} se ha apuntado a ${datosCurso.nombre_curso}.`,
+      cuerpo: tablaDatos([
+        ["Alumno", `${escapar(nombre ?? "Alumno")} (${escapar(email)})`],
+        ["Curso", escapar(datosCurso.nombre_curso)],
+      ]),
+    }),
+  });
+}
+
+async function alBorrarSuscripcion(sub: Stripe.Subscription): Promise<void> {
+  await marcarCancelada(sub.id);
+
+  // Si la cancelamos nosotros (cierre de curso o cuenta eliminada) ya se mandó otro correo
+  const motivo = sub.cancellation_details?.comment;
+  if (motivo === MOTIVO_BAJA.cursoCerrado || motivo === MOTIVO_BAJA.cuentaEliminada) return;
+
+  const { email, nombre: nombreStripe } = await emailCliente(sub.customer);
+  if (!email) return;
+  const alumno = await datosAlumno(sub.metadata?.user_id);
+  const idioma = resolverIdioma(sub.metadata?.idioma, alumno?.idioma_nativo);
+
+  const courseId = enteroPositivo(sub.metadata?.course_id);
+  const { data: curso } = courseId
+    ? await clienteAdmin().from("cursos_grupales").select("nombre_curso").eq("id", courseId).maybeSingle()
+    : { data: null };
+
+  const correo = correoDespedida(alumno?.nombre || nombreStripe, curso?.nombre_curso ?? (idioma === "en" ? "the course" : "el curso"), idioma);
+  await enviarCorreo({ to: email, subject: correo.asunto, html: correo.html });
+}
+
+async function webhook(req: Request, firma: string): Promise<Response> {
+  const secreto = Deno.env.get("STRIPE_SUBSCRIPTION_WEBHOOK_SECRET");
+  if (!secreto) return errores.interno("Configuración incompleta.");
+
+  let evento: Stripe.Event;
+  try {
+    evento = await eventoVerificado(await req.text(), firma, secreto);
+  } catch (e) {
+    console.error("[subscription-webhook] Firma no válida:", e instanceof Error ? e.message : String(e));
+    return json({ error: "Firma no válida." }, 400);
+  }
+
+  try {
+    switch (evento.type) {
+      case "customer.subscription.created":
+      case "customer.subscription.updated": {
+        const sub = evento.data.object as Stripe.Subscription;
+        await syncSubscription(sub.id);
+        if (evento.type === "customer.subscription.created") await alCrearSuscripcion(sub);
+        break;
+      }
+      case "invoice.payment_succeeded": {
+        const subId = idDe((evento.data.object as Stripe.Invoice).subscription);
+        if (subId) await syncSubscription(subId);
+        break;
+      }
+      case "customer.subscription.deleted":
+        await alBorrarSuscripcion(evento.data.object as Stripe.Subscription);
+        break;
+    }
+  } catch (e) {
+    // Igual que antes: se registra y se responde 200 para que Stripe no reintente en bucle
+    console.error(`[subscription-webhook] Error procesando ${evento.type}:`, e instanceof Error ? e.message : String(e));
+  }
+  return json({ received: true });
+}
+
+// =====================================================================
+// B) Peticiones de la web
+// =====================================================================
+
+async function toggleCancel(userId: string, body: Record<string, unknown>): Promise<Response> {
+  const subscriptionId = typeof body.subscriptionId === "string" ? body.subscriptionId : "";
+  if (!subscriptionId || typeof body.cancel !== "boolean") return errores.entrada("Faltan subscriptionId o cancel.");
+
+  const { data: fila } = await clienteAdmin()
+    .from("user_subscriptions")
+    .select("user_id")
+    .eq("stripe_subscription_id", subscriptionId)
+    .maybeSingle();
+  if (!fila) return errores.noEncontrado("Suscripción no encontrada.");
+  if (fila.user_id !== userId && !(await esAdmin(userId))) return errores.prohibido();
+
+  try {
+    const sub = await clienteStripe().subscriptions.update(subscriptionId, { cancel_at_period_end: body.cancel });
+    await syncSubscription(sub.id);
+    return json({ success: true, status: sub.status, cancel_at_period_end: sub.cancel_at_period_end });
+  } catch (e) {
+    console.error("[subscription-webhook] toggle_cancel:", e instanceof Error ? e.message : String(e));
+    return errores.entrada("No se pudo actualizar la suscripción.");
+  }
+}
+
+async function crearCheckout(req: Request, user: { id: string; email?: string }, body: Record<string, unknown>): Promise<Response> {
+  const supabase = clienteAdmin();
+  const stripe = clienteStripe();
+  const courseId = enteroPositivo(body.course_id ?? body.courseId);
+  if (!courseId) return errores.entrada("Falta el curso.");
+  if (!user.email) return errores.entrada("Tu cuenta no tiene email.");
+
+  const { data: curso, error } = await supabase
+    .from("cursos_grupales")
+    .select("id, nombre_curso, estado_curso, stripe_price_id, max_estudiantes, tipo_curso, visibilidad")
+    .eq("id", courseId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!curso || curso.visibilidad === false) return errores.noEncontrado("Curso no encontrado.");
+  if (curso.tipo_curso === "cerrado") return errores.entrada("Este curso se paga de una vez, no por suscripción.");
+  if (curso.estado_curso !== "Activo") return errores.conflicto("El curso no admite inscripciones ahora mismo.");
+  if (!curso.stripe_price_id) return errores.conflicto("El curso no tiene precio configurado.");
+
+  // Plazas
+  if (curso.max_estudiantes) {
+    const { data: ocupacion, error: errOc } = await supabase.rpc("get_curso_ocupacion", { curso_id_param: curso.id });
+    if (errOc) throw errOc;
+    if (Number(ocupacion) >= curso.max_estudiantes) return errores.conflicto("El curso está completo.");
+  }
+
+  // ¿Ya suscrito?
+  const { data: actual } = await supabase
+    .from("user_subscriptions")
+    .select("estado")
+    .eq("user_id", user.id)
+    .eq("course_id", curso.id)
+    .maybeSingle();
+  if (actual && ESTADOS_ACTIVOS.has(actual.estado ?? "")) return errores.conflicto("Ya estás suscrito/a a este curso.");
+
+  // Cliente de Stripe (por el email de la sesión, no el de la web)
+  const { data: perfil } = await supabase.from("datos_usuarios").select("nombre").eq("user_id", user.id).maybeSingle();
+  const existentes = await stripe.customers.list({ email: user.email, limit: 1 });
+  const customer = existentes.data[0] ?? await stripe.customers.create({
+    email: user.email,
+    name: perfil?.nombre || user.email,
+    metadata: { user_id: user.id },
+  });
+
+  const idioma = idiomaDesde(body.idioma);
+  const origen = origenSeguro(req);
+  const session = await stripe.checkout.sessions.create({
+    customer: customer.id,
+    payment_method_types: ["card"],
+    mode: "subscription",
+    line_items: [{ price: curso.stripe_price_id, quantity: 1 }],
+    subscription_data: {
+      metadata: { user_id: user.id, course_id: String(curso.id), ...(idioma ? { idioma } : {}) },
+    },
+    success_url: `${origen}/AreaPersonal?success=true`,
+    cancel_url: `${origen}/AreaPersonal?canceled=true`,
+  });
+  return json({ url: session.url });
+}
+
+Deno.serve(async (req) => {
+  const pre = preflight(req);
+  if (pre) return pre;
+  if (req.method !== "POST") return errores.metodo();
+
+  try {
+    const firma = req.headers.get("stripe-signature");
+    if (firma) return await webhook(req, firma);
+
+    const body = await leerJson(req);
+    if (!body) return errores.entrada("JSON no válido.");
+
+    if (body.action === "get_price_details") {
+      if (typeof body.priceId !== "string" || !body.priceId.startsWith("price_")) return errores.entrada("priceId no válido.");
+      try {
+        const price = await clienteStripe().prices.retrieve(body.priceId);
+        return json({ amount: price.unit_amount, currency: price.currency });
+      } catch {
+        return errores.entrada("No encontrado.");
+      }
+    }
+
+    const user = await usuarioDesdePeticion(req);
+    if (!user) return errores.sinSesion();
+
+    if (body.action === "toggle_cancel") return await toggleCancel(user.id, body);
+    return await crearCheckout(req, user, body);
+  } catch (e) {
+    console.error("[subscription-webhook] Error:", e instanceof Error ? e.message : String(e));
+    return errores.interno();
+  }
+});

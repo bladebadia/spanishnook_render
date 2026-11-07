@@ -125,6 +125,7 @@ export default {
   indexOpinionVerificada: 'Opinión verificada',
 
   reservasClases: {
+    errorCancelar: 'No se ha podido cancelar la clase. Inténtalo de nuevo o escríbenos.',
     reservaTuClase: 'Reserva tu clase',
     carritoDeReservas: 'Carrito de reservas',
     aLas: 'a las',
@@ -464,6 +465,9 @@ export default {
     errorPerfil406:
       'Error 406: no se puede obtener el perfil. Revisa las políticas RLS o el formato de la petición.',
     pagoCompletado: '¡Pago completado! Tus reservas han sido confirmadas.',
+    pagoUnico: 'Pago único',
+    cursoFinalizado: 'Finalizado',
+    fechasCurso: 'Del {inicio} al {fin}',
   },
 
   MaterialesPage: {
@@ -790,6 +794,24 @@ export default {
     rellenaCampos: 'Rellena los campos',
     errorRegistrar: 'Error al registrar: {mensaje}',
     aceptaCondiciones: 'Acepta las condiciones',
+    fechasCerradas: 'Curso de fechas cerradas',
+    desdeHasta: 'Del {inicio} al {fin}',
+    numSesiones: '{n} sesión | {n} sesiones',
+    duracionSesion: 'Sesiones de {min} minutos',
+    precioTotal: 'Precio total',
+    pagoUnico: 'Pago único, sin suscripción',
+    plazasLibres: 'Queda {n} plaza | Quedan {n} plazas',
+    inscribirme: 'Inscribirme',
+    iniciarSesionInscribirte: 'Inicia sesión para inscribirte',
+    yaInscrito: 'Ya estás inscrito',
+    yaInscritoTexto:
+      'Tu plaza está confirmada. Tienes el enlace de las clases en tu área personal.',
+    cursoTerminado: 'Este curso ya ha terminado.',
+    finalizado: 'Finalizado',
+    pagoRecibido: 'Pago recibido: tu plaza está confirmada. Te hemos enviado un correo.',
+    pagoProcesando:
+      'Estamos confirmando tu pago. Si tu plaza no aparece en unos minutos, recarga la página.',
+    errorCheckout: 'No se pudo iniciar el pago. Inténtalo de nuevo.',
   },
   flecos: {
     ups: '¡Ups... No hay nada aquí!',

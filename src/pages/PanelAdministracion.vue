@@ -362,6 +362,9 @@
                     >
                       {{ curso.codigo_curso }}
                     </q-badge>
+                    <q-badge outline color="primary" class="q-ml-sm">
+                      {{ curso.tipo_curso === 'cerrado' ? 'Fechas cerradas' : 'Suscripción' }}
+                    </q-badge>
                   </q-item-label>
                   <q-item-label caption>
                     <q-chip
@@ -390,7 +393,20 @@
                       dense
                       class="q-ml-xs"
                     >
-                      {{ curso.precio_curso }}
+                      {{ curso.precio_curso
+                      }}{{ curso.tipo_curso === 'cerrado' ? ' € total' : '' }}
+                    </q-chip>
+                    <q-chip
+                      v-if="curso.tipo_curso === 'cerrado' && curso.fecha_inicio"
+                      size="sm"
+                      color="blue-grey"
+                      text-color="white"
+                      dense
+                      class="q-ml-xs"
+                    >
+                      <q-icon name="event" size="14px" class="q-mr-xs" />
+                      {{ formatFechaCorta(curso.fecha_inicio) }} –
+                      {{ curso.fecha_fin ? formatFechaCorta(curso.fecha_fin) : '?' }}
                     </q-chip>
                     <q-chip
                       v-if="curso.mostrar_promo"
@@ -428,6 +444,18 @@
               <q-card flat>
                 <q-card-section>
                   <div class="row q-col-gutter-md">
+                    <div class="col-12">
+                      <div class="text-caption text-grey-8">Tipo de curso</div>
+                      <q-option-group
+                        v-model="cursoFormulario.tipo_curso"
+                        :options="opcionesTipoCurso"
+                        type="radio"
+                        color="primary"
+                        inline
+                        dense
+                      />
+                    </div>
+
                     <div class="col-12 col-md-3">
                       <q-input
                         v-model="cursoFormulario.codigo_curso"
@@ -521,7 +549,7 @@
                     <div class="col-12 col-md-2">
                       <q-input
                         v-model="cursoFormulario.fecha_inicio"
-                        label="Fecha inicio"
+                        :label="esCerradoForm ? 'Fecha inicio *' : 'Fecha inicio'"
                         type="date"
                         filled
                         dense
@@ -531,6 +559,62 @@
                         </template>
                       </q-input>
                     </div>
+
+                    <template v-if="esCerradoForm">
+                      <div class="col-12 col-md-2">
+                        <q-input
+                          v-model="cursoFormulario.fecha_fin"
+                          label="Fecha fin *"
+                          type="date"
+                          filled
+                          dense
+                          :min="cursoFormulario.fecha_inicio || undefined"
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="event_busy" />
+                          </template>
+                        </q-input>
+                      </div>
+
+                      <div class="col-12 col-md-2">
+                        <q-input
+                          v-model.number="precioTotalEur"
+                          label="Precio total (€) *"
+                          type="number"
+                          step="0.01"
+                          min="0.5"
+                          filled
+                          dense
+                          hint="Pago único. Mínimo 0,50 €"
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="euro" />
+                          </template>
+                        </q-input>
+                      </div>
+
+                      <div class="col-12 col-md-2">
+                        <q-input
+                          v-model.number="cursoFormulario.duracion_minutos"
+                          label="Duración sesión (min)"
+                          type="number"
+                          step="5"
+                          min="15"
+                          max="240"
+                          filled
+                          dense
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="timelapse" />
+                          </template>
+                        </q-input>
+                      </div>
+
+                      <div v-if="resumenSesionesForm" class="col-12 text-caption text-grey-8">
+                        <q-icon name="info" class="q-mr-xs" />
+                        {{ resumenSesionesForm }}
+                      </div>
+                    </template>
 
                     <div class="col-12 col-md-3">
                       <q-select
@@ -723,7 +807,10 @@
                       </q-toggle>
                     </div>
 
-                    <div v-if="cursoFormulario.mostrar_precio" class="col-12 col-md-3">
+                    <div
+                      v-if="cursoFormulario.mostrar_precio && !esCerradoForm"
+                      class="col-12 col-md-3"
+                    >
                       <q-input
                         v-model="cursoFormulario.precio_curso"
                         label="Precio para mostrar"
@@ -799,7 +886,7 @@
                       icon="group"
                       color="info"
                       outline
-                      @click="verAlumnosCurso(curso.id || 0, curso.nombre_curso)"
+                      @click="verAlumnosCurso(curso.id || 0, curso.nombre_curso, curso.tipo_curso)"
                       :loading="cargandoAlumnos"
                     />
 
@@ -874,6 +961,18 @@
 
               <q-card-section style="max-height: 70vh" class="scroll">
                 <div class="row q-col-gutter-md">
+                  <div class="col-12">
+                    <div class="text-caption text-grey-8">Tipo de curso</div>
+                    <q-option-group
+                      v-model="cursoFormulario.tipo_curso"
+                      :options="opcionesTipoCurso"
+                      type="radio"
+                      color="primary"
+                      inline
+                      dense
+                    />
+                  </div>
+
                   <!-- Información básica -->
                   <div class="col-12 col-md-3">
                     <q-input
@@ -914,11 +1013,47 @@
                   <div class="col-12 col-md-3">
                     <q-input
                       v-model="cursoFormulario.fecha_inicio"
-                      label="Fecha inicio"
+                      :label="esCerradoForm ? 'Fecha inicio *' : 'Fecha inicio'"
                       type="date"
                       filled
                     />
                   </div>
+
+                  <template v-if="esCerradoForm">
+                    <div class="col-12 col-md-3">
+                      <q-input
+                        v-model="cursoFormulario.fecha_fin"
+                        label="Fecha fin *"
+                        type="date"
+                        filled
+                        :min="cursoFormulario.fecha_inicio || undefined"
+                      />
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                      <q-input
+                        v-model.number="precioTotalEur"
+                        label="Precio total (€) *"
+                        type="number"
+                        step="0.01"
+                        min="0.5"
+                        filled
+                        hint="Pago único. Mínimo 0,50 €"
+                      />
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                      <q-input
+                        v-model.number="cursoFormulario.duracion_minutos"
+                        label="Duración sesión (min)"
+                        type="number"
+                        step="5"
+                        min="15"
+                        max="240"
+                        filled
+                      />
+                    </div>
+                  </template>
 
                   <div class="col-12 col-md-3">
                     <q-select
@@ -973,6 +1108,13 @@
                     />
                   </div>
 
+                  <div v-if="esCerradoForm && resumenSesionesForm" class="col-12">
+                    <div class="text-caption text-grey-8">
+                      <q-icon name="info" class="q-mr-xs" />
+                      {{ resumenSesionesForm }}
+                    </div>
+                  </div>
+
                   <div class="col-12">
                     <q-input
                       v-model="cursoFormulario.descripcion"
@@ -1024,7 +1166,14 @@
                     </div>
                   </div>
 
-                  <div class="col-12 col-md-6">
+                  <div v-if="esCerradoForm" class="col-12">
+                    <div class="sn-nota q-pa-md text-body2">
+                      Curso de fechas cerradas: el alumno paga el precio total en un único pago al
+                      inscribirse. No necesita tarifa de Stripe.
+                    </div>
+                  </div>
+
+                  <div v-if="!esCerradoForm" class="col-12 col-md-6">
                     <q-select
                       v-model="tarifaSeleccionada"
                       :options="TARIFAS_DISPONIBLES"
@@ -1051,7 +1200,7 @@
                     </q-select>
                   </div>
 
-                  <div class="col-12 col-md-3">
+                  <div v-if="!esCerradoForm" class="col-12 col-md-3">
                     <q-input
                       v-model="cursoFormulario.precio_curso"
                       label="Precio Visual (€)"
@@ -1061,7 +1210,7 @@
                       bg-color="grey-2"
                     />
                   </div>
-                  <div class="col-12 col-md-3">
+                  <div v-if="!esCerradoForm" class="col-12 col-md-3">
                     <q-input
                       v-model="cursoFormulario.stripe_price_id"
                       label="ID Stripe"
@@ -1830,7 +1979,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
-import { hoyMadridISO } from 'src/utils/zonaHoraria';
+import { fechasDelCurso, formatFechaCorta, hoyMadridISO } from 'src/utils/zonaHoraria';
 import type { User } from '@supabase/supabase-js';
 
 // Interfaces
@@ -1968,7 +2117,14 @@ interface CursoGrupal {
   created_at?: string;
   stripe_price_id?: string;
   meet_link?: string;
+  // Curso de fechas cerradas (pago único)
+  tipo_curso?: TipoCurso;
+  fecha_fin?: string | null;
+  precio_total_centimos?: number | null;
+  duracion_minutos?: number | null;
 }
+
+type TipoCurso = 'suscripcion' | 'cerrado';
 
 interface Reserva {
   id?: number;
@@ -2023,7 +2179,74 @@ const cursoFormulario = ref<CursoGrupal>({
   mostrar_precio: false,
   precio_original: '',
   stripe_price_id: '',
+  tipo_curso: 'suscripcion',
+  fecha_fin: '',
+  precio_total_centimos: null,
+  duracion_minutos: 90,
 });
+
+// --- CURSO DE FECHAS CERRADAS ---
+const opcionesTipoCurso: { label: string; value: TipoCurso }[] = [
+  { label: 'Suscripción mensual', value: 'suscripcion' },
+  { label: 'Fechas cerradas (pago único)', value: 'cerrado' },
+];
+
+// Precio total en euros que escribe Paula; se guarda en céntimos
+const precioTotalEur = ref<number | null>(null);
+
+const esCerradoForm = computed(() => cursoFormulario.value.tipo_curso === 'cerrado');
+
+// '120' o '119,50': lo que se ve en las tarjetas y en la lista (precio_curso)
+const centimosAPrecioVisual = (centimos: number): string =>
+  (centimos / 100).toFixed(2).replace(/\.00$/, '').replace('.', ',');
+
+// El precio visual del curso cerrado sale siempre del precio total
+watch(precioTotalEur, (eur) => {
+  if (!esCerradoForm.value) return;
+  const n = Number(eur);
+  if (Number.isFinite(n) && n > 0) {
+    cursoFormulario.value.precio_curso = centimosAPrecioVisual(Math.round(n * 100));
+  }
+});
+
+const sesionesForm = computed(() =>
+  esCerradoForm.value
+    ? fechasDelCurso(
+        cursoFormulario.value.fecha_inicio || '',
+        cursoFormulario.value.fecha_fin || '',
+        cursoFormulario.value.dias_semana || [],
+      )
+    : [],
+);
+
+const resumenSesionesForm = computed(() => {
+  const inicio = cursoFormulario.value.fecha_inicio;
+  const fin = cursoFormulario.value.fecha_fin;
+  if (!esCerradoForm.value || !inicio || !fin || fin < inicio) return '';
+  if (!cursoFormulario.value.dias_semana?.length) return 'Elige los días de la semana del curso.';
+  const n = sesionesForm.value.length;
+  return n === 1 ? '1 sesión entre esas fechas.' : `${n} sesiones entre esas fechas.`;
+});
+
+// Devuelve el primer error del curso cerrado, o null si está completo
+const validarCursoCerrado = (): string | null => {
+  const f = cursoFormulario.value;
+  if (!f.fecha_inicio) return 'Indica la fecha de inicio del curso.';
+  if (!f.fecha_fin) return 'Indica la fecha de fin del curso.';
+  if (f.fecha_fin < f.fecha_inicio) return 'La fecha de fin no puede ser anterior a la de inicio.';
+  const eur = Number(precioTotalEur.value);
+  if (!Number.isFinite(eur) || eur < 0.5) return 'El precio total debe ser de al menos 0,50 €.';
+  const duracion = Number(f.duracion_minutos);
+  if (!Number.isFinite(duracion) || duracion < 15 || duracion > 240) {
+    return 'La duración de cada sesión debe estar entre 15 y 240 minutos.';
+  }
+  if (!f.dias_semana?.length) return 'Elige al menos un día de la semana.';
+  if (!f.horarios_curso?.length) return 'Elige al menos un horario.';
+  if (sesionesForm.value.length === 0) {
+    return 'Ninguno de los días elegidos cae entre la fecha de inicio y la de fin.';
+  }
+  return null;
+};
 
 const diasSemanaOpciones = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
@@ -2594,11 +2817,20 @@ const cargarCursosGrupales = async (): Promise<void> => {
     const cursosConConteo = await Promise.all(
       (cursos || []).map(async (curso) => {
         // Consultamos cuántos están suscritos y activos/trialing a este curso
-        const { count } = await supabase
-          .from('user_subscriptions')
-          .select('*', { count: 'exact', head: true }) // head:true significa "solo dame el número, no los datos"
-          .eq('course_id', curso.id)
-          .in('estado', ['active', 'trialing', 'canceled']);
+        // Curso cerrado: inscripciones pagadas; suscripción: suscripciones de Stripe
+        const { count } =
+          curso.tipo_curso === 'cerrado'
+            ? await supabase
+                .from('inscripciones_curso')
+                .select('*', { count: 'exact', head: true })
+                .eq('curso_id', curso.id)
+                .eq('estado', 'pagada')
+            : await supabase
+                .from('user_subscriptions')
+                // head:true significa "solo dame el número, no los datos"
+                .select('*', { count: 'exact', head: true })
+                .eq('course_id', curso.id)
+                .in('estado', ['active', 'trialing', 'canceled']);
 
         return {
           ...curso,
@@ -2652,7 +2884,14 @@ const toggleCurso = (id: number): void => {
         mostrar_precio: !!curso.mostrar_precio,
         precio_curso: curso.precio_curso ?? '',
         precio_original: curso.precio_original ?? '',
+        fecha_inicio: curso.fecha_inicio ?? '',
+        tipo_curso: curso.tipo_curso === 'cerrado' ? 'cerrado' : 'suscripcion',
+        fecha_fin: curso.fecha_fin ?? '',
+        precio_total_centimos: curso.precio_total_centimos ?? null,
+        duracion_minutos: curso.duracion_minutos ?? 90,
       };
+      precioTotalEur.value =
+        curso.precio_total_centimos != null ? curso.precio_total_centimos / 100 : null;
 
       editandoCurso.value = true;
     }
@@ -2684,7 +2923,13 @@ const abrirDialogNuevoCurso = (): void => {
     texto_promo: '¡Prueba tu clase gratis!',
     mostrar_precio: false,
     precio_original: '',
+    tipo_curso: 'suscripcion',
+    fecha_fin: '',
+    precio_total_centimos: null,
+    duracion_minutos: 90,
   };
+  precioTotalEur.value = null;
+  tarifaSeleccionada.value = null;
   editandoCurso.value = false;
   dialogNuevoCurso.value = true;
 };
@@ -2728,7 +2973,15 @@ const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) =
     });
 
     // Preparamos datos (ya sabemos que existen por la validación del paso 3)
-    const fechaInicio = datosCurso.fecha_inicio;
+    const esCerrado = datosCurso.tipo_curso === 'cerrado';
+    // Curso cerrado: el evento empieza en la primera sesión real y termina en su fecha de fin
+    const fechaInicio = esCerrado
+      ? (fechasDelCurso(
+          datosCurso.fecha_inicio,
+          datosCurso.fecha_fin || '',
+          datosCurso.dias_semana || [],
+        )[0] ?? datosCurso.fecha_inicio)
+      : datosCurso.fecha_inicio;
     const horaInicio = datosCurso.horarios_curso[0];
 
     // Llamamos a la Edge Function
@@ -2738,8 +2991,9 @@ const verificarYGenerarMeet = async (cursoId: number, datosCurso: CursoGrupal) =
         hora: horaInicio,
         nombreCurso: datosCurso.nombre_curso,
         esCurso: true,
-        duracionMinutos: 90,
+        duracionMinutos: datosCurso.duracion_minutos || 90,
         diasSemana: datosCurso.dias_semana,
+        ...(esCerrado && datosCurso.fecha_fin ? { fechaFin: datosCurso.fecha_fin } : {}),
       },
     });
 
@@ -2778,6 +3032,32 @@ const guardarCurso = async (): Promise<void> => {
     $q.notify({ type: 'warning', message: 'Faltan datos obligatorios' });
     return;
   }
+
+  const esCerrado = cursoFormulario.value.tipo_curso === 'cerrado';
+  if (esCerrado) {
+    const errorCerrado = validarCursoCerrado();
+    if (errorCerrado) {
+      $q.notify({ type: 'warning', message: errorCerrado });
+      return;
+    }
+  }
+
+  // Cambiar el tipo de un curso con alumnos rompería sus pagos (suscripción ↔ pago único)
+  const cursoPrevio = editandoCurso.value
+    ? cursosGrupales.value.find((c) => c.id === cursoFormulario.value.id)
+    : undefined;
+  const tipoPrevio: TipoCurso = cursoPrevio?.tipo_curso === 'cerrado' ? 'cerrado' : 'suscripcion';
+  if (cursoPrevio && tipoPrevio !== (esCerrado ? 'cerrado' : 'suscripcion')) {
+    if ((cursoPrevio.usuarios?.length ?? 0) > 0) {
+      $q.notify({
+        type: 'warning',
+        message: 'No se puede cambiar el tipo de un curso que ya tiene alumnos.',
+      });
+      return;
+    }
+  }
+
+  const precioTotalCentimos = esCerrado ? Math.round(Number(precioTotalEur.value) * 100) : null;
 
   guardandoCurso.value = true;
 
@@ -2819,9 +3099,21 @@ const guardarCurso = async (): Promise<void> => {
       mostrar_promo: cursoFormulario.value.mostrar_promo ?? false,
       texto_promo: cursoFormulario.value.texto_promo || '¡Prueba tu clase gratis!',
       mostrar_precio: cursoFormulario.value.mostrar_precio ?? false,
-      precio_curso: cursoFormulario.value.precio_curso || null,
-      stripe_price_id: cursoFormulario.value.stripe_price_id || null,
+      precio_curso:
+        precioTotalCentimos !== null
+          ? centimosAPrecioVisual(precioTotalCentimos)
+          : cursoFormulario.value.precio_curso || null,
+      // El curso cerrado se cobra con checkout-curso (pago único), sin tarifa de Stripe
+      stripe_price_id: esCerrado ? null : cursoFormulario.value.stripe_price_id || null,
       precio_original: cursoFormulario.value.precio_original || null,
+      tipo_curso: esCerrado ? 'cerrado' : 'suscripcion',
+      fecha_fin: esCerrado
+        ? cursoFormulario.value.fecha_fin || null
+        : tipoPrevio === 'cerrado'
+          ? null
+          : cursoFormulario.value.fecha_fin || null,
+      precio_total_centimos: precioTotalCentimos,
+      duracion_minutos: Number(cursoFormulario.value.duracion_minutos) || 90,
     };
 
     let resultado;
@@ -2922,14 +3214,23 @@ const guardarCurso = async (): Promise<void> => {
 const confirmarCierreCurso = (curso: CursoGrupal) => {
   if (!curso.id) return;
 
-  $q.dialog({
-    title: '⚠️ Cierre de Curso y Reembolsos',
-    message: `¿Estás seguro de finalizar el curso <b>"${curso.nombre_curso}"</b>?<br><br>
+  const mensajeCierre =
+    curso.tipo_curso === 'cerrado'
+      ? `¿Estás seguro de finalizar el curso <b>"${curso.nombre_curso}"</b>?<br><br>
+    Es un curso de fechas cerradas (pago único):<br>
+    1. Marcará el curso como 'Completado' y lo ocultará.<br>
+    2. <b>Los pagos únicos no se devuelven automáticamente.</b><br>
+    Si hay que devolver algo, hazlo desde Stripe.`
+      : `¿Estás seguro de finalizar el curso <b>"${curso.nombre_curso}"</b>?<br><br>
     Esto realizará las siguientes acciones:<br>
     1. Marcará el curso como 'Completado' y lo ocultará.<br>
     2. Cancelará las suscripciones de todos los alumnos activos.<br>
     3. <b>Stripe devolverá automáticamente la parte proporcional</b> del dinero no disfrutado.<br>
-    4. Se enviará un email automático de despedida.`,
+    4. Se enviará un email automático de despedida.`;
+
+  $q.dialog({
+    title: '⚠️ Cierre de Curso y Reembolsos',
+    message: mensajeCierre,
     html: true,
     persistent: true,
     ok: {
@@ -2982,17 +3283,24 @@ const finalizarCurso = async (cursoId: number) => {
 const cargandoAlumnos = ref(false);
 
 // --- FUNCIÓN CORREGIDA (SIN JOIN SQL Y SIN LOADING GLOBAL) ---
-const verAlumnosCurso = async (id: number, nombre: string) => {
+const verAlumnosCurso = async (id: number, nombre: string, tipo?: TipoCurso) => {
   cargandoAlumnos.value = true; // Activamos el spinner del botón
   try {
-    // PASO 1: Obtener los user_id de las suscripciones
-    const { data: subs, error: errorSubs } = await supabase
-      .from('user_subscriptions')
-      .select('user_id, estado') // Traemos también el estado para pintarlo
-      .eq('course_id', id)
-      // Si el curso está activo, solo activos. Si está cerrado, todos.
-      // O por simplicidad, tráete todos los que no sean null:
-      .in('estado', ['active', 'trialing', 'canceled']);
+    // PASO 1: Obtener los user_id (curso cerrado: inscripciones pagadas; si no, suscripciones)
+    const { data: subs, error: errorSubs } =
+      tipo === 'cerrado'
+        ? await supabase
+            .from('inscripciones_curso')
+            .select('user_id, estado')
+            .eq('curso_id', id)
+            .eq('estado', 'pagada')
+        : await supabase
+            .from('user_subscriptions')
+            .select('user_id, estado') // Traemos también el estado para pintarlo
+            .eq('course_id', id)
+            // Si el curso está activo, solo activos. Si está cerrado, todos.
+            // O por simplicidad, tráete todos los que no sean null:
+            .in('estado', ['active', 'trialing', 'canceled']);
 
     if (errorSubs) throw errorSubs;
 

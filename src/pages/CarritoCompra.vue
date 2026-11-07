@@ -173,6 +173,7 @@ import {
   formatFechaClaseLocal,
   rangoHoraLocal,
   rangoHoraMadrid,
+  zonaUsuario,
 } from 'src/utils/zonaHoraria';
 // ELIMINADO: import { useHorarios } from 'src/composables/useHorarios';
 
@@ -303,6 +304,8 @@ const confirmarReservasHibridas = async () => {
     const itemsConCredito = carrito.value.filter((i) => i.usarCredito);
     const itemsConTarjeta = carrito.value.filter((i) => !i.usarCredito);
 
+    // IDs de las reservas creadas: el correo se construye en el servidor con datos de la BD
+    const idsParaEmail: string[] = [];
     const reservasParaEmail: { fecha: string; hora: string; tipo: string; meet_link?: string }[] =
       [];
 
@@ -352,6 +355,7 @@ const confirmarReservasHibridas = async () => {
         }
 
         // A.3. Añadir a la lista de emails con el link recuperado
+        if (nuevaReservaId) idsParaEmail.push(String(nuevaReservaId));
         reservasParaEmail.push({
           fecha: item.fecha,
           hora: item.hora,
@@ -373,8 +377,9 @@ const confirmarReservasHibridas = async () => {
           console.log('📨 Enviando resumen con links:', reservasParaEmail);
           await supabase.functions.invoke('send-booking-email', {
             body: {
-              reservas: reservasParaEmail,
-              userId: user.value!.id,
+              reservaIds: idsParaEmail,
+              idioma: locale.value.startsWith('en') ? 'en' : 'es',
+              zonaHoraria: zonaUsuario(),
             },
           });
           console.log('✅ Email enviado.');
@@ -425,13 +430,21 @@ const irAStripe = async (items: ReservaCarrito[]) => {
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({
       reservas: reservasMetadata,
-      user_id: user.value!.id,
-      user_email: user.value?.email,
+      idioma: locale.value.startsWith('en') ? 'en' : 'es',
+      zonaHoraria: zonaUsuario(),
     }),
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
+    const errorData = (await res.json().catch(() => ({}))) as {
+      error?: string;
+      franjasNoValidas?: unknown[];
+    };
+    // 409: alguna hora ya no se puede reservar (ocupada, curso o menos de 24 h)
+    if (res.status === 409 && errorData.franjasNoValidas) {
+      await verificarDisponibilidad();
+      throw new Error(t('carrito.alguienSeHaAdelantado'));
+    }
     throw new Error(errorData.error || t('carrito.errorStripe'));
   }
 

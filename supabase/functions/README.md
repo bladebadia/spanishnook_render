@@ -1,5 +1,7 @@
 # Edge Functions de Supabase (copia de solo lectura)
 
+> **Fase 2 (2026-11-07, sin desplegar):** el código de esta carpeta ya no es la copia de producción. Se ha reescrito por seguridad y para unificar los correos, con módulos comunes en `_shared/` y una función nueva `checkout-curso`. Detalle, contratos y cambios necesarios en la web en `CAMBIOS-FASE2.md`. La tabla de abajo describe la versión desplegada.
+
 Exportadas el 2026-11-07 desde el proyecto `zleqsdfpjepdangitcxv` con `get_edge_function`.
 Son una copia del código desplegado; el despliegue real sigue estando solo en Supabase.
 Finales de línea normalizados a LF (el código desplegado usa CRLF en la mayoría de archivos).

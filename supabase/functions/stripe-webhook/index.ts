@@ -1,571 +1,719 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import Stripe from "npm:stripe@^14.20.0";
-import { createClient } from "jsr:@supabase/supabase-js@2";
+/**
+ * stripe-webhook — Pagos únicos con Stripe. Doble uso:
+ *
+ * A) Con cabecera stripe-signature: webhook (STRIPE_WEBHOOK_SECRET).
+ *    checkout.session.completed:
+ *      - metadata.tipo_compra = 'bono_creditos'  → suma créditos (procesar_bono_seguro) + correos.
+ *      - metadata.tipo = 'curso_cerrado'         → inscripción en un curso de fechas cerradas.
+ *      - metadata.tipo = 'material_didactico'    → desbloquea el material (compras_materiales).
+ *      - metadata.reservas                        → clases individuales pagadas con tarjeta.
+ *    charge.refunded (reembolso total) → reservas 'cancelada' / inscripción 'reembolsada'.
+ *
+ * B) Sin firma, desde la web (requiere sesión): crea la Checkout Session de clases individuales.
+ *    Petición: { reservas: [{ fecha: 'YYYY-MM-DD', hora: 'HH:mm', tipo: 'normal'|'conversacion' }], idioma?, zonaHoraria? }
+ *    Cada franja se valida antes con franja_reservable(); si alguna no vale → 409 { error, franjasNoValidas }.
+ *    Respuesta: { url }
+ */
+import { clienteAdmin, errores, json, leerJson, origenSeguro, preflight, usuarioDesdePeticion } from "../_shared/auth.ts";
+import { caducidadCheckout, clienteStripe, eventoVerificado, idDe, type Stripe } from "../_shared/stripe.ts";
+import { crearEventoClase, anadirAsistente, tokenGoogle } from "../_shared/google.ts";
+import { CORREO_INTERNO, enviarCorreo } from "../_shared/resend.ts";
+import { escapar, nota, parrafo, plantillaCorreo, subtitulo, tablaDatos } from "../_shared/plantilla-correo.ts";
+import {
+  enlaceSeguro,
+  filasClase,
+  formatoEuros,
+  idiomaDesde,
+  localeDe,
+  primeraHora,
+  resolverIdioma,
+  saludo,
+  textoDias,
+  tipoClase,
+  URL_AREA,
+  URL_RESERVAR,
+  URL_CURSOS,
+  type Idioma,
+} from "../_shared/correo-comun.ts";
+import {
+  esFechaISO,
+  fechaCorta,
+  formatFechaCalendario,
+  hoyMadridISO,
+  normalizarHora,
+  normalizarZona,
+  rangoHoraEnZona,
+  rangoHoraMadrid,
+  ZONA_ESCUELA,
+} from "../_shared/fechas.ts";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-  apiVersion: "2024-06-20",
-  httpClient: Stripe.createFetchHttpClient()
-});
+// Precios fijados en el servidor (céntimos)
+const PRECIOS: Record<string, number> = { normal: 3200, conversacion: 2700 };
+const MAX_CLASES_POR_PAGO = 8; // lo que cabe en los 500 caracteres de metadata.reservas
+const LIMITE_METADATA = 500; // Stripe: máximo de caracteres por valor de metadata
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") || "",
-  Deno.env.get("SERVICE_ROLE_KEY") || ""
-);
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, Stripe-Signature, x-client-info, apikey",
-  "Content-Type": "application/json"
-};
-
-const LOGO_URL = "https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png";
-const URL_APP = "https://spanishnook.com";
-
-// =====================================================================
-// 🎨 1. PLANTILLAS DE CORREO (INDIVIDUAL Y PACKS)
-// =====================================================================
-
-function generarEmailCompraIndividual(nombre: string, reservasHtmlES: string, reservasHtmlEN: string) {
-  return `
-  <!DOCTYPE html>
-  <html>
-  <body style="margin: 0; padding: 0; background-color: #f9f9f9;">
-    <div style="font-family: 'Montserrat', Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 40px 20px; color: #333333; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <img src="${LOGO_URL}" alt="Spanish Nook Logo" style="width: 80px; height: auto; border: 0; display: block; margin: 0 auto;">
-        <p style="margin: 10px 0 0 0; color: #333333; font-weight: 800; font-size: 18px; letter-spacing: -0.5px;">SpanishNook</p>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <span style="color: #851319; text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;">Confirmación de compra / Booking Confirmed</span>
-        <h1 style="color: #333333; font-size: 26px; margin: 10px 0 0 0; font-weight: 800;">¡Gracias por tu compra en Spanish Nook! / Thank you for your purchase!</h1>
-      </div>
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hola <strong>${nombre}</strong>,</p>
-        <p>¡Qué alegría!</p>
-        <p>Tu clase en Spanish Nook está confirmada. Aquí tienes los detalles:</p>
-
-        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <ul style="list-style-type: none; padding: 0; margin: 0;">
-            ${reservasHtmlES}
-          </ul>
-        </div>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/AreaPersonal" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Acceder a mi área</a>
-        </div>
-
-        <p style="font-size: 14px; color: #888888;">* Recuerda: también puedes encontrar esta información en tu área personal.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px dashed #eeeeee; margin: 40px 0;">
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hi <strong>${nombre}</strong>,</p>
-        <p>Great news!</p>
-        <p>Your Spanish Nook class has successfully been confirmed. Here are the details:</p>
-
-        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <ul style="list-style-type: none; padding: 0; margin: 0;">
-            ${reservasHtmlEN}
-          </ul>
-        </div>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/AreaPersonal" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Go to my area</a>
-        </div>
-
-        <p style="font-size: 14px; color: #888888;">* Reminder: you can also find this data in your personal dashboard.</p>
-      </div>
-
-      <div style="margin-top: 40px; font-size: 16px; color: #525553; text-align: center;">
-        <p>¡Nos vemos en las aulas! / See you in class!</p>
-        <p style="margin-bottom: 5px;"><strong>El equipo de SpanishNook</strong></p>
-        <p style="margin-top: 0; font-size: 14px; color: #888888;">Creating your SpanishNook, at your pace.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-      <div style="text-align: center; font-size: 12px; color: #999999; line-height: 1.5;">
-        <p style="margin: 0 0 10px 0;">© 2025 Spanish Nook. Todos los derechos reservados.</p>
-        <p style="margin: 0;">
-          <a href="mailto:contacto@spanishnook.com" style="color: #851319; text-decoration: none;">contacto@spanishnook.com</a> |
-          <a href="${URL_APP}" style="color: #851319; text-decoration: none;">www.spanishnook.com</a>
-        </p>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
+interface Franja {
+  fecha: string;
+  hora: string; // 'HH:mm'
+  tipo: "normal" | "conversacion";
 }
 
-function generarEmailCompraPack(nombre: string, cantidad: string | number, tipoES: string, tipoEN: string) {
-  return `
-  <!DOCTYPE html>
-  <html>
-  <body style="margin: 0; padding: 0; background-color: #f9f9f9;">
-    <div style="font-family: 'Montserrat', Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 40px 20px; color: #333333; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+const ok = (extra: Record<string, unknown> = {}) => json({ received: true, ...extra });
 
-      <div style="text-align: center; margin-bottom: 30px;">
-        <img src="${LOGO_URL}" alt="Spanish Nook Logo" style="width: 80px; height: auto; border: 0; display: block; margin: 0 auto;">
-        <p style="margin: 10px 0 0 0; color: #333333; font-weight: 800; font-size: 18px; letter-spacing: -0.5px;">SpanishNook</p>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <span style="color: #851319; text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;">Pack de Créditos / Credits Pack</span>
-        <h1 style="color: #333333; font-size: 26px; margin: 10px 0 0 0; font-weight: 800;">¡Ya tienes tus créditos! / You now have your credits!</h1>
-      </div>
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hola <strong>${nombre}</strong>,</p>
-        <p>¡Qué bien!</p>
-        <p>Has comprado <strong>${cantidad}</strong> créditos para clases <strong>${tipoES}</strong>. Ahora tienes saldo para canjear por clases cuando tú quieras.</p>
-        <p>Revisa tu área personal y reserva nuevas fechas en el calendario.</p>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/AreaPersonal" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Acceder a mi área personal</a>
-        </div>
-      </div>
-
-      <hr style="border: none; border-top: 1px dashed #eeeeee; margin: 40px 0;">
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hi <strong>${nombre}</strong>,</p>
-        <p>Great!</p>
-        <p>You have purchased <strong>${cantidad}</strong> credits for <strong>${tipoEN}</strong> classes. You now have plenty of credits to redeem for classes whenever you want.</p>
-        <p>Check your personal area and book new dates on the calendar.</p>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/AreaPersonal" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Access my personal area</a>
-        </div>
-      </div>
-
-      <div style="margin-top: 40px; font-size: 16px; color: #525553; text-align: center;">
-        <p>¡Nos vemos en las aulas! / See you in class!</p>
-        <p style="margin-bottom: 5px;"><strong>El equipo de SpanishNook</strong></p>
-        <p style="margin-top: 0; font-size: 14px; color: #888888;">Creating your SpanishNook, at your pace.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-      <div style="text-align: center; font-size: 12px; color: #999999; line-height: 1.5;">
-        <p style="margin: 0 0 10px 0;">© 2025 Spanish Nook. Todos los derechos reservados.</p>
-        <p style="margin: 0;">
-          <a href="mailto:contacto@spanishnook.com" style="color: #851319; text-decoration: none;">contacto@spanishnook.com</a> |
-          <a href="${URL_APP}" style="color: #851319; text-decoration: none;">www.spanishnook.com</a>
-        </p>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
+async function datosAlumno(userId: string) {
+  const { data } = await clienteAdmin()
+    .from("datos_usuarios")
+    .select("nombre, email, idioma_nativo")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return data;
 }
 
-// 🔄 2. HELPER: CONSEGUIR TOKEN DE GOOGLE (OAuth2)
-async function getGoogleAccessToken() {
-  const clientId = Deno.env.get("GOOGLE_CLIENT_ID");
-  const clientSecret = Deno.env.get("GOOGLE_CLIENT_SECRET");
-  const refreshToken = Deno.env.get("GOOGLE_REFRESH_TOKEN");
+/** Valida y normaliza la lista de franjas que llega de la web o de la metadata. */
+function leerFranjas(valor: unknown): Franja[] | null {
+  if (!Array.isArray(valor)) return null;
+  const franjas: Franja[] = [];
+  for (const r of valor) {
+    const hora = normalizarHora(r?.hora);
+    const tipo = r?.tipo === "conversacion" ? "conversacion" : r?.tipo === "normal" ? "normal" : null;
+    if (!esFechaISO(r?.fecha) || !hora || !tipo) return null;
+    franjas.push({ fecha: r.fecha, hora, tipo });
+  }
+  return franjas;
+}
 
-  if (!clientId || !clientSecret || !refreshToken) {
-    throw new Error("Faltan credenciales OAuth2 en .env");
+// =====================================================================
+// A.1 Bono de créditos
+// =====================================================================
+
+async function procesarBono(session: Stripe.Checkout.Session): Promise<Response> {
+  const meta = session.metadata ?? {};
+  const userId = meta.user_id;
+  const creditos = parseInt(meta.creditos_a_sumar || "0", 10);
+  const tipo = meta.tipo_credito === "conversacion" ? "conversacion" : "normal";
+  if (!userId || !(creditos > 0)) {
+    console.error(`[stripe-webhook] Bono sin datos válidos en la sesión ${session.id}`);
+    return ok({ ignored: true });
   }
 
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("client_secret", clientSecret);
-  params.append("refresh_token", refreshToken);
-  params.append("grant_type", "refresh_token");
-
-  const res = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString(),
+  // Escudo atómico en BD: solo suma si la sesión no se había procesado
+  const { data: nuevo, error } = await clienteAdmin().rpc("procesar_bono_seguro", {
+    p_user_id: userId,
+    p_session_id: session.id,
+    p_cantidad: creditos,
+    p_tipo: tipo,
   });
-
-  const data = await res.json();
-  if (!res.ok) {
-    console.error("❌ Error renovando token Google:", data);
-    return null;
+  if (error) {
+    console.error("[stripe-webhook] Error en procesar_bono_seguro:", error.message);
+    return json({ error: "DB Error" }, 500); // Stripe reintentará
   }
-  return data.access_token;
-}
+  if (nuevo === false) return ok({ ignored: true });
 
-// 🗓️ 3. HELPER: CREAR EVENTO Y RETORNAR DATOS
-async function createMeeting(nombreUsuario: string, emailUsuario: string, fecha: string, hora: string, tipo: string) {
-  try {
-    const calendarId = Deno.env.get("GOOGLE_CALENDAR_ID");
-    const accessToken = await getGoogleAccessToken();
-    const TIMEZONE = "Europe/Madrid";
+  const alumno = await datosAlumno(userId);
+  const email = alumno?.email || session.customer_details?.email;
+  const idioma = resolverIdioma(meta.idioma, alumno?.idioma_nativo);
+  const en = idioma === "en";
+  const tipoTxt = tipo === "conversacion"
+    ? (en ? "conversation classes" : "clases de conversación")
+    : (en ? "general classes" : "clases generales");
 
-    if (!calendarId || !accessToken) {
-      console.error("❌ Fallo en credenciales Google o Token");
-      return null;
-    }
-
-    const [h, m] = hora.split(':').map(Number);
-    const finH = h + 1;
-    const horaFin = `${String(finH).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-
-    const startDateTime = `${fecha}T${hora}:00`;
-    const endDateTime = `${fecha}T${horaFin}:00`;
-
-    const event = {
-      summary: `Spanish Class (${tipo}) - ${nombreUsuario}`,
-      description: `Clase reservada via Spanish Nook.\nTipo: ${tipo}\nAlumno: ${emailUsuario}`,
-      start: { dateTime: startDateTime, timeZone: TIMEZONE },
-      end: { dateTime: endDateTime, timeZone: TIMEZONE },
-      conferenceData: {
-        createRequest: {
-          requestId: Math.random().toString(36).substring(7),
-          conferenceSolutionKey: { type: "hangoutsMeet" },
-        },
-      },
-      attendees: emailUsuario ? [{ email: emailUsuario }] : [],
-    };
-
-    const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?conferenceDataVersion=1&sendUpdates=none`;
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(event),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Error Google API:", data);
-      return null;
-    }
-
-    return {
-      link: data.conferenceData?.entryPoints?.[0]?.uri || null,
-      eventId: data.id
-    };
-
-  } catch (error) {
-    console.error("Error creando meeting:", error);
-    return null;
-  }
-}
-
-// 📧 4. HELPER: EMAILS
-async function sendEmail(to: string, subject: string, htmlContent: string) {
-  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-  if (!RESEND_API_KEY) return;
-  try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "SpanishNook <hola@spanishnook.com>",
-        to: [to],
-        subject: subject,
-        html: htmlContent,
+  if (email) {
+    await enviarCorreo({
+      to: email,
+      subject: en ? "Your credits are ready" : "Ya tienes tus créditos",
+      html: plantillaCorreo({
+        idioma,
+        titulo: en ? "Your credits are ready" : "Ya tienes tus créditos",
+        resumen: en ? `${creditos} credits added to your balance.` : `${creditos} créditos añadidos a tu saldo.`,
+        cuerpo:
+          parrafo(saludo(alumno?.nombre, idioma)) +
+          parrafo(en
+            ? `You have bought <strong>${creditos}</strong> credits for ${escapar(tipoTxt)}. You can use them whenever you like.`
+            : `Has comprado <strong>${creditos}</strong> créditos para ${escapar(tipoTxt)}. Puedes usarlos cuando quieras.`) +
+          nota(en ? "Choose a date in the calendar and pay with your credits in the cart." : "Elige fecha en el calendario y paga con tus créditos en el carrito."),
+        boton: { texto: en ? "Book a class" : "Reservar una clase", url: URL_RESERVAR },
       }),
     });
-  } catch (err) { console.error("Error email:", err); }
+  }
+  await enviarCorreo({
+    to: CORREO_INTERNO,
+    subject: "Compra de pack de créditos",
+    html: plantillaCorreo({
+      idioma: "es",
+      titulo: "Compra de pack de créditos",
+      cuerpo: tablaDatos([
+        ["Alumno", `${escapar(alumno?.nombre || "Alumno")} (${escapar(email ?? "")})`],
+        ["Pack", `${creditos} créditos · ${escapar(tipoClase(tipo, "es"))}`],
+        ["Importe", escapar(formatoEuros(session.amount_total, "es"))],
+      ]),
+    }),
+  });
+  return ok({ processed: "bono" });
+}
+
+// =====================================================================
+// A.2 Material didáctico
+// =====================================================================
+
+async function procesarMaterial(session: Stripe.Checkout.Session): Promise<Response> {
+  const userId = session.metadata?.user_id;
+  const materialId = parseInt(session.metadata?.material_id ?? "", 10);
+  if (!userId || !materialId) {
+    console.error(`[stripe-webhook] Material sin datos en la sesión ${session.id}`);
+    return json({ error: "Faltan datos" }, 400);
+  }
+  const { error } = await clienteAdmin().from("compras_materiales").insert({ user_id: userId, material_id: materialId });
+  if (error) {
+    if (error.code === "23505") return ok({ ignored: true });
+    console.error("[stripe-webhook] Error guardando compra de material:", error.message);
+    return json({ error: "DB Error" }, 500);
+  }
+  return ok({ processed: "material" });
+}
+
+// =====================================================================
+// A.3 Clases individuales pagadas con tarjeta
+// =====================================================================
+
+interface Resultado {
+  franja: Franja;
+  importe: number;
+}
+
+/** Inserta una reserva. Devuelve la fila, 'ya' si este mismo pago ya la tenía, o null si la franja está ocupada. */
+async function insertarReserva(f: Franja, userId: string, pi: string, importe: number) {
+  const supabase = clienteAdmin();
+  const hora = `${f.hora}:00`;
+
+  // La franja concreta (fecha Y hora) ya está confirmada por otro pago
+  const { data: ocupada } = await supabase
+    .from("reservas")
+    .select("id, stripe_payment_intent")
+    .eq("fecha", f.fecha)
+    .eq("hora", hora)
+    .eq("estado", "confirmada")
+    .maybeSingle();
+  if (ocupada) return ocupada.stripe_payment_intent === pi ? "ya" : null;
+
+  // UNIQUE(fecha, hora) incluye filas canceladas: se libera la franja antes de insertar
+  await supabase.from("reservas").delete().eq("fecha", f.fecha).eq("hora", hora).eq("estado", "cancelada");
+
+  const ahora = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("reservas")
+    .insert({
+      fecha: f.fecha, hora, estado: "confirmada", user_id: userId, stripe_payment_intent: pi,
+      precio: importe, tipo: f.tipo, created_at: ahora, updated_at: ahora,
+    })
+    .select("id, fecha, hora, tipo")
+    .single();
+  if (!error) return data;
+
+  if (error.code === "23505") {
+    // Otra entrega del mismo evento pudo insertarla a la vez
+    const { data: fila } = await supabase.from("reservas").select("stripe_payment_intent").eq("fecha", f.fecha).eq("hora", hora).maybeSingle();
+    return fila?.stripe_payment_intent === pi ? "ya" : null;
+  }
+  console.error(`[stripe-webhook] Error insertando reserva ${f.fecha} ${f.hora}: ${error.message}`);
+  return null;
+}
+
+async function procesarClases(session: Stripe.Checkout.Session): Promise<Response> {
+  const supabase = clienteAdmin();
+  const stripe = clienteStripe();
+  const meta = session.metadata ?? {};
+  const pi = idDe(session.payment_intent);
+  const userId = meta.user_id;
+  let franjas: Franja[] | null = null;
+  try {
+    franjas = leerFranjas(JSON.parse(meta.reservas ?? "[]"));
+  } catch { /* metadata corrupta */ }
+
+  if (!pi || !userId || !franjas || franjas.length === 0) {
+    console.error(`[stripe-webhook] Sesión de clases sin datos válidos: ${session.id}`);
+    await enviarCorreo({
+      to: CORREO_INTERNO,
+      subject: "Revisar pago de clases sin datos",
+      html: plantillaCorreo({ idioma: "es", titulo: "Pago de clases sin datos válidos", cuerpo: parrafo(`Sesión de Stripe: ${escapar(session.id)}. Revisa el pago en Stripe.`) }),
+    });
+    return ok({ ignored: true });
+  }
+
+  // Idempotencia: si este pago ya creó reservas o ya se reembolsó desde aquí, no se repite
+  const { data: previas } = await supabase.from("reservas").select("id").eq("stripe_payment_intent", pi).limit(1);
+  if (previas && previas.length > 0) return ok({ ignored: true });
+  const reembolsos = await stripe.refunds.list({ payment_intent: pi, limit: 10 });
+  if (reembolsos.data.some((r: { metadata?: Record<string, string> }) => r.metadata?.origen === "stripe-webhook")) return ok({ ignored: true });
+
+  // Importe real de cada línea (mismo orden que las franjas)
+  let lineas: Array<{ amount_total: number }> = [];
+  try {
+    const expandida = await stripe.checkout.sessions.retrieve(session.id, { expand: ["line_items.data"] });
+    lineas = expandida.line_items?.data ?? [];
+  } catch (e) {
+    console.error("[stripe-webhook] No se pudieron leer las líneas:", e instanceof Error ? e.message : String(e));
+  }
+
+  const alumno = await datosAlumno(userId);
+  const nombre = alumno?.nombre || session.customer_details?.name || "Alumno";
+  const email = meta.user_email || alumno?.email || session.customer_details?.email || null;
+  const idioma = resolverIdioma(meta.idioma, alumno?.idioma_nativo);
+  const zona = normalizarZona(meta.zona);
+
+  // Cada franja (fecha + hora) se comprueba e inserta por separado
+  const insertadas: Array<{ id: string; franja: Franja; meetLink: string | null }> = [];
+  const fallidas: Resultado[] = [];
+  for (const [i, f] of franjas.entries()) {
+    const importe = lineas[i]?.amount_total ?? PRECIOS[f.tipo];
+    const fila = await insertarReserva(f, userId, pi, importe);
+    if (fila === "ya") continue;
+    if (!fila) {
+      fallidas.push({ franja: f, importe });
+      continue;
+    }
+    // Evento de Google + Meet (si falla, la reserva sigue siendo válida)
+    const evento = await crearEventoClase({ nombre, email, fecha: f.fecha, hora: f.hora, tipo: f.tipo });
+    if (evento) {
+      await supabase.from("reservas").update({ meet_link: evento.link, google_event_id: evento.id }).eq("id", fila.id);
+    }
+    insertadas.push({ id: fila.id, franja: f, meetLink: evento?.link ?? null });
+  }
+
+  // Reembolso parcial de las franjas que no se pudieron reservar
+  let reembolsoOk = true;
+  const totalFallido = fallidas.reduce((s, r) => s + r.importe, 0);
+  if (fallidas.length > 0) {
+    try {
+      await stripe.refunds.create({
+        payment_intent: pi,
+        ...(insertadas.length > 0 ? { amount: totalFallido } : {}),
+        metadata: {
+          origen: "stripe-webhook",
+          motivo: "franja_no_disponible",
+          franjas: fallidas.map((r) => `${r.franja.fecha} ${r.franja.hora}`).join(", ").slice(0, 450),
+        },
+      });
+    } catch (e) {
+      reembolsoOk = false;
+      console.error(`[stripe-webhook] CRÍTICO: no se pudo reembolsar ${pi}:`, e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  await correosClases({ nombre, email, idioma, zona, insertadas, fallidas, totalFallido, reembolsoOk, pi });
+  return ok({ processed: "clases", insertadas: insertadas.length, fallidas: fallidas.length });
+}
+
+async function correosClases(d: {
+  nombre: string;
+  email: string | null;
+  idioma: Idioma;
+  zona: string;
+  insertadas: Array<{ franja: Franja; meetLink: string | null }>;
+  fallidas: Resultado[];
+  totalFallido: number;
+  reembolsoOk: boolean;
+  pi: string;
+}): Promise<void> {
+  const en = d.idioma === "en";
+  const varias = d.insertadas.length > 1;
+
+  // Alumno: confirmación de las que sí se reservaron
+  if (d.email && d.insertadas.length > 0) {
+    const bloques = d.insertadas
+      .map((r, i) =>
+        (varias ? subtitulo(`${en ? "Class" : "Clase"} ${i + 1}`) : "") +
+        tablaDatos(filasClase({ ...r.franja, meetLink: r.meetLink }, d.idioma, d.zona))
+      )
+      .join("");
+    await enviarCorreo({
+      to: d.email,
+      subject: en ? "Your class is booked" : "Tu clase está reservada",
+      html: plantillaCorreo({
+        idioma: d.idioma,
+        titulo: en ? "Booking confirmed" : "Reserva confirmada",
+        resumen: en ? "Thank you for your purchase. Here are the details of your class." : "Gracias por tu compra. Aquí tienes los datos de tu clase.",
+        cuerpo:
+          parrafo(saludo(d.nombre, d.idioma)) +
+          parrafo(en ? "Thank you for your purchase. Your booking is confirmed:" : "Gracias por tu compra. Tu reserva está confirmada:") +
+          bloques +
+          nota(en
+            ? "You can cancel up to 24 hours before the class (Madrid time) and get a credit back."
+            : "Puedes cancelar hasta 24 horas antes de la clase (hora de Madrid) y recuperar un crédito."),
+        boton: { texto: en ? "See my bookings" : "Ver mis reservas", url: URL_AREA },
+      }),
+    });
+  }
+
+  // Alumno: aviso de reembolso de las que no se pudieron reservar
+  if (d.email && d.fallidas.length > 0) {
+    const filas = d.fallidas.map((r): [string, string] => [
+      escapar(tipoClase(r.franja.tipo, d.idioma)),
+      `${escapar(formatFechaCalendario(r.franja.fecha, localeDe(d.idioma)))} · ${escapar(r.franja.hora)} (Madrid)`,
+    ]);
+    const importe = escapar(formatoEuros(d.totalFallido, d.idioma));
+    await enviarCorreo({
+      to: d.email,
+      subject: en ? "Refund: time slot no longer available" : "Reembolso: hora ya no disponible",
+      html: plantillaCorreo({
+        idioma: d.idioma,
+        titulo: en ? "Time slot no longer available" : "Esa hora ya no está disponible",
+        resumen: en ? "Someone booked the same time just before you. We are refunding you." : "Alguien reservó la misma hora justo antes. Te devolvemos el dinero.",
+        cuerpo:
+          parrafo(saludo(d.nombre, d.idioma)) +
+          parrafo(en ? "Someone booked these times just before you completed the payment:" : "Alguien reservó estas horas justo antes de que completaras el pago:") +
+          tablaDatos(filas) +
+          nota(d.reembolsoOk
+            ? (en ? `We have refunded <strong>${importe}</strong> to your card. It may take 5–10 days to appear.` : `Te hemos devuelto <strong>${importe}</strong> a la tarjeta. Puede tardar de 5 a 10 días en aparecer.`)
+            : (en ? `We will refund <strong>${importe}</strong> to your card manually in the next few days.` : `Te devolveremos <strong>${importe}</strong> a la tarjeta manualmente en los próximos días.`)),
+        boton: { texto: en ? "Choose another time" : "Elegir otra hora", url: URL_RESERVAR },
+      }),
+    });
+  }
+
+  // Paula
+  const filasPaula: Array<[string, string]> = [
+    ["Alumno", `${escapar(d.nombre)} (${escapar(d.email ?? "sin email")})`],
+    ...d.insertadas.map((r): [string, string] => [
+      escapar(tipoClase(r.franja.tipo, "es")),
+      `${escapar(formatFechaCalendario(r.franja.fecha))} · ${escapar(r.franja.hora)}`,
+    ]),
+    ...d.fallidas.map((r): [string, string] => [
+      "No reservada",
+      `${escapar(formatFechaCalendario(r.franja.fecha))} · ${escapar(r.franja.hora)} · ${escapar(formatoEuros(r.importe, "es"))}`,
+    ]),
+  ];
+  const problema = d.fallidas.length > 0;
+  await enviarCorreo({
+    to: CORREO_INTERNO,
+    subject: problema ? (d.reembolsoOk ? "Reserva con reembolso parcial" : "URGENTE: reembolso manual necesario") : "Nueva reserva (pago con tarjeta)",
+    html: plantillaCorreo({
+      idioma: "es",
+      titulo: problema ? "Reserva con franjas no disponibles" : "Nueva reserva (pago con tarjeta)",
+      cuerpo:
+        tablaDatos(filasPaula) +
+        (problema
+          ? nota(d.reembolsoOk
+            ? `Se han reembolsado automáticamente ${escapar(formatoEuros(d.totalFallido, "es"))}.`
+            : `<strong>El reembolso automático ha fallado.</strong> Reembolsa ${escapar(formatoEuros(d.totalFallido, "es"))} a mano en Stripe (pago ${escapar(d.pi)}).`)
+          : parrafo("Revisa tu Google Calendar.")),
+    }),
+  });
+}
+
+// =====================================================================
+// A.4 Curso de fechas cerradas (pago único)
+// =====================================================================
+
+async function procesarCursoCerrado(session: Stripe.Checkout.Session): Promise<Response> {
+  const supabase = clienteAdmin();
+  const meta = session.metadata ?? {};
+  const cursoId = parseInt(meta.curso_id ?? "", 10);
+  const userId = meta.user_id;
+  const pi = idDe(session.payment_intent);
+  const importe = session.amount_total ?? 0;
+  if (!cursoId || !userId) {
+    console.error(`[stripe-webhook] curso_cerrado sin datos en la sesión ${session.id}`);
+    return ok({ ignored: true });
+  }
+
+  // 1. Inscripción idempotente (una por sesión de Stripe)
+  const { data: nuevas, error: errIns } = await supabase
+    .from("inscripciones_curso")
+    .upsert({
+      curso_id: cursoId, user_id: userId, stripe_session_id: session.id,
+      stripe_payment_intent: pi, importe_centimos: importe, estado: "pagada",
+    }, { onConflict: "stripe_session_id", ignoreDuplicates: true })
+    .select("curso_id");
+  if (errIns) {
+    console.error("[stripe-webhook] Error guardando inscripción:", errIns.message);
+    return json({ error: "DB Error" }, 500); // Stripe reintentará
+  }
+  if (!nuevas || nuevas.length === 0) return ok({ ignored: true });
+
+  // 2. ¿Sigue habiendo plaza y el curso está activo?
+  const { data: curso } = await supabase
+    .from("cursos_grupales")
+    .select("id, nombre_curso, estado_curso, tipo_curso, max_estudiantes, usuarios, fecha_inicio, fecha_fin, dias_semana, horarios_curso, meet_link, google_event_id, duracion_minutos")
+    .eq("id", cursoId)
+    .maybeSingle();
+  const { count } = await supabase
+    .from("inscripciones_curso")
+    .select("curso_id", { count: "exact", head: true })
+    .eq("curso_id", cursoId)
+    .eq("estado", "pagada");
+
+  const alumno = await datosAlumno(userId);
+  const email = alumno?.email || session.customer_details?.email || null;
+  const idioma = resolverIdioma(meta.idioma, alumno?.idioma_nativo);
+
+  let motivo: string | null = null;
+  if (!curso) motivo = "el curso no existe";
+  else if (curso.estado_curso !== "Activo") motivo = `el curso está en estado ${curso.estado_curso}`;
+  else if (curso.fecha_fin && hoyMadridISO() >= curso.fecha_fin) motivo = "el curso ya ha terminado";
+  else if (curso.max_estudiantes && (count ?? 0) > curso.max_estudiantes) motivo = "el curso está completo";
+
+  if (motivo) return await rechazarCurso(session, { cursoId, nombreCurso: curso?.nombre_curso ?? `#${cursoId}`, motivo, pi, importe, email, nombre: alumno?.nombre ?? null, idioma });
+
+  // 3. Alta en el curso
+  const usuarios: string[] = (curso!.usuarios ?? []).map(String);
+  if (!usuarios.includes(userId)) {
+    const { error } = await supabase.from("cursos_grupales").update({ usuarios: [...usuarios, userId] }).eq("id", cursoId);
+    if (error) console.error("[stripe-webhook] No se pudo añadir el alumno a cursos_grupales.usuarios:", error.message);
+  }
+
+  // Invitación al evento del curso (si existe)
+  if (curso!.google_event_id && email) {
+    try {
+      const token = await tokenGoogle();
+      if (token) await anadirAsistente(token, curso!.google_event_id, email);
+    } catch (e) {
+      console.error("[stripe-webhook] Invitación al curso fallida:", e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  await correosCursoCerrado(curso!, { email, nombre: alumno?.nombre ?? null, idioma, zona: normalizarZona(meta.zona), importe });
+  return ok({ processed: "curso_cerrado" });
+}
+
+async function rechazarCurso(session: Stripe.Checkout.Session, d: {
+  cursoId: number; nombreCurso: string; motivo: string; pi: string | null; importe: number;
+  email: string | null; nombre: string | null; idioma: Idioma;
+}): Promise<Response> {
+  const supabase = clienteAdmin();
+  let reembolsoOk = false;
+  if (d.pi) {
+    try {
+      await clienteStripe().refunds.create({ payment_intent: d.pi, metadata: { origen: "stripe-webhook", motivo: "curso_no_disponible" } });
+      reembolsoOk = true;
+    } catch (e) {
+      console.error(`[stripe-webhook] CRÍTICO: no se pudo reembolsar el curso (${d.pi}):`, e instanceof Error ? e.message : String(e));
+    }
+  }
+  if (reembolsoOk) {
+    const { error } = await supabase.from("inscripciones_curso").update({ estado: "reembolsada" }).eq("stripe_session_id", session.id);
+    if (error) console.error("[stripe-webhook] No se pudo marcar la inscripción como reembolsada:", error.message);
+  }
+
+  const importe = formatoEuros(d.importe, "es");
+  await enviarCorreo({
+    to: CORREO_INTERNO,
+    subject: reembolsoOk ? "Inscripción a curso reembolsada" : "URGENTE: reembolso manual de curso",
+    html: plantillaCorreo({
+      idioma: "es",
+      titulo: "Inscripción a curso no válida",
+      cuerpo:
+        tablaDatos([
+          ["Curso", escapar(d.nombreCurso)],
+          ["Alumno", `${escapar(d.nombre ?? "Alumno")} (${escapar(d.email ?? "sin email")})`],
+          ["Motivo", escapar(d.motivo)],
+          ["Importe", escapar(importe)],
+        ]) +
+        nota(reembolsoOk ? "Se ha reembolsado el pago completo." : `<strong>El reembolso automático ha fallado.</strong> Reembolsa a mano en Stripe (pago ${escapar(d.pi ?? session.id)}).`),
+    }),
+  });
+
+  if (d.email) {
+    const en = d.idioma === "en";
+    await enviarCorreo({
+      to: d.email,
+      subject: en ? "We could not complete your enrolment" : "No hemos podido completar tu inscripción",
+      html: plantillaCorreo({
+        idioma: d.idioma,
+        titulo: en ? "Enrolment not completed" : "Inscripción no completada",
+        cuerpo:
+          parrafo(saludo(d.nombre, d.idioma)) +
+          parrafo(en
+            ? `There are no places left in <strong>${escapar(d.nombreCurso)}</strong> or it is no longer open for enrolment.`
+            : `No quedan plazas en <strong>${escapar(d.nombreCurso)}</strong> o ya no admite inscripciones.`) +
+          nota(en
+            ? `We are refunding <strong>${escapar(formatoEuros(d.importe, "en"))}</strong> to your card. It may take 5–10 days to appear.`
+            : `Te devolvemos <strong>${escapar(importe)}</strong> a la tarjeta. Puede tardar de 5 a 10 días en aparecer.`),
+        boton: { texto: en ? "See other courses" : "Ver otros cursos", url: URL_CURSOS },
+      }),
+    });
+  }
+  return ok({ processed: "curso_cerrado", refunded: reembolsoOk });
+}
+
+// deno-lint-ignore no-explicit-any
+async function correosCursoCerrado(curso: any, d: { email: string | null; nombre: string | null; idioma: Idioma; zona: string; importe: number }) {
+  const en = d.idioma === "en";
+  const duracion = Number(curso.duracion_minutos) > 0 ? Number(curso.duracion_minutos) : 90;
+  const hora = primeraHora(curso.horarios_curso);
+  const meet = enlaceSeguro(curso.meet_link);
+  const fechas = `${fechaCorta(curso.fecha_inicio)} – ${fechaCorta(curso.fecha_fin)}`;
+
+  const filas: Array<[string, string]> = [
+    [en ? "Course" : "Curso", escapar(curso.nombre_curso)],
+    [en ? "Dates" : "Fechas", escapar(fechas)],
+    [en ? "Days" : "Días", escapar(textoDias(curso.dias_semana, d.idioma))],
+  ];
+  if (hora) {
+    filas.push([en ? "Time (Madrid)" : "Hora (Madrid)", escapar(rangoHoraMadrid(hora, duracion))]);
+    // Hora del alumno, calculada con la fecha de inicio (el horario de verano puede moverla)
+    if (d.zona !== ZONA_ESCUELA && esFechaISO(curso.fecha_inicio)) {
+      const local = rangoHoraEnZona(curso.fecha_inicio, hora, duracion, d.zona);
+      if (local !== rangoHoraMadrid(hora, duracion)) {
+        const ciudad = d.zona.split("/").pop()?.replace(/_/g, " ") ?? d.zona;
+        filas.push([`${en ? "Your time" : "Tu hora"} (${escapar(ciudad)})`, escapar(local)]);
+      }
+    }
+  }
+  filas.push([en ? "Total paid" : "Total pagado", escapar(formatoEuros(d.importe, d.idioma))]);
+
+  if (d.email) {
+    await enviarCorreo({
+      to: d.email,
+      subject: en ? "You're enrolled in the course" : "Ya estás inscrito/a en el curso",
+      html: plantillaCorreo({
+        idioma: d.idioma,
+        titulo: en ? "Enrolment confirmed" : "Inscripción confirmada",
+        resumen: en ? `Your place in ${curso.nombre_curso} is confirmed.` : `Tu plaza en ${curso.nombre_curso} está confirmada.`,
+        cuerpo:
+          parrafo(saludo(d.nombre, d.idioma)) +
+          parrafo(en ? "Thank you for your purchase. Your place is confirmed:" : "Gracias por tu compra. Tu plaza está confirmada:") +
+          tablaDatos(filas) +
+          nota(meet
+            ? (en ? "The button below is the link for every class of the course. You will also find it in your personal area." : "El botón de abajo es el enlace para todas las clases del curso. También lo tienes en tu área personal.")
+            : (en ? "We will send you the class link before the course starts. You will also find it in your personal area." : "Te enviaremos el enlace de la clase antes de que empiece el curso. También lo tendrás en tu área personal.")),
+        boton: meet ? { texto: en ? "Join the class" : "Entrar en la clase", url: meet } : { texto: en ? "Go to my area" : "Ir a mi área", url: URL_AREA },
+      }),
+    });
+  }
+  await enviarCorreo({
+    to: CORREO_INTERNO,
+    subject: "Nueva inscripción en curso",
+    html: plantillaCorreo({
+      idioma: "es",
+      titulo: "Nueva inscripción en curso",
+      cuerpo: tablaDatos([
+        ["Alumno", `${escapar(d.nombre ?? "Alumno")} (${escapar(d.email ?? "sin email")})`],
+        ["Curso", escapar(curso.nombre_curso)],
+        ["Fechas", escapar(fechas)],
+        ["Importe", escapar(formatoEuros(d.importe, "es"))],
+      ]),
+    }),
+  });
+}
+
+// =====================================================================
+// A) Webhook
+// =====================================================================
+
+async function webhook(req: Request, firma: string): Promise<Response> {
+  const secreto = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+  if (!secreto) return errores.interno("Configuración incompleta.");
+
+  let evento: Stripe.Event;
+  try {
+    evento = await eventoVerificado(await req.text(), firma, secreto);
+  } catch (e) {
+    console.error("[stripe-webhook] Firma no válida:", e instanceof Error ? e.message : String(e));
+    return json({ error: "Firma no válida." }, 400);
+  }
+
+  if (evento.type === "checkout.session.completed") {
+    const session = evento.data.object as Stripe.Checkout.Session;
+    if (session.payment_status === "unpaid") return ok({ ignored: true });
+    const meta = session.metadata ?? {};
+    if (meta.tipo_compra === "bono_creditos") return await procesarBono(session);
+    if (meta.tipo === "curso_cerrado") return await procesarCursoCerrado(session);
+    if (meta.tipo === "material_didactico") return await procesarMaterial(session);
+    if (meta.reservas) return await procesarClases(session);
+    return ok();
+  }
+
+  if (evento.type === "charge.refunded") {
+    const charge = evento.data.object as Stripe.Charge;
+    const pi = idDe(charge.payment_intent);
+    // Solo un reembolso TOTAL cancela; los parciales (franjas fallidas) no tocan las reservas válidas
+    if (pi && charge.refunded) {
+      const supabase = clienteAdmin();
+      await supabase.from("reservas").update({ estado: "cancelada" }).eq("stripe_payment_intent", pi);
+      await supabase.from("inscripciones_curso").update({ estado: "reembolsada" }).eq("stripe_payment_intent", pi);
+    }
+  }
+  return ok();
+}
+
+// =====================================================================
+// B) Checkout de clases individuales (desde CarritoCompra.vue)
+// =====================================================================
+
+async function crearCheckoutClases(req: Request): Promise<Response> {
+  const user = await usuarioDesdePeticion(req);
+  if (!user) return errores.sinSesion();
+
+  const body = await leerJson(req);
+  if (!body) return errores.entrada("JSON no válido.");
+  const franjas = leerFranjas(body.reservas);
+  if (!franjas || franjas.length === 0) return errores.entrada("Faltan las clases o no son válidas.");
+  if (franjas.length > MAX_CLASES_POR_PAGO) return errores.entrada(`Máximo ${MAX_CLASES_POR_PAGO} clases por pago.`);
+  const claves = franjas.map((f) => `${f.fecha} ${f.hora}`);
+  if (new Set(claves).size !== claves.length) return errores.entrada("Hay clases repetidas.");
+
+  // Validación en servidor de cada franja (calendario, 24 h, reservas y cursos)
+  const supabase = clienteAdmin();
+  const noValidas: Array<{ fecha: string; hora: string }> = [];
+  for (const f of franjas) {
+    const { data, error } = await supabase.rpc("franja_reservable", { p_fecha: f.fecha, p_hora: f.hora });
+    if (error) {
+      console.error("[stripe-webhook] Error en franja_reservable:", error.message);
+      return errores.interno("No se pudo comprobar la disponibilidad.");
+    }
+    if (data !== true) noValidas.push({ fecha: f.fecha, hora: f.hora });
+  }
+  if (noValidas.length > 0) {
+    return errores.conflicto("Algunas horas ya no están disponibles.", { franjasNoValidas: noValidas });
+  }
+
+  const metaReservas = JSON.stringify(franjas.map(({ fecha, hora, tipo }) => ({ fecha, hora, tipo })));
+  if (metaReservas.length > LIMITE_METADATA) return errores.entrada("Demasiadas clases en un solo pago. Divide la compra.");
+
+  const idioma = idiomaDesde(body.idioma);
+  const en = idioma === "en";
+  const zona = normalizarZona(body.zonaHoraria);
+  const origen = origenSeguro(req);
+
+  const session = await clienteStripe().checkout.sessions.create({
+    payment_method_types: ["card"],
+    mode: "payment",
+    line_items: franjas.map((f) => ({
+      price_data: {
+        currency: "eur",
+        product_data: {
+          name: `${tipoClase(f.tipo, idioma ?? "es")} (${fechaCorta(f.fecha)} ${f.hora} ${en ? "Madrid time" : "hora de Madrid"})`,
+        },
+        unit_amount: PRECIOS[f.tipo],
+      },
+      quantity: 1,
+    })),
+    customer_email: user.email ?? undefined,
+    expires_at: caducidadCheckout(),
+    success_url: `${origen}/AreaPersonal?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${origen}/CarritoCompra`,
+    metadata: {
+      reservas: metaReservas,
+      user_id: user.id,
+      user_email: user.email ?? "",
+      ...(idioma ? { idioma } : {}),
+      ...(zona !== ZONA_ESCUELA ? { zona } : {}),
+    },
+  });
+  return json({ url: session.url });
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
+  const pre = preflight(req);
+  if (pre) return pre;
+  if (req.method !== "POST") return errores.metodo();
 
   try {
-    const stripeSig = req.headers.get("stripe-signature");
-
-    // ==========================================
-    // A. WEBHOOK (STRIPE NOTIFICA EL PAGO)
-    // ==========================================
-    if (stripeSig) {
-      const rawBody = await req.text();
-      const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
-      if (!webhookSecret) return new Response("Config Error", { status: 500 });
-
-      let event;
-      try {
-        event = await stripe.webhooks.constructEventAsync(rawBody, stripeSig, webhookSecret);
-      } catch (err: any) {
-        return new Response(`Webhook Error: ${err.message}`, { status: 400 });
-      }
-
-      if (event.type === "checkout.session.completed") {
-        const session = event.data.object as any;
-
-        // Extraemos el ID del pago
-        const paymentIntentId = typeof session.payment_intent === "string"
-          ? session.payment_intent
-          : session.payment_intent?.id;
-
-        // ========================================================
-        // 🔥 LÓGICA 1: COMPRA DE BONO DE CRÉDITOS
-        // ========================================================
-        if (session.metadata?.tipo_compra === 'bono_creditos') {
-            console.log(`💰 Procesando compra de bono. Sesión: ${session.id}`);
-
-            const userId = session.metadata.user_id;
-            const creditosSumar = parseInt(session.metadata.creditos_a_sumar || "0", 10);
-            const tipoCredito = session.metadata.tipo_credito;
-            const sessionId = session.id;
-
-            // 1. ESCUDO ATÓMICO EN BASE DE DATOS
-            // La base de datos es la única que decide si esto se suma o no.
-            const { data: fueProcesado, error: errRpc } = await supabase.rpc('procesar_bono_seguro', {
-                p_user_id: userId,
-                p_session_id: sessionId,
-                p_cantidad: creditosSumar,
-                p_tipo: tipoCredito
-            });
-
-            if (errRpc) {
-                console.error("❌ Error CRÍTICO en la base de datos procesando bono:", errRpc);
-                return new Response("DB Error", { status: 500 });
-            }
-
-            // 2. COMPROBACIÓN DEL ESCUDO
-            if (fueProcesado === false) {
-                // El SQL detectó que el id_pago ya existía y abortó la suma.
-                console.warn(`🛡️ BLOQUEO DE DUPLICADO: La sesión ${sessionId} ya ha sido procesada previamente.`);
-                return new Response(JSON.stringify({ received: true, ignored: true }), { status: 200, headers: corsHeaders });
-            }
-
-            console.log(`✅ SALDO ACTUALIZADO: +${creditosSumar} créditos tipo ${tipoCredito} para usuario ${userId}`);
-
-            // 3. ENVÍO DE CORREOS (Solo llega aquí si la BD confirmó que es un pago nuevo)
-            try {
-                // Obtenemos los datos limpios para el email
-                const { data: usuarioBD } = await supabase.from('datos_usuarios').select('nombre, email').eq('user_id', userId).single();
-
-                const emailCliente = usuarioBD?.email || session.customer_details?.email;
-                const nombreCliente = usuarioBD?.nombre || "Estudiante";
-                const tipoES = tipoCredito === 'normal' ? 'individuales' : 'de conversación';
-                const tipoEN = tipoCredito === 'normal' ? 'individual' : 'conversation';
-
-                const htmlPack = generarEmailCompraPack(nombreCliente, creditosSumar, tipoES, tipoEN);
-
-                await Promise.all([
-                    sendEmail(emailCliente, "Confirmación compra pack de créditos / Credits pack purchase confirmation", htmlPack),
-                    sendEmail("paulaf@spanishnook.com", "🔔 ¡Han comprado un Pack de Créditos!", `<p>Alumno: <strong>${nombreCliente}</strong> ha sumado ${creditosSumar} créditos ${tipoES}.</p>`)
-                ]);
-            } catch (mailErr) {
-                console.error("⚠️ Error enviando correos, pero los créditos están a salvo:", mailErr);
-            }
-
-            return new Response(JSON.stringify({ received: true, processed: 'bono' }), { status: 200, headers: corsHeaders });
-        }
-
-        // ========================================================
-        // 🗓️ LÓGICA 2: COMPRA DE RESERVAS INDIVIDUALES
-        // ========================================================
-
-        // 🛡️ ESCUDO PARA CLASES INDIVIDUALES 🛡️
-        if (paymentIntentId) {
-            const { data: yaProcesado } = await supabase
-                .from("reservas")
-                .select("id")
-                .eq("stripe_payment_intent", paymentIntentId)
-                .maybeSingle();
-
-            if (yaProcesado) {
-                console.log("🛡️ Pago duplicado bloqueado:", paymentIntentId);
-                return new Response(JSON.stringify({ received: true, ignored: true }), { status: 200, headers: corsHeaders });
-            }
-        }
-
-        const userId = session.metadata?.user_id;
-        const rawReservas = session.metadata?.reservas ?? "[]";
-
-        // Obtener nombre de la BD para no usar "Miguel2"
-        let customerName = "Estudiante";
-        const { data: userData } = await supabase.from('datos_usuarios').select('nombre').eq('user_id', userId).maybeSingle();
-        if (userData?.nombre) {
-            customerName = userData.nombre;
-        } else if (session.customer_details?.name) {
-            customerName = session.customer_details.name;
-        }
-
-        const customerEmail = session.metadata?.user_email || session.customer_details?.email;
-
-        let reservas = [];
-        try { reservas = JSON.parse(rawReservas); } catch {}
-
-        if (Array.isArray(reservas) && reservas.length > 0 && userId && paymentIntentId) {
-
-          const { data: ocupadas } = await supabase.from("reservas")
-            .select("fecha, hora")
-            .eq("estado", "confirmada")
-            .in("fecha", reservas.map((r: any) => r.fecha))
-            .in("hora", reservas.map((r: any) => r.hora + ":00"));
-
-          if (ocupadas && ocupadas.length > 0) {
-            console.log("⚠️ Colisión detectada. Iniciando reembolso...");
-            try {
-                await stripe.refunds.create({ payment_intent: paymentIntentId });
-            } catch (e) {
-                console.error("Error procesando reembolso:", e);
-            }
-
-            if (customerEmail) {
-                await sendEmail(customerEmail, "Reembolso: Hueco no disponible / Refund: Slot not available", `<p>Hola ${customerName}, lo sentimos, el hueco fue ocupado. Hemos emitido el reembolso.</p>`);
-            }
-            return new Response(JSON.stringify({ error: "Slot taken, refunded" }), { status: 409 });
-          }
-
-          let lineItems = [];
-          try {
-            const sessionExpanded = await stripe.checkout.sessions.retrieve(session.id, { expand: ['line_items.data'] });
-            lineItems = sessionExpanded.line_items?.data || [];
-          } catch (e) {}
-
-          const promesasGoogle = reservas.map(async (r: any) => {
-             const googleData = await createMeeting(customerName, customerEmail, r.fecha, r.hora, r.tipo);
-             return { ...r, googleData };
-          });
-          const reservasConGoogle = await Promise.all(promesasGoogle);
-
-          const reservasToInsert = [];
-          for (let i = 0; i < reservasConGoogle.length; i++) {
-             const r = reservasConGoogle[i];
-             const precio = lineItems[i] ? lineItems[i].amount_total : (r.tipo === 'conversacion' ? 2700 : 3200);
-
-             reservasToInsert.push({
-               fecha: r.fecha,
-               hora: r.hora + ":00",
-               estado: "confirmada",
-               user_id: userId,
-               stripe_payment_intent: paymentIntentId,
-               precio: precio,
-               tipo: r.tipo,
-               meet_link: r.googleData?.link || null,
-               google_event_id: r.googleData?.eventId || null,
-               created_at: new Date().toISOString(),
-               updated_at: new Date().toISOString()
-             });
-          }
-
-          const { data: reservasInsertadas, error } = await supabase.from("reservas").insert(reservasToInsert).select();
-
-          if (!error && customerEmail && reservasInsertadas) {
-             const listaHtmlES = reservasInsertadas.map((r: any) => {
-               const clase = r.tipo === 'normal' ? 'Clase Individual' : 'Clase de Conversación';
-               return `<li style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">📅 <strong>Fecha:</strong> ${r.fecha}<br>⏰ <strong>Hora:</strong> ${r.hora.substring(0,5)} (Madrid)<br>🎓 <strong>Tipo:</strong> ${clase}</li>`;
-             }).join('');
-
-             const listaHtmlEN = reservasInsertadas.map((r: any) => {
-               const clase = r.tipo === 'normal' ? 'Individual Class' : 'Conversation Class';
-               return `<li style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">📅 <strong>Date:</strong> ${r.fecha}<br>⏰ <strong>Time:</strong> ${r.hora.substring(0,5)} (Madrid)<br>🎓 <strong>Type:</strong> ${clase}</li>`;
-             }).join('');
-
-             const htmlFinalAlumno = generarEmailCompraIndividual(customerName, listaHtmlES, listaHtmlEN);
-             await sendEmail(customerEmail, "Confirmación compra en Spanish Nook / Purchase Confirmation", htmlFinalAlumno);
-
-             const resumenPaula = reservasInsertadas.map((r: any) => `<li>📅 <b>${r.fecha}</b> a las <b>${r.hora.substring(0,5)}</b><br>👤 ${customerName} (${customerEmail})<br>🎓 Tipo: ${r.tipo}</li>`).join('<br>');
-
-             await sendEmail("paulaf@spanishnook.com", "🔔 ¡Nueva Reserva (Pago Directo)!", `
-               <div style="font-family: sans-serif; color: #333;">
-                 <h2 style="color: #60aad8;">¡Tienes clase nueva!</h2>
-                 <p>Un alumno ha reservado pagando directamente:</p>
-                 <ul>${resumenPaula}</ul>
-                 <p>Revisa tu Google Calendar.</p>
-               </div>
-             `);
-          }
-        }
-
-        // ========================================================
-        // 📚 LÓGICA 3: COMPRA DE MATERIALES DIDÁCTICOS (PDF)
-        // ========================================================
-        if (session.metadata?.tipo === 'material_didactico') {
-            console.log(`📚 Procesando compra de material. Sesión: ${session.id}`);
-
-            const userId = session.metadata.user_id;
-            const materialId = parseInt(session.metadata.material_id, 10);
-
-            if (!userId || !materialId) {
-                console.error("❌ Faltan datos en los metadatos de Stripe para el material.");
-                return new Response("Faltan datos", { status: 400 });
-            }
-
-            // Insertamos la compra ajustada a tus columnas reales
-            const { error: errorCompra } = await supabase
-                .from('compras_materiales')
-                .insert({
-                    user_id: userId,
-                    material_id: materialId
-                });
-
-            if (errorCompra) {
-                if (errorCompra.code === '23505') {
-                    console.log("⚠️ El usuario ya tenía este material comprado.");
-                    return new Response(JSON.stringify({ received: true, ignored: true }), { status: 200, headers: corsHeaders });
-                }
-                console.error("❌ Error guardando la compra del material:", errorCompra);
-                return new Response("DB Error", { status: 500 });
-            }
-
-            console.log(`✅ Material ${materialId} desbloqueado para el usuario ${userId}`);
-            return new Response(JSON.stringify({ received: true, processed: 'material' }), { status: 200, headers: corsHeaders });
-        }
-      } // <--- ¡AQUÍ SE CIERRA EL CHECKOUT.SESSION.COMPLETED!
-
-      // REEMBOLSOS
-      if (event.type === "charge.refunded") {
-         const charge = event.data.object as any;
-         if(charge.payment_intent) {
-           await supabase.from("reservas").update({ estado: "cancelada" }).eq("stripe_payment_intent", charge.payment_intent);
-         }
-      }
-
-      return new Response(JSON.stringify({ received: true }), { status: 200, headers: corsHeaders });
-    }
-
-    // ==========================================
-    // B. FRONTEND (CREAR SESIÓN DE PAGO INDIVIDUAL)
-    // ==========================================
-    const body = await req.json().catch(() => null);
-    if (!body) return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
-
-    const { reservas, user_id, user_email } = body;
-    if (!reservas) return new Response("Missing data", { status: 400, headers: corsHeaders });
-
-    const line_items = reservas.map((reserva: any) => {
-        const esNormal = reserva.tipo === 'normal';
-        return {
-          price_data: {
-            currency: 'eur',
-            product_data: { name: `${esNormal ? 'Clase General' : 'Clase Conversación'} (${reserva.fecha})` },
-            unit_amount: esNormal ? 3200 : 2700,
-          },
-          quantity: 1,
-        };
-    });
-
-    const origin = req.headers.get("origin") || "http://localhost:9000";
-
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-      line_items,
-      success_url: `${origin}/AreaPersonal?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/CarritoCompra`,
-      metadata: {
-        reservas: JSON.stringify(reservas),
-        user_id,
-        user_email
-      }
-    });
-
-    return new Response(JSON.stringify({ url: session.url }), { status: 200, headers: corsHeaders });
-
-  } catch (err: any) {
-    console.error("Server Error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+    const firma = req.headers.get("stripe-signature");
+    if (firma) return await webhook(req, firma);
+    return await crearCheckoutClases(req);
+  } catch (e) {
+    console.error("[stripe-webhook] Error:", e instanceof Error ? e.message : String(e));
+    return errores.interno();
   }
 });

@@ -1,255 +1,169 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "jsr:@supabase/supabase-js@2";
+/**
+ * crear-meet — Google Calendar / Meet.
+ *
+ * Quién puede llamarla:
+ *  - Llamada interna (Bearer = clave de servicio) o admin: todas las acciones.
+ *  - Usuario con sesión: solo { reservaId } de una reserva suya y confirmada.
+ *
+ * Acciones (POST):
+ *  - { reservaId }                                   → evento individual (1 h) + Meet. Respuesta { success, meetLink }
+ *  - { esCurso: true, fecha, hora, nombreCurso, duracionMinutos?, diasSemana?, fechaFin? }
+ *                                                    → evento semanal del curso. Respuesta { ok, meetLink, googleEventId }
+ *  - { action: 'add_attendee', eventId, email }      → invita a un alumno. Respuesta { success }
+ *  - { action: 'delete', eventId }                   → borra un evento. Respuesta { success }
+ */
+import {
+  clienteAdmin,
+  errores,
+  esAdmin,
+  esLlamadaInterna,
+  esUuid,
+  json,
+  leerJson,
+  preflight,
+  usuarioDesdePeticion,
+} from "../_shared/auth.ts";
+import { anadirAsistente, borrarEvento, crearEvento, crearEventoClase, horarioEvento, peticionMeet, tokenGoogle } from "../_shared/google.ts";
+import { esFechaISO, normalizarHora } from "../_shared/fechas.ts";
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") || "",
-  Deno.env.get("SERVICE_ROLE_KEY") || ""
-);
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Content-Type": "application/json"
+const DIAS_RRULE: Record<string, string> = {
+  lunes: "MO", martes: "TU", miercoles: "WE", jueves: "TH", viernes: "FR", sabado: "SA", domingo: "SU",
 };
 
-const TIMEZONE = "Europe/Madrid";
+function sinTildes(s: string): string {
+  return s.toLowerCase().trim().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
 
-// 🔄 TOKEN
-async function getGoogleAccessToken() {
-  const clientId = Deno.env.get("GOOGLE_CLIENT_ID");
-  const clientSecret = Deno.env.get("GOOGLE_CLIENT_SECRET");
-  const refreshToken = Deno.env.get("GOOGLE_REFRESH_TOKEN");
+/** Evento recurrente semanal de un curso grupal. */
+async function crearEventoCurso(body: Record<string, unknown>): Promise<Response> {
+  const fecha = body.fecha;
+  const hora = normalizarHora(body.hora);
+  const nombreCurso = typeof body.nombreCurso === "string" ? body.nombreCurso.slice(0, 200) : "";
+  if (!esFechaISO(fecha) || !hora || !nombreCurso) return errores.entrada("Faltan fecha, hora o nombreCurso.");
 
-  if (!clientId || !clientSecret || !refreshToken) throw new Error("Faltan credenciales OAuth2");
+  const duracion = Number(body.duracionMinutos) > 0 && Number(body.duracionMinutos) <= 480 ? Number(body.duracionMinutos) : 90;
 
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("client_secret", clientSecret);
-  params.append("refresh_token", refreshToken);
-  params.append("grant_type", "refresh_token");
+  let regla = "RRULE:FREQ=WEEKLY";
+  if (Array.isArray(body.diasSemana)) {
+    const dias = body.diasSemana.map((d) => DIAS_RRULE[sinTildes(String(d))]).filter(Boolean);
+    if (dias.length) regla += `;BYDAY=${[...new Set(dias)].join(",")}`;
+  }
+  const fechaFin = body.fechaFin;
+  if (esFechaISO(fechaFin)) regla += `;UNTIL=${fechaFin.replace(/-/g, "")}T235959Z`;
 
-  const res = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString(),
+  const token = await tokenGoogle();
+  if (!token) return errores.interno("No se pudo conectar con Google Calendar.");
+
+  const resultado = await crearEvento(token, {
+    summary: `CURSO: ${nombreCurso}`,
+    description: "Clase Grupal - Spanish Nook",
+    ...horarioEvento(fecha, hora, duracion),
+    recurrence: [regla],
+    conferenceData: peticionMeet(),
   });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error("Error obteniendo token");
-  return data.access_token;
+  return json({ ok: true, meetLink: resultado.link, googleEventId: resultado.id });
 }
 
-// 🗓️ CREAR EVENTO
-async function crearEventoGoogle(token: string, calendarId: string, eventData: any) {
-    // Añadimos sendUpdates=all para que Google mande emails si es necesario
-    const res = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?conferenceDataVersion=1&sendUpdates=none`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      }
-    );
-    const data = await res.json();
-    if (!res.ok) {
-        console.error("Google API Error:", data);
-        throw new Error(`Google API Error: ${data.error?.message || 'Unknown'}`);
-    }
-    return { link: data.conferenceData?.entryPoints?.[0]?.uri, id: data.id };
-}
+/** Evento individual para una reserva. Si ya tiene evento, devuelve el enlace existente. */
+async function crearEventoReserva(reservaId: string, userId: string | null): Promise<Response> {
+  const supabase = clienteAdmin();
+  const { data: reserva, error } = await supabase
+    .from("reservas")
+    .select("id, user_id, fecha, hora, tipo, estado, meet_link, google_event_id")
+    .eq("id", reservaId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!reserva) return errores.noEncontrado("Reserva no encontrada.");
 
-// ➕ AÑADIR ASISTENTE (ESTA ES LA FUNCIÓN QUE FALTABA)
-async function anadirAsistente(token: string, calendarId: string, eventId: string, email: string) {
-    // 1. Obtener evento actual para no borrar a los otros asistentes
-    const getRes = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}`,
-        { headers: { "Authorization": `Bearer ${token}` } }
-    );
+  // Un alumno solo puede crear el Meet de su propia reserva confirmada
+  if (userId !== null && (reserva.user_id !== userId || reserva.estado !== "confirmada")) {
+    return errores.prohibido();
+  }
 
-    if (!getRes.ok) {
-        // Si el evento ya no existe (404), lanzamos error específico
-        if (getRes.status === 404) throw new Error("Event not found (404)");
-        const err = await getRes.json();
-        throw new Error(`Error recuperando evento: ${err.error?.message}`);
-    }
+  // Idempotente: no crear dos eventos para la misma reserva
+  if (reserva.google_event_id) return json({ success: true, meetLink: reserva.meet_link });
 
-    const event = await getRes.json();
+  const { data: usuario } = await supabase
+    .from("datos_usuarios")
+    .select("email, nombre")
+    .eq("user_id", reserva.user_id)
+    .maybeSingle();
 
-    // 2. Añadir nuevo email a la lista existente
-    const attendees = event.attendees || [];
+  const evento = await crearEventoClase({
+    nombre: usuario?.nombre || "Alumno",
+    email: usuario?.email,
+    fecha: String(reserva.fecha),
+    hora: String(reserva.hora).slice(0, 5),
+    tipo: reserva.tipo ?? "normal",
+    reservaId: reserva.id,
+  });
+  if (!evento) return errores.interno("No se pudo crear el evento en Google Calendar.");
 
-    // Evitar duplicados (si ya está, no hacemos nada)
-    if (!attendees.some((a: any) => a.email === email)) {
-        attendees.push({ email: email });
+  const { error: errUpd } = await supabase
+    .from("reservas")
+    .update({ meet_link: evento.link, google_event_id: evento.id })
+    .eq("id", reserva.id);
+  if (errUpd) console.error("[crear-meet] Evento creado pero no guardado en la reserva:", errUpd.message);
 
-        // 3. Actualizar evento (PATCH)
-        const patchRes = await fetch(
-            `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}?sendUpdates=all`,
-            {
-                method: "PATCH",
-                headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ attendees }),
-            }
-        );
-        const patchData = await patchRes.json();
-        if (!patchRes.ok) throw new Error(`Error actualizando asistentes: ${patchData.error?.message}`);
-    }
-
-    return true;
-}
-
-// 🗑️ BORRAR EVENTO
-async function borrarEventoGoogle(token: string, calendarId: string, eventId: string) {
-    const res = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}?sendUpdates=all`,
-      {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        }
-      }
-    );
-    if (!res.ok && res.status !== 404 && res.status !== 410) {
-        const text = await res.text();
-        throw new Error(`Error borrando evento: ${text}`);
-    }
-    return true;
+  return json({ success: true, meetLink: evento.link });
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
+  const pre = preflight(req);
+  if (pre) return pre;
+  if (req.method !== "POST") return errores.metodo();
 
   try {
-    const body = await req.json();
-    const calendarId = Deno.env.get("GOOGLE_CALENDAR_ID");
-    if (!calendarId) throw new Error("Falta GOOGLE_CALENDAR_ID");
+    // Identidad: interna, admin o alumno
+    const interna = esLlamadaInterna(req);
+    let userId: string | null = null;
+    let admin = false;
+    if (!interna) {
+      const user = await usuarioDesdePeticion(req);
+      if (!user) return errores.sinSesion();
+      userId = user.id;
+      admin = await esAdmin(user.id);
+    }
+    const privilegiado = interna || admin;
 
-    const accessToken = await getGoogleAccessToken();
+    const body = await leerJson(req);
+    if (!body) return errores.entrada("JSON no válido.");
 
-    // ============================================================
-    // CASO NUEVO: AÑADIR ASISTENTE (INVITACIÓN)
-    // ============================================================
-    if (body.action === 'add_attendee') {
-        const { eventId, email } = body;
-        if (!eventId || !email) throw new Error("Falta eventId o email");
+    // Acciones de cursos: solo interna o admin
+    if (body.action === "add_attendee" || body.action === "delete" || body.esCurso) {
+      if (!privilegiado) return errores.prohibido();
 
-        console.log(`📧 Procesando invitación para ${email} en evento ${eventId}`);
-        await anadirAsistente(accessToken, calendarId, eventId, email);
+      if (body.action === "add_attendee") {
+        const eventId = typeof body.eventId === "string" ? body.eventId : "";
+        const email = typeof body.email === "string" ? body.email.trim() : "";
+        if (!eventId || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return errores.entrada("Falta eventId o email.");
+        const token = await tokenGoogle();
+        if (!token) return errores.interno("No se pudo conectar con Google Calendar.");
+        await anadirAsistente(token, eventId, email);
+        return json({ success: true });
+      }
 
-        return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders });
+      if (body.action === "delete") {
+        const eventId = typeof body.eventId === "string" ? body.eventId : "";
+        if (!eventId) return errores.entrada("Falta eventId.");
+        const token = await tokenGoogle();
+        if (!token) return errores.interno("No se pudo conectar con Google Calendar.");
+        await borrarEvento(token, eventId);
+        return json({ success: true });
+      }
+
+      return await crearEventoCurso(body);
     }
 
-    // ============================================================
-    // CASO X: BORRAR EVENTO
-    // ============================================================
-    if (body.action === 'delete') {
-        if (!body.eventId) throw new Error("Falta eventId para borrar");
-
-        console.log(`🗑️ Solicitud de borrado para evento: ${body.eventId}`);
-        await borrarEventoGoogle(accessToken, calendarId, body.eventId);
-
-        return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders });
+    // Reserva individual
+    if (body.reservaId !== undefined) {
+      if (!esUuid(body.reservaId)) return errores.entrada("reservaId no válido.");
+      return await crearEventoReserva(body.reservaId, privilegiado ? null : userId);
     }
 
-    // ============================================================
-    // CASO A: CURSO RECURRENTE (ADMIN)
-    // ============================================================
-    if (body.esCurso) {
-        const { fecha, hora, nombreCurso, duracionMinutos, diasSemana, fechaFin } = body;
-        const duracion = duracionMinutos || 90;
-
-        const horaLimpia = hora.substring(0, 5);
-        const [h, m] = horaLimpia.split(':').map(Number);
-
-        const totalMin = h * 60 + m + duracion;
-        const endH = Math.floor(totalMin / 60);
-        const endM = totalMin % 60;
-        const endHoraStr = `${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')}`;
-
-        const startDateTime = `${fecha}T${horaLimpia}:00`;
-        const endDateTime = `${fecha}T${endHoraStr}:00`;
-
-        let recurrenceRule = "RRULE:FREQ=WEEKLY";
-
-        if (diasSemana && Array.isArray(diasSemana) && diasSemana.length > 0) {
-            const diasMap: any = { "Lunes": "MO", "Martes": "TU", "Miércoles": "WE", "Miercoles": "WE", "Jueves": "TH", "Viernes": "FR", "Sábado": "SA", "Domingo": "SU" };
-            const diasGoogle = diasSemana
-                .map(d => diasMap[d] || diasMap[d.charAt(0).toUpperCase() + d.slice(1)])
-                .filter(d => d)
-                .join(",");
-            if (diasGoogle) recurrenceRule += `;BYDAY=${diasGoogle}`;
-        }
-
-        if (fechaFin && fechaFin.length > 5) {
-            const fechaFinLimpia = fechaFin.replace(/-/g, '');
-            recurrenceRule += `;UNTIL=${fechaFinLimpia}T235959Z`;
-        }
-
-        console.log(`📚 Creando curso recurrente: ${recurrenceRule}`);
-
-        const event = {
-            summary: `CURSO: ${nombreCurso}`,
-            description: `Clase Grupal - Spanish Nook`,
-            start: { dateTime: startDateTime, timeZone: TIMEZONE },
-            end: { dateTime: endDateTime, timeZone: TIMEZONE },
-            recurrence: [recurrenceRule],
-            conferenceData: { createRequest: { requestId: Math.random().toString(36).substring(7), conferenceSolutionKey: { type: "hangoutsMeet" } } },
-        };
-
-        const result = await crearEventoGoogle(accessToken, calendarId, event);
-
-        return new Response(JSON.stringify({
-            ok: true,
-            meetLink: result.link,
-            googleEventId: result.id
-        }), { status: 200, headers: corsHeaders });
-    }
-
-    // ============================================================
-    // CASO B: INDIVIDUAL (RESERVA)
-    // ============================================================
-    if (body.reservaId) {
-        const { reservaId } = body;
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        const { data: reserva, error: errRes } = await supabase.from("reservas").select("*").eq("id", reservaId).single();
-        if (errRes || !reserva) throw new Error("Reserva no encontrada");
-
-        const { data: usuario } = await supabase.from("datos_usuarios").select("email, nombre").eq("user_id", reserva.user_id).single();
-        const emailCliente = usuario?.email || "alumno@sin-email.com";
-        const nombreCliente = usuario?.nombre || "Alumno";
-
-        const horaLimpia = reserva.hora.toString().substring(0, 5);
-        const [h, m] = horaLimpia.split(':').map(Number);
-        const finH = h + 1;
-        const finHoraStr = `${String(finH).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-
-        const startDateTime = `${reserva.fecha}T${horaLimpia}:00`;
-        const endDateTime = `${reserva.fecha}T${finHoraStr}:00`;
-
-        const event = {
-            summary: `Spanish Class (${reserva.tipo}) - ${nombreCliente}`,
-            description: `Clase individual.\nID: ${reservaId}`,
-            start: { dateTime: startDateTime, timeZone: TIMEZONE },
-            end: { dateTime: endDateTime, timeZone: TIMEZONE },
-            conferenceData: { createRequest: { requestId: Math.random().toString(36).substring(7), conferenceSolutionKey: { type: "hangoutsMeet" } } },
-            attendees: emailCliente.includes("@") ? [{ email: emailCliente }] : [],
-        };
-
-        const result = await crearEventoGoogle(accessToken, calendarId, event);
-
-        await supabase.from("reservas").update({ meet_link: result.link, google_event_id: result.id }).eq("id", reservaId);
-        return new Response(JSON.stringify({ success: true, meetLink: result.link }), { status: 200, headers: corsHeaders });
-    }
-
-    throw new Error("Faltan parámetros o acción no reconocida");
-
-  } catch (err: any) {
-    console.error("🔥 Error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+    return errores.entrada("Faltan parámetros o acción no reconocida.");
+  } catch (e) {
+    console.error("[crear-meet] Error:", e instanceof Error ? e.message : String(e));
+    return errores.interno("Error con Google Calendar.");
   }
 });

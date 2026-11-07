@@ -149,7 +149,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { supabase } from '../supabaseClient';
 import { useI18n } from 'vue-i18n';
 import { useAnalytics } from 'src/composables/useAnalytics';
@@ -157,6 +157,7 @@ import { useAnalytics } from 'src/composables/useAnalytics';
 defineOptions({ name: 'UserAcceder' });
 
 const router = useRouter();
+const route = useRoute();
 const email = ref('');
 const password = ref('');
 const loading = ref(false);
@@ -164,6 +165,14 @@ const credencialesError = ref(false);
 const passwordVisible = ref(false);
 const { t } = useI18n();
 const { login: trackLogin } = useAnalytics();
+
+// Vuelve a la página que pidió el login (?redirect=/ruta); solo rutas internas
+const destinoTrasLogin = (): string => {
+  const destino = route.query.redirect;
+  return typeof destino === 'string' && destino.startsWith('/') && !destino.startsWith('//')
+    ? destino
+    : '/AreaPersonal';
+};
 
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;
@@ -232,8 +241,8 @@ async function login() {
     // Track login exitoso
     void trackLogin('email');
 
-    // 🔥 CAMBIO: Redirigir a AreaPersonal que es el dashboard
-    await router.push('/AreaPersonal');
+    // Al área personal, o a la página desde la que se pidió el login
+    await router.push(destinoTrasLogin());
   } catch (error) {
     console.error('Error inesperado:', error);
     credencialesError.value = true;

@@ -19,14 +19,19 @@
         </div>
       </div>
       <!-- Badge de precio -->
-      <div v-if="showPrice && price" class="price-badge">
+      <div v-if="showPrice && (precioTotal || price)" class="price-badge">
         <div v-if="originalPrice" class="original-price">{{ originalPrice }}</div>
-        <div class="current-price">{{ price }}€{{ t('reservasCursos.mes') }}</div>
+        <!-- Curso de fechas cerradas: precio total; suscripción: precio al mes -->
+        <div v-if="precioTotal" class="current-price">{{ precioTotal }}</div>
+        <div v-else class="current-price">{{ price }}€{{ t('reservasCursos.mes') }}</div>
       </div>
       <q-card-section class="title subtitulo-responsivo">
         {{ title }}
       </q-card-section>
-      <q-card-section v-if="fechaInicio" class="fecha-inicio text-caption text-grey-8">
+      <q-card-section v-if="fechasCurso" class="fecha-inicio text-caption text-grey-8">
+        <span v-if="precioTotal">{{ precioTotal }} · </span>{{ fechasCurso }}
+      </q-card-section>
+      <q-card-section v-else-if="fechaInicio" class="fecha-inicio text-caption text-grey-8">
         {{ t('NuestrasClases.inicio') }}: {{ formatFecha(fechaInicio) }}
       </q-card-section>
       <q-card-section class="description texto-responsivo" :class="descriptionClass">
@@ -71,6 +76,10 @@ interface Props {
   price?: string;
   originalPrice?: string;
   fechaInicio?: string;
+  /** Curso de fechas cerradas: precio total ya formateado ('120 €') */
+  precioTotal?: string;
+  /** Curso de fechas cerradas: rango de fechas ya formateado ('10 nov – 25 nov') */
+  fechasCurso?: string;
   buttonColor?: string;
   buttonNoCaps?: boolean;
   buttonBold?: boolean;

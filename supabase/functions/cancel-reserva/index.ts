@@ -1,272 +1,199 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "jsr:@supabase/supabase-js@2";
+/**
+ * cancel-reserva — Cancela clases individuales confirmadas.
+ *
+ * Requiere sesión. El alumno solo cancela sus propias reservas; el admin, cualquiera.
+ * Política: hasta 24 h antes de la clase, medidas en hora de Madrid (también para el admin).
+ * Por cada reserva cancelada: borra la fila, devuelve 1 crédito (devolver_credito),
+ * borra el evento de Google y, al final, correo al alumno y aviso a Paula.
+ *
+ * Petición: POST { reservaId?: string, reservaIds?: string[], idioma?: 'es'|'en', zonaHoraria?: string }
+ * Respuesta: { success, canceladas, fallidas, creditos, detalleFallidas: [{ id, motivo }] }
+ */
+import { clienteAdmin, errores, esAdmin, esUuid, json, leerJson, preflight, usuarioDesdePeticion } from "../_shared/auth.ts";
+import { borrarEvento, tokenGoogle } from "../_shared/google.ts";
+import { CORREO_INTERNO, enviarCorreo } from "../_shared/resend.ts";
+import { escapar, nota, parrafo, plantillaCorreo, subtitulo, tablaDatos } from "../_shared/plantilla-correo.ts";
+import { filasClase, resolverIdioma, saludo, tipoClase, URL_AREA, type Idioma } from "../_shared/correo-comun.ts";
+import { formatFechaCalendario, horasHasta, normalizarZona } from "../_shared/fechas.ts";
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") || "",
-  Deno.env.get("SERVICE_ROLE_KEY") || ""
-);
+const HORAS_MINIMAS = 24;
+const MAX_RESERVAS = 50;
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Content-Type": "application/json"
-};
-
-const LOGO_URL = "https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/Logotexto_circ.png";
-const URL_APP = "https://spanishnook.com";
-
-// =====================================================================
-// 🎨 1. PLANTILLA HTML CORPORATIVA (BILINGÜE)
-// =====================================================================
-function generarEmailCancelacionHTML(nombre: string, reservasHtmlES: string, reservasHtmlEN: string, cantidad: number) {
-  return `
-  <!DOCTYPE html>
-  <html>
-  <body style="margin: 0; padding: 0; background-color: #f9f9f9;">
-    <div style="font-family: 'Montserrat', Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 40px 20px; color: #333333; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <img src="${LOGO_URL}" alt="Spanish Nook Logo" style="width: 80px; height: auto; border: 0; display: block; margin: 0 auto;">
-        <p style="margin: 10px 0 0 0; color: #333333; font-weight: 800; font-size: 18px; letter-spacing: -0.5px;">SpanishNook</p>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 30px;">
-        <span style="color: #851319; text-transform: uppercase; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;">Cancelación / Cancellation</span>
-        <h1 style="color: #333333; font-size: 26px; margin: 10px 0 0 0; font-weight: 800;">¡Cancelación confirmada! / Cancellation confirmed!</h1>
-      </div>
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hola <strong>${nombre}</strong>,</p>
-        <p>Has cancelado las siguientes clases:</p>
-
-        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <ul style="list-style-type: none; padding: 0; margin: 0;">
-            ${reservasHtmlES}
-          </ul>
-        </div>
-
-        <p style="color: green; font-weight: bold; font-size: 18px; text-align: center;">+${cantidad} Créditos Recuperados</p>
-        <p>Tu saldo ha sido actualizado. Tus huecos en el calendario han quedado libres.</p>
-        <p>¡No te preocupes, nos vemos en otro momento!</p>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/AreaPersonal" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Ir a mi área</a>
-        </div>
-
-        <p style="font-size: 14px; color: #888888;">* Recuerda: los créditos aparecerán actualizados automáticamente en tu área personal.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px dashed #eeeeee; margin: 40px 0;">
-
-      <div style="font-size: 16px; line-height: 1.6; color: #525553;">
-        <p>Hi <strong>${nombre}</strong>,</p>
-        <p>You cancelled the following lessons:</p>
-
-        <div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <ul style="list-style-type: none; padding: 0; margin: 0;">
-            ${reservasHtmlEN}
-          </ul>
-        </div>
-
-        <p style="color: green; font-weight: bold; font-size: 18px; text-align: center;">+${cantidad} Recovered Credits</p>
-        <p>Your balance has been updated. Your calendar slots have become available.</p>
-        <p>Don't worry, we'll see each other another time!</p>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${URL_APP}/AreaPersonal" style="background-color: #851319; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; display: inline-block;">Go to my area</a>
-        </div>
-
-        <p style="font-size: 14px; color: #888888;">* Reminder: Your credits will automatically appear updated in your personal area.</p>
-      </div>
-
-      <div style="margin-top: 40px; font-size: 16px; color: #525553; text-align: center;">
-        <p>¡Nos vemos en las aulas! / See you in class!</p>
-        <p style="margin-bottom: 5px;"><strong>El equipo de SpanishNook</strong></p>
-        <p style="margin-top: 0; font-size: 14px; color: #888888;">Creating your SpanishNook, at your pace.</p>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-      <div style="text-align: center; font-size: 12px; color: #999999; line-height: 1.5;">
-        <p style="margin: 0 0 10px 0;">© 2025 Spanish Nook. Todos los derechos reservados.</p>
-        <p style="margin: 0;">
-          <a href="mailto:contacto@spanishnook.com" style="color: #851319; text-decoration: none;">contacto@spanishnook.com</a> |
-          <a href="${URL_APP}" style="color: #851319; text-decoration: none;">www.spanishnook.com</a>
-        </p>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
+interface Reserva {
+  id: string;
+  user_id: string;
+  fecha: string;
+  hora: string;
+  tipo: string | null;
+  estado: string;
+  precio: number | null;
+  stripe_payment_intent: string | null;
+  meet_link: string | null;
+  google_event_id: string | null;
+  created_at: string | null;
 }
 
-// 🔄 2. HELPER: OBTENER TOKEN DE GOOGLE (OAuth2)
-async function getGoogleAccessToken() {
-  const clientId = Deno.env.get("GOOGLE_CLIENT_ID");
-  const clientSecret = Deno.env.get("GOOGLE_CLIENT_SECRET");
-  const refreshToken = Deno.env.get("GOOGLE_REFRESH_TOKEN");
+function correoCancelacion(nombre: string | null, reservas: Reserva[], idioma: Idioma, zona: string) {
+  const en = idioma === "en";
+  const n = reservas.length;
+  const bloques = reservas
+    .map((r, i) =>
+      (n > 1 ? subtitulo(`${en ? "Class" : "Clase"} ${i + 1}`) : "") +
+      tablaDatos(filasClase({ fecha: r.fecha, hora: r.hora.slice(0, 5), tipo: r.tipo }, idioma, zona))
+    )
+    .join("");
+  return {
+    asunto: en ? "Class cancelled" : "Clase cancelada",
+    html: plantillaCorreo({
+      idioma,
+      titulo: en ? "Cancellation confirmed" : "Cancelación confirmada",
+      resumen: en ? `You have cancelled ${n} class(es) and recovered ${n} credit(s).` : `Has cancelado ${n} clase(s) y recuperado ${n} crédito(s).`,
+      cuerpo:
+        parrafo(saludo(nombre, idioma)) +
+        parrafo(en ? "You have cancelled the following classes:" : "Has cancelado estas clases:") +
+        bloques +
+        nota(en
+          ? `<strong>+${n} credit(s)</strong> have been added back to your balance. You can use them to book another class whenever you like.`
+          : `Te hemos devuelto <strong>${n} crédito(s)</strong> a tu saldo. Puedes usarlos para reservar otra clase cuando quieras.`),
+      boton: { texto: en ? "Book another class" : "Reservar otra clase", url: URL_AREA },
+    }),
+  };
+}
 
-  if (!clientId || !clientSecret || !refreshToken) return null;
-
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("client_secret", clientSecret);
-  params.append("refresh_token", refreshToken);
-  params.append("grant_type", "refresh_token");
-
-  const res = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString(),
+function avisoInterno(nombre: string, email: string, reservas: Reserva[], porAdmin: boolean): string {
+  const filas: Array<[string, string]> = [
+    ["Alumno", `${escapar(nombre)} (${escapar(email)})`],
+    ...reservas.map((r): [string, string] => [
+      escapar(tipoClase(r.tipo, "es")),
+      `${escapar(formatFechaCalendario(r.fecha))} · ${escapar(r.hora.slice(0, 5))} (Madrid)`,
+    ]),
+  ];
+  return plantillaCorreo({
+    idioma: "es",
+    titulo: porAdmin ? "Clase cancelada desde el panel" : "Clase cancelada por el alumno",
+    resumen: `${nombre} ha recuperado ${reservas.length} crédito(s).`,
+    cuerpo: tablaDatos(filas) + parrafo(`Se han devuelto ${reservas.length} crédito(s) y se han borrado los eventos de Google Calendar.`),
   });
-
-  const data = await res.json();
-  return res.ok ? data.access_token : null;
 }
 
-// 🗓️ 3. HELPER: BORRAR EVENTO DE GOOGLE
-async function borrarEventoGoogle(googleEventId: string, accessToken: string) {
-  if (!googleEventId || !accessToken) return;
-  const calendarId = Deno.env.get("GOOGLE_CALENDAR_ID");
+/** Cancela una reserva: la reclama borrándola (evita dobles devoluciones), devuelve el crédito y borra el evento. */
+async function cancelarUna(r: Reserva, tokenG: string | null): Promise<string | null> {
+  const supabase = clienteAdmin();
 
-  try {
-    await fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${googleEventId}`, {
-      method: "DELETE",
-      headers: { "Authorization": `Bearer ${accessToken}` },
-    });
-  } catch (e) { console.error("Error Google Delete:", e); }
-}
+  // 1. Borrado condicionado: si dos peticiones llegan a la vez, solo una borra la fila
+  const { data: borradas, error: errDel } = await supabase
+    .from("reservas")
+    .delete()
+    .eq("id", r.id)
+    .eq("estado", "confirmada")
+    .select("id");
+  if (errDel) return "Error técnico";
+  if (!borradas || borradas.length === 0) return "Ya estaba cancelada";
 
-// 📧 4. HELPER: ENVIAR EMAIL
-async function sendEmail(to: string, subject: string, htmlContent: string) {
-  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-  if (!RESEND_API_KEY) return;
-  try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${RESEND_API_KEY}` },
-      body: JSON.stringify({
-        from: "SpanishNook <hola@spanishnook.com>", // Corregido a contacto
-        to: [to],
-        subject,
-        html: htmlContent
-      }),
+  // 2. Devolver el crédito; si falla, se restaura la reserva
+  const { error: errRpc } = await supabase.rpc("devolver_credito", { user_uuid: r.user_id, tipo_clase: r.tipo ?? "normal" });
+  if (errRpc) {
+    console.error(`[cancel-reserva] devolver_credito falló para ${r.id}: ${errRpc.message}`);
+    const { error: errRest } = await supabase.from("reservas").insert({
+      id: r.id, user_id: r.user_id, fecha: r.fecha, hora: r.hora, tipo: r.tipo, estado: "confirmada",
+      precio: r.precio, stripe_payment_intent: r.stripe_payment_intent, meet_link: r.meet_link,
+      google_event_id: r.google_event_id, created_at: r.created_at,
     });
-  } catch (e) { console.error("Email error:", e); }
+    if (errRest) console.error(`[cancel-reserva] CRÍTICO: reserva ${r.id} borrada sin crédito devuelto: ${errRest.message}`);
+    return "Error técnico";
+  }
+
+  // 3. Evento de Google (no bloquea)
+  if (r.google_event_id && tokenG) {
+    try {
+      await borrarEvento(tokenG, r.google_event_id);
+    } catch (e) {
+      console.error(`[cancel-reserva] No se pudo borrar el evento de ${r.id}:`, e instanceof Error ? e.message : String(e));
+    }
+  }
+  return null;
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
+  const pre = preflight(req);
+  if (pre) return pre;
+  if (req.method !== "POST") return errores.metodo();
 
   try {
-    const { reservaId, reservaIds } = await req.json();
+    const user = await usuarioDesdePeticion(req);
+    if (!user) return errores.sinSesion();
+    const admin = await esAdmin(user.id);
 
-    let idsProcesar: string[] = [];
-    if (reservaIds && Array.isArray(reservaIds)) idsProcesar = reservaIds;
-    else if (reservaId) idsProcesar = [reservaId];
+    const body = await leerJson(req);
+    if (!body) return errores.entrada("JSON no válido.");
+    const crudos = Array.isArray(body.reservaIds) ? body.reservaIds : body.reservaId !== undefined ? [body.reservaId] : [];
+    const ids = [...new Set(crudos.filter(esUuid))].slice(0, MAX_RESERVAS);
+    if (ids.length === 0) return errores.entrada("No se han indicado reservas.");
 
-    if (idsProcesar.length === 0) return new Response(JSON.stringify({ error: "No IDs provided" }), { status: 400, headers: corsHeaders });
-
-    const { data: reservas, error } = await supabase
+    const supabase = clienteAdmin();
+    let consulta = supabase
       .from("reservas")
-      .select("*")
-      .in("id", idsProcesar)
+      .select("id, user_id, fecha, hora, tipo, estado, precio, stripe_payment_intent, meet_link, google_event_id, created_at")
+      .in("id", ids)
       .eq("estado", "confirmada");
+    if (!admin) consulta = consulta.eq("user_id", user.id);
+    const { data, error } = await consulta;
+    if (error) throw error;
+    const reservas = (data ?? []) as Reserva[];
+    if (reservas.length === 0) return errores.noEncontrado("Reservas no encontradas.");
 
-    if (error || !reservas || reservas.length === 0) {
-      return new Response(JSON.stringify({ error: "Reservas no encontradas" }), { status: 404, headers: corsHeaders });
+    const tokenG = reservas.some((r) => r.google_event_id) ? await tokenGoogle() : null;
+    const canceladas: Reserva[] = [];
+    const detalleFallidas: Array<{ id: string; motivo: string }> = [];
+
+    for (const r of reservas) {
+      const horas = horasHasta(r.fecha, r.hora);
+      if (horas === null || horas < HORAS_MINIMAS) {
+        detalleFallidas.push({ id: r.id, motivo: `Menos de ${HORAS_MINIMAS} h` });
+        continue;
+      }
+      const fallo = await cancelarUna(r, tokenG);
+      if (fallo) detalleFallidas.push({ id: r.id, motivo: fallo });
+      else canceladas.push(r);
     }
 
-    const accessToken = await getGoogleAccessToken();
-    const ahora = new Date();
+    // Correos agrupados por alumno (el admin puede cancelar clases de varios alumnos)
+    const porAlumno = new Map<string, Reserva[]>();
+    for (const r of canceladas) porAlumno.set(r.user_id, [...(porAlumno.get(r.user_id) ?? []), r]);
 
-    const canceladasES = [];
-    const canceladasEN = [];
-    const fallidas = [];
-    let creditosRecuperados = 0;
-    let userId = "";
+    for (const [alumnoId, lista] of porAlumno) {
+      const { data: auth } = await supabase.auth.admin.getUserById(alumnoId);
+      const email = auth?.user?.email;
+      if (!email) continue;
+      const { data: perfil } = await supabase
+        .from("datos_usuarios")
+        .select("nombre, idioma_nativo")
+        .eq("user_id", alumnoId)
+        .maybeSingle();
 
-    // BUCLE MAESTRO
-    for (const reserva of reservas) {
-        userId = reserva.user_id;
+      // Idioma y zona de la web solo valen si el que cancela es el propio alumno
+      const esElAlumno = alumnoId === user.id;
+      const idioma = resolverIdioma(esElAlumno ? body.idioma : null, perfil?.idioma_nativo);
+      const zona = normalizarZona(esElAlumno ? body.zonaHoraria : null);
+      const correo = correoCancelacion(perfil?.nombre ?? null, lista, idioma, zona);
 
-        const fechaClase = new Date(`${reserva.fecha}T${reserva.hora}`);
-        const diffHoras = (fechaClase.getTime() - ahora.getTime()) / (1000 * 60 * 60);
-
-        if (diffHoras < 24) {
-            fallidas.push(`${reserva.fecha} ${reserva.hora} (Menos de 24h)`);
-            continue;
-        }
-
-        try {
-            const { error: rpcError } = await supabase.rpc('devolver_credito', {
-                user_uuid: reserva.user_id,
-                tipo_clase: reserva.tipo
-            });
-
-            if (rpcError) throw rpcError;
-            creditosRecuperados++;
-
-            if (reserva.google_event_id && accessToken) {
-                await borrarEventoGoogle(reserva.google_event_id, accessToken);
-            }
-
-            await supabase.from("reservas").delete().eq("id", reserva.id);
-
-            // Preparar las listas para el email bilingüe
-            const horaCorta = reserva.hora.substring(0,5);
-
-            const tipoES = reserva.tipo === 'normal' ? 'Clase Individual' : 'Conversación';
-            canceladasES.push(`<li style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">📅 <strong>Fecha:</strong> ${reserva.fecha}<br>⏰ <strong>Hora:</strong> ${horaCorta} (Madrid)<br>🎓 <strong>Tipo:</strong> ${tipoES}</li>`);
-
-            const tipoEN = reserva.tipo === 'normal' ? 'Individual Class' : 'Conversation';
-            canceladasEN.push(`<li style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">📅 <strong>Date:</strong> ${reserva.fecha}<br>⏰ <strong>Time:</strong> ${horaCorta} (Madrid)<br>🎓 <strong>Type:</strong> ${tipoEN}</li>`);
-
-        } catch (e) {
-            console.error(`Error cancelando reserva ${reserva.id}`, e);
-            fallidas.push(`${reserva.fecha} (Error técnico)`);
-        }
+      await enviarCorreo({ to: email, subject: correo.asunto, html: correo.html });
+      await enviarCorreo({
+        to: CORREO_INTERNO,
+        subject: "Clase cancelada",
+        html: avisoInterno(perfil?.nombre || "Alumno", email, lista, !esElAlumno),
+      });
     }
 
-    // ENVIAR EMAIL RESUMEN
-    if (canceladasES.length > 0) {
-        const { data: userData } = await supabase.auth.admin.getUserById(userId);
-        const userEmail = userData.user?.email || "";
-
-        if (userEmail) {
-            // Buscamos el nombre del usuario en BD para un saludo personal
-            let nombreUsuario = "Estudiante";
-            const { data: perfil } = await supabase.from('datos_usuarios').select('nombre').eq('user_id', userId).maybeSingle();
-            if (perfil?.nombre) nombreUsuario = perfil.nombre;
-
-            const listaHtmlES = canceladasES.join("");
-            const listaHtmlEN = canceladasEN.join("");
-
-            const htmlFinal = generarEmailCancelacionHTML(nombreUsuario, listaHtmlES, listaHtmlEN, creditosRecuperados);
-
-            await sendEmail(
-                userEmail,
-                "Cancelación de clase(s) / Class cancellation",
-                htmlFinal
-            );
-
-            // Opcional: Aviso interno a Paula si quieres llevar el control
-            await sendEmail(
-                "paulaf@spanishnook.com",
-                "🔔 ¡Clase cancelada por alumno!",
-                `<p>El alumno <strong>${nombreUsuario}</strong> (${userEmail}) ha cancelado clases en el sistema y recuperado ${creditosRecuperados} crédito(s).</p>`
-            );
-        }
-    }
-
-    return new Response(JSON.stringify({
-        success: true,
-        canceladas: canceladasES.length,
-        fallidas: fallidas.length,
-        creditos: creditosRecuperados
-    }), { status: 200, headers: corsHeaders });
-
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+    return json({
+      success: true,
+      canceladas: canceladas.length,
+      fallidas: detalleFallidas.length,
+      creditos: canceladas.length,
+      detalleFallidas,
+    });
+  } catch (e) {
+    console.error("[cancel-reserva] Error:", e instanceof Error ? e.message : String(e));
+    return errores.interno();
   }
 });

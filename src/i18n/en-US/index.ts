@@ -131,6 +131,7 @@ export default {
   indexOpinionVerificada: 'Verified review',
 
   reservasClases: {
+    errorCancelar: 'The class could not be cancelled. Please try again or contact us.',
     reservaTuClase: 'Book your Private Class',
     carritoDeReservas: 'Booking Cart',
     aLas: 'at',
@@ -458,6 +459,9 @@ export default {
     errorPerfil406:
       'Error 406: the profile could not be loaded. Check the RLS policies or the request format.',
     pagoCompletado: 'Payment completed! Your bookings have been confirmed.',
+    pagoUnico: 'One-time payment',
+    cursoFinalizado: 'Finished',
+    fechasCurso: 'From {inicio} to {fin}',
   },
 
   MaterialesPage: {
@@ -785,6 +789,23 @@ export default {
     rellenaCampos: 'Please fill in the fields',
     errorRegistrar: 'Registration error: {mensaje}',
     aceptaCondiciones: 'Please accept the terms and conditions',
+    fechasCerradas: 'Fixed-dates course',
+    desdeHasta: 'From {inicio} to {fin}',
+    numSesiones: '{n} session | {n} sessions',
+    duracionSesion: '{min}-minute sessions',
+    precioTotal: 'Total price',
+    pagoUnico: 'One-time payment, no subscription',
+    plazasLibres: '{n} spot left | {n} spots left',
+    inscribirme: 'Enroll',
+    iniciarSesionInscribirte: 'Log in to enroll',
+    yaInscrito: 'You are enrolled',
+    yaInscritoTexto: 'Your spot is confirmed. You will find the class link in your Personal Area.',
+    cursoTerminado: 'This course has already finished.',
+    finalizado: 'Finished',
+    pagoRecibido: 'Payment received: your spot is confirmed. We have sent you an email.',
+    pagoProcesando:
+      'We are confirming your payment. If your spot does not appear in a few minutes, reload the page.',
+    errorCheckout: 'The payment could not be started. Please try again.',
   },
   flecos: {
     ups: 'Oops... There is nothing here!',

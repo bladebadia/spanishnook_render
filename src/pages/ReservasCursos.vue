@@ -18,6 +18,16 @@
     </div>
 
     <div v-else class="row q-col-gutter-lg">
+      <div v-if="pagoOk" class="col-12">
+        <q-banner class="bg-green-1 text-green-9 rounded-borders" role="status">
+          <template v-slot:avatar><q-icon name="check_circle" color="positive" /></template>
+          {{ t('reservasCursos.pagoRecibido') }}
+          <div v-if="pagoPendiente" class="text-caption q-mt-xs">
+            {{ t('reservasCursos.pagoProcesando') }}
+          </div>
+        </q-banner>
+      </div>
+
       <div class="col-12 col-md-7">
         <q-card class="q-pa-md">
           <q-card-section>
@@ -42,6 +52,22 @@
           <q-card-section>
             <div class="text-body2 q-mb-sm">
               {{ t('reservasCursos.sinDescripcion') }}
+            </div>
+
+            <div v-if="esCerrado" class="sn-nota q-pa-md q-mt-md">
+              <div class="text-subtitle2 text-weight-bold text-primary">
+                <q-icon name="event_available" class="q-mr-xs" />
+                {{ t('reservasCursos.fechasCerradas') }}
+              </div>
+              <div class="text-body2 q-mt-xs">
+                {{ fechasTexto }}
+              </div>
+              <div class="text-caption text-grey-8 q-mt-xs">
+                <span v-if="sesionesCurso.length > 0">
+                  {{ t('reservasCursos.numSesiones', sesionesCurso.length) }} ·
+                </span>
+                {{ t('reservasCursos.duracionSesion', { min: duracionCurso }) }}
+              </div>
             </div>
 
             <div class="row q-col-gutter-sm q-mt-md">
@@ -101,7 +127,73 @@
           <q-separator />
 
           <q-card-section class="text-center">
-            <div v-if="estaSuscrito">
+            <div v-if="esCerrado && estaInscrito">
+              <div class="text-h5 text-positive q-my-md text-weight-bold">
+                {{ t('reservasCursos.yaInscrito') }}
+              </div>
+              <q-banner dense class="bg-green-1 text-green-9 q-pa-md rounded-borders q-mb-md">
+                <template v-slot:avatar><q-icon name="check_circle" color="positive" /></template>
+                {{ t('reservasCursos.yaInscritoTexto') }}
+              </q-banner>
+              <q-btn
+                color="primary"
+                :label="t('reservasCursos.irArea')"
+                to="/AreaPersonal"
+                class="full-width oval-btn"
+                icon="account_circle"
+                unelevated
+              />
+            </div>
+
+            <div v-else-if="esCerrado && cursoTerminado">
+              <q-icon name="event_busy" size="48px" color="grey-6" class="q-my-sm" />
+              <div class="text-body1 text-grey-8 q-mb-md">
+                {{ t('reservasCursos.cursoTerminado') }}
+              </div>
+              <q-btn
+                outline
+                color="primary"
+                class="oval-btn"
+                :to="rutaClases"
+                :label="t('reservasCursos.volverCursos')"
+              />
+            </div>
+
+            <div v-else-if="esCerrado && esCursoActivo && !cursoLleno">
+              <div class="text-caption text-grey-8 q-mt-sm">
+                {{ t('reservasCursos.precioTotal') }}
+              </div>
+              <div class="text-h4 text-weight-bold text-primary q-mb-xs">
+                {{ precioTotalTexto }}
+              </div>
+              <div class="text-caption text-grey-8">{{ t('reservasCursos.pagoUnico') }}</div>
+              <div class="text-body2 q-mt-md">
+                <q-icon name="event" color="primary" class="q-mr-xs" />
+                {{ fechasTexto }}
+              </div>
+              <div v-if="plazasLibres !== null" class="text-body2 text-weight-medium q-mt-xs">
+                <q-icon name="group" color="primary" class="q-mr-xs" />
+                {{ t('reservasCursos.plazasLibres', plazasLibres) }}
+              </div>
+
+              <q-btn
+                color="primary"
+                size="lg"
+                icon="credit_card"
+                class="oval-btn q-px-xl q-mt-lg"
+                unelevated
+                :label="
+                  autenticado
+                    ? t('reservasCursos.inscribirme')
+                    : t('reservasCursos.iniciarSesionInscribirte')
+                "
+                :loading="procesandoInscripcion"
+                @click="inscribirse"
+              />
+              <div class="text-caption q-mt-sm text-grey">{{ t('reservasCursos.pago') }}</div>
+            </div>
+
+            <div v-else-if="estaSuscrito">
               <div class="text-h5 text-positive q-my-md text-weight-bold">
                 {{ t('reservasCursos.yaEres') }}
               </div>
@@ -260,13 +352,15 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar, useMeta } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
 import { useI18n } from 'vue-i18n';
 import {
+  fechasDelCurso,
+  formatFechaCalendario,
   hoyMadridISO,
   proximaFechaDiaSemana,
   rangoHoraLocal,
@@ -275,6 +369,7 @@ import {
 
 const $q = useQuasar();
 const route = useRoute();
+const router = useRouter();
 const { procesando, handleSubscribe } = useSuscripciones();
 const { locale, t } = useI18n();
 
@@ -328,6 +423,11 @@ interface Curso {
   lista_espera: (string | number)[];
   stripe_price_id?: string;
   precio_curso?: string | number;
+  tipo_curso?: 'suscripcion' | 'cerrado';
+  fecha_inicio?: string | null;
+  fecha_fin?: string | null;
+  precio_total_centimos?: number | null;
+  duracion_minutos?: number | null;
 }
 
 const curso = ref<Curso | null>(null);
@@ -341,6 +441,48 @@ const rutaClases = '/NuestrasClases';
 const rutaLogin = '/Acceder';
 const esCursoActivo = computed(() => curso.value?.estado_curso === 'Activo');
 
+// --- CURSO DE FECHAS CERRADAS (pago único) ---
+const esCerrado = computed(() => curso.value?.tipo_curso === 'cerrado');
+const duracionCurso = computed(() => curso.value?.duracion_minutos || 90);
+const cursoTerminado = computed(
+  () => esCerrado.value && !!curso.value?.fecha_fin && curso.value.fecha_fin < hoyMadridISO(),
+);
+const sesionesCurso = computed(() =>
+  esCerrado.value
+    ? fechasDelCurso(
+        curso.value?.fecha_inicio ?? '',
+        curso.value?.fecha_fin ?? '',
+        curso.value?.dias_semana ?? [],
+      )
+    : [],
+);
+const fechaInicioTexto = computed(() =>
+  curso.value?.fecha_inicio ? formatFechaCalendario(curso.value.fecha_inicio, locale.value) : '',
+);
+const fechaFinTexto = computed(() =>
+  curso.value?.fecha_fin ? formatFechaCalendario(curso.value.fecha_fin, locale.value) : '',
+);
+const fechasTexto = computed(() =>
+  t('reservasCursos.desdeHasta', { inicio: fechaInicioTexto.value, fin: fechaFinTexto.value }),
+);
+const precioTotalTexto = computed(() => {
+  const centimos = curso.value?.precio_total_centimos;
+  if (centimos == null) return '';
+  return new Intl.NumberFormat(locale.value, { style: 'currency', currency: 'EUR' }).format(
+    centimos / 100,
+  );
+});
+const plazasLibres = computed<number | null>(() => {
+  const max = curso.value?.max_estudiantes;
+  if (!max) return null;
+  return Math.max(max - ocupacionActual.value, 0);
+});
+
+const estaInscrito = ref(false);
+const procesandoInscripcion = ref(false);
+const pagoOk = computed(() => route.query.pago === 'ok');
+const pagoPendiente = ref(false);
+
 const cursoLleno = computed(() => {
   if (!curso.value) return false;
   const max = curso.value.max_estudiantes || 100;
@@ -348,6 +490,7 @@ const cursoLleno = computed(() => {
 });
 
 const colorEstado = computed(() => {
+  if (cursoTerminado.value) return 'grey-7';
   if (cursoLleno.value && esCursoActivo.value) return 'red';
 
   switch (curso.value?.estado_curso) {
@@ -363,6 +506,7 @@ const colorEstado = computed(() => {
 });
 // AÑADE ESTO:
 const textoEstado = computed(() => {
+  if (cursoTerminado.value) return t('reservasCursos.finalizado');
   // Si está activo pero se llenó, lo marcamos como Completo
   if (cursoLleno.value && esCursoActivo.value) return t('reservasCursos.completo');
 
@@ -419,9 +563,12 @@ const traducirDia = (dia: string) => {
 const convertirHorarioLocal = (horaMadridStr: string | undefined) => {
   if (!horaMadridStr) return '...';
   // Se usa la próxima fecha real del curso para aplicar el horario de verano correcto
+  // En los cursos cerrados, la primera sesión del curso
   const fechaRef =
-    proximaFechaDiaSemana(curso.value?.dias_semana?.[0] ?? '') ?? hoyMadridISO();
-  return rangoHoraLocal(fechaRef, horaMadridStr, 90);
+    sesionesCurso.value[0] ??
+    proximaFechaDiaSemana(curso.value?.dias_semana?.[0] ?? '') ??
+    hoyMadridISO();
+  return rangoHoraLocal(fechaRef, horaMadridStr, duracionCurso.value);
 };
 
 // --- CARGAS DE DATOS ---
@@ -484,6 +631,85 @@ const comprobarSuscripcion = async () => {
   if (data) estaSuscrito.value = true;
 };
 
+// --- INSCRIPCIÓN A CURSO CERRADO ---
+const comprobarInscripcion = async (): Promise<boolean> => {
+  if (!user.value || !curso.value?.id) return false;
+  const { data } = await supabase
+    .from('inscripciones_curso')
+    .select('id')
+    .eq('user_id', user.value.id)
+    .eq('curso_id', curso.value.id)
+    .eq('estado', 'pagada')
+    .limit(1)
+    .maybeSingle();
+  estaInscrito.value = !!data;
+  return estaInscrito.value;
+};
+
+// Al volver de Stripe el webhook puede tardar unos segundos en crear la inscripción
+const esperarInscripcion = async (intentos = 5, esperaMs = 2000) => {
+  for (let i = 0; i < intentos; i++) {
+    if (await comprobarInscripcion()) {
+      pagoPendiente.value = false;
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, esperaMs));
+  }
+  pagoPendiente.value = !(await comprobarInscripcion());
+};
+
+const irALogin = () =>
+  router.push({ path: rutaLogin, query: { redirect: route.fullPath } });
+
+const estadoHttp = (err: unknown): number | undefined => {
+  const contexto = (err as { context?: unknown } | null)?.context;
+  return typeof Response !== 'undefined' && contexto instanceof Response
+    ? contexto.status
+    : undefined;
+};
+
+const inscribirse = async () => {
+  if (!curso.value) return;
+  if (!user.value) {
+    await irALogin();
+    return;
+  }
+  procesandoInscripcion.value = true;
+  let redirigiendo = false;
+  try {
+    const { data, error } = await supabase.functions.invoke('checkout-curso', {
+      body: {
+        cursoId: curso.value.id,
+        idioma: locale.value.startsWith('en') ? 'en' : 'es',
+      },
+    });
+    if (error) {
+      const estado = estadoHttp(error);
+      if (estado === 401) {
+        await irALogin();
+        return;
+      }
+      if (estado === 409) {
+        if (!(await comprobarInscripcion())) {
+          $q.notify({ type: 'negative', message: t('reservasCursos.plazasAgotadas') });
+        }
+        return;
+      }
+      throw error;
+    }
+    const url = (data as { url?: string } | null)?.url;
+    if (!url) throw new Error('Sin URL de pago');
+    redirigiendo = true;
+    window.location.href = url;
+  } catch (err: unknown) {
+    console.error('Error iniciando el pago del curso:', err);
+    $q.notify({ type: 'negative', message: t('reservasCursos.errorCheckout') });
+  } finally {
+    // Si vamos a Stripe, el botón sigue cargando hasta que cambie la página
+    if (!redirigiendo) procesandoInscripcion.value = false;
+  }
+};
+
 // --- RESERVAS ---
 const confirmarReservaGuest = () => {
   if (!formGuestValido.value)
@@ -541,7 +767,13 @@ onMounted(async () => {
   zonaHorariaUsuario.value = zonaUsuario();
   await cargarUsuario();
   await cargarCurso();
-  if (autenticado.value) await comprobarSuscripcion();
+  if (!autenticado.value) return;
+  if (esCerrado.value) {
+    if (pagoOk.value) await esperarInscripcion();
+    else await comprobarInscripcion();
+  } else {
+    await comprobarSuscripcion();
+  }
 });
 </script>
 

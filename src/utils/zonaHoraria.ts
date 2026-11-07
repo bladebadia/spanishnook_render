@@ -279,3 +279,31 @@ export function diaSemanaMadrid(fecha: string): string {
   const nombre = DIAS_ES[new Date(Date.UTC(f[0], f[1] - 1, f[2])).getUTCDay()] ?? '';
   return capitalizar(nombre);
 }
+
+/**
+ * Fechas ('YYYY-MM-DD', de Madrid) de un curso de fechas cerradas: los días entre
+ * `desde` y `hasta` (incluidos) que caen en alguno de los días de la semana del curso.
+ */
+export function fechasDelCurso(desde: string, hasta: string, dias: string[]): string[] {
+  if (!parseFecha(desde) || !parseFecha(hasta) || hasta < desde) return [];
+  const objetivo = new Set((dias ?? []).map((d) => normalizarDia(d ?? '')));
+  const fechas: string[] = [];
+  let fecha = desde.slice(0, 10);
+  // Tope de seguridad: dos años de curso
+  for (let i = 0; i <= 731 && fecha <= hasta; i++) {
+    if (objetivo.has(normalizarDia(diaSemanaMadrid(fecha)))) fechas.push(fecha);
+    fecha = sumarDiasISO(fecha, 1);
+  }
+  return fechas;
+}
+
+/** Fecha corta de calendario en el idioma indicado. Ej.: '10 nov' / 'Nov 10'. */
+export function formatFechaCorta(fecha: string, locale = 'es-ES'): string {
+  const f = parseFecha(fecha);
+  if (!f) return fecha ?? '';
+  return new Intl.DateTimeFormat(locale, {
+    timeZone: 'UTC',
+    day: 'numeric',
+    month: 'short',
+  }).format(new Date(Date.UTC(f[0], f[1] - 1, f[2], 12)));
+}

@@ -301,12 +301,90 @@
               <q-card class="shadow-1 rounded-borders">
                 <q-card-section class="row items-center justify-between">
                   <div class="text-h6 text-primary">
-                    {{ t('personal.misSuscripcionesActivas') }}
+                    {{
+                      misInscripciones.length > 0
+                        ? t('personal.misCursos')
+                        : t('personal.misSuscripcionesActivas')
+                    }}
                   </div>
-                  <q-btn flat icon="refresh" round color="primary" @click="cargarSuscripciones" />
+                  <q-btn flat icon="refresh" round color="primary" @click="cargarCursos" />
                 </q-card-section>
 
                 <q-card-section>
+                  <!-- Cursos de fechas cerradas (pago único) -->
+                  <div
+                    v-if="misInscripciones.length > 0"
+                    class="row q-col-gutter-md"
+                    :class="{ 'q-mb-md': misSuscripciones.length > 0 }"
+                  >
+                    <div
+                      class="col-12"
+                      v-for="inscripcion in misInscripciones"
+                      :key="inscripcion.id"
+                    >
+                      <q-card bordered flat class="card-curso">
+                        <q-card-section horizontal>
+                          <q-card-section class="col-auto flex flex-center bg-grey-1 q-pa-md">
+                            <q-avatar size="80px" square
+                              ><img :src="getIconoPersonalizado('grupal')"
+                            /></q-avatar>
+                          </q-card-section>
+                          <q-card-section class="col q-py-md">
+                            <div
+                              class="text-h6 text-primary cursor-pointer hover-underline"
+                              @click="router.push(`/ReservasCursos?id=${inscripcion.curso_id}`)"
+                            >
+                              {{
+                                inscripcion.cursos_grupales?.nombre_curso ||
+                                t('personal.cursoSinNombre')
+                              }}
+                            </div>
+                            <div
+                              v-if="inscripcion.cursos_grupales?.fecha_inicio"
+                              class="text-subtitle2 text-grey-8"
+                            >
+                              <q-icon name="event" class="q-mr-xs" />
+                              {{ fechasInscripcion(inscripcion) }}
+                            </div>
+                            <div class="text-subtitle2 text-grey-8 q-mb-sm">
+                              <q-icon name="schedule" class="q-mr-xs" />
+                              {{ traducirDiasSemana(inscripcion.cursos_grupales?.dias_semana) }} •
+                              {{
+                                formatHorarios(
+                                  inscripcion.cursos_grupales?.horarios_curso,
+                                  inscripcion.cursos_grupales?.dias_semana,
+                                  inscripcion.cursos_grupales?.duracion_minutos ?? 90,
+                                )
+                              }}
+                            </div>
+                            <div class="row items-center q-gutter-x-sm">
+                              <q-badge color="primary">{{ t('personal.pagoUnico') }}</q-badge>
+                              <q-badge v-if="inscripcionTerminada(inscripcion)" color="grey-7">
+                                {{ t('personal.cursoFinalizado') }}
+                              </q-badge>
+                            </div>
+                          </q-card-section>
+                          <q-card-section class="col-auto column justify-center q-gutter-y-sm">
+                            <q-btn
+                              v-if="
+                                inscripcion.cursos_grupales?.meet_link &&
+                                !inscripcionTerminada(inscripcion)
+                              "
+                              :href="inscripcion.cursos_grupales?.meet_link ?? undefined"
+                              target="_blank"
+                              rel="noopener"
+                              color="primary"
+                              icon="videocam"
+                              :label="t('personal.entrar')"
+                              unelevated
+                              size="sm"
+                            />
+                          </q-card-section>
+                        </q-card-section>
+                      </q-card>
+                    </div>
+                  </div>
+
                   <div v-if="misSuscripciones.length > 0" class="row q-col-gutter-md">
                     <div
                       class="col-12"
@@ -406,7 +484,10 @@
                     </div>
                   </div>
 
-                  <div v-else class="column flex-center q-pa-xl text-grey-6">
+                  <div
+                    v-else-if="misInscripciones.length === 0"
+                    class="column flex-center q-pa-xl text-grey-6"
+                  >
                     <q-icon name="school" size="60px" class="q-mb-md opacity-50" />
                     <div class="text-h6">{{ t('personal.noTienesSuscripciones') }}</div>
                   </div>
@@ -783,6 +864,24 @@ interface Suscripcion {
 }
 const misSuscripciones = ref<Suscripcion[]>([]);
 
+// Cursos de fechas cerradas: inscripciones pagadas (pago único)
+interface InscripcionCurso {
+  id: string;
+  curso_id: number;
+  estado: string;
+  created_at: string;
+  cursos_grupales?: {
+    nombre_curso: string;
+    fecha_inicio: string | null;
+    fecha_fin: string | null;
+    dias_semana: string[];
+    horarios_curso: string[];
+    meet_link?: string | null;
+    duracion_minutos?: number | null;
+  } | null;
+}
+const misInscripciones = ref<InscripcionCurso[]>([]);
+
 // Variables para cuadernos
 interface MiCuaderno {
   id: number;
@@ -960,6 +1059,42 @@ const cargarSuscripciones = async () => {
   }
 };
 
+const cargarInscripciones = async () => {
+  if (!user.value?.id) return;
+  const { data, error } = await supabase
+    .from('inscripciones_curso')
+    .select(
+      `id, curso_id, estado, created_at,
+      cursos_grupales!curso_id (nombre_curso, fecha_inicio, fecha_fin, dias_semana, horarios_curso,
+        meet_link, duracion_minutos)`,
+    )
+    .eq('user_id', user.value.id)
+    .eq('estado', 'pagada')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(error.message);
+    return;
+  }
+  misInscripciones.value = (data ?? []) as unknown as InscripcionCurso[];
+};
+
+const cargarCursos = () => Promise.all([cargarSuscripciones(), cargarInscripciones()]);
+
+const inscripcionTerminada = (inscripcion: InscripcionCurso) => {
+  const fin = inscripcion.cursos_grupales?.fecha_fin;
+  return !!fin && fin < hoyMadridISO();
+};
+
+const fechasInscripcion = (inscripcion: InscripcionCurso) => {
+  const curso = inscripcion.cursos_grupales;
+  if (!curso?.fecha_inicio) return '';
+  return t('personal.fechasCurso', {
+    inicio: formatFecha(curso.fecha_inicio),
+    fin: curso.fecha_fin ? formatFecha(curso.fecha_fin) : '…',
+  });
+};
+
 const confirmarCancelacion = (sub: Suscripcion) => {
   const fechaFin = formatearFechaSuscripcion(sub.current_period_end);
   $q.dialog({
@@ -1011,13 +1146,13 @@ const formatearFechaSuscripcion = (fecha: string | number) => {
   return t('personal.fechaInvalida');
 };
 
-// --- FUNCIÓN LOCAL SEGURA PARA CURSOS (90 MINUTOS) ---
-const formatHorarios = (horarios?: string[], dias?: string[]) => {
+// --- FUNCIÓN LOCAL SEGURA PARA CURSOS (90 MINUTOS POR DEFECTO) ---
+const formatHorarios = (horarios?: string[], dias?: string[], duracionMin = 90) => {
   const horaInicio = horarios?.[0];
   if (!horaInicio) return t('reservasCursos.porDefinir');
   // Próxima fecha real del curso para aplicar el horario de verano correcto
   const fechaRef = proximaFechaDiaSemana(dias?.[0] ?? '') ?? hoyMadridISO();
-  return rangoHoraLocal(fechaRef, horaInicio, 90);
+  return rangoHoraLocal(fechaRef, horaInicio, duracionMin);
 };
 
 // --- FUNCIÓN LOCAL SEGURA PARA CLASES INDIVIDUALES (60 MINUTOS) ---
@@ -1221,7 +1356,7 @@ const seleccionarMenu = (menu: string) => {
   menuActivo.value = menu;
   if (menu === 'historial') void cargarReservasPasadas();
   else if (menu === 'datos') void cargarDatosPersonales();
-  else if (menu === 'cursos') void cargarSuscripciones();
+  else if (menu === 'cursos') void cargarCursos();
   else if (menu === 'materiales') void cargarMisCuadernos(); // AÑADE ESTA LÍNEA
   if ($q.screen.lt.md) menuVisible.value = false;
 };

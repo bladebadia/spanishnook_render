@@ -1,68 +1,95 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import Stripe from 'https://esm.sh/stripe@11.1.0?target=deno'
+/**
+ * checkout-material — Checkout de Stripe para comprar un material didáctico (PDF).
+ *
+ * Requiere sesión. De la web solo se usa el id del material: título y precio salen
+ * de materiales_didacticos. Los materiales gratuitos (precio < 0,50 €) no pasan por Stripe.
+ *
+ * Petición: POST { materialId: number, returnUrl?: string, idioma?: 'es'|'en' }
+ * Respuesta: { url }
+ * Metadata para stripe-webhook: { tipo: 'material_didactico', material_id, user_id }
+ */
+import {
+  clienteAdmin,
+  enteroPositivo,
+  errores,
+  json,
+  leerJson,
+  origenSeguro,
+  preflight,
+  urlPermitida,
+  usuarioDesdePeticion,
+} from "../_shared/auth.ts";
+import { clienteStripe } from "../_shared/stripe.ts";
+import { idiomaDesde } from "../_shared/correo-comun.ts";
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') as string, {
-  apiVersion: '2022-11-15',
-  httpClient: Stripe.createFetchHttpClient(),
-})
+const PRECIO_MINIMO_EUR = 0.5; // mínimo de Stripe
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+Deno.serve(async (req) => {
+  const pre = preflight(req);
+  if (pre) return pre;
+  if (req.method !== "POST") return errores.metodo();
 
   try {
-    // Recibimos el precio y el título directamente de tu web
-    const { materialId, titulo, precio, returnUrl, userId } = await req.json()
+    const user = await usuarioDesdePeticion(req);
+    if (!user) return errores.sinSesion();
 
-    if (!materialId || !userId || !precio || !titulo) {
-      throw new Error('Faltan datos obligatorios')
+    const body = await leerJson(req);
+    const materialId = enteroPositivo(body?.materialId);
+    if (!materialId) return errores.entrada("Falta materialId.");
+
+    const supabase = clienteAdmin();
+    const { data: material, error } = await supabase
+      .from("materiales_didacticos")
+      .select("id, titulo, titulo_en, precio, visible")
+      .eq("id", materialId)
+      .maybeSingle();
+    if (error) throw error;
+    if (!material || material.visible !== true) return errores.noEncontrado("Material no encontrado.");
+
+    const precio = Number(material.precio);
+    if (!Number.isFinite(precio) || precio < PRECIO_MINIMO_EUR) {
+      return errores.entrada("Este material es gratuito o no tiene precio.");
     }
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'eur',
-            product_data: {
-              name: titulo, // El nombre que verá el cliente al pagar
-            },
-            unit_amount: Math.round(precio * 100), // Stripe exige céntimos (5€ = 500)
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: returnUrl,
-      cancel_url: returnUrl.replace('?pago=completado', ''),
-      client_reference_id: materialId.toString(),
-      metadata: {
-        tipo: 'material_didactico',
-        material_id: materialId.toString(),
-        user_id: userId,
-      },
-    })
+    // ¿Ya lo tiene?
+    const { data: compra } = await supabase
+      .from("compras_materiales")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("material_id", material.id)
+      .maybeSingle();
+    if (compra) return errores.conflicto("Ya tienes este material.");
 
-    return new Response(
-      JSON.stringify({ url: session.url }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    )
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      }
-    )
+    const idioma = idiomaDesde(body?.idioma);
+    const nombre = idioma === "en" && material.titulo_en ? material.titulo_en : material.titulo;
+
+    // URL de vuelta: la de la web si es de un origen permitido
+    const porDefecto = `${origenSeguro(req)}/Materiales?pago=completado`;
+    const exito = urlPermitida(body?.returnUrl, porDefecto);
+    const cancelacion = exito.replace("?pago=completado", "");
+
+    const session = await clienteStripe().checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: [{
+        price_data: { currency: "eur", product_data: { name: nombre }, unit_amount: Math.round(precio * 100) },
+        quantity: 1,
+      }],
+      customer_email: user.email ?? undefined,
+      success_url: exito,
+      cancel_url: cancelacion,
+      client_reference_id: String(material.id),
+      metadata: {
+        tipo: "material_didactico",
+        material_id: String(material.id),
+        user_id: user.id,
+        ...(idioma ? { idioma } : {}),
+      },
+    });
+
+    return json({ url: session.url });
+  } catch (e) {
+    console.error("[checkout-material] Error:", e instanceof Error ? e.message : String(e));
+    return errores.interno("No se pudo iniciar el pago.");
   }
-})
+});
