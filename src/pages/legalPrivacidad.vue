@@ -1,5 +1,5 @@
 <template>
-  <div class="legal-page q-pa-lg text-center">
+  <div class="legal-page sn-legal">
     <p class="text-h3 text-primary text-bold titulo-responsivo">Política de Privacidad</p>
     <p class="text-h5 text-primary text-left q-mt-md subtitulo-responsivo">
       I. POLÍTICA DE PRIVACIDAD Y PROTECCIÓN DE DATOS
@@ -214,62 +214,3 @@ useMeta(() => ({
   },
 }));
 </script>
-
-<style scoped>
-.legal-page {
-  max-width: 85%;
-  margin: 0 auto;
-}
-
-.titulo-responsivo {
-  font-size: 2.8rem;
-  margin-bottom: 2rem;
-}
-
-@media (max-width: 900px) {
-  .titulo-responsivo {
-    font-size: 1.8rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .titulo-responsivo {
-    font-size: 1.3rem;
-    font-weight: bold;
-  }
-}
-
-.subtitulo-responsivo {
-  font-size: 1.6rem;
-  margin-bottom: 1.3rem;
-}
-
-@media (max-width: 900px) {
-  .subtitulo-responsivo {
-    font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .subtitulo-responsivo {
-    font-size: 1rem;
-  }
-}
-
-.texto-responsivo {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-@media (max-width: 900px) {
-  .texto-responsivo {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .texto-responsivo {
-    font-size: 1rem;
-  }
-}
-</style>

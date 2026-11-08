@@ -1,5 +1,5 @@
 <template>
-  <div class="legal-page q-pa-lg">
+  <div class="legal-page sn-legal">
     <p class="text-h3 text-primary text-bold text-center titulo-responsivo">Política de Cookies</p>
     <p class="text-h6 text-left text-black texto-responsivo">
       En esta página se informa de manera clara y accesible sobre el uso de cookies en el Sitio Web
@@ -82,60 +82,3 @@ useMeta(() => ({
   },
 }));
 </script>
-
-<style scoped>
-.legal-page {
-  max-width: 85%;
-  margin: 0 auto;
-}
-
-.titulo-responsivo {
-  font-size: 2.8rem;
-}
-
-@media (max-width: 900px) {
-  .titulo-responsivo {
-    font-size: 1.8rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .titulo-responsivo {
-    font-size: 1.3rem;
-    font-weight: bold;
-  }
-}
-
-.subtitulo-responsivo {
-  font-size: 1.6rem;
-}
-
-@media (max-width: 900px) {
-  .subtitulo-responsivo {
-    font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .subtitulo-responsivo {
-    font-size: 1rem;
-  }
-}
-
-.texto-responsivo {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-@media (max-width: 900px) {
-  .texto-responsivo {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .texto-responsivo {
-    font-size: 1rem;
-  }
-}
-</style>

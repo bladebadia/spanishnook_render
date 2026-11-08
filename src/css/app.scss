@@ -321,6 +321,63 @@ a {
   padding: clamp(16px, 5vw, 48px) var(--sn-margen);
 }
 
+// Páginas legales (aviso, privacidad, cookies, condiciones): columna de lectura.
+// Sus títulos son <p class="text-primary ..."> de origen; aquí se les da forma de título.
+.sn-legal {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 56px) var(--sn-margen) var(--sn-seccion);
+  color: var(--sn-tinta);
+  font-size: var(--sn-t-cuerpo);
+  line-height: 1.7;
+  text-align: left;
+
+  p,
+  li {
+    font-size: var(--sn-t-cuerpo) !important;
+    line-height: 1.7;
+    text-align: left !important;
+    color: var(--sn-tinta) !important;
+    margin: 0 0 14px;
+  }
+  // Títulos de sección
+  p.text-primary {
+    font-family: var(--sn-fuente-titulos);
+    font-size: var(--sn-t-h4) !important;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--sn-burdeos) !important;
+    margin: 36px 0 12px;
+    padding: 0 !important;
+  }
+  // Puntos de lista escritos como <p style="padding-left"> con "•": texto normal, no título
+  p.text-primary[style*='padding-left'] {
+    font-family: var(--sn-fuente-texto);
+    font-size: var(--sn-t-cuerpo) !important;
+    font-weight: 600;
+    color: var(--sn-tinta) !important;
+    margin: 0 0 10px;
+    padding-left: 1.2em !important;
+  }
+  // Título de la página
+  p.titulo-responsivo {
+    font-size: var(--sn-t-h1) !important;
+    line-height: 1.1;
+    margin: 0 0 28px;
+    text-align: left !important;
+  }
+  ul {
+    padding-left: 1.4em;
+    margin: 0 0 16px !important;
+  }
+  li {
+    margin-bottom: 6px;
+  }
+  a {
+    color: var(--sn-burdeos);
+  }
+}
+
 // Nota adhesiva: cajas destacadas, carrito, opiniones
 .sn-nota {
   background-color: var(--sn-nota) !important;
