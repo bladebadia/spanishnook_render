@@ -205,7 +205,7 @@ export default defineConfig((ctx) => {
       ],
 
       // Plugins
-      plugins: ['Dialog', 'Notify', 'Meta', 'Loading', 'LocalStorage', 'SessionStorage'],
+      plugins: ['Cookies', 'Dialog', 'Notify', 'Meta', 'Loading', 'LocalStorage', 'SessionStorage'],
 
       // Importante: desactivar cssAddon para evitar estilos extra
       cssAddon: false,

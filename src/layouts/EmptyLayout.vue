@@ -202,6 +202,7 @@ import EssentialLink, { type EssentialLinkProps } from '../components/EssentialL
 import AvisoCookies from '../components/AvisoCookies.vue';
 import { mdiWhatsapp } from '@quasar/extras/mdi-v6';
 import { useI18n } from 'vue-i18n';
+import { useIdioma } from 'src/utils/idioma';
 import { useAuth } from '../stores/auth';
 import { useRoute, useRouter } from 'vue-router';
 import { supabase } from '../supabaseClient';
@@ -209,6 +210,7 @@ import { useQuasar } from 'quasar';
 
 const { user } = useAuth();
 const { locale, t } = useI18n();
+const { cambiarIdioma } = useIdioma();
 const iconoWhatsapp = mdiWhatsapp;
 const router = useRouter();
 const { logout } = useAuth();
@@ -334,7 +336,7 @@ onUnmounted(() => {
 });
 
 function changeLang(val: string) {
-  locale.value = val;
+  cambiarIdioma(val);
 }
 
 const linksList = computed((): EssentialLinkProps[] => [

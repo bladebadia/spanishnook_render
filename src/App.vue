@@ -8,6 +8,7 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useMeta } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import MainLayout from 'layouts/MainLayout.vue';
 import EmptyLayout from 'layouts/EmptyLayout.vue';
 
@@ -18,6 +19,7 @@ const DESCRIPCION =
 const IMAGEN = `${SITIO}/img/Logo_rectangular_320.png`;
 
 const route = useRoute();
+const { locale } = useI18n();
 
 // Mismo layout en servidor y en cliente.
 // Antes el servidor pintaba siempre MainLayout y el navegador lo cambiaba al hidratar.
@@ -39,7 +41,7 @@ useMeta(() => ({
     robots: { name: 'robots', content: 'index,follow' },
     ogType: { property: 'og:type', content: 'website' },
     ogSiteName: { property: 'og:site_name', content: 'SpanishNook' },
-    ogLocale: { property: 'og:locale', content: 'es_ES' },
+    ogLocale: { property: 'og:locale', content: locale.value.replace('-', '_') },
     ogTitle: { property: 'og:title', content: TITULO },
     ogDescription: { property: 'og:description', content: DESCRIPCION },
     ogImage: { property: 'og:image', content: IMAGEN },

@@ -11,6 +11,8 @@ export default defineSsrMiddleware(({ app,  render, serve }) => {
   // over to Vue and Vue Router to render our page
   app.get('*', (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/html');
+    // El HTML depende del idioma (cookie sn_idioma o Accept-Language)
+    res.setHeader('Vary', 'Cookie, Accept-Language');
 
     render(/* the ssrContext: */ { req, res })
       .then((html) => {

@@ -302,6 +302,7 @@ import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink
 import AvisoCookies from 'components/AvisoCookies.vue';
 import { mdiInstagram, mdiMusicNote, mdiWhatsapp, mdiYoutube } from '@quasar/extras/mdi-v6';
 import { useI18n } from 'vue-i18n';
+import { useIdioma } from 'src/utils/idioma';
 import { useAuth } from 'src/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
 import { supabase } from 'src/supabaseClient';
@@ -309,6 +310,7 @@ import { useQuasar } from 'quasar';
 
 const { user } = useAuth();
 const { locale, t } = useI18n();
+const { cambiarIdioma } = useIdioma();
 const iconoWhatsapp = mdiWhatsapp;
 const iconosRedes = { youtube: mdiYoutube, instagram: mdiInstagram, tiktok: mdiMusicNote };
 const router = useRouter();
@@ -434,7 +436,7 @@ onUnmounted(() => {
 });
 
 function changeLang(val: string) {
-  locale.value = val;
+  cambiarIdioma(val);
 }
 
 const linksList = computed((): EssentialLinkProps[] => [
