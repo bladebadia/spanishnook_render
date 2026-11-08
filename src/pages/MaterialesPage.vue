@@ -1,136 +1,81 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="row cabecera-row full-width q-mt-xl">
-      <div class="col-12 align-self-center q-pa-md flex column items-center">
-        <div class="text-center q-mb-xl  q-mt-md">
-          <h1 class="titulo-responsivo text-primary q-mb-sm">
-            {{ $t('MaterialesPage.titulo1') }}
-          </h1>
-          <br />
-          <br />
-          <p class="texto-responsivo text-left text-weight-bold">
-            {{ $t('MaterialesPage.descripcion') }}
-          </p>
-          <br />
-          <p class="texto-responsivo text-left">{{ $t('MaterialesPage.descripcion2') }}</p>
-          <br />
-          <p class="texto-responsivo text-center text-primary text-weight-bold">
-            {{ $t('MaterialesPage.claim') }}
-          </p>
-          <br />
-          <br />
-          <br />
-          <br />
-          <p class="subtitulo-responsivo text-center text-weight-bold">
-            {{ $t('MaterialesPage.quehay') }}
-          </p>
+  <q-page class="ma-pagina">
+    <!-- Cabecera corta: lo importante son los cuadernos -->
+    <section class="sn-contenedor ma-cabecera">
+      <h1 class="ma-h1">{{ $t('MaterialesPage.titulo1') }}</h1>
+      <p class="ma-entrada">{{ $t('MaterialesPage.descripcion') }}</p>
+      <p class="ma-claim">{{ $t('MaterialesPage.claim') }}</p>
+    </section>
 
-          <q-card class="q-mt-sm">
-            <q-card-section class="texto-responsivo text-left">
-              <ul class="q-pl-md text-left">
-                <li>
-                  <strong>{{ $t('MaterialesPage.contenido1bold') }}</strong>
-                  {{ $t('MaterialesPage.contenido1') }}
-                </li>
-                <li>
-                  <strong>{{ $t('MaterialesPage.contenido2bold') }}</strong>
-                  {{ $t('MaterialesPage.contenido2') }}
-                </li>
-                <li>
-                  <strong>{{ $t('MaterialesPage.contenido3bold') }}</strong>
-                  {{ $t('MaterialesPage.contenido3') }}
-                </li>
-                <li>
-                  <strong>{{ $t('MaterialesPage.contenido4bold') }}</strong>
-                  {{ $t('MaterialesPage.contenido4') }}
-                </li>
-                <li>
-                  <strong>{{ $t('MaterialesPage.contenido5bold') }}</strong>
-                  {{ $t('MaterialesPage.contenido5') }}
-                </li>
-              </ul>
-            </q-card-section>
-          </q-card>
-        </div>
-
-        <!-- Pantalla de carga -->
-        <div v-if="cargando" class="row justify-center q-pa-xl">
-          <q-spinner-dots color="primary" size="3em" />
-        </div>
-
-        <!-- Mensaje si no hay nada visible -->
-        <q-card
-          v-else-if="materiales.length === 0"
-          flat
-          bordered
-          class="q-pa-xl text-center bg-grey-1"
-        >
-          <q-icon name="inventory_2" size="64px" color="grey-5" />
-          <div class="text-h6 text-grey-7 q-mt-md">{{ $t('MaterialesPage.proximamente') }}</div>
-        </q-card>
-
-        <!-- Catálogo de materiales -->
-        <div
-          v-else
-          class="row q-col-gutter-xl full-width justify-center"
-          style="max-width: 1200px; margin: 0 auto"
-        >
-          <div class="col-12 col-sm-6 col-md-4" v-for="mat in materiales" :key="mat.id">
-            <q-card
-              class="carta-contenido shadow-4 cursor-pointer"
-              style="
-                width: 100%;
-                max-width: 320px;
-                min-width: 280px;
-                margin: 0 auto;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-              "
-              @click="abrirMaterial(mat)"
-            >
-              <q-img
-                :src="mat.imagen_portada || 'https://via.placeholder.com/300x200?text=Sin+Portada'"
-                height="200px"
-              >
-                <div
-                  class="badge-hs bg-positive text-white text-weight-bold shadow-3"
-                  v-if="mat.precio === 0 || !mat.precio"
-                >
-                  {{ $t('MaterialesPage.gratis') }}
-                </div>
-                <div class="badge-hs bg-negative text-white text-weight-bold shadow-3" v-else>
-                  {{ mat.precio }} €
-                </div>
-              </q-img>
-
-              <q-card-section class="col-grow text-center q-pa-md flex column justify-center">
-                <div class="text-h6 text-weight-bold q-mb-sm" style="line-height: 1.2">
-                  {{ locale === 'en-US' && mat.titulo_en ? mat.titulo_en : mat.titulo }}
-                </div>
-                <div class="text-body2 text-grey-8 ellipsis-3-lines">
-                  {{
-                    locale === 'en-US' && mat.descripcion_breve_en
-                      ? mat.descripcion_breve_en
-                      : mat.descripcion_breve
-                  }}
-                </div>
-              </q-card-section>
-
-              <q-card-actions align="center" class="q-pa-md q-pt-none">
-                <q-btn
-                  color="primary"
-                  rounded
-                  unelevated
-                  :label="$t('MaterialesPage.verDetalles')"
-                  class="full-width text-weight-bold"
-                />
-              </q-card-actions>
-            </q-card>
-          </div>
-        </div>
+    <!-- Catálogo -->
+    <section class="sn-contenedor ma-catalogo">
+      <div v-if="cargando" class="row justify-center q-pa-xl">
+        <q-spinner-dots color="primary" size="3em" />
       </div>
-    </div>
+
+      <div v-else-if="materiales.length === 0" class="ma-vacio">
+        <q-icon name="inventory_2" size="48px" />
+        <p>{{ $t('MaterialesPage.proximamente') }}</p>
+      </div>
+
+      <div v-else class="ma-rejilla">
+        <article
+          v-for="mat in materiales"
+          :key="mat.id"
+          class="ma-tarjeta"
+          tabindex="0"
+          role="button"
+          @click="abrirMaterial(mat)"
+          @keydown.enter="abrirMaterial(mat)"
+        >
+          <div class="ma-tarjeta__portada">
+            <img
+              :src="mat.imagen_portada || '/img/Logo_rectangular_320.png'"
+              :alt="locale === 'en-US' && mat.titulo_en ? mat.titulo_en : mat.titulo"
+              loading="lazy"
+            />
+            <span class="ma-precio" :class="{ 'ma-precio--gratis': esGratis(mat) }">
+              {{ esGratis(mat) ? $t('MaterialesPage.gratis') : `${mat.precio} €` }}
+            </span>
+          </div>
+          <div class="ma-tarjeta__cuerpo">
+            <h2 class="ma-tarjeta__titulo">
+              {{ locale === 'en-US' && mat.titulo_en ? mat.titulo_en : mat.titulo }}
+            </h2>
+            <p class="ma-tarjeta__texto">
+              {{
+                locale === 'en-US' && mat.descripcion_breve_en
+                  ? mat.descripcion_breve_en
+                  : mat.descripcion_breve
+              }}
+            </p>
+            <span class="ma-tarjeta__ir">
+              {{ $t('MaterialesPage.verDetalles') }}
+              <q-icon name="arrow_forward" size="18px" />
+            </span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Qué hay en cada cuaderno -->
+    <section class="ma-seccion">
+      <div class="sn-contenedor ma-contenido">
+        <div>
+          <h2 class="ma-h2">{{ $t('MaterialesPage.quehay') }}</h2>
+          <p class="ma-parrafo">{{ $t('MaterialesPage.descripcion2') }}</p>
+        </div>
+        <ul class="ma-checks">
+          <li v-for="n in 5" :key="n">
+            <q-icon :name="ICONOS_CONTENIDO[n - 1]" class="ma-checks__icono" />
+            <span>
+              <strong>{{ $t(`MaterialesPage.contenido${n}bold`) }}</strong>
+              {{ $t(`MaterialesPage.contenido${n}`) }}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </section>
 
     <q-dialog v-model="modalVisible">
       <!-- 1. Tarjeta normal, sin clase column ni alturas raras -->
@@ -140,7 +85,7 @@
           <q-img
             :src="
               materialSeleccionado?.imagen_portada ||
-              'https://via.placeholder.com/700x300?text=Sin+Portada'
+              '/img/Logo_rectangular_320.png'
             "
             height="280px"
           />
@@ -154,7 +99,11 @@
                 }}
               </div>
               <q-chip color="primary" text-color="white" size="lg" class="text-weight-bold">
-                {{ materialSeleccionado?.precio }}€
+                {{
+                  materialSeleccionado && esGratis(materialSeleccionado)
+                    ? $t('MaterialesPage.gratis')
+                    : `${materialSeleccionado?.precio} €`
+                }}
               </q-chip>
             </div>
 
@@ -288,6 +237,11 @@ interface Material {
 }
 
 const materiales = ref<Material[]>([]);
+
+// Iconos de la lista "¿Qué hay en cada cuaderno?" (contenido1 a contenido5)
+const ICONOS_CONTENIDO = ['translate', 'headphones', 'edit_note', 'spellcheck', 'fact_check'];
+
+const esGratis = (mat: Material) => !mat.precio || Number(mat.precio) === 0;
 const misCompras = ref<number[]>([]);
 const cargando = ref(true);
 
@@ -423,46 +377,176 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.material-card {
+.ma-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+}
+.ma-cabecera {
+  padding-block: clamp(32px, 6vw, 56px) 24px;
+  text-align: center;
+}
+.ma-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--sn-burdeos);
+  margin: 0 0 16px;
+}
+.ma-entrada {
+  font-size: var(--sn-t-entrada);
+  line-height: 1.55;
+  max-width: 60ch;
+  margin: 0 auto;
+  color: var(--sn-tinta-suave);
+}
+.ma-claim {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  color: var(--sn-burdeos);
+  margin: 16px 0 0;
+}
+.ma-h2 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+.ma-parrafo {
+  font-size: var(--sn-t-cuerpo);
+  line-height: 1.6;
+  color: var(--sn-tinta-suave);
+  margin: 0;
+}
+
+/* Catálogo */
+.ma-catalogo {
+  padding-bottom: var(--sn-seccion);
+}
+.ma-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 24px;
+}
+.ma-tarjeta {
+  display: flex;
+  flex-direction: column;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  overflow: hidden;
+  box-shadow: var(--sn-sombra);
+  cursor: pointer;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
-.material-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+.ma-tarjeta:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sn-sombra-alta);
 }
-
-/* Etiqueta roja en la esquina */
-.badge-hs {
+.ma-tarjeta__portada {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--sn-burdeos-tenue);
+}
+.ma-tarjeta__portada img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ma-precio {
   position: absolute;
-  top: 10px;
+  top: 12px;
   right: 12px;
-  padding: 6px 16px;
-  border-radius: 20px;
-  transform: rotate(5deg);
-  border: 2px solid white;
-  z-index: 2;
+  padding: 4px 12px;
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-burdeos);
+  color: #fff;
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  box-shadow: var(--sn-sombra);
+}
+.ma-precio--gratis {
+  background: var(--sn-oliva);
+}
+.ma-tarjeta__cuerpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 18px 20px 20px;
+}
+.ma-tarjeta__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h4);
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 8px;
+}
+.ma-tarjeta__texto {
+  color: var(--sn-tinta-suave);
+  line-height: 1.5;
+  margin: 0 0 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ma-tarjeta__ir {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  font-weight: 700;
+  color: var(--sn-burdeos);
+}
+.ma-vacio {
+  text-align: center;
+  padding: 40px 16px;
+  border: 1px dashed var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  color: var(--sn-tinta-suave);
 }
 
-/* Ajustes de márgenes para móviles */
-@media (max-width: 768px) {
-  .q-page {
-    padding: 8px !important;
+/* Qué hay en cada cuaderno */
+.ma-seccion {
+  padding-block: var(--sn-seccion);
+  background: var(--sn-burdeos-tenue);
+}
+.ma-contenido {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 900px) {
+  .ma-contenido {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 48px;
   }
-
-  .cabecera-row {
-    margin-top: 8px !important;
-  }
-
-  .cabecera-row > .col-12 {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-
-  .cabecera-row .text-center {
-    margin-top: 0 !important;
-    margin-bottom: 16px !important;
-  }
+}
+.ma-checks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.ma-checks li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  line-height: 1.5;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  padding: 14px 16px;
+}
+.ma-checks__icono {
+  flex: none;
+  font-size: 22px;
+  color: var(--sn-burdeos);
+  margin-top: 1px;
 }
 </style>

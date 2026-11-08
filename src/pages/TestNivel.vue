@@ -1,196 +1,180 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
-    <q-page class="row items-center justify-evenly">
-      <!-- Pagina de instrucciones -->
-      <div v-if="!testCompleted && currentQuestion === 0 && !showResults" class="col-12">
-        <q-card flat bordered class="instruction-card">
-          <q-card-section class="text-center q-pb-none q-mb-none">
-            <div style="font-size: 3.5rem; margin-bottom: 0px">📝</div>
-          </q-card-section>
-          <q-card-section class="text-center q-pt-none">
-            <h1 class="text-h3 text-primary q-mb-sm">
-              {{ t('test.deNivel') }}
-            </h1>
-            <p class="text-h6 text-grey-7 q-mb-lg">{{ t('test.evaluaTuNivel') }}</p>
+  <q-page class="te-pagina">
+    <div class="sn-contenedor te-contenedor">
+      <!-- Instrucciones -->
+      <section v-if="!testCompleted && currentQuestion === 0 && !showResults" class="te-tarjeta">
+        <q-icon name="quiz" class="te-icono-grande" />
+        <h1 class="te-h1">{{ t('test.deNivel') }}</h1>
+        <p class="te-entrada">{{ t('test.evaluaTuNivel') }}</p>
 
-            <div class="text-left q-mb-lg">
-              <p class="text-h5 text-weight-bold q-mb-md q-ml-lg">{{ t('test.instrucciones') }}</p>
-              <ul class="text-body1 text-black">
-                <li class="q-mb-sm">{{ t('test.elTestConsta') }}</li>
-                <li class="q-mb-sm">
-                  {{ t('test.cadaPreguntaTiene') }}
-                </li>
-                <li class="q-mb-sm">
-                  {{ t('test.alCompletar') }} <strong>{{ t('test.esteTest') }}</strong>
-                </li>
-                <li class="q-mb-sm">{{ t('test.elTestToma') }}</li>
-              </ul>
-            </div>
+        <h2 class="te-h2">{{ t('test.instrucciones') }}</h2>
+        <ul class="te-instrucciones">
+          <li>
+            <q-icon name="format_list_numbered" class="te-instrucciones__icono" />
+            <span>{{ t('test.elTestConsta') }}</span>
+          </li>
+          <li>
+            <q-icon name="radio_button_checked" class="te-instrucciones__icono" />
+            <span>{{ t('test.cadaPreguntaTiene') }}</span>
+          </li>
+          <li>
+            <q-icon name="insights" class="te-instrucciones__icono" />
+            <span>{{ t('test.alCompletar') }} <strong>{{ t('test.esteTest') }}</strong></span>
+          </li>
+          <li>
+            <q-icon name="schedule" class="te-instrucciones__icono" />
+            <span>{{ t('test.elTestToma') }}</span>
+          </li>
+        </ul>
 
-            <q-btn
-              size="lg"
-              color="primary"
-              :label="t('test.comenzarTest')"
-              class="q-px-xl btn-comenzar-test"
-              @click="currentQuestion = 1"
-            />
-          </q-card-section>
-        </q-card>
-      </div>
+        <q-btn
+          color="primary"
+          unelevated
+          no-caps
+          size="lg"
+          class="te-boton"
+          icon-right="arrow_forward"
+          :label="t('test.comenzarTest')"
+          @click="currentQuestion = 1"
+        />
+      </section>
 
-      <!-- Questions Page -->
-      <div v-if="!testCompleted && currentQuestion > 0 && !showResults">
-        <div class="row justify-center">
-          <div class="col-12 col-md-10">
-            <q-card flat bordered class="question-card test-card-size fixed-test-card">
-              <q-card-section class="test-card-content">
-                <div class="test-card-progress">
-                  <div class="row items-center q-mb-sm">
-                    <div class="col">
-                      <span class="text-body2 text-grey-6">
-                        {{ t('test.pregunta') }} {{ currentQuestion }} {{ t('test.de') }}
-                        {{ testQuestions.length }}
-                      </span>
-                    </div>
-                    <div class="col-auto">
-                      <q-chip
-                        :label="testQuestions[currentQuestion - 1]?.level"
-                        color="secondary"
-                        text-color="white"
-                        size="sm"
-                      />
-                    </div>
-                  </div>
-                  <q-linear-progress
-                    :value="currentQuestion / testQuestions.length"
-                    color="primary"
-                    size="8px"
-                    rounded
-                  />
-                </div>
-                <div class="test-card-question">
-                  <h3 class="text-h6 text-weight-bold pregunta-test">
-                    {{ testQuestions[currentQuestion - 1]?.question }}
-                  </h3>
-                </div>
-                <div class="test-card-options q-gutter-sm">
-                  <q-btn
-                    v-for="(option, index) in testQuestions[currentQuestion - 1]?.options"
-                    :key="index"
-                    :label="`${String.fromCharCode(65 + index)}. ${option}`"
-                    :color="selectedAnswers[currentQuestion - 1] === index ? 'primary' : 'grey-3'"
-                    :text-color="
-                      selectedAnswers[currentQuestion - 1] === index ? 'white' : 'grey-8'
-                    "
-                    class="full-width text-left q-pa-md opcion-test"
-                    no-caps
-                    @click="selectAnswer(index)"
-                  />
-                </div>
-                <div class="test-card-actions row justify-between">
-                  <q-btn
-                    v-if="currentQuestion > 1"
-                    :label="t('test.anterior')"
-                    icon="chevron_left"
-                    color="grey-6"
-                    flat
-                    @click="previousQuestion"
-                  />
-                  <q-space />
-                  <q-btn
-                    v-if="currentQuestion < testQuestions.length"
-                    :label="t('test.siguiente')"
-                    icon-right="chevron_right"
-                    color="primary"
-                    class="btn-siguiente"
-                    @click="nextQuestion"
-                  />
-                  <q-btn
-                    v-if="currentQuestion === testQuestions.length"
-                    :label="t('test.finalizarTest')"
-                    icon-right="check"
-                    color="positive"
-                    class="btn-finalizar"
-                    @click="finishTest"
-                  />
-                </div>
-              </q-card-section>
-            </q-card>
+      <!-- Preguntas -->
+      <section v-if="!testCompleted && currentQuestion > 0 && !showResults" class="te-tarjeta te-tarjeta--pregunta">
+        <div class="te-progreso">
+          <span class="te-progreso__texto">
+            {{ t('test.pregunta') }} {{ currentQuestion }} {{ t('test.de') }} {{ testQuestions.length }}
+          </span>
+          <span class="te-nivel">{{ testQuestions[currentQuestion - 1]?.level }}</span>
+        </div>
+        <q-linear-progress
+          :value="currentQuestion / testQuestions.length"
+          color="primary"
+          track-color="grey-3"
+          size="8px"
+          rounded
+          class="q-mb-lg"
+        />
+
+        <h2 class="te-pregunta">{{ testQuestions[currentQuestion - 1]?.question }}</h2>
+
+        <div class="te-opciones" role="radiogroup">
+          <button
+            v-for="(option, index) in testQuestions[currentQuestion - 1]?.options"
+            :key="index"
+            type="button"
+            role="radio"
+            :aria-checked="selectedAnswers[currentQuestion - 1] === index"
+            class="te-opcion"
+            :class="{ 'te-opcion--elegida': selectedAnswers[currentQuestion - 1] === index }"
+            @click="selectAnswer(index)"
+          >
+            <span class="te-opcion__letra">{{ String.fromCharCode(65 + index) }}</span>
+            <span>{{ option }}</span>
+          </button>
+        </div>
+
+        <div class="te-acciones">
+          <q-btn
+            v-if="currentQuestion > 1"
+            flat
+            no-caps
+            color="grey-8"
+            icon="chevron_left"
+            :label="t('test.anterior')"
+            @click="previousQuestion"
+          />
+          <q-space />
+          <q-btn
+            v-if="currentQuestion < testQuestions.length"
+            color="primary"
+            unelevated
+            no-caps
+            class="te-boton"
+            icon-right="chevron_right"
+            :label="t('test.siguiente')"
+            @click="nextQuestion"
+          />
+          <q-btn
+            v-if="currentQuestion === testQuestions.length"
+            color="primary"
+            unelevated
+            no-caps
+            class="te-boton"
+            icon-right="check"
+            :label="t('test.finalizarTest')"
+            @click="finishTest"
+          />
+        </div>
+      </section>
+
+      <!-- Resultado -->
+      <section v-if="showResults" class="te-tarjeta">
+        <q-icon name="verified" class="te-icono-grande te-icono-grande--ok" />
+        <h1 class="te-h1">{{ t('test.testCompletado') }}</h1>
+
+        <div class="te-resultado">
+          <q-circular-progress
+            :value="percentage"
+            size="120px"
+            :thickness="0.12"
+            color="primary"
+            track-color="grey-3"
+            show-value
+          >
+            <span class="te-resultado__puntos">{{ levelCorrect }}/{{ levelTotal }}</span>
+          </q-circular-progress>
+          <div>
+            <p class="te-resultado__etiqueta">{{ t('test.tuNivel') }}</p>
+            <p class="te-resultado__nivel">{{ testLevel }}</p>
+            <p class="te-resultado__porcentaje">{{ Math.round(percentage) }}{{ t('test.correcto') }}</p>
           </div>
         </div>
-      </div>
 
-      <!-- Results Page -->
-      <div class="row items-center full-width" v-if="showResults">
-        <div class="column full-width items-center">
-          <q-card flat bordered class="results-card test-card-size fixed-test-card">
-            <q-card-section class="text-center">
-              <div style="font-size: 2.5rem; margin-bottom: 1.5rem; margin-top: 1rem">✅</div>
-              <p class="text-h3 text-primary text-weight-bold q-mb-xl">
-                {{ t('test.testCompletado') }}
-              </p>
+        <p class="te-descripcion">
+          <span v-if="testLevel.includes('A1')">{{ t('test.accesoConocesLo') }}</span>
+          <span v-else-if="testLevel.includes('A2')">{{ t('test.plataformaPuedes') }}</span>
+          <span v-else-if="testLevel.includes('B1')">{{ t('test.umbralTienes') }}</span>
+          <span v-else-if="testLevel.includes('B2')">{{ t('test.avanzadoPuedes') }}</span>
+          <span v-else-if="testLevel.includes('C1')">{{ t('test.dominioTeExpresas') }}</span>
+        </p>
 
-              <div class="row justify-center items-center q-mb-lg">
-                <div class="col-12 col-sm-6 text-center">
-                  <q-circular-progress
-                    :value="percentage"
-                    size="120px"
-                    :thickness="0.1"
-                    color="primary"
-                    track-color="grey-3"
-                    class="q-ma-md"
-                  >
-                    <div class="text-h4 text-weight-bold">{{ levelCorrect }}/{{ levelTotal }}</div>
-                  </q-circular-progress>
-                  <div class="text-body1 text-grey-7">
-                    {{ Math.round(percentage) }}{{ t('test.correcto') }}
-                  </div>
-                </div>
-
-                <div class="col-12 col-sm-6 text-center">
-                  <div class="text-h5 text-weight-bold text-primary q-mb-sm">
-                    {{ t('test.tuNivel') }}
-                  </div>
-                  <q-chip
-                    :label="testLevel"
-                    color="primary"
-                    text-color="white"
-                    size="xl"
-                    class="q-pa-md chip-nivel"
-                  />
-                  <div class="text-body2 text-black q-mt-sm descripcion-nivel">
-                    <span v-if="testLevel.includes('A1')">
-                      {{ t('test.accesoConocesLo') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('A2')">
-                      {{ t('test.plataformaPuedes') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('B1')">
-                      {{ t('test.umbralTienes') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('B2')">
-                      {{ t('test.avanzadoPuedes') }}
-                    </span>
-                    <span v-else-if="testLevel.includes('C1')">
-                      {{ t('test.dominioTeExpresas') }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="q-gutter-md">
-                <q-btn
-                  :label="t('test.repetirTest')"
-                  icon="refresh"
-                  color="secondary"
-                  @click="restartTest"
-                />
-              </div>
-            </q-card-section>
-          </q-card>
+        <div class="te-siguiente sn-nota">
+          <p class="te-siguiente__titulo">{{ t('TestPagina.siguientePaso') }}</p>
+          <p class="te-siguiente__texto">{{ t('TestPagina.siguienteTexto') }}</p>
+          <div class="te-siguiente__botones">
+            <q-btn
+              color="primary"
+              unelevated
+              no-caps
+              class="te-boton"
+              to="/Reservas"
+              :label="t('PaginaClases.reservarClase')"
+            />
+            <q-btn
+              outline
+              color="primary"
+              no-caps
+              class="te-boton"
+              to="/Clases"
+              :label="t('indexEncuentraTusClases')"
+            />
+          </div>
         </div>
-      </div>
-    </q-page>
+
+        <q-btn
+          flat
+          no-caps
+          color="grey-8"
+          icon="refresh"
+          class="q-mt-md"
+          :label="t('test.repetirTest')"
+          @click="restartTest"
+        />
+      </section>
+    </div>
+  </q-page>
 </template>
 
 <script setup lang="ts">
@@ -203,7 +187,7 @@ const pageTitle = 'Test de nivel de español online | SpanishNook';
 const pageDescription =
   'Haz el test de nivel gratuito de SpanishNook (A1-C1) y obtén tu resultado al instante con recomendaciones de siguiente paso.';
 const pageUrl = 'https://www.spanishnook.com/TestNivel';
-const pageImage = 'https://www.spanishnook.com/img/Home/banner_1920.webp';
+const pageImage = 'https://www.spanishnook.com/img/Logo_rectangular_320.png';
 
 useMeta(() => ({
   title: pageTitle,
@@ -584,156 +568,220 @@ const previousQuestion = () => {
 </script>
 
 <style scoped>
-.instruction-card {
-  max-width: 800px;
-  margin: 0 auto;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+.te-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
 }
-
-.question-card {
-  max-width: 900px;
-  margin: 0 auto;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+.te-contenedor {
+  max-width: 760px;
+  padding-block: clamp(24px, 5vw, 56px);
 }
-
-.results-card {
-  width: 60%;
-  margin: 0 auto;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+.te-tarjeta {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+  padding: clamp(22px, 5vw, 40px);
+  text-align: center;
 }
-
-/* Estilos para los botones de respuesta */
-.q-btn {
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.q-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Animaciones para transiciones */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .instruction-card,
-  .question-card {
-    margin: 10px;
-  }
-  .results-card {
-    margin: 10px;
-    width: 80%;
-  }
-
-  .text-h3 {
-    font-size: 1.8rem;
-  }
-
-  .text-h4 {
-    font-size: 1.5rem;
-  }
-
-  .text-h5 {
-    font-size: 1.3rem;
-  }
-
-  .test-card-size.fixed-test-card {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    min-height: 480px;
-    padding: 16px 12px;
-  }
-}
-
-/* Botón comenzar test en negrita */
-:deep(.btn-comenzar-test .q-btn__content) {
-  font-weight: bold;
-}
-
-/* Pregunta del test más pequeña */
-.pregunta-test {
-  font-size: 1.25rem;
-}
-
-/* Opciones del test en negrita */
-:deep(.opcion-test .q-btn__content) {
-  font-weight: bold;
-}
-
-/* Botón siguiente y finalizar en negrita */
-:deep(.btn-siguiente .q-btn__content),
-:deep(.btn-finalizar .q-btn__content) {
-  font-weight: bold;
-}
-
-/* Chip del nivel en negrita */
-:deep(.chip-nivel .q-chip__content) {
-  font-weight: bold;
-}
-
-/* Descripción del nivel en negro y justificado */
-.descripcion-nivel {
+.te-tarjeta--pregunta {
   text-align: left;
 }
+.te-icono-grande {
+  font-size: 34px;
+  color: var(--sn-burdeos);
+  background: var(--sn-burdeos-tenue);
+  border-radius: 50%;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.te-icono-grande--ok {
+  color: var(--sn-oliva);
+  background: #eef5e3;
+}
+.te-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--sn-burdeos);
+  margin: 0 0 10px;
+}
+.te-entrada {
+  font-size: var(--sn-t-entrada);
+  color: var(--sn-tinta-suave);
+  margin: 0 0 28px;
+}
+.te-h2 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h4);
+  font-weight: 700;
+  margin: 0 0 12px;
+  text-align: left;
+}
+.te-instrucciones {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+.te-instrucciones li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  line-height: 1.55;
+}
+.te-instrucciones__icono {
+  flex: none;
+  font-size: 22px;
+  color: var(--sn-burdeos);
+  margin-top: 1px;
+}
+.te-boton {
+  border-radius: var(--sn-r-boton);
+  font-weight: 700;
+  padding-inline: 22px;
+}
 
-/* Unificar tamaño de tarjetas del test de nivel */
-.test-card-size.fixed-test-card {
+/* Preguntas */
+.te-progreso {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.te-progreso__texto {
+  color: var(--sn-tinta-suave);
+  font-weight: 600;
+}
+.te-nivel {
+  padding: 2px 10px;
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-burdeos-tenue);
+  color: var(--sn-burdeos);
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-peq);
+}
+.te-pregunta {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 20px;
+}
+.te-opciones {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.te-opcion {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   width: 100%;
-  max-width: 500px;
-  height: 520px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
+  padding: 14px 16px;
+  background: var(--sn-hoja);
+  border: 2px solid var(--sn-borde);
+  border-radius: 12px;
+  color: var(--sn-tinta);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+.te-opcion:hover {
+  border-color: var(--sn-burdeos);
+}
+.te-opcion--elegida {
+  border-color: var(--sn-burdeos);
+  background: var(--sn-burdeos-tenue);
+}
+.te-opcion__letra {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  align-items: stretch;
-  overflow: hidden;
-  padding: 24px 16px;
-  box-sizing: border-box;
+  background: var(--sn-papel);
+  border: 1px solid var(--sn-borde);
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+}
+.te-opcion--elegida .te-opcion__letra {
+  background: var(--sn-burdeos);
+  border-color: var(--sn-burdeos);
+  color: #fff;
+}
+.te-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* La tarjeta de resultados se adapta a su contenido (altura variable) */
-.results-card.test-card-size.fixed-test-card {
-  height: auto;
-  min-height: 0;
-  overflow: visible;
-  justify-content: flex-start;
-}
-.test-card-content {
+/* Resultado */
+.te-resultado {
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 32px;
+  margin: 16px 0;
 }
-.test-card-progress {
-  flex: 0 0 auto;
-  margin-bottom: 12px;
+.te-resultado__puntos {
+  font-family: var(--sn-fuente-titulos);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--sn-tinta);
 }
-.test-card-question {
-  flex: 0 0 auto;
-  margin-bottom: 12px;
+.te-resultado__etiqueta {
+  margin: 0;
+  color: var(--sn-tinta-suave);
+  font-weight: 600;
 }
-.test-card-options {
-  flex: 1 1 auto;
+.te-resultado__nivel {
+  margin: 0;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  color: var(--sn-burdeos);
+  line-height: 1.1;
+}
+.te-resultado__porcentaje {
+  margin: 4px 0 0;
+  color: var(--sn-tinta-suave);
+}
+.te-descripcion {
+  max-width: 56ch;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+  text-align: left;
+}
+.te-siguiente {
+  padding: 20px;
+  text-align: center;
+}
+.te-siguiente__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-h4);
+  margin: 0 0 4px;
+}
+.te-siguiente__texto {
+  margin: 0 0 16px;
+  color: var(--sn-tinta-suave);
+}
+.te-siguiente__botones {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 8px;
-  margin-bottom: 12px;
-  overflow-y: auto;
-}
-.test-card-actions {
-  flex: 0 0 auto;
-  margin-top: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 </style>

@@ -192,6 +192,18 @@ export default {
     nivelB2: 'Advanced',
     nivelC1: 'Proficient',
   },
+  TestPagina: {
+    siguientePaso: 'Your next step',
+    siguienteTexto: "Book a lesson and we'll adapt it to your level, or check the group courses for your level.",
+  },
+  ContactoPagina: {
+    titulo: "Let's talk",
+    entrada:
+      "Questions about the lessons, or not sure which one to choose? Write to us wherever suits you best and we'll get back to you as soon as possible.",
+    whatsapp: 'WhatsApp',
+    whatsappTexto: 'The quickest way to reach us',
+    asuntoOpcional: 'Subject (optional)',
+  },
   Inicio: {
     ofertaIndividualesTexto: 'One-to-one conversation or general lessons, on the day and time you choose.',
     ofertaIndividualesBoton: 'See private lessons',

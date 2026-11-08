@@ -1,119 +1,109 @@
 <template>
-    <q-page>
-      <!-- Sección introductoria -->
-      <div class="row q-my-xl flex flex-center">
-        <div class="col-12 text-center content-width">
-          <h1 class="titulo-responsivo text-primary" style="margin-bottom: 1rem">
-            {{ t('SobreSpanish.conoce') }}
-          </h1>
-        </div>
-        <!-- Descripción  -->
-        <div class="col-12 sn-prosa">
-          <p class="texto-responsivo q-pb-xl q-pb-xl">
-            <strong>{{ t('SobreSpanish.intro') }}</strong>
-          </p>
-        </div>
-        <!-- Video de presentación -->
-        <div class="col-12 items-center text-center q-my-md video-responsive">
-          <video controls style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08)">
-            <source
-              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/video/clases_espanol_video_subt.mp4"
-              type="video/mp4"
-            />
-            {{ t('SobreSpanish.navegadorNoSoportaVideo') }}
-          </video>
-        </div>
-        <div class="col-12 text-center q-mt-lg">
-          <p class="subtitulo-responsivo text-primary q-px-xl">
-            {{ t('SobreSpanish.tulug') }}
-          </p>
-        </div>
+  <q-page class="so-pagina">
+    <!-- 1. Presentación con el vídeo -->
+    <section class="sn-contenedor so-cabecera">
+      <div class="so-cabecera__texto">
+        <h1 class="so-h1">{{ t('SobreSpanish.conoce') }}</h1>
+        <p class="so-entrada">{{ t('SobreSpanish.intro') }}</p>
+      </div>
+      <div class="so-video">
+        <video controls preload="metadata" playsinline>
+          <source
+            src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/video/clases_espanol_video_subt.mp4"
+            type="video/mp4"
+          />
+          {{ t('SobreSpanish.navegadorNoSoportaVideo') }}
+        </video>
+      </div>
+    </section>
 
-        <div class="col-12 text-left q-my-md content-width">
-          <p class="texto-responsivo">
-            {{ t('SobreSpanish.aprender') }}
-          </p>
-          <div class="q-mb-md"></div>
-          <p class="texto-responsivo">
-            {{ t('SobreSpanish.enmedio') }}
-          </p>
-        </div>
+    <!-- 2. Tu lugar -->
+    <section class="so-seccion so-seccion--papel">
+      <div class="sn-contenedor so-prosa">
+        <h2 class="so-h2">{{ t('SobreSpanish.tulug') }}</h2>
+        <p class="so-parrafo">{{ t('SobreSpanish.aprender') }}</p>
+        <p class="so-parrafo">{{ t('SobreSpanish.enmedio') }}</p>
+      </div>
+    </section>
 
-        <div class="col-12 q-my-md content-width">
-          <p class="subtitulo-responsivo text-primary text-center">
-            {{ t('SobreSpanish.quien') }}
-          </p>
+    <!-- 3. Quién soy -->
+    <section class="so-seccion">
+      <div class="sn-contenedor so-quien">
+        <img
+          class="so-quien__foto"
+          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=480&height=480&resize=cover&format=webp"
+          alt="Paula, SpanishNook"
+          loading="lazy"
+        />
+        <div>
+          <h2 class="so-h2">{{ t('SobreSpanish.quien') }}</h2>
+          <p class="so-parrafo">{{ t('SobreSpanish.soy') }}</p>
+          <p class="so-parrafo">{{ t('SobreSpanish.tras1') }}</p>
+          <p class="so-parrafo">{{ t('SobreSpanish.tras2') }}</p>
         </div>
-        <div class="col-12 q-my-md text-left content-width">
-          <p class="texto-responsivo">
-            {{ t('SobreSpanish.soy') }}
-          </p>
-          <div class="q-mb-md"></div>
-          <p class="texto-responsivo">
-            {{ t('SobreSpanish.tras1') }}
-            <br /><br />
-            {{ t('SobreSpanish.tras2') }}
-          </p>
+      </div>
+    </section>
+
+    <!-- 4. Filosofía y valores -->
+    <section class="so-seccion so-seccion--papel">
+      <div class="sn-contenedor">
+        <div class="so-prosa">
+          <h2 class="so-h2">{{ t('SobreSpanish.filosofía') }}</h2>
+          <p class="so-parrafo">{{ t('SobreSpanish.mipropuesta') }}</p>
+          <h3 class="so-h3">{{ t('SobreSpanish.loque') }}</h3>
         </div>
-        <div class="q-mb-lg"></div>
-        <!-- Filosofía -->
-        <div class="col-12 items-center text-center">
-          <p class="subtitulo-responsivo" style="color: #851319">
-            {{ t('SobreSpanish.filosofía') }}
-          </p>
+        <div class="so-valores">
+          <article v-for="v in valores" :key="v.titulo" class="so-valor">
+            <q-icon :name="v.icono" class="so-valor__icono" />
+            <h4 class="so-valor__titulo">{{ v.titulo }}</h4>
+            <p class="so-valor__texto">{{ v.texto }}</p>
+          </article>
         </div>
-        <div class="col-12 text-center q-my-md content-width">
-          <p class="texto-responsivo text-left">{{ t('SobreSpanish.mipropuesta') }}</p>
-        </div>
-        <div class="col-12 sn-prosa text-center q-my-md">
-          <p class="subtitulo-responsivo" style="color: #851319">
-            {{ t('SobreSpanish.loque') }}
-          </p>
-        </div>
-        <div class="col-12 text-center q-my-md content-width">
-          <ul class="texto-responsivo text-left">
-            <li>
-              <strong>{{ t('SobreSpanish.cercaniaBold') }}</strong
-              >: {{ t('SobreSpanish.cercania') }}
-            </li>
-            <li>
-              <strong>{{ t('SobreSpanish.flexibilidadBold') }}</strong
-              >: {{ t('SobreSpanish.flexibilidad') }}
-            </li>
-            <li>
-              <strong>{{ t('SobreSpanish.confianzaBold') }}</strong
-              >: {{ t('SobreSpanish.confianza') }}
-            </li>
-          </ul>
-        </div>
-        <div class="q-mb-xl"></div>
-        <div class="col-12 text-center q-mt-xl content-width">
-          <p class="texto-responsivo">{{ t('SobreSpanish.ojalá') }}</p>
-          <div class="q-mb-md"></div>
-          <div class="q-mb-md"></div>
-          <p class="texto-responsivo">
-            <strong>{{ t('SobreSpanish.espero') }}</strong>
-          </p>
-        </div>
-        <div class="col-12 items-center text-center q-my-xl">
+      </div>
+    </section>
+
+    <!-- 5. Cierre -->
+    <section class="so-seccion">
+      <div class="sn-contenedor so-prosa so-cierre">
+        <p class="so-parrafo">{{ t('SobreSpanish.ojalá') }}</p>
+        <p class="so-cierre__firma">{{ t('SobreSpanish.espero') }}</p>
+        <div class="so-acciones">
           <q-btn
             color="primary"
+            unelevated
+            no-caps
+            size="lg"
+            class="so-boton"
+            to="/Clases"
+            :label="t('indexEncuentraTusClases')"
+          />
+          <q-btn
+            outline
+            color="primary"
+            no-caps
+            size="lg"
+            class="so-boton"
+            to="/Contacto"
             :label="t('indexContactanos')"
-            icon="email"
-            @click="router.push('/contacto')"
           />
         </div>
       </div>
-    </q-page>
+    </section>
+  </q-page>
 </template>
 
 <script setup lang="ts">
-import '../css/pages/EstilosGenerales.css';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useMeta } from 'quasar';
-import { useRouter } from 'vue-router';
+
 const { t } = useI18n();
-const router = useRouter();
+
+const valores = computed(() => [
+  { icono: 'favorite', titulo: t('SobreSpanish.cercaniaBold'), texto: t('SobreSpanish.cercania') },
+  { icono: 'event_available', titulo: t('SobreSpanish.flexibilidadBold'), texto: t('SobreSpanish.flexibilidad') },
+  { icono: 'verified', titulo: t('SobreSpanish.confianzaBold'), texto: t('SobreSpanish.confianza') },
+]);
 
 useMeta(() => ({
   title: 'Sobre SpanishNook | Conoce quién hay detrás',
@@ -128,66 +118,175 @@ useMeta(() => ({
       content:
         'sobre SpanishNook, quién hay detrás, historia SpanishNook, filosofía, valores, español online, profesor nativo',
     },
-    ogTitle: {
-      property: 'og:title',
-      content: 'Sobre SpanishNook | Conoce quién hay detrás',
-    },
+    ogTitle: { property: 'og:title', content: 'Sobre SpanishNook | Conoce quién hay detrás' },
     ogDescription: {
       property: 'og:description',
-      content:
-        'Conoce la historia y la filosofía de SpanishNook, el proyecto de clases de español online.',
+      content: 'Conoce la historia y la filosofía de SpanishNook, el proyecto de clases de español online.',
     },
     ogImage: {
       property: 'og:image',
-      content: 'https://www.spanishnook.com/img/Home/banner_1920.webp',
+      content: 'https://www.spanishnook.com/img/Logo_rectangular_320.png',
     },
-    ogUrl: {
-      property: 'og:url',
-      content: 'https://www.spanishnook.com/SobreSpanish',
-    },
-    robots: {
-      name: 'robots',
-      content: 'index,follow',
-    },
+    ogUrl: { property: 'og:url', content: 'https://www.spanishnook.com/SobreSpanish' },
+    robots: { name: 'robots', content: 'index,follow' },
   },
 }));
 </script>
 
 <style scoped>
-.text-center {
+.so-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+}
+.so-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--sn-burdeos);
+  margin: 0 0 16px;
+}
+.so-h2 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 20px;
+}
+.so-h3 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  color: var(--sn-burdeos);
+  margin: 32px 0 0;
+}
+.so-entrada {
+  font-size: var(--sn-t-entrada);
+  line-height: 1.55;
+  font-weight: 600;
+  margin: 0;
+}
+.so-parrafo {
+  font-size: var(--sn-t-cuerpo);
+  line-height: 1.7;
+  margin: 0 0 16px;
+}
+.so-prosa {
+  max-width: 760px;
+}
+.so-seccion {
+  padding-block: var(--sn-seccion);
+}
+.so-seccion--papel {
+  background: var(--sn-burdeos-tenue);
+}
+
+/* 1. Presentación */
+.so-cabecera {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  align-items: center;
+  padding-block: clamp(32px, 6vw, 64px);
+}
+@media (min-width: 900px) {
+  .so-cabecera {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 56px;
+  }
+}
+.so-video video {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra-alta);
+  background: #000;
+}
+
+/* 3. Quién soy */
+.so-quien {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  align-items: center;
+}
+.so-quien__foto {
+  width: min(240px, 60vw);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  justify-self: center;
+  box-shadow: var(--sn-sombra);
+}
+@media (min-width: 800px) {
+  .so-quien {
+    grid-template-columns: 260px 1fr;
+    gap: 56px;
+  }
+}
+
+/* 4. Valores */
+.so-valores {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+@media (min-width: 800px) {
+  .so-valores {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+.so-valor {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  padding: 22px;
+  box-shadow: var(--sn-sombra);
+}
+.so-valor__icono {
+  font-size: 26px;
+  color: var(--sn-burdeos);
+  background: var(--sn-burdeos-tenue);
+  border-radius: 50%;
+  padding: 10px;
+}
+.so-valor__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h4);
+  font-weight: 700;
+  margin: 14px 0 6px;
+}
+.so-valor__texto {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--sn-tinta-suave);
+}
+
+/* 5. Cierre */
+.so-cierre {
+  margin-inline: auto;
   text-align: center;
 }
-
-.content-width {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+.so-cierre__firma {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-h4);
+  color: var(--sn-burdeos);
+  margin: 8px 0 0;
 }
-
-@media (max-width: 900px) {
-  .content-width {
-    width: 90%;
-  }
+.so-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
 }
-
-@media (max-width: 600px) {
-  .content-width {
-    width: 100%;
-  }
-}
-
-.video-responsive {
-  max-width: 480px;
-  margin: 0 auto;
-}
-@media (max-width: 600px) {
-  .video-responsive {
-    max-width: 100%;
-  }
-}
-video {
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.so-boton {
+  border-radius: var(--sn-r-boton);
+  font-weight: 700;
+  padding-inline: 22px;
 }
 </style>

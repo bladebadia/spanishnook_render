@@ -205,6 +205,19 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  TestPagina: {
+    siguientePaso: 'Tu siguiente paso',
+    siguienteTexto:
+      'Reserva una clase y la adaptamos a tu nivel, o mira los cursos en grupo para tu nivel.',
+  },
+  ContactoPagina: {
+    titulo: 'Hablemos',
+    entrada:
+      '¿Tienes dudas sobre las clases o no sabes cuál elegir? Escríbenos por donde te resulte más cómodo y te respondemos lo antes posible.',
+    whatsapp: 'WhatsApp',
+    whatsappTexto: 'La forma más rápida de hablar con nosotros',
+    asuntoOpcional: 'Asunto (opcional)',
+  },
   Inicio: {
     ofertaIndividualesTexto: 'Clases 1 a 1 de conversación o generales, el día y la hora que elijas.',
     ofertaIndividualesBoton: 'Ver clases individuales',

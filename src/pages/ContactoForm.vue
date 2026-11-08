@@ -1,191 +1,162 @@
 <template>
-    <q-page class="q-pa-lg">
-      <p
-        class="texto-responsivo text-primary text-bold text-center q-mb-md"
-        style="margin-bottom: 30px"
-      >
-        {{ t('Contacto.rellena') }}
-      </p>
-      <q-card flat bordered class="q-pa-md">
-        <q-card-section>
-          <div class="row q-col-gutter-md">
-            <!-- Columna de datos de contacto -->
-            <div class="col-12 col-md-6">
-              <div class="q-pa-md">
-                <p class="text-primary titulo-responsivo" style="margin-bottom: 24px">
-                  {{ t('Contacto.datosContacto') }}
-                </p>
-                <p class="text-body1">
-                  <strong>{{ t('Contacto.telefono') }}:</strong> +34 694 280 178
-                </p>
-                <p class="text-body1">
-                  <strong>{{ t('Contacto.email') }}:</strong> contacto@spanishnook.com
-                </p>
-                <p class="text-body1">
-                  <strong>{{ t('Contacto.redesSociales') }}:</strong>
-                </p>
-                <ul>
-                  <li>
-                    <a
-                      href="https://www.youtube.com/@SpanishNook"
-                      target="_blank"
-                      class="text-primary"
-                    >
-                      YouTube
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://www.tiktok.com/@spanishnook1?_r=1&_t=ZN-91QVahgEyBP"
-                      target="_blank"
-                      class="text-primary"
-                    >
-                      TikTok
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://instagram.com/spanishnook"
-                      target="_blank"
-                      class="text-primary"
-                    >
-                      Instagram
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+  <q-page class="co-pagina">
+    <section class="sn-contenedor co-cabecera">
+      <h1 class="co-h1">{{ t('ContactoPagina.titulo') }}</h1>
+      <p class="co-entrada">{{ t('ContactoPagina.entrada') }}</p>
+    </section>
 
-            <!-- Columna del formulario -->
-            <div class="col-12 col-md-6">
-              <q-form @submit="onSubmit" class="q-gutter-md formulario-con-relieve">
-                <div class="text-center">
-                  <p class="text-primary titulo-responsivo1">{{ t('Contacto.formulario') }}</p>
-                </div>
-                <!-- Campo de Nombre -->
-                <q-input
-                  filled
-                  v-model="formData.nombre"
-                  :label="t('Contacto.nombre')"
-                  :hint="t('Contacto.hintNombre')"
-                  :rules="[(val) => !!val || t('Contacto.errorNombre')]"
-                />
+    <section class="sn-contenedor co-rejilla">
+      <!-- Formas de contacto -->
+      <div class="co-vias">
+        <a
+          class="co-via co-via--whatsapp"
+          href="https://wa.me/34694280178"
+          target="_blank"
+          rel="noopener"
+        >
+          <q-icon :name="mdiWhatsapp" class="co-via__icono" />
+          <span>
+            <span class="co-via__titulo">{{ t('ContactoPagina.whatsapp') }}</span>
+            <span class="co-via__texto">{{ t('ContactoPagina.whatsappTexto') }}</span>
+          </span>
+          <q-icon name="arrow_forward" class="co-via__flecha" />
+        </a>
 
-                <!-- Campo de Correo Electrónico -->
-                <q-input
-                  filled
-                  v-model="formData.email"
-                  :label="t('Contacto.correoElectronico')"
-                  type="email"
-                  :hint="t('Contacto.hintCorreo')"
-                  :rules="[
-                    (val) => !!val || t('Contacto.errorCorreoElectronico'),
-                    (val) => /.+@.+\..+/.test(val) || t('Contacto.errorCorreoElectronicoInvalido'),
-                  ]"
-                />
+        <a class="co-via" :href="`mailto:${EMAIL}`">
+          <q-icon name="mail" class="co-via__icono" />
+          <span>
+            <span class="co-via__titulo">{{ t('Contacto.email') }}</span>
+            <span class="co-via__texto">{{ EMAIL }}</span>
+          </span>
+        </a>
 
-                <!-- Campo de Asunto -->
-                <q-input
-                  filled
-                  v-model="formData.asunto"
-                  :label="t('Contacto.asunto')"
-                  :hint="t('Contacto.hintAsunto')"
-                  :rules="[(val) => !!val || t('Contacto.errorAsunto')]"
-                />
+        <a class="co-via" href="tel:+34694280178">
+          <q-icon name="call" class="co-via__icono" />
+          <span>
+            <span class="co-via__titulo">{{ t('Contacto.telefono') }}</span>
+            <span class="co-via__texto">+34 694 280 178</span>
+          </span>
+        </a>
 
-                <!-- Campo de Mensaje -->
-                <q-input
-                  filled
-                  v-model="formData.mensaje"
-                  :label="t('Contacto.mensaje')"
-                  type="textarea"
-                  autogrow
-                  :hint="t('Contacto.hintMensaje')"
-                  :rules="[(val) => !!val || t('Contacto.errorMensaje')]"
-                />
-
-                <!-- Botón de Enviar -->
-                <div class="text-center q-mt-md text-bold">
-                  <q-btn
-                    :label="t('Contacto.enviar')"
-                    color="primary"
-                    type="submit"
-                    :disable="isSubmitting"
-                    :loading="isSubmitting"
-                    no-caps
-                    class="text-weight-bold"
-                  />
-                </div>
-
-                <!-- Mensajes de estado -->
-                <div v-if="enviadoConExito" class="q-mt-md text-positive text-center">
-                  <q-icon name="check_circle" />
-                  {{ t('Contacto.exito') }}
-                </div>
-                <div v-if="errorEnvio" class="q-mt-md text-negative text-center">
-                  <q-icon name="error" />
-                  {{ t('Contacto.error') }}
-                </div>
-              </q-form>
-            </div>
+        <div class="co-redes">
+          <p class="co-redes__titulo">{{ t('Contacto.redesSociales') }}</p>
+          <div class="co-redes__fila">
+            <a
+              v-for="red in redes"
+              :key="red.nombre"
+              :href="red.url"
+              target="_blank"
+              rel="noopener"
+              class="co-red"
+              :aria-label="red.nombre"
+            >
+              <q-icon :name="red.icono" size="22px" />
+              <span>{{ red.nombre }}</span>
+            </a>
           </div>
-        </q-card-section>
-      </q-card>
-    </q-page>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="co-formulario">
+        <h2 class="co-h2">{{ t('Contacto.formulario') }}</h2>
+        <q-form class="co-campos" @submit="onSubmit">
+          <q-input
+            v-model="formData.nombre"
+            outlined
+            :label="t('Contacto.nombre')"
+            :rules="[(val) => !!val || t('Contacto.errorNombre')]"
+          />
+          <q-input
+            v-model="formData.email"
+            outlined
+            type="email"
+            :label="t('Contacto.correoElectronico')"
+            :rules="[
+              (val) => !!val || t('Contacto.errorCorreoElectronico'),
+              (val) => /.+@.+\..+/.test(val) || t('Contacto.errorCorreoElectronicoInvalido'),
+            ]"
+          />
+          <q-input v-model="formData.asunto" outlined :label="t('ContactoPagina.asuntoOpcional')" />
+          <q-input
+            v-model="formData.mensaje"
+            outlined
+            type="textarea"
+            autogrow
+            input-style="min-height: 120px"
+            :label="t('Contacto.mensaje')"
+            :rules="[(val) => !!val || t('Contacto.errorMensaje')]"
+          />
+
+          <q-btn
+            type="submit"
+            color="primary"
+            unelevated
+            no-caps
+            size="lg"
+            class="co-boton"
+            icon-right="send"
+            :label="t('Contacto.enviar')"
+            :loading="isSubmitting"
+            :disable="isSubmitting"
+          />
+
+          <div v-if="enviadoConExito" class="co-estado co-estado--ok">
+            <q-icon name="check_circle" size="20px" />
+            {{ t('Contacto.exito') }}
+          </div>
+          <div v-if="errorEnvio" class="co-estado co-estado--error">
+            <q-icon name="error" size="20px" />
+            {{ t('Contacto.error') }}
+          </div>
+        </q-form>
+      </div>
+    </section>
+  </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { supabase } from 'src/supabaseClient';
-import '../css/pages/EstilosGenerales.css';
 import { useMeta } from 'quasar';
+import { mdiInstagram, mdiMusicNote, mdiWhatsapp, mdiYoutube } from '@quasar/extras/mdi-v6';
+import { supabase } from 'src/supabaseClient';
 
 const { t } = useI18n();
 
-// Datos del formulario
-const formData = ref({
-  nombre: '',
-  email: '',
-  asunto: '',
-  mensaje: '',
-});
+const EMAIL = 'contacto@spanishnook.com';
 
-// Estado de envío
+const redes = [
+  { nombre: 'Instagram', url: 'https://instagram.com/spanishnook', icono: mdiInstagram },
+  { nombre: 'TikTok', url: 'https://www.tiktok.com/@spanishnook1', icono: mdiMusicNote },
+  { nombre: 'YouTube', url: 'https://www.youtube.com/@SpanishNook', icono: mdiYoutube },
+];
+
+const formData = ref({ nombre: '', email: '', asunto: '', mensaje: '' });
 const isSubmitting = ref(false);
 const enviadoConExito = ref(false);
 const errorEnvio = ref(false);
 
-// Función para manejar el envío del formulario
 const onSubmit = async () => {
   if (isSubmitting.value) return;
-
   isSubmitting.value = true;
   errorEnvio.value = false;
   enviadoConExito.value = false;
 
   try {
+    // mensajes_contacto no tiene columna de asunto: se guarda al principio del mensaje
+    const asunto = formData.value.asunto.trim();
+    const mensaje = asunto
+      ? `${t('Contacto.asunto')}: ${asunto}\n\n${formData.value.mensaje}`
+      : formData.value.mensaje;
+
     const { error } = await supabase.from('mensajes_contacto').insert([
-      {
-        nombre: formData.value.nombre,
-        email: formData.value.email,
-        mensaje: formData.value.mensaje,
-      },
+      { nombre: formData.value.nombre, email: formData.value.email, mensaje },
     ]);
+    if (error) throw error;
 
-    if (error) {
-      throw error;
-    }
-
-    // Éxito
     enviadoConExito.value = true;
-    // Reiniciar el formulario
-    formData.value = {
-      nombre: '',
-      email: '',
-      asunto: '',
-      mensaje: '',
-    };
+    formData.value = { nombre: '', email: '', asunto: '', mensaje: '' };
   } catch (err) {
     console.error('Error al enviar el mensaje:', err);
     errorEnvio.value = true;
@@ -207,10 +178,7 @@ useMeta(() => ({
       content:
         'contacto, clases de español, consultas, dudas, SpanishNook, profesores nativos, español online',
     },
-    ogTitle: {
-      property: 'og:title',
-      content: 'Contacto | SpanishNook',
-    },
+    ogTitle: { property: 'og:title', content: 'Contacto | SpanishNook' },
     ogDescription: {
       property: 'og:description',
       content:
@@ -220,29 +188,176 @@ useMeta(() => ({
       property: 'og:image',
       content: 'https://www.spanishnook.com/img/Logo_rectangular_320.png',
     },
-    ogUrl: {
-      property: 'og:url',
-      content: 'https://www.spanishnook.com/Contacto',
-    },
-    robots: {
-      name: 'robots',
-      content: 'index,follow',
-    },
+    ogUrl: { property: 'og:url', content: 'https://www.spanishnook.com/Contacto' },
+    robots: { name: 'robots', content: 'index,follow' },
   },
 }));
 </script>
 
 <style scoped>
-.text-center {
+.co-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+  padding-bottom: var(--sn-seccion);
+}
+.co-cabecera {
+  padding-block: clamp(32px, 6vw, 56px) 24px;
   text-align: center;
 }
+.co-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--sn-burdeos);
+  margin: 0 0 12px;
+}
+.co-entrada {
+  font-size: var(--sn-t-entrada);
+  line-height: 1.55;
+  color: var(--sn-tinta-suave);
+  max-width: 56ch;
+  margin: 0 auto;
+}
+.co-h2 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  margin: 0 0 20px;
+}
 
-/* Estilo para el formulario */
-.formulario-con-relieve {
-  border: 2px solid var(--q-primary); /* Marco del color primario */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Relieve */
-  padding: 16px; /* Espaciado interno */
-  background-color: #fff; /* Fondo blanco */
+.co-rejilla {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .co-rejilla {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 40px;
+  }
+}
+
+/* Formas de contacto */
+.co-vias {
+  display: grid;
+  gap: 12px;
+}
+.co-via {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  color: var(--sn-tinta);
+  text-decoration: none;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+.co-via:hover {
+  border-color: var(--sn-burdeos);
+  box-shadow: var(--sn-sombra);
+}
+.co-via > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.co-via__icono {
+  flex: none;
+  font-size: 24px;
+  color: var(--sn-burdeos);
+  background: var(--sn-burdeos-tenue);
+  border-radius: 50%;
+  padding: 10px;
+}
+.co-via__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+}
+.co-via__texto {
+  color: var(--sn-tinta-suave);
+  overflow-wrap: anywhere;
+}
+.co-via__flecha {
+  margin-left: auto;
+  font-size: 20px;
+}
+.co-via--whatsapp {
+  background: #e9f6ec;
+  border-color: #b9e2c3;
+}
+.co-via--whatsapp .co-via__icono {
+  color: #fff;
+  background: #25a244;
+}
+.co-via--whatsapp:hover {
+  border-color: #25a244;
+}
+
+.co-redes {
+  padding: 16px 18px;
+}
+.co-redes__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+.co-redes__fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.co-red {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-hoja);
+  color: var(--sn-burdeos);
+  font-weight: 700;
+  text-decoration: none;
+}
+.co-red:hover {
+  border-color: var(--sn-burdeos);
+}
+
+/* Formulario */
+.co-formulario {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+  padding: clamp(20px, 4vw, 32px);
+}
+.co-campos {
+  display: grid;
+  gap: 4px;
+}
+.co-boton {
+  justify-self: start;
+  border-radius: var(--sn-r-boton);
+  font-weight: 700;
+  padding-inline: 24px;
+  margin-top: 8px;
+}
+.co-estado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+.co-estado--ok {
+  color: var(--sn-oliva);
+}
+.co-estado--error {
+  color: var(--q-negative);
 }
 </style>

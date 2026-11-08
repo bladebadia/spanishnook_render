@@ -27,7 +27,7 @@
     </section>
 
     <!-- 2. Descubre nuestras clases (ilustración de la sillita) y qué encontrarás -->
-    <section class="ini-seccion">
+    <section class="ini-seccion ini-seccion--pegada">
       <div class="sn-contenedor ini-descubre">
         <article class="ini-descubre__tarjeta">
           <img
@@ -897,6 +897,10 @@ if (process.env.CLIENT) {
 /* Secciones */
 .ini-seccion {
   padding-block: var(--sn-seccion);
+}
+/* Mismo fondo que la cabecera: sin el hueco de arriba */
+.ini-seccion--pegada {
+  padding-top: 8px;
 }
 .ini-seccion--papel {
   background: var(--sn-burdeos-tenue);
