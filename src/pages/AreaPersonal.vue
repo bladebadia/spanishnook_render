@@ -1,17 +1,17 @@
 <template>
-  <q-page class="bg-grey-1 q-pa-lg full-width">
+  <q-page class="ap-pagina full-width">
     <q-no-ssr>
       <div class="full-width">
         <div class="row">
           <div class="col-12 text-center q-mb-lg">
-            <h4 class="text-h4 text-weight-bold text-primary q-my-none">
+            <h1 class="ap-h1">
               {{
                 user?.user_metadata?.nombre
                   ? t('personal.holaNombre', { nombre: user.user_metadata.nombre })
                   : t('personal.holaUsuario')
               }}
-            </h4>
-            <p class="text-subtitle1 text-grey-7 q-mt-sm">
+            </h1>
+            <p class="ap-entrada">
               {{ t('personal.bienvenidoAreaPersonal') }}
             </p>
           </div>
@@ -35,18 +35,25 @@
               unelevated
             />
 
-            <div v-if="$q.screen.lt.md" class="flex justify-center q-mb-md">
-              <q-btn
-                flat
-                :icon="menuVisible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-                :label="menuVisible ? t('personal.ocultarMenu') : t('personal.mostrarMenu')"
-                @click="menuVisible = !menuVisible"
-                color="primary"
-                class="full-width bg-white"
-              />
-            </div>
+            <!-- Móvil: secciones como pestañas deslizables, siempre visibles -->
+            <nav class="ap-pestanas lt-md" :aria-label="t('personal.miCuenta')">
+              <button
+                v-for="seccion in seccionesMovil"
+                :key="seccion.id"
+                type="button"
+                class="ap-pestana"
+                :class="{
+                  'ap-pestana--activa': menuActivo === seccion.id,
+                  'ap-pestana--peligro': seccion.id === 'eliminar',
+                }"
+                @click="seccion.id === 'admin' ? irAPanelAdmin() : seleccionarMenu(seccion.id)"
+              >
+                <q-icon :name="seccion.icono" size="18px" />
+                {{ seccion.texto }}
+              </button>
+            </nav>
 
-            <q-card v-if="menuVisible || $q.screen.gt.sm" class="menu-card no-shadow border-gray">
+            <q-card class="menu-card no-shadow border-gray gt-sm">
               <q-list separator>
                 <!-- GRUPO 1: FORMACIÓN -->
                 <q-item-label
@@ -61,7 +68,7 @@
                   v-ripple
                   :active="menuActivo === 'reservadas'"
                   @click="seleccionarMenu('reservadas')"
-                  active-class="text-primary bg-red-1"
+                  active-class="ap-activo"
                 >
                   <q-item-section avatar><q-icon name="event" /></q-item-section>
                   <q-item-section>{{ t('personal.clasesReservadas') }}</q-item-section>
@@ -75,7 +82,7 @@
                   v-ripple
                   :active="menuActivo === 'cursos'"
                   @click="seleccionarMenu('cursos')"
-                  active-class="text-primary bg-red-1"
+                  active-class="ap-activo"
                 >
                   <q-item-section avatar><q-icon name="school" /></q-item-section>
                   <q-item-section>{{ t('personal.misCursos') }}</q-item-section>
@@ -86,7 +93,7 @@
                   v-ripple
                   :active="menuActivo === 'historial'"
                   @click="seleccionarMenu('historial')"
-                  active-class="text-primary bg-red-1"
+                  active-class="ap-activo"
                 >
                   <q-item-section avatar><q-icon name="history" /></q-item-section>
                   <q-item-section>{{ t('personal.historialClases') }}</q-item-section>
@@ -105,7 +112,7 @@
                   v-ripple
                   :active="menuActivo === 'materiales'"
                   @click="seleccionarMenu('materiales')"
-                  active-class="text-primary bg-red-1"
+                  active-class="ap-activo"
                 >
                   <q-item-section avatar><q-icon name="menu_book" /></q-item-section>
                   <q-item-section>{{ t('personal.misCuadernos') }}</q-item-section>
@@ -124,7 +131,7 @@
                   v-ripple
                   :active="menuActivo === 'datos'"
                   @click="seleccionarMenu('datos')"
-                  active-class="text-primary bg-red-1"
+                  active-class="ap-activo"
                 >
                   <q-item-section avatar><q-icon name="person" /></q-item-section>
                   <q-item-section>{{ t('personal.datosPersonales') }}</q-item-section>
@@ -135,7 +142,7 @@
                   v-ripple
                   :active="menuActivo === 'eliminar'"
                   @click="seleccionarMenu('eliminar')"
-                  active-class="text-negative bg-red-1"
+                  active-class="ap-activo ap-activo--peligro"
                 >
                   <q-item-section avatar
                     ><q-icon name="delete_outline" color="negative"
@@ -819,8 +826,18 @@ const route = useRoute();
 // --- ESTADOS ---
 const reservasConfirmadas = ref<Reserva[]>([]);
 const reservasPasadas = ref<Reserva[]>([]);
-const menuVisible = ref(false);
 const menuActivo = ref('reservadas');
+
+// Pestañas de móvil (mismas secciones que el menú lateral de escritorio)
+const seccionesMovil = computed(() => [
+  { id: 'reservadas', icono: 'event', texto: t('personal.clasesReservadas') },
+  { id: 'cursos', icono: 'school', texto: t('personal.misCursos') },
+  { id: 'historial', icono: 'history', texto: t('personal.historialClases') },
+  { id: 'materiales', icono: 'menu_book', texto: t('personal.misCuadernos') },
+  { id: 'datos', icono: 'person', texto: t('personal.datosPersonales') },
+  ...(esAdmin.value ? [{ id: 'admin', icono: 'admin_panel_settings', texto: t('personal.panelAdmin') }] : []),
+  { id: 'eliminar', icono: 'delete_outline', texto: t('personal.eliminarCuenta') },
+]);
 const passwordConfirm = ref('');
 const deleting = ref(false);
 const cargandoSaldo = ref(true);
@@ -1358,7 +1375,6 @@ const seleccionarMenu = (menu: string) => {
   else if (menu === 'datos') void cargarDatosPersonales();
   else if (menu === 'cursos') void cargarCursos();
   else if (menu === 'materiales') void cargarMisCuadernos(); // AÑADE ESTA LÍNEA
-  if ($q.screen.lt.md) menuVisible.value = false;
 };
 
 const diasSemanaMap: Record<string, Record<string, string>> = {
@@ -1406,12 +1422,80 @@ onMounted(() => {
     });
 
     // void router.replace('/AreaPersonal');
-    menuVisible.value = $q.screen.gt.sm;
   }
 });
 </script>
 
 <style scoped>
+.ap-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+  padding: clamp(16px, 4vw, 32px) var(--sn-margen) var(--sn-seccion);
+}
+.ap-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--sn-burdeos);
+  margin: 0;
+}
+.ap-entrada {
+  font-size: var(--sn-t-entrada);
+  color: var(--sn-tinta-suave);
+  margin: 8px 0 0;
+}
+
+/* Menú de escritorio: sección activa como en el menú lateral */
+.menu-card :deep(.q-item) {
+  border-radius: 10px;
+  margin: 2px 8px;
+}
+.menu-card :deep(.ap-activo) {
+  background: var(--sn-burdeos-tenue);
+  color: var(--sn-burdeos);
+  font-weight: 700;
+}
+.menu-card :deep(.ap-activo--peligro) {
+  color: var(--q-negative);
+}
+
+/* Móvil: pestañas deslizables */
+.ap-pestanas {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  margin-bottom: 8px;
+  scrollbar-width: none;
+}
+.ap-pestanas::-webkit-scrollbar {
+  display: none;
+}
+.ap-pestana {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-hoja);
+  color: var(--sn-tinta);
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ap-pestana--activa {
+  background: var(--sn-burdeos);
+  border-color: var(--sn-burdeos);
+  color: #fff;
+}
+.ap-pestana--peligro:not(.ap-pestana--activa) {
+  color: var(--q-negative);
+}
 .menu-card {
   border-radius: 12px;
   overflow: hidden;
