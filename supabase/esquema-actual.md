@@ -113,6 +113,7 @@ Todas las tablas de `public` tienen **RLS activado** (ninguna con `FORCE RLS`). 
 | google_event_id | text | YES | |
 
 - PK `reservasGrupales_pkey (id)`. Sin FKs ni CHECKs.
+- 2026-11-08: `categoria text NOT NULL DEFAULT 'conversacion'` con CHECK `categoria IN ('conversacion','general')` (migración `20261108150000_categoria_cursos.sql`).
 
 ### `user_subscriptions` (RLS: sí)
 
