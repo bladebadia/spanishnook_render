@@ -275,6 +275,7 @@ Todas las tablas de `public` tienen **RLS activado** (ninguna con `FORCE RLS`). 
 |---|---|---|---|
 | Admins gestionan archivos | ALL | public | ADMIN |
 | Publico puede ver portadas | SELECT | public | `bucket_id = 'portadas_materiales'` |
+| Descarga de PDFs gratuitos o comprados | SELECT | authenticated | `bucket_id = 'pdfs_materiales'` y material visible y (precio < 0,50 € o comprado por `auth.uid()`) (2026-11-08) |
 
 ### Buckets
 
