@@ -224,6 +224,14 @@ a {
   min-height: 44px;
   padding-inline: 22px;
 }
+// Icono y texto siempre en la misma línea (Quasar deja que el icono salte arriba);
+// si el texto no cabe, se parte el texto
+.q-btn__content {
+  flex-wrap: nowrap;
+}
+.q-btn__content > .block {
+  white-space: normal;
+}
 .q-btn--standard::before {
   box-shadow: none;
 }

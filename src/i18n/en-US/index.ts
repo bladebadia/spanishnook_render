@@ -192,6 +192,11 @@ export default {
     nivelB2: 'Advanced',
     nivelC1: 'Proficient',
   },
+  Menu: {
+    lema: 'The nook where Spanish is learned unhurried, but well.',
+    navegacion: 'Main menu',
+    escribenos: 'Message us on WhatsApp',
+  },
   TestPagina: {
     siguientePaso: 'Your next step',
     siguienteTexto: "Book a lesson and we'll adapt it to your level, or check the group courses for your level.",

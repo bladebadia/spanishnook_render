@@ -149,10 +149,8 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" bordered>
-      <q-list>
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
+    <q-drawer v-model="leftDrawerOpen" :width="300" class="sn-menu-lateral">
+      <MenuLateral />
     </q-drawer>
 
     <q-page-container>
@@ -298,7 +296,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
-import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import MenuLateral from 'components/MenuLateral.vue';
 import AvisoCookies from 'components/AvisoCookies.vue';
 import { mdiInstagram, mdiMusicNote, mdiWhatsapp, mdiYoutube } from '@quasar/extras/mdi-v6';
 import { useI18n } from 'vue-i18n';
@@ -443,38 +441,6 @@ function changeLang(val: string) {
   cambiarIdioma(val);
 }
 
-const linksList = computed((): EssentialLinkProps[] => [
-  {
-    title: t('inicio'),
-    icon: 'home',
-    link: '/',
-  },
-  {
-    title: t('clases'),
-    icon: 'record_voice_over',
-    link: '/Clases',
-  },
-  {
-    title: t('testNivel'),
-    icon: 'code',
-    link: '/TestNivel',
-  },
-  {
-    title: t('cuadernos'),
-    icon: 'menu_book',
-    link: '/Materiales',
-  },
-  {
-    title: t('sobre'),
-    icon: 'rss_feed',
-    link: '/SobreSpanish',
-  },
-  {
-    title: t('contacto'),
-    icon: 'rss_feed',
-    link: '/Contacto',
-  },
-]);
 
 const leftDrawerOpen = ref(false);
 

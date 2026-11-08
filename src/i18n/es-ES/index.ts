@@ -205,6 +205,11 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  Menu: {
+    lema: 'El rincón donde el español se aprende sin prisa, pero bien.',
+    navegacion: 'Menú principal',
+    escribenos: 'Escríbenos por WhatsApp',
+  },
   TestPagina: {
     siguientePaso: 'Tu siguiente paso',
     siguienteTexto:
