@@ -1,163 +1,135 @@
 <template>
-  <q-page class="q-pa-lg">
-    <div
-      class="titulo-responsivo2 row items-center justify-between q-mb-md"
-      style="font-size: 2.3rem; font-weight: 800"
-    >
-      {{ t('carrito.carritoDeReservas') }}
+  <q-page class="ca-pagina">
+    <div class="sn-contenedor">
+      <h1 class="ca-h1">{{ t('carrito.carritoDeReservas') }}</h1>
 
-      <q-no-ssr>
-        <div style="min-width: 250px" v-if="usuarioLogueado">
-          <SaldoWallet
-            :saldo-normal="saldoNormal"
-            :saldo-conversacion="saldoConversacion"
-            :loading="cargandoSaldo"
-          />
-
-          <div class="q-mt-sm text-right">
-            <q-checkbox
-              v-model="usarCreditosGlobal"
-              :label="t('carrito.utilizarCreditos')"
-              color="green"
-              dense
-              class="checkbox-creditos"
-              @update:model-value="recalcularAplicacionCreditos"
-              :disable="saldoNormal === 0 && saldoConversacion === 0"
-            />
-          </div>
-        </div>
-      </q-no-ssr>
-    </div>
-
-    <div v-if="carrito.length === 0" class="text-center q-mt-xl">
-      <q-icon name="shopping_cart" size="100px" color="grey-4" />
-      <p class="text-grey q-mt-md">{{ t('carrito.tuCarritoEstaVacio') }}</p>
-      <q-btn color="primary" :label="t('carrito.reservarClases')" to="/Reservas" class="q-mt-md" />
-    </div>
-
-    <div v-else>
-      <q-list bordered class="q-mb-lg separator">
-        <q-item
-          v-for="(reserva, index) in carrito"
-          :key="index"
-          class="q-py-md"
-          :class="{ 'bg-negative-1': esReservaConflictiva(reserva) }"
-        >
-          <div class="row full-width items-center">
-            <div class="col-auto q-pr-md">
-              <q-avatar size="100px" square>
-                <img :src="getIconoPersonalizado(reserva.tipo)" :alt="t('carrito.iconoClase')" />
-              </q-avatar>
-            </div>
-
-            <div class="col-grow">
-              <div class="resumen-fecha" :class="{ 'text-white': esReservaConflictiva(reserva) }">
-                <div>{{ formatFecha(reserva.fecha, reserva.hora) }}</div>
-
-                <div class="text-weight-bold" style="font-size: 1.3rem; line-height: 1.2">
-                  {{ obtenerRangoLocalSeguro(reserva.fecha, reserva.hora) }}
-                </div>
-
-                <div
-                  class="text-caption"
-                  style="opacity: 0.8; font-weight: normal; font-size: 0.85rem"
-                >
-                  (🇪🇸 {{ formatHorarioMadrid(reserva.hora) }} Madrid)
-                </div>
-              </div>
-
-              <div class="text-caption" :class="{ 'text-white': esReservaConflictiva(reserva) }">
-                {{
-                  reserva.tipo === 'normal'
-                    ? t('carrito.claseNormal')
-                    : t('carrito.claseConversacion')
-                }}
-                <span
-                  v-if="esReservaConflictiva(reserva)"
-                  class="text-white text-weight-bold q-ml-sm"
-                >
-                  ⚠️ {{ t('carrito.horaOcupada') }}
-                </span>
-              </div>
-            </div>
-
-            <div class="col-auto text-right flex items-center q-gutter-x-md">
-              <div v-if="!esReservaConflictiva(reserva)">
-                <div v-if="reserva.usarCredito" class="text-green text-weight-bold text-h6">
-                  0€
-                  <span class="text-caption text-grey strike-through">{{
-                    reserva.tipo === 'normal' ? '32€' : '27€'
-                  }}</span>
-                  <q-badge color="green" floating transparent rounded>{{
-                    t('carrito.creditoBadge')
-                  }}</q-badge>
-                </div>
-                <div v-else class="text-h6 text-primary">
-                  {{ reserva.tipo === 'normal' ? '32€' : '27€' }}
-                </div>
-              </div>
-
-              <q-btn
-                color="negative"
-                icon="delete"
-                @click="quitarDelCarrito(index)"
-                flat
-                round
-                :class="{ 'text-white': esReservaConflictiva(reserva) }"
-              />
-            </div>
-          </div>
-        </q-item>
-      </q-list>
-
-      <div class="sn-nota q-pa-md q-mb-lg">
-        <h6 class="resumen-titulo">{{ t('carrito.resumenDelPedido') }}</h6>
-        <div class="row justify-between items-center">
-          <span class="numero-reservas"
-            >{{ carrito.length }} {{ t('carrito.reserva', { count: carrito.length }) }}</span
-          >
-
-          <div class="text-right">
-            <div class="total-precio text-primary text-weight-bold">
-              {{ t('carrito.total') }}: {{ totalPagarDinero }}€
-            </div>
-            <div v-if="totalGastarCreditos > 0" class="text-caption text-green">
-              ({{ t('carrito.seCanjearan') }} {{ totalGastarCreditos }}
-              {{ t('carrito.credito', { count: totalGastarCreditos }) }})
-            </div>
-          </div>
-        </div>
-
-        <div v-if="reservasConflictivas.length > 0" class="text-negative q-mt-sm">
-          ⚠️ {{ reservasConflictivas.length }}
-          {{ t('carrito.reservaNoDisponible', { count: reservasConflictivas.length }) }}
-        </div>
-      </div>
-
-      <div class="row q-gutter-md justify-end items-center">
-        <q-btn color="grey" :label="t('carrito.seguir')" to="/Reservas" outline no-caps no-wrap />
-
+      <!-- Vacío -->
+      <div v-if="carrito.length === 0" class="ca-vacio">
+        <q-icon name="shopping_cart" size="56px" />
+        <p>{{ t('carrito.tuCarritoEstaVacio') }}</p>
         <q-btn
           color="primary"
-          class="btn-confirmar"
           unelevated
           no-caps
-          no-wrap
-          :label="
-            totalPagarDinero === 0 ? t('carrito.canjear') : t('carrito.pagarYConfirmarReservas')
-          "
-          @click="confirmarReservasHibridas"
-          :disable="!usuarioLogueado || reservasConflictivas.length > 0"
-          :loading="confirmando"
-          :icon="totalPagarDinero === 0 ? 'check_circle' : 'credit_card'"
+          size="lg"
+          class="ca-boton"
+          :label="t('carrito.reservarClases')"
+          to="/Reservas"
         />
       </div>
 
-      <q-no-ssr>
-        <q-banner v-if="!usuarioLogueado" class="bg-warning text-dark q-mt-md">
-          ⚠️ {{ t('carrito.debesIniciarSesion') }}
-        </q-banner>
-      </q-no-ssr>
+      <div v-else class="ca-rejilla">
+        <!-- Clases del carrito -->
+        <ul class="ca-lista">
+          <li
+            v-for="(reserva, index) in carrito"
+            :key="index"
+            class="ca-item"
+            :class="[
+              reserva.tipo === 'normal' ? 'sn-sello-general' : 'sn-sello-conversacion',
+              { 'ca-item--conflicto': esReservaConflictiva(reserva) },
+            ]"
+          >
+            <div class="ca-item__info">
+              <span class="ca-item__tipo">
+                {{ reserva.tipo === 'normal' ? t('carrito.claseNormal') : t('carrito.claseConversacion') }}
+              </span>
+              <span class="ca-item__fecha">{{ formatFecha(reserva.fecha, reserva.hora) }}</span>
+              <span class="ca-item__hora">{{ obtenerRangoLocalSeguro(reserva.fecha, reserva.hora) }}</span>
+              <span class="ca-item__madrid">(🇪🇸 {{ formatHorarioMadrid(reserva.hora) }} Madrid)</span>
+              <span v-if="esReservaConflictiva(reserva)" class="ca-item__aviso">
+                <q-icon name="warning" size="16px" /> {{ t('carrito.horaOcupada') }}
+              </span>
+            </div>
+
+            <div class="ca-item__precio">
+              <template v-if="!esReservaConflictiva(reserva)">
+                <template v-if="reserva.usarCredito">
+                  <span class="ca-credito">{{ t('carrito.creditoBadge') }}</span>
+                  <span class="ca-tachado">{{ reserva.tipo === 'normal' ? '32 €' : '27 €' }}</span>
+                </template>
+                <span v-else class="ca-importe">{{ reserva.tipo === 'normal' ? '32 €' : '27 €' }}</span>
+              </template>
+              <q-btn
+                flat
+                round
+                dense
+                color="negative"
+                icon="delete"
+                :aria-label="t('ReservasPagina.quitar')"
+                @click="quitarDelCarrito(index)"
+              />
+            </div>
+          </li>
+        </ul>
+
+        <!-- Resumen y pago -->
+        <aside class="ca-resumen">
+          <q-no-ssr>
+            <div v-if="usuarioLogueado" class="ca-creditos">
+              <SaldoWallet
+                :saldo-normal="saldoNormal"
+                :saldo-conversacion="saldoConversacion"
+                :loading="cargandoSaldo"
+              />
+              <q-checkbox
+                v-model="usarCreditosGlobal"
+                :label="t('carrito.utilizarCreditos')"
+                color="positive"
+                class="ca-check"
+                :disable="saldoNormal === 0 && saldoConversacion === 0"
+                @update:model-value="recalcularAplicacionCreditos"
+              />
+            </div>
+          </q-no-ssr>
+
+          <div class="ca-total sn-nota">
+            <p class="ca-total__titulo">{{ t('carrito.resumenDelPedido') }}</p>
+            <div class="ca-total__fila">
+              <span>{{ carrito.length }} {{ t('carrito.reserva', { count: carrito.length }) }}</span>
+              <strong class="ca-total__importe">{{ totalPagarDinero }} €</strong>
+            </div>
+            <p v-if="totalGastarCreditos > 0" class="ca-total__creditos">
+              {{ t('carrito.seCanjearan') }} {{ totalGastarCreditos }}
+              {{ t('carrito.credito', { count: totalGastarCreditos }) }}
+            </p>
+            <p v-if="reservasConflictivas.length > 0" class="ca-total__conflicto">
+              <q-icon name="warning" size="16px" />
+              {{ reservasConflictivas.length }}
+              {{ t('carrito.reservaNoDisponible', { count: reservasConflictivas.length }) }}
+            </p>
+
+            <q-btn
+              color="primary"
+              unelevated
+              no-caps
+              size="lg"
+              class="full-width ca-boton q-mt-md"
+              :label="totalPagarDinero === 0 ? t('carrito.canjear') : t('carrito.pagarYConfirmarReservas')"
+              :icon="totalPagarDinero === 0 ? 'check_circle' : 'credit_card'"
+              :disable="!usuarioLogueado || reservasConflictivas.length > 0"
+              :loading="confirmando"
+              @click="confirmarReservasHibridas"
+            />
+            <q-btn
+              flat
+              no-caps
+              color="grey-8"
+              class="full-width q-mt-sm"
+              icon="arrow_back"
+              :label="t('carrito.seguir')"
+              to="/Reservas"
+            />
+          </div>
+
+          <q-no-ssr>
+            <q-banner v-if="!usuarioLogueado" class="sn-nota q-mt-md" rounded>
+              <template #avatar><q-icon name="info" color="primary" /></template>
+              {{ t('carrito.debesIniciarSesion') }}
+            </q-banner>
+          </q-no-ssr>
+        </aside>
+      </div>
     </div>
   </q-page>
 </template>
@@ -217,13 +189,6 @@ const saldoConversacion = ref(0);
 const cargandoSaldo = ref(false);
 const usarCreditosGlobal = ref(false);
 const usuarioLogueado = computed(() => !!user.value?.id);
-
-const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
-
-const getIconoPersonalizado = (tipo: string | undefined) => {
-  if (tipo === 'conversacion') return `${BUCKET_URL}iconoconv.svg`;
-  return `${BUCKET_URL}iconoindiv.svg`;
-};
 
 // --- CARGA INICIAL ---
 onMounted(async () => {
@@ -519,45 +484,168 @@ const esReservaConflictiva = (reserva: ReservaCarrito) => {
 </script>
 
 <style scoped>
-.bg-negative-1 {
-  background-color: #851319;
+.ca-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+  padding-block: clamp(24px, 5vw, 48px) var(--sn-seccion);
 }
-.text-h6 {
-  font-weight: 500;
-}
-.text-white {
-  color: white !important;
-}
-.strike-through {
-  text-decoration: line-through;
-}
-.separator > div:not(:last-child) {
-  border-bottom: 1px solid #eeeeee;
-}
-:deep(.checkbox-creditos .q-checkbox__label) {
-  font-size: 0.875rem;
-}
-.resumen-fecha {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #851319;
-}
-.resumen-fecha.text-white {
-  color: white !important;
-}
-.resumen-titulo {
-  font-family: 'Montserrat', sans-serif;
+.ca-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
   font-weight: 700;
-  margin: 0 0 1rem 0;
+  line-height: 1.15;
+  color: var(--sn-burdeos);
+  margin: 0 0 24px;
 }
-.numero-reservas {
-  font-size: 1.1rem;
-  font-weight: 500;
+.ca-boton {
+  border-radius: var(--sn-r-boton);
+  font-weight: 700;
 }
-.total-precio {
-  font-size: 1.3rem;
+.ca-vacio {
+  text-align: center;
+  padding: 48px 16px;
+  border: 1px dashed var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  color: var(--sn-tinta-suave);
 }
-:deep(.btn-confirmar .q-btn__content) {
-  font-weight: bold;
+
+.ca-rejilla {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .ca-rejilla {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 32px;
+  }
+  .ca-resumen {
+    position: sticky;
+    top: 120px;
+  }
+}
+
+/* Clases */
+.ca-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.ca-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-left: 6px solid var(--sn-sello);
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+}
+.ca-item--conflicto {
+  border-color: var(--q-negative);
+  background: #fdecec;
+}
+.ca-item__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+.ca-item__tipo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-peq);
+  color: var(--sn-sello);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ca-item__fecha {
+  font-weight: 700;
+  margin-top: 2px;
+}
+.ca-item__hora {
+  font-family: var(--sn-fuente-titulos);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--sn-burdeos);
+}
+.ca-item__madrid {
+  font-size: var(--sn-t-peq);
+  color: var(--sn-tinta-suave);
+}
+.ca-item__aviso {
+  margin-top: 4px;
+  color: var(--q-negative);
+  font-weight: 700;
+  font-size: var(--sn-t-peq);
+}
+.ca-item__precio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.ca-importe {
+  font-family: var(--sn-fuente-titulos);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.ca-credito {
+  padding: 2px 10px;
+  border-radius: var(--sn-r-boton);
+  background: #eef5e3;
+  color: var(--sn-oliva);
+  font-weight: 700;
+  font-size: var(--sn-t-peq);
+}
+.ca-tachado {
+  text-decoration: line-through;
+  color: var(--sn-tinta-suave);
+}
+
+/* Resumen */
+.ca-creditos {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ca-check :deep(.q-checkbox__label) {
+  font-weight: 700;
+}
+.ca-total {
+  padding: 20px;
+}
+.ca-total__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-h4);
+  margin: 0 0 12px;
+}
+.ca-total__fila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ca-total__importe {
+  font-family: var(--sn-fuente-titulos);
+  font-size: 1.6rem;
+  color: var(--sn-burdeos);
+}
+.ca-total__creditos {
+  margin: 6px 0 0;
+  color: var(--sn-oliva);
+  font-weight: 700;
+  font-size: var(--sn-t-peq);
+}
+.ca-total__conflicto {
+  margin: 8px 0 0;
+  color: var(--q-negative);
+  font-weight: 700;
 }
 </style>
