@@ -205,6 +205,13 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  CompletarPerfil: {
+    titulo: 'Cuéntanos un poco sobre ti',
+    entrada: 'Son unas preguntas rápidas para preparar tus clases a tu medida.',
+    guardar: 'Guardar y continuar',
+    guardado: '¡Gracias! Perfil guardado.',
+    error: 'No se pudo guardar. Inténtalo de nuevo.',
+  },
   BotonGoogle: {
     continuar: 'Continuar con Google',
     o: 'o con tu correo',

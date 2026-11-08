@@ -192,6 +192,13 @@ export default {
     nivelB2: 'Advanced',
     nivelC1: 'Proficient',
   },
+  CompletarPerfil: {
+    titulo: 'Tell us a bit about yourself',
+    entrada: 'Just a few quick questions so we can tailor your lessons to you.',
+    guardar: 'Save and continue',
+    guardado: 'Thank you! Profile saved.',
+    error: 'Could not save. Please try again.',
+  },
   BotonGoogle: {
     continuar: 'Continue with Google',
     o: 'or with your email',

@@ -74,6 +74,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false, layout: 'empty' },
   },
   {
+    // Cuestionario de perfil para quien entra con Google (el registro por correo ya lo pide)
+    path: '/CompletarPerfil',
+    component: () => import('pages/CompletarPerfil.vue'),
+    meta: { requiresAuth: true, layout: 'empty', ssr: false },
+  },
+  {
     path: '/Cookies',
     component: () => import('pages/legalCookies.vue'),
     meta: { requiresAuth: false, layout: 'empty' },
