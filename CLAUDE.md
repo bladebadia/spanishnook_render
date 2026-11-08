@@ -51,7 +51,7 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 
 1. Subir a `master` el commit de `cerrar-curso` ('Finalizado') que está en `rediseno` (la función ya está desplegada).
 2. Probar: registro y confirmación de email, reset de contraseña, login con Google, borrar cuenta, pago de clase con tarjeta, compra de bono, compra de material y descarga del PDF, suscripción mensual, flujos de admin, formulario de contacto, web en inglés.
-3. Plantillas de correo de Supabase Auth sin la marca.
+3. ~~Plantillas de correo de Supabase Auth~~ Subidas el 8-nov (`supabase/auth-correos/`, se despliegan con `desplegar.ts`); idioma por `user_metadata.idioma`.
 4. ~~Bucket `pdfs_materiales`: política de lectura~~ Aplicada y probada el 8-nov.
 5. `AuthCallback.vue` (login con Google) ignora `?redirect=`.
 6. Mensaje de contraseña "vocal/mayúscula" en el registro.
