@@ -269,16 +269,6 @@ a {
   }
 }
 
-// Logo de la cabecera: siempre círculo. El PNG es 500x375 con el círculo
-// centrado; 'cover' recorta los laterales transparentes y lo deja a tamaño completo.
-.logo-responsivo {
-  aspect-ratio: 1 / 1;
-  height: auto !important;
-  object-fit: cover;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 // Pie de página: burdeos hondo en lugar de negro puro
 .q-footer.sn-pie {
   background-color: var(--sn-burdeos-hondo);
