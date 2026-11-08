@@ -3,7 +3,8 @@
  *
  * Para cada suscripción activa: reembolso prorrateado del periodo pagado que queda,
  * cancelación inmediata en Stripe, estado 'canceled' en BD y correo al alumno.
- * Después borra el evento de Google Calendar y marca el curso 'Completo' y oculto.
+ * Después borra el evento de Google Calendar y marca el curso 'Finalizado' y oculto
+ * ('Completo' es un curso activo sin plazas y sigue bloqueando horas en el calendario).
  *
  * Petición: POST { courseId: number }   (Authorization: Bearer <jwt de admin>)
  * Respuesta: { success: true, procesados: [{ userId, status, amount? , error? }] }
@@ -146,7 +147,7 @@ Deno.serve(async (req) => {
     // 5. Cerrar el curso en BD
     const { error: errCierre } = await supabase
       .from("cursos_grupales")
-      .update({ estado_curso: "Completo", visibilidad: false })
+      .update({ estado_curso: "Finalizado", visibilidad: false })
       .eq("id", courseId);
     if (errCierre) throw errCierre;
 
