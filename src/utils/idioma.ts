@@ -7,6 +7,7 @@ import { Cookies, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import langEs from 'quasar/lang/es.js';
 import langEn from 'quasar/lang/en-US.js';
+import { supabase } from 'src/supabaseClient';
 
 export type Idioma = 'es-ES' | 'en-US';
 
@@ -56,7 +57,35 @@ export function opcionesCookieIdioma() {
   };
 }
 
-/** Cambia el idioma en caliente (i18n, componentes de Quasar, cookie y <html lang>). */
+/** 'es-ES' → 'es', 'en-US' → 'en': lo que guardan los metadatos del usuario y usan los correos. */
+export function idiomaCorto(idioma: Idioma): 'es' | 'en' {
+  return idioma === 'en-US' ? 'en' : 'es';
+}
+
+/** Idioma guardado en la cookie del navegador (o el de por defecto). Solo cliente. */
+export function idiomaActualCliente(): Idioma {
+  return normalizarIdioma(Cookies.get(COOKIE_IDIOMA)) ?? IDIOMA_POR_DEFECTO;
+}
+
+/**
+ * Guarda el idioma en user_metadata.idioma de la cuenta con sesión, si cambia.
+ * Lo leen las plantillas de correo de Supabase Auth (confirmación, recuperación...).
+ */
+export async function guardarIdiomaEnCuenta(idioma: Idioma): Promise<void> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const usuario = data.session?.user;
+    if (!usuario) return;
+    const corto = idiomaCorto(idioma);
+    if (usuario.user_metadata?.idioma === corto) return;
+    const { error } = await supabase.auth.updateUser({ data: { idioma: corto } });
+    if (error) throw error;
+  } catch (e) {
+    console.warn('No se pudo guardar el idioma en la cuenta:', e);
+  }
+}
+
+/** Cambia el idioma en caliente (i18n, componentes de Quasar, cookie y cuenta). */
 export function useIdioma() {
   const { locale } = useI18n();
   const $q = useQuasar();
@@ -66,6 +95,7 @@ export function useIdioma() {
     locale.value = idioma;
     $q.lang.set(paqueteQuasar(idioma));
     Cookies.set(COOKIE_IDIOMA, idioma, opcionesCookieIdioma());
+    void guardarIdiomaEnCuenta(idioma);
   }
 
   return { locale, cambiarIdioma };

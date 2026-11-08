@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from 'src/supabaseClient';
+import { guardarIdiomaEnCuenta, idiomaActualCliente } from 'src/utils/idioma';
 
 const user = ref<User | null>(null);
 // En servidor SSR, marcar como inicializado para evitar problemas
@@ -53,8 +54,13 @@ if (typeof window !== 'undefined') {
   void initializeSession();
 
   // Escuchar cambios de sesión (login, logout, refresh)
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange((event, session) => {
     user.value = session?.user ?? null;
+    // Cuentas sin idioma guardado (login con Google, registros antiguos): se toma el de la web.
+    // Fuera del callback: supabase-js se bloquea si se llama a auth dentro de él.
+    if (event === 'SIGNED_IN' && session?.user && !session.user.user_metadata?.idioma) {
+      setTimeout(() => void guardarIdiomaEnCuenta(idiomaActualCliente()), 0);
+    }
     if (!isInitialized.value) {
       isInitialized.value = true;
     }

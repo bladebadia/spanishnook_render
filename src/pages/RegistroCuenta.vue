@@ -325,7 +325,7 @@ import { useAnalytics } from 'src/composables/useAnalytics';
 
 const $q = useQuasar();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { registroIniciado, registroCompletado } = useAnalytics();
 
 const step = ref(1);
@@ -442,6 +442,8 @@ const registrarUsuario = async () => {
           detallesEstudio: form.value.detallesEstudio,
           intereses: form.value.intereses,
           usoEspanol: form.value.usoEspanol,
+          // Idioma de los correos de Supabase Auth (plantillas en supabase/auth-correos)
+          idioma: locale.value.startsWith('en') ? 'en' : 'es',
         },
       },
     });
