@@ -101,5 +101,37 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     }
   });
 
+  // VERSIÓN NUEVA DESPLEGADA
+  // Tras un despliegue, una pestaña abierta conserva el index.js viejo y pide fragmentos
+  // (PanelAdministracion-xxxx.js...) que ya no existen: 404 y la página no carga.
+  // Se recarga una vez en la ruta de destino para coger la versión nueva.
+  if (typeof window !== 'undefined') {
+    window.addEventListener('vite:preloadError', (event) => {
+      event.preventDefault();
+      recargarPorVersionNueva(window.location.href);
+    });
+    Router.onError((error: unknown, to) => {
+      const mensaje = error instanceof Error ? error.message : String(error);
+      if (/dynamically imported module|Importing a module script failed|error loading dynamically/i.test(mensaje)) {
+        recargarPorVersionNueva(to.fullPath);
+      }
+    });
+  }
+
   return Router;
 });
+
+const CLAVE_RECARGA = 'sn_recarga_version';
+const MARGEN_RECARGA_MS = 10_000;
+
+/** Recarga la página como mucho una vez cada 10 s (evita bucles si el fallo es otro). */
+function recargarPorVersionNueva(destino: string) {
+  try {
+    const ultima = Number(sessionStorage.getItem(CLAVE_RECARGA) ?? 0);
+    if (Date.now() - ultima < MARGEN_RECARGA_MS) return;
+    sessionStorage.setItem(CLAVE_RECARGA, String(Date.now()));
+  } catch {
+    // Sin sessionStorage: recargar igualmente (una sola vez por carga de página)
+  }
+  window.location.assign(destino);
+}
