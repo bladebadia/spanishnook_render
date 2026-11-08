@@ -10,13 +10,15 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { supabase } from '../supabaseClient';
 import { useI18n } from 'vue-i18n';
+import { destinoSeguro } from 'src/utils/acceso';
 
 const loading = ref(true);
 const error = ref('');
 const router = useRouter();
+const route = useRoute();
 const { t } = useI18n();
 
 onMounted(async () => {
@@ -26,11 +28,11 @@ onMounted(async () => {
     loading.value = false;
     return;
   }
-  // Redirige al usuario a la página principal o dashboard
-
+  // Vuelve a la página que pidió el login (?redirect=), o al área personal
+  const destino = destinoSeguro(route.query.redirect);
   setTimeout(() => {
     loading.value = false;
-    void router.push('/AreaPersonal');
+    void router.replace(destino);
   }, 1500);
 });
 </script>

@@ -205,6 +205,11 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  BotonGoogle: {
+    continuar: 'Continuar con Google',
+    o: 'o con tu correo',
+    error: 'No se pudo conectar con Google. Inténtalo de nuevo.',
+  },
   PacksPagina: {
     comoFuncionan: '¿Cómo funcionan los packs?',
     paso1: 'Compras el pack de clases generales o de conversación que prefieras.',

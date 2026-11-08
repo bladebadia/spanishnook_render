@@ -18,6 +18,10 @@
             {{ t('registro.empezamosPorLoBasico') }}
           </p>
 
+          <div class="q-px-md-lg q-mb-md">
+            <BotonGoogle />
+          </div>
+
           <q-form @submit="siguientePaso" class="q-gutter-md q-px-md-lg">
             <q-input
               v-model="form.email"
@@ -322,6 +326,7 @@ import { supabase } from 'src/supabaseClient';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAnalytics } from 'src/composables/useAnalytics';
+import BotonGoogle from 'src/components/BotonGoogle.vue';
 
 const $q = useQuasar();
 const router = useRouter();

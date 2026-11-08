@@ -9,6 +9,7 @@
       </q-card-section>
 
       <q-card-section class="q-px-lg">
+        <BotonGoogle :redirect="typeof route.query.redirect === 'string' ? route.query.redirect : undefined" />
         <form @submit.prevent="login" class="q-gutter-md">
           <q-input
             v-model="email"
@@ -153,6 +154,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { supabase } from '../supabaseClient';
 import { useI18n } from 'vue-i18n';
 import { useAnalytics } from 'src/composables/useAnalytics';
+import { destinoSeguro } from 'src/utils/acceso';
+import BotonGoogle from 'src/components/BotonGoogle.vue';
 
 defineOptions({ name: 'UserAcceder' });
 
@@ -167,12 +170,7 @@ const { t } = useI18n();
 const { login: trackLogin } = useAnalytics();
 
 // Vuelve a la página que pidió el login (?redirect=/ruta); solo rutas internas
-const destinoTrasLogin = (): string => {
-  const destino = route.query.redirect;
-  return typeof destino === 'string' && destino.startsWith('/') && !destino.startsWith('//')
-    ? destino
-    : '/AreaPersonal';
-};
+const destinoTrasLogin = (): string => destinoSeguro(route.query.redirect);
 
 const togglePasswordVisibility = () => {
   passwordVisible.value = !passwordVisible.value;

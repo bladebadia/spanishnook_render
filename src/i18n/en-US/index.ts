@@ -192,6 +192,11 @@ export default {
     nivelB2: 'Advanced',
     nivelC1: 'Proficient',
   },
+  BotonGoogle: {
+    continuar: 'Continue with Google',
+    o: 'or with your email',
+    error: 'Could not connect to Google. Please try again.',
+  },
   PacksPagina: {
     comoFuncionan: 'How do packs work?',
     paso1: 'Buy the general or conversation pack you prefer.',
