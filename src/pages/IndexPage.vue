@@ -1,181 +1,180 @@
 <template>
-  <q-page :style-fn="customStyleFn">
-    <div>
-      <q-img
-        class="sn-hero-banner"
-        fit="cover"
-        position="center"
-        loading="eager"
-        fetchpriority="high"
-        no-spinner
-        alt="Spanish at your pace, in your place"
-        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/banner_1920.webp"
-      >
-      </q-img>
-    </div>
+  <q-page :style-fn="customStyleFn" class="ini-pagina">
+    <!-- 1. Cabecera: banner, titular corto y dos acciones -->
+    <q-img
+      class="sn-hero-banner"
+      fit="cover"
+      position="center"
+      loading="eager"
+      fetchpriority="high"
+      no-spinner
+      alt="Spanish at your pace, in your place"
+      src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/banner_1920.webp"
+    />
 
-    <div class="items-center text-center q-my-xl">
-      <h1 class="titulo-responsivo q-mb-xl" style="color: #851319">
-        {{ t('indexeUnLugarDonde') }}
-      </h1>
-      <br />
-      <p class="texto-responsivo text-left">
-        {{ t('indexAprenderEspañolPuede') }}
-      </p>
-
-      <q-btn
-        class="oval-btn"
-        no-caps
-        items-center
-        color="primary"
-        unelevated
-        @click="handleCreaTuEspacio"
-      >
-        {{ t('indexCreaTuEspacio') }}
-      </q-btn>
-    </div>
-
-    <div v-intersect="onPromoIntersect" class="row justify-center q-my-xl">
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div v-if="showPromoCard" class="row align-center">
-          <div class="col-12 col-md-6 items-center flex flex-center column">
-            <q-card
-              class=""
-              style="
-                width: 80%;
-                min-height: 420px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-              "
-            >
-              <img
-                src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/inicio_principal_OK.png?width=800&format=webp"
-                fit="cover"
-                style="
-                  width: 50%;
-                  height: auto;
-                  max-height: 300px;
-                  display: block;
-                  margin: 20px auto;
-                "
-              />
-              <q-card-section class="subtitulo-responsivo text-center">{{
-                t('indexDescubreNuestrasClases')
-              }}</q-card-section>
-              <q-card-section class="texto-responsivo text-left">
-                {{ t('indexDescubreNuestrasClasesTexto') }}
-              </q-card-section>
-              <q-card-actions class="flex justify-center">
-                <q-btn color="primary" to="/Clases" unelevated class="text-weight-bold">
-                  {{ t('indexEncuentraTusClases') }}
-                </q-btn>
-              </q-card-actions>
-            </q-card>
-          </div>
-          <div class="col-12 col-md-6 q-pa-md">
-            <p class="subtitulo-responsivo text-center">{{ t('indexQueEncontraras') }}</p>
-            <ul class="lista-check" style="font-size: 1.2rem">
-              <li class="q-py-xs">{{ t('indexclasesEnVivo') }}</li>
-              <li class="q-py-xs">{{ t('indexdiferentesModalidades') }}</li>
-              <li class="q-py-xs">{{ t('indexseguimientoContinuo') }}</li>
-              <li class="q-py-xs">{{ t('indexClasesAdaptadas') }}</li>
-              <li class="q-py-xs">{{ t('indexMaterialesExclusivos') }}</li>
-              <li class="q-py-xs">{{ t('indexAmbienteRelajado') }}</li>
-            </ul>
-          </div>
-        </div>
-      </transition>
-    </div>
-
-    <div
-      v-intersect="onPromoIntersect1"
-      class="q-my-xs row justify-center"
-      style="background-color: #fffdf8"
-    >
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div v-if="showPromoCard1" class="row" enter-active-class="animated fadeInUpBig slower ">
-          <div class="col-12 items-center flex flex-center column q-my-md q-mb-md-xl">
-            <h2 class="titulo-responsivo2 text-center text-primary q-mb-md">
-              {{ t('indexDiferentesCaminos') }}
-            </h2>
-
-            <p class="texto-responsivo text-center text-bold" style="color: #525553">
-              {{ t('indexAprendeEnDirecto') }}
-            </p>
-          </div>
-          <q-separator class="q-my-xl" />
-
-          <div
-            class="col-12"
-            style="
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: center;
-              gap: 3rem;
-              padding: 0 1rem;
-            "
-          >
-            <PromoCard
-              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-inicio-individuales.png?width=600&format=webp'"
-              :title="t('indexClasesPrivadas')"
-              :description="t('indexAvanzaEnTu')"
-              :button-text="t('indexQuieroMiClase')"
-              :to="{ path: '/Clases', hash: '#clases-individuales' }"
-              style="max-width: 450px"
-            />
-
-            <PromoCard
-              :image-src="'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-inicio-conversacion.png?width=600&format=webp'"
-              :title="t('indexClasesDeConversacion')"
-              :description="t('indexMejoraTuConfianza')"
-              :button-text="t('indexUneteALaLista')"
-              :to="{ path: '/Clases', hash: '#clases-conversacion' }"
-              style="max-width: 450px"
-            />
-          </div>
-        </div>
-      </transition>
-    </div>
-
-    <div
-      v-intersect="onPromoIntersect2"
-      class="q-mt-xl q-mb-xl row degradado-fondo"
-      style="min-height: 260px; width: 100%"
-    >
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div
-          v-if="showPromoCard2"
-          class="row"
-          style="width: 100%; position: relative"
-          enter-active-class="animated fadeInUpBig slower "
-        >
-          <div class="col-12 sn-bloque-test">
-            <h2 class="sn-bloque-test__titulo">{{ t('indexDescubreTuPunto') }}</h2>
-            <p class="sn-bloque-test__texto">{{ t('indexEnSolo') }}</p>
-            <q-btn
-              color="white"
-              text-color="primary"
-              to="/TestNivel"
-              class="oval-btn"
-              unelevated
-              :label="t('indexHacerTest')"
-            />
-          </div>
-        </div>
-      </transition>
-    </div>
-
-    <div class="q-py-xl" style="background-color: #fffdf8">
-      <div class="text-center q-mb-lg">
-        <h2 class="titulo-responsivo text-primary q-my-none">
-          {{ t('indexMateriales') }}
-        </h2>
-        <p class="text-grey-7 q-mt-sm">{{ t('indexMateriales1') }}</p>
+    <section class="sn-contenedor ini-cabecera">
+      <h1 class="ini-h1">{{ t('indexeUnLugarDonde') }}</h1>
+      <p class="ini-entrada">{{ t('Inicio.entrada') }}</p>
+      <div class="ini-acciones">
+        <q-btn
+          color="primary"
+          unelevated
+          no-caps
+          size="lg"
+          class="ini-boton"
+          :label="t('Inicio.reservarClase')"
+          to="/Reservas"
+        />
+        <q-btn
+          outline
+          color="primary"
+          no-caps
+          size="lg"
+          class="ini-boton"
+          :label="t('Inicio.verClases')"
+          to="/Clases"
+        />
       </div>
+      <ul class="ini-garantias">
+        <li v-for="g in garantias" :key="g">
+          <q-icon name="check_circle" class="ini-garantias__icono" />
+          {{ g }}
+        </li>
+      </ul>
+    </section>
 
-      <div v-if="cuadernosCarrusel.length > 0" class="row justify-center">
-        <!-- CARRUSEL DE QUASAR CON INFINITE -->
+    <!-- 2. Qué ofrecemos, con precio y enlace a cada sección -->
+    <section class="ini-seccion ini-seccion--papel">
+      <div class="sn-contenedor">
+        <p class="ini-antetitulo">{{ t('Inicio.ofrecemosAntetitulo') }}</p>
+        <h2 class="ini-h2">{{ t('indexDiferentesCaminos') }}</h2>
+        <div class="ini-ofertas">
+          <router-link
+            v-for="oferta in ofertas"
+            :key="oferta.titulo"
+            :to="oferta.to"
+            class="ini-oferta"
+            :class="oferta.sello"
+          >
+            <div class="ini-oferta__img">
+              <img :src="oferta.imagen" :alt="oferta.titulo" loading="lazy" />
+            </div>
+            <div class="ini-oferta__cuerpo">
+              <h3 class="ini-h3">{{ oferta.titulo }}</h3>
+              <p class="ini-oferta__texto">{{ oferta.texto }}</p>
+              <p class="ini-oferta__precio">{{ oferta.precio }}</p>
+              <span class="ini-oferta__ir">
+                {{ oferta.boton }}
+                <q-icon name="arrow_forward" size="18px" />
+              </span>
+            </div>
+          </router-link>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Qué encontrarás -->
+    <section class="ini-seccion">
+      <div class="sn-contenedor">
+        <h2 class="ini-h2 ini-h2--centro">{{ t('indexQueEncontraras') }}</h2>
+        <ul class="ini-ventajas">
+          <li v-for="v in ventajas" :key="v.texto">
+            <q-icon :name="v.icono" class="ini-ventajas__icono" />
+            <span>{{ v.texto }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. Opiniones -->
+    <section class="ini-seccion ini-seccion--papel">
+      <div class="sn-contenedor">
+        <p class="ini-antetitulo ini-antetitulo--centro">{{ t('indexOpinionesVerificadas') }}</p>
+        <h2 class="ini-h2 ini-h2--centro">{{ t('indexConoceExperiencias') }}</h2>
+
+        <div class="carousel-container">
+          <div v-if="todasLasOpiniones.length === 0" class="text-center q-pa-xl text-grey-7">
+            {{ t('indexSeElPrimeroEnOpinar') }}
+          </div>
+          <q-carousel
+            v-else
+            v-model="currentSlide"
+            transition-prev="slide-right"
+            transition-next="slide-left"
+            swipeable
+            animated
+            infinite
+            control-color="primary"
+            :autoplay="6000"
+            :arrows="$q.screen.gt.sm"
+            height="300px"
+            class="opinions-carousel bg-transparent"
+          >
+            <q-carousel-slide
+              v-for="(opinion, index) in todasLasOpiniones"
+              :key="index"
+              :name="index"
+              class="q-pa-none"
+            >
+              <div class="row justify-center full-height items-center">
+                <div class="col-12 col-sm-10 col-md-8 col-lg-7">
+                  <OpinioneVerificadas
+                    :opinion="opinion"
+                    :show-avatar="false"
+                    class="single-opinion-card"
+                  />
+                </div>
+              </div>
+            </q-carousel-slide>
+          </q-carousel>
+
+          <div v-if="todasLasOpiniones.length > 1" class="carousel-indicators q-mt-md">
+            <q-btn
+              v-for="(opinion, index) in todasLasOpiniones"
+              :key="index"
+              round
+              dense
+              size="sm"
+              :color="currentSlide === index ? 'primary' : 'grey-5'"
+              class="q-mx-xs"
+              :aria-label="`${opinion.name} - ${opinion.country}`"
+              @click="currentSlide = index"
+            />
+          </div>
+
+          <div class="text-center q-mt-lg">
+            <q-btn outline color="primary" no-caps class="ini-boton" @click="handleDarOpinion">
+              {{ t('indexDanosTuOpinion') }}
+            </q-btn>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Test de nivel -->
+    <section class="degradado-fondo">
+      <div class="sn-bloque-test">
+        <h2 class="sn-bloque-test__titulo">{{ t('indexDescubreTuPunto') }}</h2>
+        <p class="sn-bloque-test__texto">{{ t('indexEnSolo') }}</p>
+        <q-btn
+          color="white"
+          text-color="primary"
+          to="/TestNivel"
+          class="ini-boton q-mt-lg"
+          unelevated
+          no-caps
+          :label="t('indexHacerTest')"
+        />
+      </div>
+    </section>
+
+    <!-- 6. Materiales -->
+    <section v-if="cuadernosCarrusel.length > 0" class="ini-seccion">
+      <div class="sn-contenedor">
+        <h2 class="ini-h2 ini-h2--centro">{{ t('indexMateriales') }}</h2>
+        <p class="ini-entrada ini-entrada--centro">{{ t('indexMateriales1') }}</p>
+      </div>
+      <div class="row justify-center q-mt-md">
         <q-carousel
           v-model="slideCuadernos"
           transition-prev="slide-right"
@@ -184,54 +183,34 @@
           animated
           infinite
           control-color="primary"
-          arrows
+          :arrows="cuadernosCarrusel.length > 1"
           height="450px"
           class="bg-transparent col-12 col-md-8 col-lg-6"
         >
-          <!-- DIAPOSITIVAS -->
           <q-carousel-slide
             v-for="(cuaderno, index) in cuadernosCarrusel"
             :key="cuaderno.id"
             :name="index"
             class="column flex-center q-px-xl"
           >
-            <!-- TARJETA CENTRADA -->
             <q-card
               class="carta-contenido shadow-4"
-              style="
-                width: 100%;
-                max-width: 320px;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-              "
+              style="width: 100%; max-width: 320px; height: 100%; display: flex; flex-direction: column"
             >
-              <q-img
-                :src="cuaderno.imagen_portada || 'https://via.placeholder.com/300x400?text=PDF'"
-                height="200px"
-              >
-                <template v-slot:error>
-                  <div class="absolute-full flex flex-center bg-grey-3 text-grey-8">
-                    {{ t('indexSinImagen') }}
-                  </div>
-                </template>
+              <q-img :src="cuaderno.imagen_portada || '/img/Logo_rectangular_320.png'" height="200px">
                 <div
-                  class="badge-hs bg-positive text-white text-weight-bold shadow-3"
                   v-if="cuaderno.precio === 0 || !cuaderno.precio"
+                  class="badge-hs bg-positive text-white text-weight-bold shadow-3"
                 >
                   {{ t('MaterialesPage.gratis') }}
                 </div>
-                <!-- Etiqueta roja normal si cuesta dinero -->
-                <div class="badge-hs bg-negative text-white text-weight-bold shadow-3" v-else>
+                <div v-else class="badge-hs bg-negative text-white text-weight-bold shadow-3">
                   {{ cuaderno.precio }} €
                 </div>
               </q-img>
-
               <q-card-section class="col-grow text-center q-pa-md flex column justify-center">
                 <div class="text-h6 text-weight-bold q-mb-sm" style="line-height: 1.2">
-                  {{
-                    locale === 'en-US' && cuaderno.titulo_en ? cuaderno.titulo_en : cuaderno.titulo
-                  }}
+                  {{ locale === 'en-US' && cuaderno.titulo_en ? cuaderno.titulo_en : cuaderno.titulo }}
                 </div>
                 <div class="text-body2 text-grey-8 ellipsis-3-lines">
                   {{
@@ -241,12 +220,12 @@
                   }}
                 </div>
               </q-card-section>
-
               <q-card-actions align="center" class="q-pa-md q-pt-none">
                 <q-btn
                   color="primary"
                   rounded
                   unelevated
+                  no-caps
                   :label="t('MaterialesPage.verCatalogo')"
                   class="full-width text-weight-bold"
                   to="/Materiales"
@@ -256,163 +235,33 @@
           </q-carousel-slide>
         </q-carousel>
       </div>
-    </div>
+    </section>
 
-    <div v-intersect="onPromoIntersect4" class="q-mt-xl q-mb-xl row flex flex-center">
-      <transition enter-active-class="animated fadeInUpBig slower ">
-        <div
-          v-if="showPromoCard4"
-          class="row justify-center"
-          enter-active-class="animated fadeInUpBig slower "
-        >
-          <q-card class="items-center tarjeta-quien">
-            <q-item>
-              <q-item-section avatar>
-                <q-avatar>
-                  <img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=280&height=280&resize=cover&format=webp"
-                  />
-                </q-avatar>
-              </q-item-section>
-              <q-item-label class="titulo-responsivo1 q-pa-md q-ma-md-lg text-bold">
-                {{ t('indexQuienHayDetras') }}
-              </q-item-label>
-            </q-item>
-            <q-separator />
-            <q-item class="flex flex-justify q-pa-md">
-              <q-item-label class="text-left" style="width: 100%; font-size: 1rem">
-                {{ t('indexDetrasDeSpanishnook1') }}
-                <br /><br />
-                {{ t('indexDetrasDeSpanishnook2') }}
-                <br /><br />
-                <strong>{{ t('indexDetrasDeSpanishnook3') }}</strong>
-              </q-item-label>
-            </q-item>
-            <q-card-actions class="flex flex-center">
-              <q-btn
-                color="primary"
-                to="/SobreSpanish"
-                size="lg"
-                unelevated
-                class="text-weight-bold"
-                style="font-size: 1rem"
-              >
-                {{ t('indexMasSobreSpanishnook') }}
-              </q-btn>
-            </q-card-actions>
-          </q-card>
+    <!-- 7. Quién hay detrás -->
+    <section class="ini-seccion ini-seccion--papel">
+      <div class="sn-contenedor ini-quien">
+        <img
+          class="ini-quien__foto"
+          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=400&height=400&resize=cover&format=webp"
+          alt="Paula, SpanishNook"
+          loading="lazy"
+        />
+        <div>
+          <h2 class="ini-h2">{{ t('indexQuienHayDetras') }}</h2>
+          <p class="ini-parrafo">{{ t('indexDetrasDeSpanishnook1') }}</p>
+          <p class="ini-parrafo">{{ t('indexDetrasDeSpanishnook2') }}</p>
+          <p class="ini-parrafo"><strong>{{ t('indexDetrasDeSpanishnook3') }}</strong></p>
+          <q-btn
+            outline
+            color="primary"
+            no-caps
+            class="ini-boton q-mt-sm"
+            to="/SobreSpanish"
+            :label="t('indexMasSobreSpanishnook')"
+          />
         </div>
-      </transition>
-    </div>
-
-    <div v-intersect="onOpinionesIntersect" class="opiniones-section bg-grey-1">
-      <transition enter-active-class="animated fadeInUpBig slower">
-        <div v-if="showOpiniones" class="q-py-xl q-px-md">
-          <div class="text-center q-mb-xl">
-            <h2 class="titulo-responsivo2 text-primary q-mb-sm">
-              {{ t('indexOpinionesVerificadas') }}
-            </h2>
-            <p class="texto-responsivo">
-              {{ t('indexConoceExperiencias') }}
-            </p>
-          </div>
-
-          <div class="carousel-container">
-            <template v-if="todasLasOpiniones.length === 0">
-              <div class="row justify-center full-height items-center">
-                <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 text-center q-pa-xl">
-                  <div class="texto-responsivo text-grey-7">
-                    {{ t('indexSeElPrimeroEnOpinar') }}
-                  </div>
-                </div>
-              </div>
-            </template>
-            <q-carousel
-              v-else
-              v-model="currentSlide"
-              transition-prev="slide-right"
-              transition-next="slide-left"
-              swipeable
-              animated
-              control-color="primary"
-              :autoplay="5000"
-              :arrows="$q.screen.gt.sm"
-              height="300px"
-              class="opinions-carousel"
-            >
-              <q-carousel-slide
-                v-for="(opinion, index) in todasLasOpiniones"
-                :key="index"
-                :name="index"
-                class="q-pa-none"
-              >
-                <div class="row justify-center full-height items-center">
-                  <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-                    <OpinioneVerificadas
-                      :opinion="opinion"
-                      :show-avatar="false"
-                      class="single-opinion-card"
-                    />
-                  </div>
-                </div>
-              </q-carousel-slide>
-
-              <template v-slot:control>
-                <q-carousel-control
-                  position="bottom-right"
-                  :offset="[18, 18]"
-                  class="text-white rounded-borders"
-                  style="background: rgba(0, 0, 0, 0.3); padding: 4px 8px"
-                >
-                  <q-icon name="star" size="sm" class="q-mr-xs" />
-                  {{ currentSlide + 1 }} / {{ todasLasOpiniones.length }}
-                </q-carousel-control>
-              </template>
-
-              <template v-slot:navigation-icon="{ active, btnProps, onClick }">
-                <q-btn
-                  v-if="btnProps.icon === 'chevron_left'"
-                  :class="{ 'text-primary': active }"
-                  color="white"
-                  text-color="primary"
-                  :icon="btnProps.icon"
-                  size="lg"
-                  round
-                  dense
-                  :disable="btnProps.disable"
-                  @click="onClick"
-                  class="carousel-arrow carousel-arrow-right"
-                />
-              </template>
-            </q-carousel>
-
-            <div class="carousel-indicators q-mt-md">
-              <q-btn
-                v-for="(opinion, index) in todasLasOpiniones"
-                :key="index"
-                :class="{ active: currentSlide === index }"
-                @click="currentSlide = index"
-                round
-                dense
-                size="sm"
-                :color="currentSlide === index ? 'primary' : 'grey-5'"
-                class="q-mx-xs"
-              >
-                <q-tooltip :delay="500" class="bg-primary">
-                  {{ opinion.name }} - {{ opinion.country }}
-                </q-tooltip>
-              </q-btn>
-            </div>
-
-            <div class="text-center q-mt-xl">
-              <q-btn outline color="primary" size="lg" @click="handleDarOpinion" class="oval-btn">
-                {{ t('indexDanosTuOpinion') }}
-              </q-btn>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
+      </div>
+    </section>
 
     <div class="faqs-section">
       <h2 class="titulo-responsivo2 text-primary" style="margin-bottom: 32px">
@@ -580,7 +429,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
@@ -592,7 +441,6 @@ import { onServerPrefetch } from 'vue';
 // Importar los estilos CSS
 import '../css/pages/IndexPage.css';
 import '../css/pages/EstilosGenerales.css';
-import PromoCard from '../components/PromoCard.vue';
 import OpinioneVerificadas from '../components/OpinioneVerificadas.vue';
 // Calculamos el estilo de forma consistente
 const customStyleFn = () => {
@@ -658,12 +506,56 @@ useMeta(() => ({
   },
 }));
 
-const showPromoCard = ref(false);
-const showPromoCard1 = ref(false);
-const showPromoCard2 = ref(false);
-const showOpiniones = ref(false);
-const showPromoCard4 = ref(false);
 const currentSlide = ref(0);
+
+// Precio más bajo de una clase suelta (conversación). Lo fija el servidor; aquí solo se muestra.
+const PRECIO_DESDE = 27;
+const IMG = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes';
+
+const garantias = computed(() => [
+  t('Inicio.garantiaDirecto'),
+  t('Inicio.garantiaPrecio', { precio: `${PRECIO_DESDE} €` }),
+  t('Inicio.garantiaCancelar'),
+]);
+
+const ofertas = computed(() => [
+  {
+    titulo: t('indexClasesPrivadas'),
+    texto: t('Inicio.ofertaIndividualesTexto'),
+    precio: t('PaginaClases.desdePorClase', { precio: `${PRECIO_DESDE} €` }),
+    boton: t('Inicio.ofertaIndividualesBoton'),
+    to: { path: '/Clases', hash: '#individuales' },
+    imagen: `${IMG}/clases-spanish-inicio-individuales.png?width=600&format=webp`,
+    sello: 'sn-sello-general',
+  },
+  {
+    titulo: t('PaginaClases.gruposTitulo'),
+    texto: t('Inicio.ofertaGruposTexto'),
+    precio: t('Inicio.ofertaGruposPrecio'),
+    boton: t('Inicio.ofertaGruposBoton'),
+    to: { path: '/Clases', hash: '#grupos' },
+    imagen: `${IMG}/clases-spanish-inicio-conversacion.png?width=600&format=webp`,
+    sello: 'sn-sello-conversacion',
+  },
+  {
+    titulo: t('PaginaClases.packsTitulo'),
+    texto: t('Inicio.ofertaPacksTexto'),
+    precio: t('Inicio.ofertaPacksPrecio'),
+    boton: t('PaginaClases.verPacks'),
+    to: '/ComprarPacks',
+    imagen: `${IMG}/CTA_reserva.png?width=600&format=webp`,
+    sello: '',
+  },
+]);
+
+const ventajas = computed(() => [
+  { icono: 'videocam', texto: t('indexclasesEnVivo') },
+  { icono: 'tune', texto: t('indexdiferentesModalidades') },
+  { icono: 'insights', texto: t('indexseguimientoContinuo') },
+  { icono: 'favorite', texto: t('indexClasesAdaptadas') },
+  { icono: 'menu_book', texto: t('indexMaterialesExclusivos') },
+  { icono: 'local_cafe', texto: t('indexAmbienteRelajado') },
+]);
 const { t, locale } = useI18n();
 const router = useRouter();
 const $q = useQuasar();
@@ -719,15 +611,6 @@ const nuevaOpinion = ref({
   country: '',
   comment: '',
 });
-
-// NUEVA FUNCIÓN: Redirigir según el estado del usuario
-const handleCreaTuEspacio = () => {
-  if (user.value) {
-    void router.push('/AreaPersonal');
-  } else {
-    void router.push('/Acceder');
-  }
-};
 
 // Función para manejar el clic en "Danos tu opinión"
 const handleDarOpinion = () => {
@@ -888,43 +771,239 @@ if (process.env.CLIENT) {
   });
 }
 
-function onPromoIntersect(entry: IntersectionObserverEntry): boolean {
-  if (entry.isIntersecting) {
-    showPromoCard.value = true;
-  }
-  return true;
-}
-
-function onPromoIntersect1(entry: IntersectionObserverEntry): boolean {
-  if (entry.isIntersecting) {
-    showPromoCard1.value = true;
-  }
-  return true;
-}
-
-function onPromoIntersect2(entry: IntersectionObserverEntry): boolean {
-  if (entry.isIntersecting) {
-    showPromoCard2.value = true;
-  }
-  return true;
-}
-
-function onPromoIntersect4(entry: IntersectionObserverEntry): boolean {
-  if (entry.isIntersecting) {
-    showPromoCard4.value = true;
-  }
-  return true;
-}
-
-function onOpinionesIntersect(entry: IntersectionObserverEntry): boolean {
-  if (entry.isIntersecting) {
-    showOpiniones.value = true;
-  }
-  return true;
-}
 </script>
 
 <style scoped>
+.ini-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+}
+
+/* Tipografía */
+.ini-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--sn-burdeos);
+  margin: 0 auto 16px;
+  max-width: 20ch;
+  text-align: center;
+}
+.ini-h2 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--sn-tinta);
+  margin: 0 0 24px;
+}
+.ini-h2--centro {
+  text-align: center;
+}
+.ini-h3 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: var(--sn-tinta);
+}
+.ini-antetitulo {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-peq);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sn-burdeos);
+  margin: 0 0 8px;
+}
+.ini-antetitulo--centro {
+  text-align: center;
+}
+.ini-entrada {
+  font-size: var(--sn-t-entrada);
+  line-height: 1.55;
+  color: var(--sn-tinta-suave);
+  max-width: 56ch;
+  margin: 0 auto;
+  text-align: center;
+}
+.ini-parrafo {
+  font-size: var(--sn-t-cuerpo);
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+/* Botones */
+.ini-boton {
+  border-radius: var(--sn-r-boton);
+  font-weight: 700;
+  padding-inline: 22px;
+}
+
+/* 1. Cabecera */
+.ini-cabecera {
+  padding-block: clamp(32px, 6vw, 64px);
+  text-align: center;
+}
+.ini-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+.ini-garantias {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  color: var(--sn-tinta-suave);
+  font-weight: 600;
+}
+.ini-garantias li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ini-garantias__icono {
+  color: var(--sn-oliva);
+  font-size: 20px;
+}
+
+/* Secciones */
+.ini-seccion {
+  padding-block: var(--sn-seccion);
+}
+.ini-seccion--papel {
+  background: var(--sn-burdeos-tenue);
+}
+
+/* 2. Ofertas */
+.ini-ofertas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 800px) {
+  .ini-ofertas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.ini-oferta {
+  display: flex;
+  flex-direction: column;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-top: 6px solid var(--sn-sello, var(--sn-burdeos));
+  border-radius: var(--sn-r-tarjeta);
+  overflow: hidden;
+  box-shadow: var(--sn-sombra);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+.ini-oferta:hover {
+  box-shadow: var(--sn-sombra-alta);
+  transform: translateY(-2px);
+}
+.ini-oferta__img {
+  background: var(--sn-sello-tenue, var(--sn-papel));
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ini-oferta__img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.ini-oferta__cuerpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px 22px 22px;
+}
+.ini-oferta__texto {
+  margin: 0 0 12px;
+  line-height: 1.5;
+  color: var(--sn-tinta-suave);
+}
+.ini-oferta__precio {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-h4);
+  color: var(--sn-sello, var(--sn-burdeos));
+  margin: 0 0 12px;
+}
+.ini-oferta__ir {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  font-weight: 700;
+  color: var(--sn-burdeos);
+}
+
+/* 3. Ventajas */
+.ini-ventajas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px 32px;
+  max-width: 900px;
+  margin-inline: auto;
+}
+@media (min-width: 700px) {
+  .ini-ventajas {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.ini-ventajas li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+}
+.ini-ventajas__icono {
+  flex: none;
+  font-size: 22px;
+  color: var(--sn-burdeos);
+  background: var(--sn-burdeos-tenue);
+  border-radius: 50%;
+  padding: 8px;
+}
+
+/* 7. Quién hay detrás */
+.ini-quien {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: center;
+}
+.ini-quien__foto {
+  width: min(220px, 60vw);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  justify-self: center;
+  box-shadow: var(--sn-sombra);
+}
+@media (min-width: 800px) {
+  .ini-quien {
+    grid-template-columns: 240px 1fr;
+    gap: 48px;
+  }
+}
+
 .carta-contenido {
   border-radius: 16px;
   overflow: hidden;

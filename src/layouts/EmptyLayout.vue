@@ -432,32 +432,17 @@ defineExpose({ $q, t });
   }
 }
 
-/* Badge responsivo */
+/* Contador del carrito: dentro del botón (la barra superior recorta lo que sobresale) */
 .badge-notification {
-  font-size: 8px;
-  padding: 1px 3px;
-  min-width: 14px;
-  height: 14px;
-  top: -3px;
-  right: -3px;
-
-  @media (min-width: 300px) {
-    font-size: 9px;
-    padding: 2px 4px;
-    min-width: 16px;
-    height: 16px;
-    top: -4px;
-    right: -4px;
-  }
-
-  @media (min-width: 1024px) {
-    font-size: 10px;
-    padding: 2px 5px;
-    min-width: 18px;
-    height: 18px;
-    top: -5px;
-    right: -5px;
-  }
+  top: 1px !important;
+  right: -2px !important;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  justify-content: center;
 }
 
 /* Logo responsivo */

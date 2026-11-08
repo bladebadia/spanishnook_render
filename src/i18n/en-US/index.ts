@@ -192,6 +192,23 @@ export default {
     nivelB2: 'Advanced',
     nivelC1: 'Proficient',
   },
+  Inicio: {
+    entrada:
+      'Live online Spanish lessons at your own pace: one-to-one or in small groups, with personal guidance and materials designed for you.',
+    reservarClase: 'Book a lesson',
+    verClases: 'See lessons and prices',
+    garantiaDirecto: 'Live lessons',
+    garantiaPrecio: 'From {precio} per lesson',
+    garantiaCancelar: 'Cancel up to 24 h before',
+    ofrecemosAntetitulo: 'Our lessons',
+    ofertaIndividualesTexto: 'One-to-one conversation or general lessons, on the day and time you choose.',
+    ofertaIndividualesBoton: 'See private lessons',
+    ofertaGruposTexto: 'Groups of up to 6 people by level: monthly or with fixed dates.',
+    ofertaGruposPrecio: 'Conversation or general',
+    ofertaGruposBoton: 'See group courses',
+    ofertaPacksTexto: 'Buy 5 or 10 lessons in advance and use them whenever you like.',
+    ofertaPacksPrecio: 'Save up to €48',
+  },
   subirImagen: {
     etiqueta: 'Card image',
     vistaPrevia: 'Image preview',

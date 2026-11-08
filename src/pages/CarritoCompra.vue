@@ -134,12 +134,15 @@
         </div>
       </div>
 
-      <div class="row q-gutter-md justify-end">
-        <q-btn color="grey" :label="t('carrito.seguir')" to="/Reservas" outline />
+      <div class="row q-gutter-md justify-end items-center">
+        <q-btn color="grey" :label="t('carrito.seguir')" to="/Reservas" outline no-caps no-wrap />
 
         <q-btn
           color="primary"
           class="btn-confirmar"
+          unelevated
+          no-caps
+          no-wrap
           :label="
             totalPagarDinero === 0 ? t('carrito.canjear') : t('carrito.pagarYConfirmarReservas')
           "
