@@ -159,6 +159,9 @@ const resetPassword = async () => {
     // Gestionar error de "misma contraseña" de forma elegante
     if (msg.toLowerCase().includes('different from the old')) {
       serverPasswordError.value = t('flecos.igualAnterior');
+    } else if (msg.toLowerCase().includes('session missing')) {
+      // El enlace del correo no ha abierto sesión: caducado, ya usado o abierto en otra web
+      errorMessage.value = t('flecos.enlaceNoValido');
     } else {
       errorMessage.value = msg;
     }

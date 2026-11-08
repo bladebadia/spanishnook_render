@@ -926,6 +926,8 @@ export default {
     paginaNoEncontrada: 'Página no encontrada',
     requisitosPassword: 'Mínimo 6 caracteres, un número y una vocal.',
     igualAnterior: 'La nueva contraseña no puede ser igual a la anterior.',
+    enlaceNoValido:
+      'El enlace no es válido o ha caducado. Vuelve a pedirlo desde "¿Olvidaste tu contraseña?" y ábrelo en el mismo navegador.',
   },
   avisoCookies: {
     titulo: 'Aviso de cookies',

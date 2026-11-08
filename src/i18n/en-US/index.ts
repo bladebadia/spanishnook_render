@@ -919,6 +919,8 @@ export default {
     paginaNoEncontrada: 'Page not found',
     requisitosPassword: 'At least 6 characters, one number and one vowel.',
     igualAnterior: 'The new password cannot be the same as the old one.',
+    enlaceNoValido:
+      'The link is not valid or has expired. Request a new one from "Forgot your password?" and open it in the same browser.',
   },
   avisoCookies: {
     titulo: 'Cookie notice',

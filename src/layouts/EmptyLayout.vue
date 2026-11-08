@@ -266,9 +266,10 @@ const iniciarTemporizadorCarrito = () => {
 const activeButton = ref('');
 const route = useRoute();
 
-// El botón flotante de WhatsApp tapa los botones de pago en estas páginas
-const RUTAS_SIN_WHATSAPP = ['/CarritoCompra', '/ComprarPacks'];
-const mostrarWhatsapp = computed(() => !RUTAS_SIN_WHATSAPP.includes(route.path));
+// Botón flotante de WhatsApp solo donde se decide qué clase elegir;
+// en el resto molestaba (tapaba botones de pago). Contacto lo tiene dentro de la página.
+const RUTAS_CON_WHATSAPP = ['/', '/Clases'];
+const mostrarWhatsapp = computed(() => RUTAS_CON_WHATSAPP.includes(route.path));
 
 // Watcher para detectar cambios de ruta
 watch(
