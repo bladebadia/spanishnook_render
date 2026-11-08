@@ -1,6 +1,6 @@
 <template>
   <q-page :style-fn="customStyleFn" class="ini-pagina">
-    <!-- 1. Cabecera: banner, titular corto y dos acciones -->
+    <!-- 1. Cabecera: banner, titular, texto de bienvenida y "Crea tu espacio" -->
     <q-img
       class="sn-hero-banner"
       fit="cover"
@@ -14,40 +14,55 @@
 
     <section class="sn-contenedor ini-cabecera">
       <h1 class="ini-h1">{{ t('indexeUnLugarDonde') }}</h1>
-      <p class="ini-entrada">{{ t('Inicio.entrada') }}</p>
-      <div class="ini-acciones">
-        <q-btn
-          color="primary"
-          unelevated
-          no-caps
-          size="lg"
-          class="ini-boton"
-          :label="t('Inicio.reservarClase')"
-          to="/Reservas"
-        />
-        <q-btn
-          outline
-          color="primary"
-          no-caps
-          size="lg"
-          class="ini-boton"
-          :label="t('Inicio.verClases')"
-          to="/Clases"
-        />
-      </div>
-      <ul class="ini-garantias">
-        <li v-for="g in garantias" :key="g">
-          <q-icon name="check_circle" class="ini-garantias__icono" />
-          {{ g }}
-        </li>
-      </ul>
+      <p class="ini-entrada ini-entrada--larga">{{ t('indexAprenderEspañolPuede') }}</p>
+      <q-btn
+        color="primary"
+        unelevated
+        no-caps
+        size="lg"
+        class="ini-boton q-mt-lg"
+        :label="t('indexCreaTuEspacio')"
+        @click="handleCreaTuEspacio"
+      />
     </section>
 
-    <!-- 2. Qué ofrecemos, con precio y enlace a cada sección -->
+    <!-- 2. Descubre nuestras clases (ilustración de la sillita) y qué encontrarás -->
+    <section class="ini-seccion">
+      <div class="sn-contenedor ini-descubre">
+        <article class="ini-descubre__tarjeta">
+          <img
+            class="ini-descubre__img"
+            src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/inicio_principal_OK.png?width=800&format=webp"
+            alt=""
+            loading="lazy"
+          />
+          <h2 class="ini-h3 ini-descubre__titulo">{{ t('indexDescubreNuestrasClases') }}</h2>
+          <p class="ini-parrafo">{{ t('indexDescubreNuestrasClasesTexto') }}</p>
+          <q-btn
+            color="primary"
+            unelevated
+            no-caps
+            class="ini-boton"
+            to="/Clases"
+            :label="t('indexEncuentraTusClases')"
+          />
+        </article>
+        <div>
+          <h2 class="ini-h2">{{ t('indexQueEncontraras') }}</h2>
+          <ul class="ini-ventajas">
+            <li v-for="v in ventajas" :key="v.texto">
+              <q-icon :name="v.icono" class="ini-ventajas__icono" />
+              <span>{{ v.texto }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Diferentes caminos: individuales, grupos y packs -->
     <section class="ini-seccion ini-seccion--papel">
       <div class="sn-contenedor">
-        <p class="ini-antetitulo">{{ t('Inicio.ofrecemosAntetitulo') }}</p>
-        <h2 class="ini-h2">{{ t('indexDiferentesCaminos') }}</h2>
+        <h2 class="ini-h2 ini-h2--centro">{{ t('indexDiferentesCaminos') }}</h2>
         <div class="ini-ofertas">
           <router-link
             v-for="oferta in ofertas"
@@ -73,21 +88,8 @@
       </div>
     </section>
 
-    <!-- 3. Qué encontrarás -->
-    <section class="ini-seccion">
-      <div class="sn-contenedor">
-        <h2 class="ini-h2 ini-h2--centro">{{ t('indexQueEncontraras') }}</h2>
-        <ul class="ini-ventajas">
-          <li v-for="v in ventajas" :key="v.texto">
-            <q-icon :name="v.icono" class="ini-ventajas__icono" />
-            <span>{{ v.texto }}</span>
-          </li>
-        </ul>
-      </div>
-    </section>
-
     <!-- 4. Opiniones -->
-    <section class="ini-seccion ini-seccion--papel">
+    <section class="ini-seccion">
       <div class="sn-contenedor">
         <p class="ini-antetitulo ini-antetitulo--centro">{{ t('indexOpinionesVerificadas') }}</p>
         <h2 class="ini-h2 ini-h2--centro">{{ t('indexConoceExperiencias') }}</h2>
@@ -508,15 +510,14 @@ useMeta(() => ({
 
 const currentSlide = ref(0);
 
+// "Crea tu espacio": al área personal si hay sesión, si no a registrarse
+const handleCreaTuEspacio = () => {
+  void router.push(user.value ? '/AreaPersonal' : '/RegistroCuenta');
+};
+
 // Precio más bajo de una clase suelta (conversación). Lo fija el servidor; aquí solo se muestra.
 const PRECIO_DESDE = 27;
 const IMG = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes';
-
-const garantias = computed(() => [
-  t('Inicio.garantiaDirecto'),
-  t('Inicio.garantiaPrecio', { precio: `${PRECIO_DESDE} €` }),
-  t('Inicio.garantiaCancelar'),
-]);
 
 const ofertas = computed(() => [
   {
@@ -846,32 +847,51 @@ if (process.env.CLIENT) {
   padding-block: clamp(32px, 6vw, 64px);
   text-align: center;
 }
-.ini-acciones {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 28px;
+.ini-entrada--larga {
+  max-width: 68ch;
+  text-align: left;
+  color: var(--sn-tinta);
 }
-.ini-garantias {
-  list-style: none;
-  padding: 0;
-  margin: 24px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 24px;
-  color: var(--sn-tinta-suave);
-  font-weight: 600;
+@media (min-width: 700px) {
+  .ini-entrada--larga {
+    text-align: center;
+  }
 }
-.ini-garantias li {
-  display: inline-flex;
+
+/* 2. Descubre nuestras clases */
+.ini-descubre {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
   align-items: center;
-  gap: 6px;
 }
-.ini-garantias__icono {
-  color: var(--sn-oliva);
-  font-size: 20px;
+@media (min-width: 900px) {
+  .ini-descubre {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 56px;
+  }
+}
+.ini-descubre__tarjeta {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+  padding: 24px;
+  text-align: center;
+}
+.ini-descubre__img {
+  width: min(260px, 70%);
+  height: auto;
+  display: block;
+  margin: 0 auto 16px;
+}
+.ini-descubre__titulo {
+  color: var(--sn-burdeos);
+  margin-bottom: 12px;
+}
+.ini-descubre__tarjeta .ini-parrafo {
+  text-align: left;
+  margin-bottom: 20px;
 }
 
 /* Secciones */

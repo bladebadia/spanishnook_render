@@ -206,14 +206,6 @@ export default {
 
   // Sección nuestras clases
   Inicio: {
-    entrada:
-      'Clases de español online en directo, a tu ritmo: individuales o en grupos reducidos, con seguimiento personal y materiales pensados para ti.',
-    reservarClase: 'Reservar una clase',
-    verClases: 'Ver clases y precios',
-    garantiaDirecto: 'Clases en directo',
-    garantiaPrecio: 'Desde {precio} la clase',
-    garantiaCancelar: 'Cancela hasta 24 h antes',
-    ofrecemosAntetitulo: 'Nuestras clases',
     ofertaIndividualesTexto: 'Clases 1 a 1 de conversación o generales, el día y la hora que elijas.',
     ofertaIndividualesBoton: 'Ver clases individuales',
     ofertaGruposTexto: 'Grupos de máximo 6 personas por nivel: mensuales o con fechas fijas.',

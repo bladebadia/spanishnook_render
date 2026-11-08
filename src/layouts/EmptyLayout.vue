@@ -162,7 +162,7 @@
       <router-view />
     </q-page-container>
 
-    <q-page-sticky position="bottom-right" :offset="[12, 12]">
+    <q-page-sticky v-if="mostrarWhatsapp" position="bottom-right" :offset="[12, 12]">
       <q-btn
         class="whatsapp-sticky-btn enlarged-touch"
         round
@@ -267,6 +267,10 @@ const iniciarTemporizadorCarrito = () => {
 
 const activeButton = ref('');
 const route = useRoute();
+
+// El botón flotante de WhatsApp tapa los botones de pago en estas páginas
+const RUTAS_SIN_WHATSAPP = ['/CarritoCompra', '/ComprarPacks'];
+const mostrarWhatsapp = computed(() => !RUTAS_SIN_WHATSAPP.includes(route.path));
 
 // Watcher para detectar cambios de ruta
 watch(
