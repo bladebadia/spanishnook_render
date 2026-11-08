@@ -205,6 +205,12 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  PacksPagina: {
+    comoFuncionan: '¿Cómo funcionan los packs?',
+    paso1: 'Compras el pack de clases generales o de conversación que prefieras.',
+    paso2: 'Los créditos se suman a tu cuenta: 1 crédito = 1 clase.',
+    paso3: 'Reservas el día y la hora, y en el carrito marcas "Utilizar créditos disponibles".',
+  },
   ReservasPagina: {
     entrada: 'Elige el tipo de clase, el día y la hora. Después confirmas y pagas en el carrito.',
     dia: 'Elige el día',

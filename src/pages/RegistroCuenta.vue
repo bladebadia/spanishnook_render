@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center bg-grey-2">
+  <q-page class="flex flex-center sn-pagina-acceso">
     <q-card class="q-pa-none shadow-2 my-card" bordered style="width: 100%; max-width: 750px">
       <q-stepper
         v-model="step"

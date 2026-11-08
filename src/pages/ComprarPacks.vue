@@ -1,12 +1,8 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="text-center q-mb-xl">
-      <h1 class="text-h2 text-primary q-mt-md q-mb-sm">
-        {{ t('comprarPacks.packsCreditos') }}
-      </h1>
-      <p class="text-subtitle1">
-        {{ t('comprarPacks.compraClases') }}
-      </p>
+    <div class="pk-cabecera">
+      <h1 class="pk-h1">{{ t('comprarPacks.packsCreditos') }}</h1>
+      <p class="pk-entrada">{{ t('comprarPacks.compraClases') }}</p>
     </div>
 
     <div class="row justify-center q-mb-lg">
@@ -172,6 +168,18 @@
         </div>
       </q-tab-panel>
     </q-tab-panels>
+
+    <!-- Cómo funcionan los packs -->
+    <section class="pk-pasos">
+      <h2 class="pk-h2">{{ t('PacksPagina.comoFuncionan') }}</h2>
+      <ol class="pk-pasos__lista">
+        <li v-for="(paso, i) in pasosPacks" :key="i" class="pk-paso">
+          <span class="pk-paso__num">{{ i + 1 }}</span>
+          <q-icon :name="paso.icono" class="pk-paso__icono" />
+          <p class="pk-paso__texto">{{ paso.texto }}</p>
+        </li>
+      </ol>
+    </section>
   </q-page>
 </template>
 
@@ -185,6 +193,12 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const { user } = useAuth();
 const $q = useQuasar();
+
+const pasosPacks = computed(() => [
+  { icono: 'shopping_bag', texto: t('PacksPagina.paso1') },
+  { icono: 'account_balance_wallet', texto: t('PacksPagina.paso2') },
+  { icono: 'event_available', texto: t('PacksPagina.paso3') },
+]);
 
 useMeta(() => ({
   title: 'Comprar Packs de Clases | SpanishNook',
@@ -344,6 +358,82 @@ const comprarPack = async (pack: PackCreditos) => {
 </script>
 
 <style scoped>
+/* Cabecera y "cómo funcionan" con el sistema de diseño */
+.pk-cabecera {
+  text-align: center;
+  padding-block: clamp(16px, 4vw, 32px) 24px;
+}
+.pk-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--sn-burdeos);
+  margin: 0 0 10px;
+}
+.pk-entrada {
+  font-size: var(--sn-t-entrada);
+  color: var(--sn-tinta-suave);
+  max-width: 56ch;
+  margin: 0 auto;
+}
+.pk-h2 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 20px;
+}
+.pk-pasos {
+  max-width: var(--sn-ancho);
+  margin: 40px auto 0;
+}
+.pk-pasos__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 800px) {
+  .pk-pasos__lista {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.pk-paso {
+  position: relative;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  padding: 22px 20px 20px;
+  text-align: center;
+}
+.pk-paso__num {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sn-burdeos);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pk-paso__icono {
+  font-size: 30px;
+  color: var(--sn-burdeos);
+  margin-bottom: 8px;
+}
+.pk-paso__texto {
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* El precio es lo primero que se busca: grande y en el color del sello */
 .card-pack .text-h3 {
   font-size: clamp(2.25rem, 1.75rem + 2vw, 3rem);

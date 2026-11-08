@@ -192,6 +192,12 @@ export default {
     nivelB2: 'Advanced',
     nivelC1: 'Proficient',
   },
+  PacksPagina: {
+    comoFuncionan: 'How do packs work?',
+    paso1: 'Buy the general or conversation pack you prefer.',
+    paso2: 'The credits are added to your account: 1 credit = 1 lesson.',
+    paso3: 'Book the day and time, and in the cart tick "Use available credits".',
+  },
   ReservasPagina: {
     entrada: 'Choose the type of lesson, the day and the time. Then confirm and pay in the cart.',
     dia: 'Choose the day',

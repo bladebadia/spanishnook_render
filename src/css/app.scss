@@ -312,6 +312,15 @@ a {
   color: var(--sn-tinta-suave);
 }
 
+// Páginas de acceso (entrar, registro, contraseña): papel con un toque burdeos
+.sn-pagina-acceso {
+  background:
+    radial-gradient(circle at 15% 10%, var(--sn-burdeos-tenue) 0, transparent 45%),
+    radial-gradient(circle at 85% 90%, var(--sn-burdeos-tenue) 0, transparent 40%),
+    var(--sn-papel);
+  padding: clamp(16px, 5vw, 48px) var(--sn-margen);
+}
+
 // Nota adhesiva: cajas destacadas, carrito, opiniones
 .sn-nota {
   background-color: var(--sn-nota) !important;
