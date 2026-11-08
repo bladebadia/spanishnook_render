@@ -205,6 +205,16 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  ReservasPagina: {
+    entrada: 'Elige el tipo de clase, el día y la hora. Después confirmas y pagas en el carrito.',
+    dia: 'Elige el día',
+    hora: 'Elige la hora',
+    eligeDia: 'Primero elige un día en el calendario.',
+    tuZona: 'horas en tu zona ({zona})',
+    creditos: 'Tienes {n} crédito | Tienes {n} créditos',
+    carritoVacio: 'Aún no has añadido ninguna clase.',
+    quitar: 'Quitar del carrito',
+  },
   Menu: {
     lema: 'El rincón donde el español se aprende sin prisa, pero bien.',
     navegacion: 'Menú principal',

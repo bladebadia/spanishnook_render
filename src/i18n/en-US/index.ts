@@ -192,6 +192,16 @@ export default {
     nivelB2: 'Advanced',
     nivelC1: 'Proficient',
   },
+  ReservasPagina: {
+    entrada: 'Choose the type of lesson, the day and the time. Then confirm and pay in the cart.',
+    dia: 'Choose the day',
+    hora: 'Choose the time',
+    eligeDia: 'First choose a day in the calendar.',
+    tuZona: 'times in your time zone ({zona})',
+    creditos: 'You have {n} credit | You have {n} credits',
+    carritoVacio: "You haven't added any lessons yet.",
+    quitar: 'Remove from cart',
+  },
   Menu: {
     lema: 'The nook where Spanish is learned unhurried, but well.',
     navegacion: 'Main menu',

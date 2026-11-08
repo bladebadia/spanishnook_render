@@ -1,148 +1,48 @@
 <template>
-  <q-page class="q-pa-lg">
-    <div class="row q-col-gutter-lg">
-      <div class="col-12">
-        <h1 class="text-h2 text-primary q-mb-xl text-center">
-          {{ t('reservasClases.reservaTuClase') }}
-        </h1>
-      </div>
+  <q-page class="rs-pagina">
+    <section class="sn-contenedor rs-cabecera">
+      <h1 class="rs-h1">{{ t('reservasClases.reservaTuClase') }}</h1>
+      <p class="rs-entrada">{{ t('ReservasPagina.entrada') }}</p>
+    </section>
 
-      <div class="col-12 col-md-5">
-        <q-no-ssr>
-          <div v-if="user" class="q-mb-lg">
-            <SaldoWallet
-              :saldo-normal="saldoNormal"
-              :saldo-conversacion="saldoConversacion"
-              :loading="cargandoSaldo"
-            />
-          </div>
-
-          <div
-            v-if="carrito && carrito.length > 0"
-            class="q-mb-lg sn-nota q-pa-md"
-          >
-            <h5 class="carrito-titulo">{{ t('reservasClases.carritoDeReservas') }}</h5>
-            <q-list separator>
-              <q-item v-for="(reserva, index) in carrito" :key="index">
-                <q-item-section>
-                  <q-item-label class="fecha-hora-carrito">
-                    {{ formatFechaClaseSegura(reserva.fecha, reserva.hora) }}
-                  </q-item-label>
-
-                  <q-item-label>
-                    <span class="text-weight-bold text-primary" style="font-size: 1.1em">
-                      {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
-                    </span>
-                    <span class="text-caption text-grey-8 q-ml-xs"> (🇪🇸 {{ reserva.hora }}) </span>
-                  </q-item-label>
-
-                  <q-item-label caption>
-                    {{
-                      reserva.tipo === 'normal'
-                        ? t('reservasClases.claseNormal')
-                        : t('reservasClases.conversacion')
-                    }}
-                    ({{ reserva.tipo === 'normal' ? '32€' : '27€' }})
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn
-                    color="negative"
-                    icon="delete"
-                    @click="quitarDelCarrito(index)"
-                    size="sm"
-                    round
-                    flat
-                  />
-                </q-item-section>
-              </q-item>
-              <div class="q-mt-md text-center">
-                <q-btn
-                  color="primary"
-                  class="btn-ir-carrito"
-                  :label="t('reservasClases.botonIrAlCarrito')"
-                  to="/CarritoCompra"
-                />
-              </div>
-            </q-list>
-          </div>
-
-          <div class="q-mt-lg">
-            <h5 class="reservas-titulo">{{ t('reservasClases.misReservasConfirmadas') }}</h5>
-
-            <q-list
-              bordered
-              separator
-              v-if="misReservasFuturas && misReservasFuturas.length > 0"
-              class="rounded-borders bg-white"
+    <div class="sn-contenedor rs-rejilla">
+      <!-- Pasos: tipo, día y hora -->
+      <div class="rs-pasos">
+        <!-- 1. Tipo de clase -->
+        <section class="rs-paso">
+          <h2 class="rs-paso__titulo"><span class="rs-paso__num">1</span>{{ t('reservasClases.tipoDeClase') }}</h2>
+          <div class="rs-tipos" role="radiogroup">
+            <button
+              v-for="tipo in tipos"
+              :key="tipo.valor"
+              type="button"
+              role="radio"
+              :aria-checked="tipoClase === tipo.valor"
+              class="rs-tipo"
+              :class="[tipo.sello, { 'rs-tipo--elegido': tipoClase === tipo.valor }]"
+              @click="tipoClase = tipo.valor"
             >
-              <q-item v-for="reserva in misReservasFuturas" :key="reserva.id" class="q-py-md">
-                <q-item-section avatar>
-                  <q-avatar :size="avatarSize" square>
-                    <img :src="getIconoPersonalizado(reserva.tipo)" />
-                  </q-avatar>
-                </q-item-section>
-
-                <q-item-section>
-                  <q-item-label class="text-weight-bold">
-                    {{ formatFechaClaseSegura(reserva.fecha, reserva.hora) }}
-                  </q-item-label>
-
-                  <q-item-label>
-                    <span class="text-weight-bold text-primary" style="font-size: 1.1em">
-                      {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
-                    </span>
-                    <span class="text-caption text-grey-8 q-ml-xs">
-                      (🇪🇸 {{ reserva.hora ? reserva.hora.slice(0, 5) : '--:--' }})
-                    </span>
-                  </q-item-label>
-
-                  <q-item-label caption class="text-grey-8 q-mt-xs">
-                    {{
-                      reserva.tipo === 'normal'
-                        ? t('reservasClases.claseNormal')
-                        : t('reservasClases.conversacion')
-                    }}
-                  </q-item-label>
-                </q-item-section>
-
-                <q-item-section side>
-                  <q-badge color="positive" outline :label="t('reservasClases.reservada')" />
-                </q-item-section>
-              </q-item>
-            </q-list>
-
-            <div v-else class="text-grey q-mt-sm q-pa-md text-center border-dashed">
-              {{ t('reservasClases.noTienesReservas') }}
-            </div>
+              <span class="rs-tipo__radio" />
+              <span class="rs-tipo__texto">
+                <span class="rs-tipo__nombre">{{ tipo.nombre }}</span>
+                <span class="rs-tipo__precio">{{ tipo.precio }}</span>
+                <q-no-ssr>
+                  <span v-if="user && tipo.creditos > 0" class="rs-tipo__creditos">
+                    {{ t('ReservasPagina.creditos', { n: tipo.creditos }, tipo.creditos) }}
+                  </span>
+                </q-no-ssr>
+              </span>
+            </button>
           </div>
-        </q-no-ssr>
-      </div>
+        </section>
 
-      <div class="col-12 col-md-6">
-        <div class="q-mb-md">
-          <q-card class="q-pa-md shadow-1 rounded-borders">
-            <q-card-section class="q-pa-sm">
-              <div class="text-h5 text-bold text-center q-mb-md">
-                {{ t('reservasClases.tipoDeClase') }}
-              </div>
-              <q-option-group
-                v-model="tipoClase"
-                :options="opcionesTipoClase"
-                color="primary"
-                inline
-                class="justify-center"
-              />
-            </q-card-section>
-          </q-card>
-        </div>
-
-        <div class="q-mb-xl">
+        <!-- 2. Día -->
+        <section class="rs-paso">
+          <h2 class="rs-paso__titulo"><span class="rs-paso__num">2</span>{{ t('ReservasPagina.dia') }}</h2>
           <div v-if="cargando" class="text-center q-pa-xl">
             <q-spinner color="primary" size="3em" />
             <div class="text-grey q-mt-md">{{ t('reservasClases.cargandoDisponibilidad') }}</div>
           </div>
-
           <q-date
             v-else
             v-model="fechaSeleccionada"
@@ -151,51 +51,131 @@
             :max="fechaMaxima"
             :events="fechasConEventos"
             event-color="red-9"
-            :landscape="$q.screen.gt.sm"
-            class="custom-calendar"
-            today-btn
+            minimal
+            class="rs-calendario"
             mask="YYYY-MM-DD"
             color="primary"
-            text-color="white"
             first-day-of-week="1"
           />
-        </div>
+        </section>
 
-        <div v-if="fechaSeleccionada" class="q-mt-lg">
-          <h5 class="horarios-titulo">
-            {{ t('reservasClases.horariosDisponiblesPara') }}
-            <span class="fecha-seleccionada">{{ formatFechaSeguro(fechaSeleccionada) }}</span>
-            <span class="text-caption q-ml-sm text-grey-7" v-if="zonaHorariaUsuario"
-              >({{ zonaHorariaUsuario }})</span
-            >
-          </h5>
-
-          <q-no-ssr>
-            <div
-              v-if="horariosDisponiblesFiltrados && horariosDisponiblesFiltrados.length > 0"
-              class="row q-gutter-sm q-mt-md justify-center"
-            >
-              <q-btn
-                v-for="hora in horariosDisponiblesFiltrados"
-                :key="hora"
-                :color="estaEnCarrito(hora) ? 'orange' : 'primary'"
-                @click="agregarAlCarrito(hora)"
-                outline
-                class="time-btn"
-                style="min-width: 100px"
-              >
-                <span class="text-weight-bold" style="font-size: 1.1em">
+        <!-- 3. Hora -->
+        <section class="rs-paso">
+          <h2 class="rs-paso__titulo"><span class="rs-paso__num">3</span>{{ t('ReservasPagina.hora') }}</h2>
+          <p v-if="!fechaSeleccionada" class="rs-ayuda">{{ t('ReservasPagina.eligeDia') }}</p>
+          <template v-else>
+            <p class="rs-ayuda">
+              {{ formatFechaSeguro(fechaSeleccionada) }}
+              <q-no-ssr>
+                <span v-if="zonaHorariaUsuario"> · {{ t('ReservasPagina.tuZona', { zona: zonaHorariaUsuario }) }}</span>
+              </q-no-ssr>
+            </p>
+            <q-no-ssr>
+              <div v-if="horariosDisponiblesFiltrados && horariosDisponiblesFiltrados.length > 0" class="rs-horas">
+                <button
+                  v-for="hora in horariosDisponiblesFiltrados"
+                  :key="hora"
+                  type="button"
+                  class="rs-hora"
+                  :class="{ 'rs-hora--elegida': estaEnCarrito(hora) }"
+                  @click="agregarAlCarrito(hora)"
+                >
+                  <q-icon v-if="estaEnCarrito(hora)" name="check" size="16px" />
                   {{ formatoHoraInicioSegura(fechaSeleccionada, hora) }}
-                </span>
-              </q-btn>
-            </div>
-
-            <div v-else class="text-grey q-mt-md text-center">
-              <q-icon name="event_busy" /> {{ t('reservasClases.noHayHuecosLibres') }}
-            </div>
-          </q-no-ssr>
-        </div>
+                </button>
+              </div>
+              <p v-else class="rs-ayuda">
+                <q-icon name="event_busy" /> {{ t('reservasClases.noHayHuecosLibres') }}
+              </p>
+            </q-no-ssr>
+          </template>
+        </section>
       </div>
+
+      <!-- Lateral: carrito, créditos y próximas clases -->
+      <aside class="rs-lateral">
+        <q-no-ssr>
+          <section class="rs-caja sn-nota">
+            <h2 class="rs-caja__titulo">
+              <q-icon name="shopping_cart" />
+              {{ t('reservasClases.carritoDeReservas') }}
+              <span v-if="carrito.length" class="rs-contador">{{ carrito.length }}</span>
+            </h2>
+            <p v-if="!carrito.length" class="rs-ayuda q-mb-none">{{ t('ReservasPagina.carritoVacio') }}</p>
+            <ul v-else class="rs-lista">
+              <li v-for="(reserva, index) in carrito" :key="index" class="rs-lista__item">
+                <span
+                  class="rs-marca"
+                  :class="reserva.tipo === 'normal' ? 'sn-sello-general' : 'sn-sello-conversacion'"
+                />
+                <span class="rs-lista__texto">
+                  <strong>{{ formatFechaClaseSegura(reserva.fecha, reserva.hora) }}</strong>
+                  <span>
+                    {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
+                    <span class="rs-madrid">(🇪🇸 {{ reserva.hora }})</span>
+                  </span>
+                  <span class="rs-madrid">
+                    {{ reserva.tipo === 'normal' ? t('reservasClases.claseNormal') : t('reservasClases.conversacion') }}
+                    · {{ reserva.tipo === 'normal' ? '32 €' : '27 €' }}
+                  </span>
+                </span>
+                <q-btn
+                  flat
+                  round
+                  dense
+                  color="negative"
+                  icon="delete"
+                  :aria-label="t('ReservasPagina.quitar')"
+                  @click="quitarDelCarrito(index)"
+                />
+              </li>
+            </ul>
+            <q-btn
+              v-if="carrito.length"
+              color="primary"
+              unelevated
+              no-caps
+              class="full-width q-mt-md"
+              icon-right="arrow_forward"
+              to="/CarritoCompra"
+              :label="t('reservasClases.botonIrAlCarrito')"
+            />
+          </section>
+
+          <div v-if="user" class="q-mt-md">
+            <SaldoWallet
+              :saldo-normal="saldoNormal"
+              :saldo-conversacion="saldoConversacion"
+              :loading="cargandoSaldo"
+            />
+          </div>
+
+          <section v-if="misReservasFuturas && misReservasFuturas.length > 0" class="rs-caja q-mt-md">
+            <h2 class="rs-caja__titulo">
+              <q-icon name="event_available" />
+              {{ t('reservasClases.misReservasConfirmadas') }}
+            </h2>
+            <ul class="rs-lista">
+              <li v-for="reserva in misReservasFuturas" :key="reserva.id" class="rs-lista__item">
+                <span
+                  class="rs-marca"
+                  :class="reserva.tipo === 'normal' ? 'sn-sello-general' : 'sn-sello-conversacion'"
+                />
+                <span class="rs-lista__texto">
+                  <strong>{{ formatFechaClaseSegura(reserva.fecha, reserva.hora) }}</strong>
+                  <span>
+                    {{ formatoRangoSeguro(reserva.fecha, reserva.hora) }}
+                    <span class="rs-madrid">(🇪🇸 {{ reserva.hora ? reserva.hora.slice(0, 5) : '--:--' }})</span>
+                  </span>
+                  <span class="rs-madrid">
+                    {{ reserva.tipo === 'normal' ? t('reservasClases.claseNormal') : t('reservasClases.conversacion') }}
+                  </span>
+                </span>
+              </li>
+            </ul>
+          </section>
+        </q-no-ssr>
+      </aside>
     </div>
   </q-page>
 </template>
@@ -270,15 +250,12 @@ const cargandoSaldo = ref(false);
 // SOLUCIÓN MISMATCH ZONA HORARIA: Inicializar vacío y llenar en cliente
 const zonaHorariaUsuario = ref('');
 
-const BUCKET_URL = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/object/public/imagenes/';
-
 // --- Composable Principal ---
 const {
   fechaSeleccionada,
   misReservasFuturas,
   carrito,
   tipoClase,
-  opcionesTipoClase,
   fechaMinima,
   fechaMaxima,
   fechasConEventos,
@@ -305,19 +282,23 @@ const formatoRangoSeguro = (fechaStr: string | undefined, horaStr: string | unde
 const formatoHoraInicioSegura = (fechaStr: string | undefined, horaStr: string | undefined) =>
   fechaStr && horaStr ? horaInicioLocal(fechaStr, horaStr) : '--:--';
 
-// --- Métodos Auxiliares ---
-const getIconoPersonalizado = (tipo: string | undefined) => {
-  if (tipo === 'conversacion') return `${BUCKET_URL}iconoconv.svg`;
-  return `${BUCKET_URL}iconoindiv.svg`;
-};
-
-// Se ejecuta solo en cliente, así evitamos mismatch por el tamaño de pantalla
-const avatarSize = computed(() => {
-  if (typeof window === 'undefined') return '80px';
-  if ($q.screen.lt.sm) return '60px';
-  if ($q.screen.lt.md) return '80px';
-  return '100px';
-});
+// Tarjetas del paso 1 (precio fijado en el servidor; aquí solo se muestra)
+const tipos = computed(() => [
+  {
+    valor: 'normal' as const,
+    nombre: t('reservasClases.claseNormal'),
+    precio: '32 €',
+    creditos: saldoNormal.value,
+    sello: 'sn-sello-general',
+  },
+  {
+    valor: 'conversacion' as const,
+    nombre: t('reservasClases.claseConversacion'),
+    precio: '27 €',
+    creditos: saldoConversacion.value,
+    sello: 'sn-sello-conversacion',
+  },
+]);
 
 const cargarSaldoUsuario = async () => {
   if (!user.value?.id) return;
@@ -377,56 +358,254 @@ watch(
 </script>
 
 <style scoped>
-.border-dashed {
-  border: 1px dashed #ccc;
-  border-radius: 4px;
+.rs-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+  padding-bottom: var(--sn-seccion);
 }
-
-.carrito-titulo {
+.rs-cabecera {
+  padding-block: clamp(28px, 5vw, 48px) 20px;
+  text-align: center;
+}
+.rs-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h1);
   font-weight: 700;
-  margin: 0 0 1rem 0;
+  line-height: 1.1;
+  color: var(--sn-burdeos);
+  margin: 0 0 10px;
+}
+.rs-entrada {
+  font-size: var(--sn-t-entrada);
+  color: var(--sn-tinta-suave);
+  margin: 0 auto;
+  max-width: 56ch;
 }
 
-.fecha-hora-carrito {
-  font-weight: bold;
+.rs-rejilla {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 1000px) {
+  .rs-rejilla {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 32px;
+  }
+  .rs-lateral {
+    position: sticky;
+    top: 120px;
+  }
 }
 
-:deep(.btn-ir-carrito .q-btn__content) {
-  font-weight: bold;
+/* Pasos */
+.rs-pasos {
+  display: grid;
+  gap: 16px;
+}
+.rs-paso {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+  padding: clamp(16px, 4vw, 24px);
+}
+.rs-paso__titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h4);
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+.rs-paso__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--sn-burdeos);
+  color: #fff;
+  font-size: 0.95rem;
+}
+.rs-ayuda {
+  color: var(--sn-tinta-suave);
+  margin: 0 0 12px;
 }
 
-.reservas-titulo {
-  font-size: 1.1rem;
-  font-weight: bold;
+/* 1. Tipo */
+.rs-tipos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 560px) {
+  .rs-tipos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.rs-tipo {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  background: var(--sn-hoja);
+  border: 2px solid var(--sn-borde);
+  border-radius: 12px;
+  font: inherit;
+  color: var(--sn-tinta);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+.rs-tipo:hover {
+  border-color: var(--sn-sello);
+}
+.rs-tipo--elegido {
+  border-color: var(--sn-sello);
+  background: var(--sn-sello-tenue);
+}
+.rs-tipo__radio {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border-radius: 50%;
+  border: 2px solid var(--sn-sello);
+  background: var(--sn-hoja);
+}
+.rs-tipo--elegido .rs-tipo__radio {
+  box-shadow: inset 0 0 0 4px var(--sn-hoja);
+  background: var(--sn-sello);
+}
+.rs-tipo__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rs-tipo__nombre {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  color: var(--sn-sello);
+}
+.rs-tipo__precio {
+  font-weight: 700;
+}
+.rs-tipo__creditos {
+  font-size: var(--sn-t-peq);
+  color: var(--sn-oliva);
+  font-weight: 700;
+}
+
+/* 2. Calendario */
+.rs-calendario {
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
+  display: block;
+  box-shadow: none;
+  border: 1px solid var(--sn-borde);
+}
+
+/* 3. Horas */
+.rs-horas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
+}
+.rs-hora {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 44px;
+  border: 2px solid var(--sn-burdeos);
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-hoja);
+  color: var(--sn-burdeos);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rs-hora:hover {
+  background: var(--sn-burdeos-tenue);
+}
+.rs-hora--elegida {
+  background: var(--sn-burdeos);
+  color: #fff;
+}
+
+/* Lateral */
+.rs-caja {
+  padding: 18px 20px;
+  border-radius: var(--sn-r-tarjeta);
+}
+.rs-caja:not(.sn-nota) {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+}
+.rs-caja__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h4);
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.rs-contador {
+  margin-left: auto;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-burdeos);
+  color: #fff;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.rs-lista {
+  list-style: none;
+  padding: 0;
   margin: 0;
-  margin-bottom: 1rem;
+  display: grid;
+  gap: 10px;
 }
-
-.horarios-titulo {
-  font-size: 1.1rem;
-  margin: 0;
-  margin-bottom: 0.5rem;
-  text-align: center;
+.rs-lista__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
-
-.fecha-seleccionada {
-  font-weight: bold;
-  color: #851319;
+.rs-lista__item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
-
-.time-btn {
-  transition: transform 0.1s;
+.rs-marca {
+  flex: none;
+  align-self: stretch;
+  width: 5px;
+  border-radius: 3px;
+  background: var(--sn-sello);
 }
-.time-btn:active {
-  transform: scale(0.95);
+.rs-lista__texto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
 }
-
-:deep(.q-option-group) {
-  text-align: center;
-}
-
-:deep(.q-option-group .q-radio__label) {
-  font-weight: bold;
-  color: #851319;
+.rs-madrid {
+  font-size: var(--sn-t-peq);
+  color: var(--sn-tinta-suave);
 }
 </style>
