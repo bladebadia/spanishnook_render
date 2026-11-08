@@ -25,6 +25,16 @@
         <div v-if="precioTotal" class="current-price">{{ precioTotal }}</div>
         <div v-else class="current-price">{{ price }}€{{ t('reservasCursos.mes') }}</div>
       </div>
+      <div v-if="etiquetas?.length" class="etiquetas">
+        <span
+          v-for="etiqueta in etiquetas"
+          :key="etiqueta.texto"
+          class="etiqueta"
+          :class="etiqueta.clase"
+        >
+          {{ etiqueta.texto }}
+        </span>
+      </div>
       <q-card-section class="title subtitulo-responsivo">
         {{ title }}
       </q-card-section>
@@ -85,6 +95,8 @@ interface Props {
   buttonBold?: boolean;
   buttonSize?: string;
   descriptionClass?: string;
+  /** Etiquetas sobre el título (p. ej. categoría y formato del curso). clase: 'sn-sello-general'... */
+  etiquetas?: Array<{ texto: string; clase?: string }>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -143,6 +155,25 @@ const onImageError = (event: Event) => {
   min-height: 420px;
   overflow: visible;
   width: 100%;
+}
+
+/* Etiquetas sobre el título: color del sello si llevan clase sn-sello-*, si no burdeos */
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 16px 0;
+}
+.etiqueta {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--sn-r-boton);
+  font-size: var(--sn-t-peq);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--sn-sello, var(--sn-burdeos));
+  background: var(--sn-sello-tenue, var(--sn-burdeos-tenue));
 }
 
 /* Contenedor de imagen con posición relativa para el badge */

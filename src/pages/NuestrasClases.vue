@@ -133,8 +133,8 @@
       </div>
     </section>
 
-    <!-- 3. Cursos en grupo: presentación, grupos abiertos y detalles -->
-    <section id="grupos" class="cl-seccion cl-seccion--grupos sn-sello-conversacion">
+    <!-- 3. Cursos en grupo: presentación, tipos y formatos, grupos abiertos y detalles -->
+    <section id="grupos" class="cl-seccion cl-seccion--grupos">
       <div class="sn-contenedor">
         <div class="cl-intro cl-intro--invertida">
           <q-img
@@ -142,19 +142,56 @@
             class="cl-intro__img"
             :ratio="1"
             fit="cover"
-            :alt="t('NuestrasClases.clasesGrupalesConversacion')"
+            :alt="t('PaginaClases.gruposTitulo')"
           />
           <div class="cl-intro__texto">
-            <p class="cl-antetitulo sn-sello-texto">
-              {{ t('NuestrasClases.clasesGrupalesConversacion') }}
-            </p>
-            <h2 class="cl-h2">{{ t('NuestrasClases.nuestrasClasesConversacion') }}</h2>
+            <p class="cl-antetitulo">{{ t('PaginaClases.gruposTitulo') }}</p>
+            <h2 class="cl-h2">{{ t('PaginaClases.gruposH2') }}</h2>
             <p class="cl-parrafo">
-              <strong>{{ t('NuestrasClases.tePasaQue') }}</strong>
+              <strong>{{ t('PaginaClases.gruposEntrada') }}</strong>
             </p>
-            <p class="cl-parrafo cl-destacado">{{ t('NuestrasClases.esteCursoEsParaTi') }}</p>
-            <p class="cl-parrafo">{{ t('NuestrasClases.cadaSemanaNos') }}</p>
-            <p class="cl-parrafo">{{ t('NuestrasClases.esUnPrograma') }}</p>
+            <p class="cl-parrafo">{{ t('PaginaClases.gruposTexto') }}</p>
+          </div>
+        </div>
+
+        <div class="cl-claves">
+          <div class="cl-claves__bloque">
+            <p class="cl-antetitulo">{{ t('PaginaClases.queTipo') }}</p>
+            <div class="cl-claves__fila">
+              <div class="cl-clave sn-sello-conversacion">
+                <q-icon name="forum" class="cl-clave__icono" />
+                <div>
+                  <p class="cl-clave__titulo">{{ t('PaginaClases.tipoConversacion') }}</p>
+                  <p class="cl-clave__texto">{{ t('PaginaClases.tipoConversacionTexto') }}</p>
+                </div>
+              </div>
+              <div class="cl-clave sn-sello-general">
+                <q-icon name="menu_book" class="cl-clave__icono" />
+                <div>
+                  <p class="cl-clave__titulo">{{ t('PaginaClases.tipoGeneral') }}</p>
+                  <p class="cl-clave__texto">{{ t('PaginaClases.tipoGeneralTexto') }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cl-claves__bloque">
+            <p class="cl-antetitulo">{{ t('PaginaClases.queFormato') }}</p>
+            <div class="cl-claves__fila">
+              <div class="cl-clave">
+                <q-icon name="autorenew" class="cl-clave__icono" />
+                <div>
+                  <p class="cl-clave__titulo">{{ t('PaginaClases.formatoMensual') }}</p>
+                  <p class="cl-clave__texto">{{ t('PaginaClases.formatoMensualTexto') }}</p>
+                </div>
+              </div>
+              <div class="cl-clave">
+                <q-icon name="event" class="cl-clave__icono" />
+                <div>
+                  <p class="cl-clave__titulo">{{ t('PaginaClases.formatoCerrado') }}</p>
+                  <p class="cl-clave__texto">{{ t('PaginaClases.formatoCerradoTexto') }}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -176,10 +213,11 @@
             :fecha-inicio="curso.fechaInicio"
             :precio-total="precioTotalCurso(curso)"
             :fechas-curso="fechasCursoCerrado(curso)"
+            :etiquetas="etiquetasCurso(curso)"
           />
         </div>
         <div v-else class="cl-aviso cl-aviso--vacio">
-          <q-icon name="event_available" class="cl-aviso__icono sn-sello-texto" />
+          <q-icon name="event_available" class="cl-aviso__icono" />
           <div class="cl-aviso__texto">
             <p class="cl-aviso__titulo">{{ t('PaginaClases.sinGrupos') }}</p>
             <p class="cl-aviso__linea">{{ t('PaginaClases.sinGruposTexto') }}</p>
@@ -344,10 +382,21 @@ const cursosPromo = ref<
     tipoCurso: string;
     precioTotalCentimos: number | null;
     fechaFin: string;
+    categoria: 'conversacion' | 'general';
   }>
 >([]);
 
 type CursoPromo = (typeof cursosPromo.value)[number];
+
+// Etiquetas de la tarjeta: categoría (con el color de su sello) y formato de pago
+const etiquetasCurso = (c: CursoPromo) => [
+  c.categoria === 'general'
+    ? { texto: t('PaginaClases.tipoGeneral'), clase: 'sn-sello-general' }
+    : { texto: t('PaginaClases.tipoConversacion'), clase: 'sn-sello-conversacion' },
+  c.tipoCurso === 'cerrado'
+    ? { texto: t('PaginaClases.etiquetaPagoUnico') }
+    : { texto: t('PaginaClases.etiquetaMensual') },
+];
 
 // Precio mensual más bajo de los grupos de suscripción con precio visible
 const precioMinimoGrupos = computed(() => {
@@ -403,6 +452,7 @@ async function cargarCursosPromo(): Promise<void> {
       fecha_inicio,
       fecha_fin,
       tipo_curso,
+      categoria,
       precio_total_centimos
     `,
     )
@@ -436,6 +486,7 @@ async function cargarCursosPromo(): Promise<void> {
     tipoCurso: c.tipo_curso ?? 'suscripcion',
     precioTotalCentimos: c.precio_total_centimos ?? null,
     fechaFin: c.fecha_fin ?? '',
+    categoria: c.categoria === 'general' ? 'general' : 'conversacion',
   }));
 }
 
@@ -600,7 +651,52 @@ watch(
   scroll-margin-top: 80px;
 }
 .cl-seccion--grupos {
-  background: var(--sn-sello-tenue);
+  background: var(--sn-burdeos-tenue);
+}
+
+/* Tipos y formatos de los cursos en grupo */
+.cl-claves {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 40px;
+}
+@media (min-width: 900px) {
+  .cl-claves {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.cl-claves__fila {
+  display: grid;
+  gap: 12px;
+}
+.cl-clave {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-left: 5px solid var(--sn-sello, var(--sn-burdeos));
+  border-radius: var(--sn-r-tarjeta);
+}
+.cl-clave__icono {
+  flex: none;
+  font-size: 26px;
+  color: var(--sn-sello, var(--sn-burdeos));
+  margin-top: 2px;
+}
+.cl-clave__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-h4);
+  margin: 0 0 4px;
+  color: var(--sn-sello, var(--sn-tinta));
+}
+.cl-clave__texto {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--sn-tinta-suave);
 }
 
 /* Imagen + texto de cada sección */
@@ -791,7 +887,7 @@ watch(
   min-height: 60px;
 }
 .cl-desplegable :deep(.q-item__section--avatar .q-icon) {
-  color: var(--sn-sello);
+  color: var(--sn-burdeos);
 }
 .cl-desplegable :deep(.q-expansion-item__toggle-icon) {
   color: var(--sn-tinta-suave) !important;

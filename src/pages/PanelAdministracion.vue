@@ -365,6 +365,13 @@
                     <q-badge outline color="primary" class="q-ml-sm">
                       {{ curso.tipo_curso === 'cerrado' ? 'Fechas cerradas' : 'Suscripción' }}
                     </q-badge>
+                    <q-badge
+                      class="q-ml-sm"
+                      :class="curso.categoria === 'general' ? 'sn-sello-general' : 'sn-sello-conversacion'"
+                      :style="{ background: 'var(--sn-sello)' }"
+                    >
+                      {{ curso.categoria === 'general' ? 'General' : 'Conversación' }}
+                    </q-badge>
                   </q-item-label>
                   <q-item-label caption>
                     <q-chip
@@ -444,11 +451,22 @@
               <q-card flat>
                 <q-card-section>
                   <div class="row q-col-gutter-md">
-                    <div class="col-12">
+                    <div class="col-12 col-md-6">
                       <div class="text-caption text-grey-8">Tipo de curso</div>
                       <q-option-group
                         v-model="cursoFormulario.tipo_curso"
                         :options="opcionesTipoCurso"
+                        type="radio"
+                        color="primary"
+                        inline
+                        dense
+                      />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="text-caption text-grey-8">Categoría</div>
+                      <q-option-group
+                        v-model="cursoFormulario.categoria"
+                        :options="opcionesCategoriaCurso"
                         type="radio"
                         color="primary"
                         inline
@@ -951,11 +969,22 @@
 
               <q-card-section style="max-height: 70vh" class="scroll">
                 <div class="row q-col-gutter-md">
-                  <div class="col-12">
+                  <div class="col-12 col-md-6">
                     <div class="text-caption text-grey-8">Tipo de curso</div>
                     <q-option-group
                       v-model="cursoFormulario.tipo_curso"
                       :options="opcionesTipoCurso"
+                      type="radio"
+                      color="primary"
+                      inline
+                      dense
+                    />
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <div class="text-caption text-grey-8">Categoría</div>
+                    <q-option-group
+                      v-model="cursoFormulario.categoria"
+                      :options="opcionesCategoriaCurso"
                       type="radio"
                       color="primary"
                       inline
@@ -2105,12 +2134,15 @@ interface CursoGrupal {
   meet_link?: string;
   // Curso de fechas cerradas (pago único)
   tipo_curso?: TipoCurso;
+  // Conversación o general (gramática, vocabulario...)
+  categoria?: CategoriaCurso;
   fecha_fin?: string | null;
   precio_total_centimos?: number | null;
   duracion_minutos?: number | null;
 }
 
 type TipoCurso = 'suscripcion' | 'cerrado';
+type CategoriaCurso = 'conversacion' | 'general';
 
 interface Reserva {
   id?: number;
@@ -2166,6 +2198,7 @@ const cursoFormulario = ref<CursoGrupal>({
   precio_original: '',
   stripe_price_id: '',
   tipo_curso: 'suscripcion',
+  categoria: 'conversacion',
   fecha_fin: '',
   precio_total_centimos: null,
   duracion_minutos: 90,
@@ -2175,6 +2208,10 @@ const cursoFormulario = ref<CursoGrupal>({
 const opcionesTipoCurso: { label: string; value: TipoCurso }[] = [
   { label: 'Suscripción mensual', value: 'suscripcion' },
   { label: 'Fechas cerradas (pago único)', value: 'cerrado' },
+];
+const opcionesCategoriaCurso: { label: string; value: CategoriaCurso }[] = [
+  { label: 'Conversación', value: 'conversacion' },
+  { label: 'General (gramática, vocabulario...)', value: 'general' },
 ];
 
 // Precio total en euros que escribe Paula; se guarda en céntimos
@@ -2872,6 +2909,7 @@ const toggleCurso = (id: number): void => {
         precio_original: curso.precio_original ?? '',
         fecha_inicio: curso.fecha_inicio ?? '',
         tipo_curso: curso.tipo_curso === 'cerrado' ? 'cerrado' : 'suscripcion',
+        categoria: curso.categoria === 'general' ? 'general' : 'conversacion',
         fecha_fin: curso.fecha_fin ?? '',
         precio_total_centimos: curso.precio_total_centimos ?? null,
         duracion_minutos: curso.duracion_minutos ?? 90,
@@ -2910,6 +2948,7 @@ const abrirDialogNuevoCurso = (): void => {
     mostrar_precio: false,
     precio_original: '',
     tipo_curso: 'suscripcion',
+    categoria: 'conversacion',
     fecha_fin: '',
     precio_total_centimos: null,
     duracion_minutos: 90,
@@ -3093,6 +3132,7 @@ const guardarCurso = async (): Promise<void> => {
       stripe_price_id: esCerrado ? null : cursoFormulario.value.stripe_price_id || null,
       precio_original: cursoFormulario.value.precio_original || null,
       tipo_curso: esCerrado ? 'cerrado' : 'suscripcion',
+      categoria: cursoFormulario.value.categoria === 'general' ? 'general' : 'conversacion',
       fecha_fin: esCerrado
         ? cursoFormulario.value.fecha_fin || null
         : tipoPrevio === 'cerrado'
