@@ -90,8 +90,12 @@ export async function anadirAsistente(token: string, eventId: string, email: str
   if (!patch.ok) throw new Error(`Error actualizando asistentes: ${patch.status}`);
 }
 
-/** Borra un evento. 404/410 cuentan como ya borrado. Lanza error en otros fallos. */
-export async function borrarEvento(token: string, eventId: string, avisar = true): Promise<void> {
+/**
+ * Borra un evento. 404/410 cuentan como ya borrado. Lanza error en otros fallos.
+ * Por defecto sin aviso de Google (sendUpdates=none): el evento desaparece del
+ * calendario del alumno igual, y el aviso ya lo damos con nuestro correo.
+ */
+export async function borrarEvento(token: string, eventId: string, avisar = false): Promise<void> {
   const res = await fetch(
     `${API}/${calendario()}/events/${encodeURIComponent(eventId)}?sendUpdates=${avisar ? "all" : "none"}`,
     { method: "DELETE", headers: { Authorization: `Bearer ${token}` } },

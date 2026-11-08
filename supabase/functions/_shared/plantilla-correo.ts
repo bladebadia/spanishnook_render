@@ -34,7 +34,9 @@ const C = {
 const TITULOS = "Montserrat, 'Nunito Sans', Arial, Helvetica, sans-serif";
 const TEXTO = "'Nunito Sans', Arial, Helvetica, sans-serif";
 const SITIO = 'https://www.spanishnook.com';
-const LOGO = `${SITIO}/img/Logotexto_500.png`;
+// Logo cuadrado (168x168, círculo a sangre, esquinas transparentes): el original
+// es 500x375 y al forzarlo a 56x56 salía achatado en forma de huevo.
+const LOGO = `${SITIO}/img/logo-correo.png`;
 
 const PIE: Record<Idioma, { lema: string; contacto: string; legal: string; motivo: string }> = {
   es: {
@@ -127,7 +129,7 @@ export function plantillaCorreo({ idioma = 'es', titulo, resumen = '', cuerpo, b
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;">
       <tr><td style="background:${C.burdeos};border-radius:16px 16px 0 0;padding:20px 28px;">
         <a href="${SITIO}" target="_blank" style="text-decoration:none;">
-          <img src="${LOGO}" width="56" height="56" alt="SpanishNook" style="display:inline-block;vertical-align:middle;border-radius:50%;background:#FFFFFF;border:0;">
+          <img src="${LOGO}" width="56" height="56" alt="SpanishNook" style="display:inline-block;vertical-align:middle;border-radius:50%;border:0;">
           <span style="display:inline-block;vertical-align:middle;margin-left:12px;font-family:${TITULOS};font-size:20px;font-weight:700;color:#FFFFFF;">SpanishNook</span>
         </a>
       </td></tr>
