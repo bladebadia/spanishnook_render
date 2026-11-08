@@ -732,17 +732,7 @@
                       </q-input>
                     </div>
                     <div class="col-12 col-md-3">
-                      <q-input
-                        v-model="cursoFormulario.imagen_tarjeta"
-                        label="URL de la imagen"
-                        filled
-                        dense
-                        placeholder="https://ejemplo.com/imagen.jpg"
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="image" />
-                        </template>
-                      </q-input>
+                      <SubirImagen v-model="cursoFormulario.imagen_tarjeta" />
                     </div>
 
                     <div class="col-12">
@@ -1149,12 +1139,7 @@
                   </div>
 
                   <div class="col-12 col-md-3">
-                    <q-input
-                      v-model="cursoFormulario.imagen_tarjeta"
-                      label="URL de la imagen"
-                      filled
-                      placeholder="https://ejemplo.com/imagen.jpg"
-                    />
+                    <SubirImagen v-model="cursoFormulario.imagen_tarjeta" />
                   </div>
 
                   <!-- Promoción y Precios -->
@@ -1981,6 +1966,7 @@ import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import { fechasDelCurso, formatFechaCorta, hoyMadridISO } from 'src/utils/zonaHoraria';
 import type { User } from '@supabase/supabase-js';
+import SubirImagen from 'src/components/SubirImagen.vue';
 
 // Interfaces
 

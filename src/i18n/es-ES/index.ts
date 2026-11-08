@@ -205,6 +205,19 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  subirImagen: {
+    etiqueta: 'Imagen de la tarjeta',
+    vistaPrevia: 'Vista previa de la imagen',
+    subir: 'Subir imagen',
+    cambiar: 'Cambiar imagen',
+    quitar: 'Quitar',
+    usarEnlace: 'o pegar un enlace',
+    enlace: 'Enlace de la imagen',
+    noEsImagen: 'El archivo no es una imagen.',
+    demasiadoGrande: 'La imagen pesa más de {mb} MB.',
+    subida: 'Imagen subida. Recuerda guardar el curso.',
+    error: 'No se pudo subir la imagen.',
+  },
   PaginaClases: {
     individualesTitulo: 'Clases individuales',
     individualesLinea: 'Clases 1 a 1 a tu medida, el día y la hora que tú elijas.',
