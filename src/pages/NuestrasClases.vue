@@ -1,304 +1,251 @@
 <template>
-  <q-page>
-    <div class="row cabecera-row full-width q-mt-xl">
-      <div class="col-12 align-self-center q-pa-md flex column items-center">
-        <h1 class="titulo-responsivo text-primary q-mb-sm">
-          {{ t('NuestrasClases.nuestrasClases') }}
-        </h1>
-        <br />
-        <p
-          class="texto-responsivo text-center text-weight-bold"
-          style="max-width: 800px; margin: 0 auto; width: 100%"
-        >
-          {{ t('NuestrasClases.textoNuestrasClasesbold') }}
-        </p>
-        <p
-          class="texto-responsivo text-left"
-          style="max-width: 800px; margin: 0 auto; width: 100%"
-        >
-          {{ t('NuestrasClases.textoNuestrasClases') }}
-        </p>
+  <q-page class="cl-pagina">
+    <!-- 1. Cabecera y selector: las dos formas de aprender, con precio y botón -->
+    <section class="sn-contenedor cl-cabecera">
+      <h1 class="cl-h1">{{ t('NuestrasClases.nuestrasClases') }}</h1>
+      <p class="cl-entrada">
+        <strong>{{ t('NuestrasClases.textoNuestrasClasesbold') }}</strong>
+        {{ t('NuestrasClases.textoNuestrasClases') }}
+      </p>
+
+      <div class="cl-selector">
+        <a href="#individuales" class="cl-opcion" @click.prevent="irA('#individuales')">
+          <q-icon name="person" class="cl-opcion__icono" />
+          <span class="cl-opcion__titulo">{{ t('PaginaClases.individualesTitulo') }}</span>
+          <span class="cl-opcion__linea">{{ t('PaginaClases.individualesLinea') }}</span>
+          <span class="cl-opcion__precio">
+            {{ t('PaginaClases.desdePorClase', { precio: euros(PRECIO_CONVERSACION) }) }}
+          </span>
+          <span class="cl-opcion__ir">
+            {{ t('PaginaClases.verIndividuales') }}
+            <q-icon name="arrow_downward" size="18px" />
+          </span>
+        </a>
+        <a href="#grupos" class="cl-opcion" @click.prevent="irA('#grupos')">
+          <q-icon name="groups" class="cl-opcion__icono" />
+          <span class="cl-opcion__titulo">{{ t('PaginaClases.gruposTitulo') }}</span>
+          <span class="cl-opcion__linea">{{ t('PaginaClases.gruposLinea') }}</span>
+          <span class="cl-opcion__precio">{{ resumenGrupos }}</span>
+          <span class="cl-opcion__ir">
+            {{ t('PaginaClases.verGrupos') }}
+            <q-icon name="arrow_downward" size="18px" />
+          </span>
+        </a>
       </div>
-    </div>
-    <div
-      class="full-width q-my-xl"
-      style="scroll-margin-top: 120px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; padding: 0 16px"
-    >
-      <q-img
-        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-conversacion-intro.png?width=700&format=webp"
-        style="width: 350px; max-width: 100%; border-radius: 16px"
-        :ratio="1"
-        fit="cover"
-      />
+    </section>
 
-      <div
-        class="banner-clases-grupales"
-        style="width: 360px; max-width: 100%; margin: 0 !important; box-sizing: border-box !important;"
-      >
-        <p class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
-          {{ t('NuestrasClases.clasesGrupalesConversacion') }}
-        </p>
+    <!-- 2. Clases individuales -->
+    <section id="individuales" class="cl-seccion">
+      <div class="sn-contenedor">
+        <div class="cl-intro">
+          <q-img
+            src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-individuales.png?width=700&format=webp"
+            class="cl-intro__img"
+            :ratio="1"
+            fit="cover"
+            :alt="t('NuestrasClases.clasesIndividualesPersonalizadas')"
+          />
+          <div class="cl-intro__texto">
+            <p class="cl-antetitulo">{{ t('NuestrasClases.Modalidades') }}</p>
+            <h2 class="cl-h2">{{ t('NuestrasClases.nuestrasClasesIndividuales') }}</h2>
+            <p class="cl-parrafo">
+              <strong>{{ t('NuestrasClases.IntroIndividuales1Bold') }}</strong>
+            </p>
+            <p class="cl-parrafo">{{ t('NuestrasClases.IntroIndividuales2') }}</p>
+          </div>
+        </div>
+
+        <div class="cl-modalidades">
+          <article class="cl-modalidad sn-sello-conversacion">
+            <q-img
+              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-conversacion2.png?width=600&format=webp"
+              class="cl-modalidad__img"
+              fit="contain"
+              alt=""
+            />
+            <div class="cl-modalidad__cuerpo">
+              <div class="cl-modalidad__cabecera">
+                <h3 class="cl-h3 sn-sello-texto">{{ t('NuestrasClases.Modalidad1') }}</h3>
+                <span class="cl-chip">
+                  {{ t('PaginaClases.porClase', { precio: euros(PRECIO_CONVERSACION) }) }}
+                </span>
+              </div>
+              <p class="cl-parrafo">{{ t('NuestrasClases.TextoModalidad1') }}</p>
+            </div>
+          </article>
+          <article class="cl-modalidad sn-sello-general">
+            <q-img
+              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-general2.png?width=600&format=webp"
+              class="cl-modalidad__img"
+              fit="contain"
+              alt=""
+            />
+            <div class="cl-modalidad__cuerpo">
+              <div class="cl-modalidad__cabecera">
+                <h3 class="cl-h3 sn-sello-texto">{{ t('NuestrasClases.Modalidad2') }}</h3>
+                <span class="cl-chip">
+                  {{ t('PaginaClases.porClase', { precio: euros(PRECIO_GENERAL) }) }}
+                </span>
+              </div>
+              <p class="cl-parrafo">{{ t('NuestrasClases.TextoModalidad2') }}</p>
+            </div>
+          </article>
+        </div>
+
+        <h3 class="cl-h3 cl-subtitulo">{{ t('PaginaClases.comoFuncionanIndividuales') }}</h3>
+        <ul class="cl-checks">
+          <li v-for="punto in puntosIndividuales" :key="punto.titulo">
+            <q-icon name="check_circle" class="cl-checks__icono" />
+            <span>
+              <strong>{{ punto.titulo }}</strong>
+              <template v-if="punto.texto">. {{ punto.texto }}</template>
+            </span>
+          </li>
+        </ul>
+
+        <div class="cl-acciones">
+          <q-btn
+            color="primary"
+            unelevated
+            no-caps
+            size="lg"
+            class="cl-boton"
+            :label="t('PaginaClases.reservarClase')"
+            to="/Reservas"
+          />
+        </div>
+
+        <div class="cl-aviso sn-nota">
+          <q-icon name="savings" class="cl-aviso__icono" />
+          <div class="cl-aviso__texto">
+            <p class="cl-aviso__titulo">{{ t('PaginaClases.packsTitulo') }}</p>
+            <p class="cl-aviso__linea">{{ t('PaginaClases.packsTexto') }}</p>
+          </div>
+          <q-btn
+            outline
+            color="primary"
+            no-caps
+            class="cl-boton"
+            :label="t('PaginaClases.verPacks')"
+            to="/ComprarPacks"
+          />
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
-      <div class="col-12 flex flex-center">
-        <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <div class="titulo-responsivo text-left-center">
-            {{ t('NuestrasClases.nuestrasClasesConversacion') }}
+    <!-- 3. Cursos en grupo: presentación, grupos abiertos y detalles -->
+    <section id="grupos" class="cl-seccion cl-seccion--grupos sn-sello-conversacion">
+      <div class="sn-contenedor">
+        <div class="cl-intro cl-intro--invertida">
+          <q-img
+            src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-conversacion-intro.png?width=700&format=webp"
+            class="cl-intro__img"
+            :ratio="1"
+            fit="cover"
+            :alt="t('NuestrasClases.clasesGrupalesConversacion')"
+          />
+          <div class="cl-intro__texto">
+            <p class="cl-antetitulo sn-sello-texto">
+              {{ t('NuestrasClases.clasesGrupalesConversacion') }}
+            </p>
+            <h2 class="cl-h2">{{ t('NuestrasClases.nuestrasClasesConversacion') }}</h2>
+            <p class="cl-parrafo">
+              <strong>{{ t('NuestrasClases.tePasaQue') }}</strong>
+            </p>
+            <p class="cl-parrafo cl-destacado">{{ t('NuestrasClases.esteCursoEsParaTi') }}</p>
+            <p class="cl-parrafo">{{ t('NuestrasClases.cadaSemanaNos') }}</p>
+            <p class="cl-parrafo">{{ t('NuestrasClases.esUnPrograma') }}</p>
           </div>
-          <br />
-          <div>
-            <p class="texto-responsivo text-left text-weight-bold">
-              {{ t('NuestrasClases.tePasaQue') }}
-            </p>
-            <br />
-            <p class="texto-responsivo text-left text-weight-bold" style="color: #851319">
-              {{ t('NuestrasClases.esteCursoEsParaTi') }}
-            </p>
-            <br />
-            <p class="texto-responsivo text-left">
-              {{ t('NuestrasClases.cadaSemanaNos') }}
-            </p>
-            <p class="texto-responsivo text-left">
-              {{ t('NuestrasClases.aquiHablamos') }}
-            </p>
-            <p class="texto-responsivo text-left">
-              {{ t('NuestrasClases.esUnPrograma') }}
-            </p>
-            <br />
-            <p class="texto-responsivo text-left text-weight-bold" style="color: #851319">
-              {{ t('NuestrasClases.uneteALa') }}
-            </p>
-          </div>
+        </div>
 
+        <h3 class="cl-h3 cl-subtitulo">{{ t('PaginaClases.gruposAbiertos') }}</h3>
+        <div v-if="cursosPromo.length" class="cl-cursos">
+          <PromoCard
+            v-for="curso in cursosPromo"
+            :key="curso.id"
+            :image-src="curso.imagen_tarjeta"
+            :title="curso.titulo_tarjeta"
+            :description="curso.texto_tarjeta"
+            :button-text="curso.boton_tarjeta"
+            :show-promo="curso.showPromo"
+            :promo-text="curso.promoText"
+            :show-price="curso.showPrice"
+            :price="curso.price"
+            :original-price="curso.originalPrice"
+            :button-link="curso.buttonLink"
+            :fecha-inicio="curso.fechaInicio"
+            :precio-total="precioTotalCurso(curso)"
+            :fechas-curso="fechasCursoCerrado(curso)"
+          />
+        </div>
+        <div v-else class="cl-aviso cl-aviso--vacio">
+          <q-icon name="event_available" class="cl-aviso__icono sn-sello-texto" />
+          <div class="cl-aviso__texto">
+            <p class="cl-aviso__titulo">{{ t('PaginaClases.sinGrupos') }}</p>
+            <p class="cl-aviso__linea">{{ t('PaginaClases.sinGruposTexto') }}</p>
+          </div>
+          <q-btn
+            color="primary"
+            unelevated
+            no-caps
+            class="cl-boton"
+            :label="t('PaginaClases.avisame')"
+            to="/Contacto"
+          />
+        </div>
+
+        <div class="cl-detalles">
           <q-expansion-item
             :label="t('NuestrasClases.TextoNuestrosCursosGrupo1')"
-            header-class="bg-primary text-white subtitulo-responsivo"
-            class="q-my-xl"
+            icon="schedule"
+            class="cl-desplegable"
+            header-class="cl-desplegable__cabecera"
           >
-            <q-card>
-              <q-card-section class="texto-responsivo text-left">
-                <ul class="q-pl-md text-left">
-                  <li>
-                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos1Bold') }}</strong>
-                    {{ t('NuestrasClases.ListaComoFuncionanGrupos1') }}
-                  </li>
-                  <li>
-                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos2Bold') }}</strong>
-                    {{ t('NuestrasClases.ListaComoFuncionanGrupos2') }}
-                  </li>
-                  <li>
-                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos3Bold') }}</strong>
-                    {{ t('NuestrasClases.ListaComoFuncionanGrupos3') }}
-                  </li>
-                  <li>
-                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos4Bold') }}</strong>
-                    {{ t('NuestrasClases.ListaComoFuncionanGrupos4') }}
-                  </li>
-                  <li>
-                    <strong>{{ t('NuestrasClases.ListaComoFuncionanGrupos5Bold') }}</strong>
-                    {{ t('NuestrasClases.ListaComoFuncionanGrupos5') }}
-                  </li>
-                </ul>
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-
-          <q-expansion-item
-            :label="t('NuestrasClases.queLograras')"
-            header-class="bg-primary text-white subtitulo-responsivo"
-            class="q-my-lg"
-          >
-            <q-card>
-              <q-card-section class="texto-responsivo text-left">
-                <ul class="q-pl-md">
-                  <li>{{ t('NuestrasClases.Logro1Grupales') }}</li>
-                  <li>{{ t('NuestrasClases.Logro2Grupales') }}</li>
-                  <li>{{ t('NuestrasClases.Logro3Grupales') }}</li>
-                  <li>{{ t('NuestrasClases.Logro4Grupales') }}</li>
-                  <li>{{ t('NuestrasClases.Logro5Grupales') }}</li>
-                  <li>{{ t('NuestrasClases.Logro6Grupales') }}</li>
-                </ul>
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-        </q-card>
-      </div>
-    </div>
-
-    <div class="promocards-container">
-      <PromoCard
-        v-for="curso in cursosPromo"
-        :key="curso.id"
-        :image-src="curso.imagen_tarjeta"
-        :title="curso.titulo_tarjeta"
-        :description="curso.texto_tarjeta"
-        :button-text="curso.boton_tarjeta"
-        :show-promo="curso.showPromo"
-        :promo-text="curso.promoText"
-        :show-price="curso.showPrice"
-        :price="curso.price"
-        :original-price="curso.originalPrice"
-        :button-link="curso.buttonLink"
-        :fecha-inicio="curso.fechaInicio"
-        :precio-total="precioTotalCurso(curso)"
-        :fechas-curso="fechasCursoCerrado(curso)"
-      />
-    </div>
-
-    <div
-      class="full-width q-mt-sm q-mb-xl"
-      style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; padding: 0 16px"
-    >
-      <div
-        class="banner-clases-grupales"
-        style="width: 360px; max-width: 100%; margin: 0 !important; box-sizing: border-box !important;"
-      >
-        <p class="banner-clases-grupales__titulo subtitulo-responsivo text-center q-my-none">
-          {{ t('NuestrasClases.clasesIndividualesPersonalizadas') }}
-        </p>
-      </div>
-
-      <q-img
-        src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-individuales.png?width=700&format=webp"
-        style="width: 350px; max-width: 100%; border-radius: 16px"
-        :ratio="1"
-        fit="cover"
-      />
-    </div>
-
-    <div class="row flex q-my-xs" style="width: 100%; gap: 32px">
-      <div class="col-12 flex flex-center">
-        <q-card class="tarjeta-formativos text-center shadow-2 bg-white text-dark">
-          <q-card-section class="q-pt-lg">
-            <div class="titulo-responsivo text-center">
-              {{ t('NuestrasClases.nuestrasClasesIndividuales') }}
-            </div>
-            <br />
-            <p class="texto-responsivo text-left q-mb-none">
-              <strong>{{ t('NuestrasClases.IntroIndividuales1Bold') }}</strong>
-              <br /><br />
-              {{ t('NuestrasClases.IntroIndividuales2') }}
-            </p>
-          </q-card-section>
-          <q-separator spaced />
-          <q-card-section>
-            <h2
-              class="text-center q-mb-xl"
-              style="color: #851319; font-size: 1.4rem; font-weight: 600"
-            >
-              {{ t('NuestrasClases.Modalidades') }}
-            </h2>
-
-            <div class="row q-col-gutter-md">
-              <div class="col-12 col-md-6">
-                <div class="modalidad-card sn-sello-conversacion sn-sello-fondo">
-                  <q-img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-conversacion2.png?width=600&format=webp"
-                    style="width: 70%; max-width: 300px; border-radius: 16px"
-                    fit="cover"
-                  />
-                  <div class="subtitulo-responsivo text-center q-my-xl">
-                    {{ t('NuestrasClases.Modalidad1') }}
-                  </div>
-                  <p class="text-body1 text-left q-mt-lg text-grey-8" style="font-weight: bold">
-                    {{ t('NuestrasClases.TextoModalidad1') }}
-                  </p>
-                </div>
-              </div>
-              <div class="col-12 col-md-6">
-                <div class="modalidad-card sn-sello-general sn-sello-fondo">
-                  <q-img
-                    src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-general2.png?width=600&format=webp"
-                    style="width: 70%; max-width: 300px; border-radius: 16px"
-                    fit="cover"
-                  />
-                  <div class="subtitulo-responsivo text-center q-my-xl">
-                    {{ t('NuestrasClases.Modalidad2') }}
-                  </div>
-                  <p class="text-body1 text-left q-mt-lg text-grey-8" style="font-weight: bold">
-                    {{ t('NuestrasClases.TextoModalidad2') }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="q-mt-xs flex flex-center">
-              <q-btn
-                color="primary"
-                class="oval-btn oval-btn-lg text-weight-bold"
-                unelevated
-                size="lg"
-                :label="t('NuestrasClases.botonReservaUnica')"
-                no-caps
-                to="/Reservas"
-              />
-            </div>
-          </q-card-section>
-          <q-separator spaced />
-          <q-card-section>
-            <div class="subtitulo-responsivo text-left q-mb-md">
-              {{ t('NuestrasClases.TextoComoFuncionanIndividuales') }}
-            </div>
-            <br />
-            <ul class="texto-responsivo text-left q-pl-md lista-funcionamiento">
-              <li>
-                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd1Bold') }}</strong>
-                {{ t('NuestrasClases.ListaComoFuncionanInd1') }}
-              </li>
-              <li>
-                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd2Bold') }}</strong>
-                {{ t('NuestrasClases.ListaComoFuncionanInd2') }}
-              </li>
-              <li>
-                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd3Bold') }}</strong>
-                {{ t('NuestrasClases.ListaComoFuncionanInd3') }}
-              </li>
-              <li>
-                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd4Bold') }}</strong>
-                {{ t('NuestrasClases.ListaComoFuncionanInd4') }}
-              </li>
-              <li>
-                <strong>{{ t('NuestrasClases.ListaComoFuncionanInd5') }}</strong>
+            <ul class="cl-checks cl-checks--una">
+              <li v-for="punto in puntosGrupos" :key="punto.titulo">
+                <q-icon name="check_circle" class="cl-checks__icono" />
+                <span>
+                  <strong>{{ punto.titulo }}</strong>
+                  <template v-if="punto.texto">. {{ punto.texto }}</template>
+                </span>
               </li>
             </ul>
-          </q-card-section>
-        </q-card>
+          </q-expansion-item>
+          <q-expansion-item
+            :label="t('NuestrasClases.queLograras')"
+            icon="emoji_events"
+            class="cl-desplegable"
+            header-class="cl-desplegable__cabecera"
+          >
+            <ul class="cl-checks cl-checks--una">
+              <li v-for="logro in logrosGrupos" :key="logro">
+                <q-icon name="check_circle" class="cl-checks__icono" />
+                <span>{{ logro }}</span>
+              </li>
+            </ul>
+          </q-expansion-item>
+        </div>
       </div>
-    </div>
-    <div class="row justify-center q-my-xl">
-      <div class="col-12 col-md-6">
-        <PromoCard
-          image-src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/CTA_reserva.png?width=600&format=webp"
-          :title="t('NuestrasClases.nuestrosPacks')"
-          :description="t('NuestrasClases.ahorra')"
-          :button-text="t('NuestrasClases.comprarPacks')"
-          description-class="description-small-bold"
-          :show-promo="false"
-          :promo-text="t('NuestrasClases.promoPromoPacks')"
-          :show-price="false"
-          to="/ComprarPacks"
-        />
-      </div>
-    </div>
+    </section>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, watch } from 'vue';
+import { computed, ref, onMounted, nextTick, watch } from 'vue';
 import '../css/pages/EstilosGenerales.css';
 import PromoCard from '../components/PromoCard.vue';
 import { useI18n } from 'vue-i18n';
-import '../css/pages/ClasesGrupales.css';
 import { supabase } from 'src/supabaseClient';
 import { useRoute } from 'vue-router';
 import { scroll, useMeta } from 'quasar';
 import { formatFechaCorta } from 'src/utils/zonaHoraria';
-import '../css/pages/NuestrasClases.css';
 const route = useRoute();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 const { t, locale } = useI18n();
+
+// Precios de las clases sueltas (los fija el servidor en stripe-webhook; aquí solo se muestran)
+const PRECIO_GENERAL = 32;
+const PRECIO_CONVERSACION = 27;
 
 useMeta(() => ({
   title: 'Nuestras Clases | SpanishNook',
@@ -337,14 +284,48 @@ useMeta(() => ({
   },
 }));
 
+function euros(cantidad: number): string {
+  return new Intl.NumberFormat(locale.value, {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: Number.isInteger(cantidad) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(cantidad);
+}
+
 function scrollDirecto(hash: string, offset = 80) {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const el = document.querySelector(hash) as HTMLElement | null;
   if (!el) return;
   const target = getScrollTarget(el);
   const top = el.getBoundingClientRect().top + window.scrollY - offset;
-  setVerticalScrollPosition(target, top, 0); // 0ms = instantáneo
+  setVerticalScrollPosition(target, top, 250);
 }
+
+// Botones del selector: baja a la sección y deja el ancla en la URL para compartirla
+function irA(hash: string) {
+  history.replaceState(history.state, '', hash);
+  scrollDirecto(hash);
+}
+
+const puntosIndividuales = computed(() => [
+  { titulo: t('NuestrasClases.ListaComoFuncionanInd1Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd1') },
+  { titulo: t('NuestrasClases.ListaComoFuncionanInd2Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd2') },
+  { titulo: t('NuestrasClases.ListaComoFuncionanInd3Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd3') },
+  { titulo: t('NuestrasClases.ListaComoFuncionanInd4Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd4') },
+  { titulo: t('NuestrasClases.ListaComoFuncionanInd5'), texto: '' },
+]);
+
+const puntosGrupos = computed(() =>
+  [1, 2, 3, 4, 5].map((n) => ({
+    titulo: t(`NuestrasClases.ListaComoFuncionanGrupos${n}Bold`),
+    texto: t(`NuestrasClases.ListaComoFuncionanGrupos${n}`),
+  })),
+);
+
+const logrosGrupos = computed(() =>
+  [1, 2, 3, 4, 5, 6].map((n) => t(`NuestrasClases.Logro${n}Grupales`)),
+);
 
 const cursosPromo = ref<
   Array<{
@@ -367,6 +348,21 @@ const cursosPromo = ref<
 >([]);
 
 type CursoPromo = (typeof cursosPromo.value)[number];
+
+// Precio mensual más bajo de los grupos de suscripción con precio visible
+const precioMinimoGrupos = computed(() => {
+  const precios = cursosPromo.value
+    .filter((c) => c.tipoCurso !== 'cerrado' && c.showPrice)
+    .map((c) => Number(String(c.price).replace(',', '.')))
+    .filter((p) => Number.isFinite(p) && p > 0);
+  return precios.length ? euros(Math.min(...precios)) : '';
+});
+
+const resumenGrupos = computed(() => {
+  if (precioMinimoGrupos.value) return t('PaginaClases.desdePorMes', { precio: precioMinimoGrupos.value });
+  if (cursosPromo.value.length) return t('PaginaClases.gruposAbiertosN', { n: cursosPromo.value.length });
+  return t('PaginaClases.proximosGrupos');
+});
 
 // Cursos de fechas cerradas: precio total y fechas en vez del precio mensual
 const precioTotalCurso = (c: CursoPromo): string => {
@@ -404,8 +400,6 @@ async function cargarCursosPromo(): Promise<void> {
       mostrar_precio,
       precio_curso,
       precio_original,
-      usuarios,
-      max_estudiantes,
       fecha_inicio,
       fecha_fin,
       tipo_curso,
@@ -425,53 +419,31 @@ async function cargarCursosPromo(): Promise<void> {
     ['Activo', 'Completo', 'Lista de espera'].includes(c.estado_curso ?? 'Activo'),
   );
 
-  cursosPromo.value = visibles.map((c) => {
-    const numUsuarios = Array.isArray(c.usuarios) ? c.usuarios.length : 0;
-    const maxEstudiantes = c.max_estudiantes || 0;
-    const estadoCurso = c.estado_curso || 'Activo';
-
-    let buttonLink = '';
-
-    if (estadoCurso === 'Completo' || estadoCurso === 'Lista de espera') {
-      buttonLink = `/ReservasCursos?id=${c.id}`;
-    } else if (estadoCurso === 'Activo') {
-      if (numUsuarios >= maxEstudiantes) {
-        buttonLink = `/ReservasCursos?id=${c.id}`;
-      } else {
-        buttonLink = `/ReservasCursos?id=${c.id}`;
-      }
-    } else {
-      buttonLink = `/ReservasCursos?id=${c.id}`;
-    }
-
-    return {
-      id: c.id,
-      imagen_tarjeta: (c.imagen_tarjeta ?? '').replace(/^['"]|['"]$/g, '').trim(),
-      titulo_tarjeta: c.titulo_tarjeta ?? '',
-      texto_tarjeta: c.texto_tarjeta ?? '',
-      boton_tarjeta: c.boton_tarjeta ?? t('NuestrasClases.reservar'),
-      showPromo: c.mostrar_promo ?? false,
-      promoText: c.texto_promo ?? t('NuestrasClases.pruebaTuClaseGratis'),
-      showPrice: c.mostrar_precio ?? false,
-      price: c.precio_curso ?? '',
-      originalPrice: c.precio_original ?? '',
-      buttonLink,
-      fechaInicio: c.fecha_inicio ?? '',
-      tipoCurso: c.tipo_curso ?? 'suscripcion',
-      precioTotalCentimos: c.precio_total_centimos ?? null,
-      fechaFin: c.fecha_fin ?? '',
-    };
-  });
+  cursosPromo.value = visibles.map((c) => ({
+    id: c.id,
+    imagen_tarjeta: (c.imagen_tarjeta ?? '').replace(/^['"]|['"]$/g, '').trim(),
+    titulo_tarjeta: c.titulo_tarjeta ?? '',
+    texto_tarjeta: c.texto_tarjeta ?? '',
+    boton_tarjeta: c.boton_tarjeta ?? t('NuestrasClases.reservar'),
+    showPromo: c.mostrar_promo ?? false,
+    promoText: c.texto_promo ?? t('NuestrasClases.pruebaTuClaseGratis'),
+    showPrice: c.mostrar_precio ?? false,
+    price: c.precio_curso ?? '',
+    originalPrice: c.precio_original ?? '',
+    // Todas las tarjetas llevan a la ficha del curso (allí se ve si hay plazas o lista de espera)
+    buttonLink: `/ReservasCursos?id=${c.id}`,
+    fechaInicio: c.fecha_inicio ?? '',
+    tipoCurso: c.tipo_curso ?? 'suscripcion',
+    precioTotalCentimos: c.precio_total_centimos ?? null,
+    fechaFin: c.fecha_fin ?? '',
+  }));
 }
 
 onMounted(async () => {
   await cargarCursosPromo();
   if (route.hash) {
     await nextTick();
-    if (route.hash) {
-      await nextTick();
-      scrollDirecto(route.hash);
-    }
+    scrollDirecto(route.hash);
   }
 });
 watch(
@@ -482,52 +454,347 @@ watch(
 );
 </script>
 
-<style>
-.modalidad-card {
-  border-radius: var(--sn-r-tarjeta);
-  padding: 24px 20px;
-  height: 100%;
+<style scoped>
+.cl-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+}
+
+/* Tipografía */
+.cl-h1 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--sn-burdeos);
+  margin: 0 0 16px;
   text-align: center;
 }
-
-.lista-funcionamiento {
+.cl-h2 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--sn-tinta);
+  margin: 0 0 16px;
+}
+.cl-h3 {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+.cl-antetitulo {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-peq);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sn-burdeos);
+  margin: 0 0 8px;
+}
+.cl-entrada {
+  font-size: var(--sn-t-entrada);
+  line-height: 1.55;
+  max-width: var(--sn-prosa);
+  margin: 0 auto;
+  text-align: center;
+  color: var(--sn-tinta-suave);
+}
+.cl-entrada strong {
+  color: var(--sn-tinta);
+}
+.cl-parrafo {
+  font-size: var(--sn-t-cuerpo);
   line-height: 1.6;
+  margin: 0 0 12px;
+}
+.cl-destacado {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  color: var(--sn-burdeos);
+}
+.cl-subtitulo {
+  margin: 48px 0 20px;
+  color: var(--sn-tinta);
 }
 
-.lista-funcionamiento li + li {
-  margin-top: 6px;
+/* 1. Cabecera y selector */
+.cl-cabecera {
+  padding-top: clamp(32px, 6vw, 64px);
+  padding-bottom: clamp(32px, 6vw, 56px);
 }
-
-.anim-group-col {
+.cl-selector {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 32px;
+}
+@media (min-width: 700px) {
+  .cl-selector {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+}
+.cl-opcion {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 24px;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+  color: var(--sn-tinta);
+  text-decoration: none;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+.cl-opcion:hover {
+  box-shadow: var(--sn-sombra-alta);
+  border-color: var(--sn-burdeos);
+  transform: translateY(-2px);
+}
+.cl-opcion__icono {
+  font-size: 32px;
+  color: var(--sn-burdeos);
+  background: var(--sn-burdeos-tenue);
+  border-radius: 50%;
+  padding: 10px;
+  margin-bottom: 6px;
+}
+.cl-opcion__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h3);
+  font-weight: 700;
+}
+.cl-opcion__linea {
+  color: var(--sn-tinta-suave);
+  line-height: 1.5;
+}
+.cl-opcion__precio {
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h4);
+  font-weight: 700;
+  color: var(--sn-burdeos);
+  margin-top: 6px;
+}
+.cl-opcion__ir {
+  display: inline-flex;
   align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 12px;
+  font-weight: 700;
+  color: var(--sn-burdeos);
+}
+
+/* Secciones */
+.cl-seccion {
+  padding-block: var(--sn-seccion);
+  border-top: 1px solid var(--sn-borde);
+  scroll-margin-top: 80px;
+}
+.cl-seccion--grupos {
+  background: var(--sn-sello-tenue);
+}
+
+/* Imagen + texto de cada sección */
+.cl-intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: center;
+}
+.cl-intro__img {
+  width: 100%;
+  max-width: 360px;
+  justify-self: center;
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+}
+@media (min-width: 900px) {
+  .cl-intro {
+    grid-template-columns: 360px 1fr;
+    gap: 48px;
+  }
+  .cl-intro--invertida {
+    grid-template-columns: 1fr 360px;
+  }
+  .cl-intro--invertida .cl-intro__img {
+    order: 2;
+  }
+}
+
+/* Modalidades 1:1 */
+.cl-modalidades {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 40px;
+}
+@media (min-width: 700px) {
+  .cl-modalidades {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.cl-modalidad {
+  display: flex;
+  flex-direction: column;
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-top: 6px solid var(--sn-sello);
+  border-radius: var(--sn-r-tarjeta);
+  overflow: hidden;
+  box-shadow: var(--sn-sombra);
+}
+.cl-modalidad__img {
+  height: 180px;
+  background: var(--sn-sello-tenue);
+}
+.cl-modalidad__cuerpo {
+  padding: 20px 22px 8px;
+}
+.cl-modalidad__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+.cl-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-sello-tenue);
+  color: var(--sn-sello);
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Listas con checks */
+.cl-checks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px 32px;
+}
+@media (min-width: 700px) {
+  .cl-checks {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.cl-checks--una {
+  grid-template-columns: 1fr !important;
+  padding: 8px 20px 20px;
+}
+.cl-checks li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+.cl-checks__icono {
+  flex: none;
+  font-size: 20px;
+  margin-top: 2px;
+  color: var(--sn-oliva);
+}
+
+/* Botones y acciones */
+.cl-acciones {
+  display: flex;
   justify-content: center;
+  margin: 40px 0 32px;
+}
+.cl-boton {
+  border-radius: var(--sn-r-boton);
+  font-weight: 700;
+  padding-inline: 20px;
 }
 
-/* Eliminados los anchos 100vw forzados: desbordaban la página y pegaban el texto a los bordes */
-
-.oval-btn-lg {
-  min-width: 220px;
-  padding-left: 32px;
-  padding-right: 32px;
+/* Avisos (packs, sin grupos abiertos) */
+.cl-aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 20px;
+  padding: 20px 24px;
 }
-
-/* Párrafos principales un poco más grandes y responsive */
-.hero-text {
-  font-size: 1rem;
+.cl-aviso--vacio {
+  background: var(--sn-hoja);
+  border: 1px dashed var(--sn-sello);
+  border-radius: var(--sn-r-tarjeta);
+}
+.cl-aviso__icono {
+  font-size: 36px;
+  color: var(--sn-burdeos);
+}
+.cl-aviso__texto {
+  flex: 1 1 240px;
+}
+.cl-aviso__titulo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-h4);
+  margin: 0 0 4px;
+}
+.cl-aviso__linea {
+  margin: 0;
+  color: var(--sn-tinta-suave);
   line-height: 1.5;
 }
 
-@media (min-width: 768px) {
-  .hero-text {
-    font-size: 1.15rem;
-  }
+/* Grupos abiertos */
+.cl-cursos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+.cl-cursos :deep(.q-card) {
+  height: 100%;
 }
 
-@media (min-width: 1200px) {
-  .hero-text {
-    font-size: 1.25rem;
+/* Desplegables de detalles */
+.cl-detalles {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 40px;
+}
+@media (min-width: 900px) {
+  .cl-detalles {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
+}
+.cl-desplegable {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  overflow: hidden;
+}
+.cl-desplegable :deep(.cl-desplegable__cabecera) {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: var(--sn-t-h4);
+  color: var(--sn-tinta);
+  min-height: 60px;
+}
+.cl-desplegable :deep(.q-item__section--avatar .q-icon) {
+  color: var(--sn-sello);
+}
+.cl-desplegable :deep(.q-expansion-item__toggle-icon) {
+  color: var(--sn-tinta-suave) !important;
+  font-size: 1.6rem !important;
 }
 </style>

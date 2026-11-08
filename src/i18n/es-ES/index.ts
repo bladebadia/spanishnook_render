@@ -205,6 +205,28 @@ export default {
   indexContactanos: 'Contáctanos',
 
   // Sección nuestras clases
+  PaginaClases: {
+    individualesTitulo: 'Clases individuales',
+    individualesLinea: 'Clases 1 a 1 a tu medida, el día y la hora que tú elijas.',
+    desdePorClase: 'Desde {precio} / clase',
+    verIndividuales: 'Ver clases individuales',
+    gruposTitulo: 'Cursos en grupo',
+    gruposLinea: 'Conversación en grupos reducidos, una vez por semana.',
+    desdePorMes: 'Desde {precio} / mes',
+    gruposAbiertosN: '{n} grupo abierto | {n} grupos abiertos',
+    proximosGrupos: 'Próximos grupos en preparación',
+    verGrupos: 'Ver cursos en grupo',
+    porClase: '{precio} / clase',
+    comoFuncionanIndividuales: 'Cómo funcionan',
+    reservarClase: 'Reservar una clase',
+    packsTitulo: 'Packs de 5 y 10 clases',
+    packsTexto: 'Paga por adelantado, ahorra hasta 48 € y usa tus créditos cuando quieras.',
+    verPacks: 'Ver packs',
+    gruposAbiertos: 'Grupos abiertos',
+    sinGrupos: 'Ahora mismo no hay grupos abiertos',
+    sinGruposTexto: 'Escríbenos y te avisamos en cuanto abra el próximo grupo de tu nivel.',
+    avisame: 'Quiero que me aviséis',
+  },
   NuestrasClases: {
     promoPromoPacks: '¡Más créditos, más ahorro!',
     botonReservaUnica: 'RESERVA TU CLASE',
