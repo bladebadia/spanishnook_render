@@ -53,7 +53,7 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 2. Probar: registro y confirmación de email, reset de contraseña, login con Google, borrar cuenta, pago de clase con tarjeta, compra de bono, compra de material y descarga del PDF, suscripción mensual, flujos de admin, formulario de contacto, web en inglés.
 3. ~~Plantillas de correo de Supabase Auth~~ Subidas el 8-nov (`supabase/auth-correos/`, se despliegan con `desplegar.ts`); idioma por `user_metadata.idioma`.
 4. ~~Bucket `pdfs_materiales`: política de lectura~~ Aplicada y probada el 8-nov.
-5. `AuthCallback.vue` (login con Google) ignora `?redirect=`.
+5. ~~`AuthCallback.vue` ignora `?redirect=`~~ Resuelto en `rediseno`. Login con Google: botón hecho pero apagado (`LOGIN_GOOGLE_ACTIVO` en `src/utils/acceso.ts`). Para activarlo: cliente OAuth en Google Cloud, proveedor Google en Supabase y aplicar `supabase/migraciones-pendientes/20261109100000_nombre_usuarios_google.sql`.
 6. Mensaje de contraseña "vocal/mayúscula" en el registro.
 7. Error de hidratación SSR en `IndexPage.vue`.
 8. Plazas de curso cerrado: el control no es atómico (dos pagos simultáneos pueden superar el máximo; el webhook reembolsa al que sobra).
