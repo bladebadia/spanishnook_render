@@ -7,8 +7,7 @@ import {
 } from 'vue-router';
 import { watch } from 'vue';
 import routes from './routes';
-import { supabase } from 'src/supabaseClient';
-import { useAuth } from 'src/stores/auth';
+import { obtenerSesion, useAuth } from 'src/stores/auth';
 
 /*
  * If not building with SSR mode, you can
@@ -80,12 +79,11 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
     if (requiresAuth) {
-      // Verificar la sesión actual
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      // Verificar la sesión actual; si no se puede leer (AbortError), vale la ya conocida
+      const sesion = await obtenerSesion();
+      const conSesion = sesion === undefined ? !!useAuth().user.value : !!sesion;
 
-      if (!session) {
+      if (!conSesion) {
         // No hay sesión válida, redirigir a login
         next({
           path: '/Acceder',

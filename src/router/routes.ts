@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { supabase } from 'src/supabaseClient';
+import { obtenerSesion, useAuth } from 'src/stores/auth';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,17 +17,17 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/PanelAdministracion.vue'),
     beforeEnter: async () => {
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+        const sesion = await obtenerSesion();
+        // Si no se pudo leer (AbortError), vale el usuario ya conocido
+        const usuario = sesion === undefined ? useAuth().user.value : sesion?.user;
 
         // Si no hay sesión iniciada, a la página de login
-        if (!session || !session.user) {
+        if (!usuario) {
           return '/Acceder';
         }
 
         // Miramos directamente dentro de la sesión si tiene la chapa de admin
-        const isAdmin = session.user.app_metadata?.is_admin === true;
+        const isAdmin = usuario.app_metadata?.is_admin === true;
 
         if (!isAdmin) {
           console.warn('Acceso denegado: el usuario no es admin.');

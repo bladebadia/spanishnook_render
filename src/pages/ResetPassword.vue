@@ -104,11 +104,8 @@ const serverPasswordError = ref(''); // Error específico del input
 const success = ref(false);
 const mostrarErrores = ref(false);
 
-// 🔥 REGLA DE VALIDACIÓN CORREGIDA (Igual que Registro: 6 chars, número, vocal)
-// (?=.*\d) -> Al menos un dígito
-// (?=.*[aeiouAEIOU]) -> Al menos una vocal
-// .{6,} -> Longitud mínima de 6
-const passwordRegex = /^(?=.*[aeiouAEIOU])(?=.*\d).{6,}$/;
+// Igual que el registro: mínimo 8 caracteres y al menos un número
+const passwordRegex = /^(?=.*\d).{8,}$/;
 
 const passwordValida = computed(() => passwordRegex.test(nuevaPassword.value));
 const passwordError = computed(() => !passwordValida.value);

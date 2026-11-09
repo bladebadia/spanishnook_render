@@ -50,8 +50,8 @@
           <q-separator />
 
           <q-card-section>
-            <div class="text-body2 q-mb-sm">
-              {{ t('reservasCursos.sinDescripcion') }}
+            <div class="text-body2 q-mb-sm" style="white-space: pre-line">
+              {{ curso.descripcion || t('reservasCursos.sinDescripcion') }}
             </div>
 
             <div v-if="esCerrado" class="sn-nota q-pa-md q-mt-md">
@@ -254,6 +254,14 @@
               <div v-if="autenticado">
                 <div v-if="!yaEnListaEspera">
                   <p>{{ t('reservasCursos.apuntate') }}</p>
+                  <q-checkbox
+                    v-model="aceptaCondiciones"
+                    :label="t('reservasCursos.acepto')"
+                    dense
+                    size="sm"
+                    class="q-mb-md"
+                  />
+                  <br />
                   <q-btn
                     color="primary"
                     icon="event_available"
@@ -261,14 +269,7 @@
                     :loading="reservando"
                     :label="t('reservasCursos.unirme')"
                     @click="confirmarReservaAutenticado"
-                    class="q-px-xl q-mb-md"
-                  />
-                  <br />
-                  <q-checkbox
-                    v-model="aceptaCondiciones"
-                    :label="t('reservasCursos.acepto')"
-                    dense
-                    size="sm"
+                    class="q-px-xl"
                   />
                 </div>
                 <q-banner v-else dense class="bg-orange-1 text-orange-9 q-mt-md rounded-borders">
@@ -293,6 +294,13 @@
                     filled
                     class="q-mb-sm"
                   />
+                  <q-checkbox
+                    v-model="aceptaCondicionesGuest"
+                    :label="t('reservasCursos.aceptarTerminos')"
+                    class="q-my-sm"
+                    dense
+                    size="sm"
+                  />
                   <q-btn
                     color="primary"
                     :disable="!formGuestValido || reservando"
@@ -300,13 +308,6 @@
                     :label="t('reservasCursos.avisadme')"
                     @click="confirmarReservaGuest"
                     class="q-mt-sm full-width"
-                  />
-                  <q-checkbox
-                    v-model="aceptaCondicionesGuest"
-                    :label="t('reservasCursos.aceptarTerminos')"
-                    class="q-mt-md"
-                    dense
-                    size="sm"
                   />
                 </div>
                 <q-banner v-else dense class="bg-orange-1 text-orange-9 q-mt-sm">
@@ -417,6 +418,7 @@ const zonaHorariaUsuario = ref('');
 interface Curso {
   id: number;
   nombre_curso: string;
+  descripcion?: string | null;
   estado_curso: string;
   max_estudiantes?: number;
   dias_semana: string[];

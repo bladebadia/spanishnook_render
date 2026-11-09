@@ -1,6 +1,6 @@
 // src/stores/auth.ts
 import { ref } from 'vue';
-import type { User } from '@supabase/supabase-js';
+import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from 'src/supabaseClient';
 import { guardarIdiomaEnCuenta, idiomaActualCliente } from 'src/utils/idioma';
 
@@ -25,23 +25,33 @@ export function useAuth() {
   return { user, logout, isInitialized };
 }
 
+/**
+ * Sesión actual tolerante a AbortError.
+ * Con dos pestañas abiertas, supabase-js puede "robar" el bloqueo de la sesión a la otra y
+ * getSession() lanza AbortError. Sin capturarlo, el router no arrancaba y la página quedaba en
+ * blanco. Se reintenta; si sigue fallando, devuelve `undefined` (desconocida, no "sin sesión").
+ */
+export async function obtenerSesion(): Promise<Session | null | undefined> {
+  for (let intento = 0; intento < 3; intento++) {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (!error) return data.session;
+    } catch (err) {
+      if (!(err instanceof Error && err.name === 'AbortError')) throw err;
+    }
+    await new Promise((r) => setTimeout(r, 300 * (intento + 1)));
+  }
+  return undefined;
+}
+
 // Solo ejecutar inicialización en el cliente
 if (typeof window !== 'undefined') {
   // Inicializar sesión con retry en caso de lock conflict
   const initializeSession = async () => {
     try {
-      const { data, error } = await supabase.auth.getSession();
-      
-      if (error) {
-        // Si es un error de lock, ignorarlo silenciosamente
-        if (error.message?.includes('LockManager')) {
-          console.warn('Lock conflict detectado, ignorando...');
-        } else {
-          console.error('Error al obtener sesión:', error);
-        }
-      } else {
-        user.value = data.session?.user ?? null;
-      }
+      const sesion = await obtenerSesion();
+      // undefined: no se pudo leer; onAuthStateChange la rellenará
+      if (sesion !== undefined) user.value = sesion?.user ?? null;
     } catch (err) {
       console.error('Error al obtener sesión:', err);
     } finally {

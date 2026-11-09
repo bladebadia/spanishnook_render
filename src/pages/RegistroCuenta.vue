@@ -7,6 +7,7 @@
         color="primary"
         animated
         flat
+        alternative-labels
         class="no-shadow rounded-borders"
         header-class="text-weight-bold"
       >
@@ -44,10 +45,10 @@
               :type="mostrarPass ? 'text' : 'password'"
               outlined
               dense
+              :hint="t('flecos.requisitosPassword')"
               :rules="[
-                (val) => (val && val.length > 5) || t('registro.errorMinCaracteres'),
+                (val) => (val && val.length >= 8) || t('registro.errorMinCaracteres'),
                 (val) => /\d/.test(val) || t('registro.errorAlMenosUnNumero'),
-                (val) => /[aeiouAEIOU]/.test(val) || t('registro.errorAlMenosUnaVocal'),
               ]"
             >
               <template v-slot:prepend><q-icon name="lock" color="primary" /></template>
@@ -500,6 +501,21 @@ const registrarUsuario = async () => {
 </script>
 
 <style scoped>
+/* Cabecera de pasos: los tres en una fila también en móvil */
+:deep(.q-stepper__header) {
+  flex-wrap: nowrap;
+}
+:deep(.q-stepper__tab) {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-inline: 4px;
+}
+:deep(.q-stepper__title) {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+}
+
 .my-card {
   border-radius: 16px;
 }

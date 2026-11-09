@@ -32,7 +32,7 @@
             outlined
             dense
             :error="credencialesError"
-            :error-message="credencialesError ? t('accederForm.credencialesIncorrectas') : ''"
+            :error-message="mensajeError"
           >
             <template v-slot:prepend>
               <q-icon name="lock" color="primary" />
@@ -149,7 +149,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { supabase } from '../supabaseClient';
 import { useI18n } from 'vue-i18n';
@@ -164,7 +164,9 @@ const route = useRoute();
 const email = ref('');
 const password = ref('');
 const loading = ref(false);
-const credencialesError = ref(false);
+// Mensaje bajo la contraseña; vacío = sin error
+const mensajeError = ref('');
+const credencialesError = computed(() => mensajeError.value !== '');
 const passwordVisible = ref(false);
 const { t } = useI18n();
 const { login: trackLogin } = useAnalytics();
@@ -209,29 +211,33 @@ const enviarLinkRecuperacion = async () => {
     mostrarDialogoConfirmacion.value = true;
   } catch (error: unknown) {
     // 🔥 CORREGIDO: unknown para evitar warnings
+    // El texto de Supabase viene en inglés: al usuario, siempre el nuestro
     console.error('Error enviando email:', error);
-    if (error instanceof Error) {
-      errorRecuperacion.value = error.message;
-    } else {
-      errorRecuperacion.value = t('accederForm.errorEnviarEmail');
-    }
+    errorRecuperacion.value = t('accederForm.errorEnviarEmail');
   } finally {
     loadingRecuperacion.value = false;
   }
 };
 
 async function login() {
+  mensajeError.value = '';
+  if (!email.value.trim() || !password.value) {
+    mensajeError.value = t('accederForm.faltanDatos');
+    return;
+  }
   loading.value = true;
-  credencialesError.value = false;
 
   try {
     const { error } = await supabase.auth.signInWithPassword({
-      email: email.value,
+      email: email.value.trim(),
       password: password.value,
     });
 
     if (error) {
-      credencialesError.value = true;
+      mensajeError.value =
+        error.code === 'email_not_confirmed'
+          ? t('accederForm.emailSinConfirmar')
+          : t('accederForm.credencialesIncorrectas');
       console.error('Error login:', error.message);
       return;
     }
@@ -243,7 +249,7 @@ async function login() {
     await router.push(destinoTrasLogin());
   } catch (error) {
     console.error('Error inesperado:', error);
-    credencialesError.value = true;
+    mensajeError.value = t('accederForm.credencialesIncorrectas');
   } finally {
     loading.value = false;
   }

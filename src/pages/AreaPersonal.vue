@@ -672,7 +672,7 @@
               </q-card>
 
               <q-form @submit="verificarYCambiarPassword" class="row q-col-gutter-md items-end">
-                <div class="col-12 col-md-4">
+                <div v-if="tieneContrasena" class="col-12 col-md-4">
                   <div class="text-subtitle2 text-grey-8 q-mb-xs">
                     {{ t('personal.contraseñaActual') }}
                   </div>
@@ -693,7 +693,7 @@
                     type="password"
                     dense
                     outlined
-                    :placeholder="t('personal.minimo6')"
+                    :placeholder="t('flecos.requisitosPassword')"
                   />
                 </div>
                 <div class="col-12 col-md-4">
@@ -764,8 +764,10 @@
                   <q-form @submit="eliminarCuenta" class="row items-end q-gutter-md">
                     <q-input
                       v-model="passwordConfirm"
-                      type="password"
-                      :label="t('personal.confirmaTuContrasena')"
+                      :type="tieneContrasena ? 'password' : 'email'"
+                      :label="
+                        tieneContrasena ? t('personal.confirmaTuContrasena') : t('personal.escribeTuEmail')
+                      "
                       outlined
                       dense
                       class="col-12 col-md-6"
@@ -836,6 +838,12 @@ const seccionesMovil = computed(() => [
   { id: 'eliminar', icono: 'delete_outline', texto: t('personal.eliminarCuenta') },
 ]);
 const passwordConfirm = ref('');
+// ¿La cuenta tiene contraseña? Las creadas con Google no (solo identidad 'google')
+const tieneContrasena = computed(() => {
+  const proveedores = user.value?.app_metadata?.providers;
+  if (Array.isArray(proveedores)) return proveedores.includes('email');
+  return user.value?.identities?.some((i) => i.provider === 'email') ?? true;
+});
 const deleting = ref(false);
 const cargandoSaldo = ref(true);
 
@@ -1182,11 +1190,16 @@ const eliminarCuenta = async () => {
   if (!passwordConfirm.value) return;
   deleting.value = true;
   try {
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: user.value.email,
-      password: passwordConfirm.value,
-    });
-    if (signInError) throw new Error(t('personal.contrasenaIncorrecta'));
+    if (tieneContrasena.value) {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.value.email,
+        password: passwordConfirm.value,
+      });
+      if (signInError) throw new Error(t('personal.contrasenaIncorrecta'));
+    } else if (passwordConfirm.value.trim().toLowerCase() !== user.value.email.toLowerCase()) {
+      // Cuenta de Google sin contraseña: se confirma escribiendo el email
+      throw new Error(t('personal.emailNoCoincide'));
+    }
     const { error } = await supabase.functions.invoke('delete-account', { body: {} });
     if (error) throw error;
     $q.notify({ type: 'positive', message: t('personal.cuentaEliminada') });
@@ -1207,12 +1220,13 @@ const verificarYCambiarPassword = async () => {
 
   // 2. Validaciones manuales ANTES de tocar la base de datos
   // Así evitamos mensajes de error permanentes en los inputs
-  if (!passForm.value.current) {
+  if (tieneContrasena.value && !passForm.value.current) {
     $q.notify({ type: 'warning', message: t('personal.introduceContraseñaActual') });
     return;
   }
-  if (passForm.value.new.length < 6) {
-    $q.notify({ type: 'warning', message: t('personal.minimo6') });
+  // Mismas reglas que el registro: mínimo 8 caracteres y al menos un número
+  if (!/^(?=.*\d).{8,}$/.test(passForm.value.new)) {
+    $q.notify({ type: 'warning', message: t('flecos.requisitosPassword') });
     return;
   }
   if (passForm.value.new !== passForm.value.confirm) {
@@ -1222,13 +1236,15 @@ const verificarYCambiarPassword = async () => {
 
   loadingPass.value = true;
   try {
-    const { error: loginError } = await supabase.auth.signInWithPassword({
-      email: user.value.email,
-      password: passForm.value.current,
-    });
-
-    if (loginError) {
-      throw new Error(t('personal.passwordActualIncorrecta'));
+    // Cuenta de Google sin contraseña: la crea directamente (la sesión ya la identifica)
+    if (tieneContrasena.value) {
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: user.value.email,
+        password: passForm.value.current,
+      });
+      if (loginError) {
+        throw new Error(t('personal.passwordActualIncorrecta'));
+      }
     }
     const { error: updateError } = await supabase.auth.updateUser({
       password: passForm.value.new,
