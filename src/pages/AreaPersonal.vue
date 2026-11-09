@@ -70,7 +70,7 @@
             </nav>
 
             <q-card class="menu-card no-shadow border-gray gt-sm">
-              <q-list separator>
+              <q-list class="q-py-sm">
                 <!-- GRUPO 1: FORMACIÓN -->
                 <q-item-label
                   header
@@ -232,7 +232,7 @@
                     <q-item
                       v-for="reserva in reservasConfirmadas"
                       :key="reserva.id"
-                      class="q-py-md"
+                      class="q-py-md ap-reserva"
                     >
                       <q-item-section avatar v-if="modoSeleccion">
                         <q-checkbox
@@ -246,7 +246,7 @@
                         </q-checkbox>
                       </q-item-section>
 
-                      <q-item-section avatar v-else style="min-width: 100px">
+                      <q-item-section avatar v-else class="ap-reserva__icono" style="min-width: 100px">
                         <img
                           :src="getIconoPersonalizado(reserva.tipo)"
                           :alt="t('personal.iconoClase')"
@@ -254,7 +254,7 @@
                         />
                       </q-item-section>
 
-                      <q-item-section>
+                      <q-item-section class="ap-reserva__texto">
                         <q-item-label class="text-weight-bold text-subtitle1">{{
                           formatFecha(reserva.fecha, reserva.hora)
                         }}</q-item-label>
@@ -282,7 +282,7 @@
                         </div>
                       </q-item-section>
 
-                      <q-item-section side v-if="!modoSeleccion">
+                      <q-item-section side v-if="!modoSeleccion" class="ap-reserva__accion">
                         <q-btn
                           v-if="reserva.meet_link"
                           type="a"
@@ -1447,6 +1447,25 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Reservas en móvil: sin icono y con el botón debajo, para que la fecha respire */
+@media (max-width: 599px) {
+  .ap-reserva {
+    flex-wrap: wrap;
+  }
+  .ap-reserva__icono {
+    display: none;
+  }
+  .ap-reserva__texto {
+    flex: 1 1 calc(100% - 48px);
+    min-width: 0;
+  }
+  .ap-reserva__accion {
+    width: 100%;
+    align-items: flex-start;
+    padding-left: 0;
+    margin-top: 10px;
+  }
+}
 .ap-aviso {
   display: flex;
   flex-wrap: wrap;
@@ -1484,6 +1503,12 @@ onMounted(() => {
 }
 
 /* Menú de escritorio: sección activa como en el menú lateral */
+.menu-card :deep(.q-item__section--avatar) {
+  min-width: 36px;
+}
+.menu-card :deep(.q-item__label--header) {
+  padding: 12px 16px 4px;
+}
 .menu-card :deep(.q-item) {
   border-radius: 10px;
   margin: 2px 8px;
