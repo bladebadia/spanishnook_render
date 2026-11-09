@@ -196,7 +196,6 @@ import {
   zonaUsuario,
 } from 'src/utils/zonaHoraria';
 
-import '../css/pages/ClasesIndividuales.css';
 import '../css/pages/EstilosGenerales.css';
 
 // --- Inicialización ---
