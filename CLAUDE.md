@@ -58,5 +58,5 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 7. Error de hidratación SSR en `IndexPage.vue`.
 8. Plazas de curso cerrado: el control no es atómico (dos pagos simultáneos pueden superar el máximo; el webhook reembolsa al que sobra).
 9. Tarea diaria que pase a 'Finalizado' los cursos cerrados con `fecha_fin` pasada.
-10. Rediseño visual real: inicio (hero con CTAs, precios visibles, vídeo de Paula), área personal.
+10. Rediseño visual: hecho en `rediseno` (todas las páginas, menú móvil, área personal, carrito, legales), **sin subir a `master` hasta que Paula lo apruebe**. Revisado con sesión en local. Ideas pendientes: menos tarjetas con borde, usar el burdeos solo en acciones y títulos, foto de Paula en inicio y Clases, ficha de curso (`/ReservasCursos`) sin revisar por falta de curso real.
 11. Añadir `.gitattributes` (`* text=auto eol=lf`): el repo mezcla CRLF y LF.
