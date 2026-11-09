@@ -248,6 +248,29 @@ export function formatFechaClaseLocal(
   return capitalizar(txt);
 }
 
+/**
+ * Partes de la fecha de una clase en la zona del alumno, para un bloque tipo hoja de
+ * calendario. Ej.: { diaSemana: 'lun', dia: '9', mes: 'nov' }.
+ */
+export function partesFechaClaseLocal(
+  fecha: string,
+  hora: string,
+  locale = 'es-ES',
+  zona: string = zonaUsuario(),
+): { diaSemana: string; dia: string; mes: string } {
+  const inicio = instanteDesdeMadrid(fecha, hora);
+  const f = parseFecha(fecha);
+  const instante = inicio ?? (f ? new Date(Date.UTC(f[0], f[1] - 1, f[2], 12)) : new Date());
+  const tz = inicio ? zona : 'UTC';
+  const parte = (opciones: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat(locale, { timeZone: tz, ...opciones }).format(instante).replace('.', '');
+  return {
+    diaSemana: parte({ weekday: 'short' }),
+    dia: parte({ day: 'numeric' }),
+    mes: parte({ month: 'short' }),
+  };
+}
+
 const DIAS_ES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
 function normalizarDia(dia: string): string {

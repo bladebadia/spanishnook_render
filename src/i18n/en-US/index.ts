@@ -456,6 +456,8 @@ export default {
     tipoDeClase: 'Learning Modalities',
     precio: 'Price:',
     noSePuedeCancelar: 'Cannot be canceled with less than 24 hours notice',
+    yaNoSeCancela: 'Can no longer be cancelled (less than 24 h)',
+    horaMadrid: 'Madrid: {hora}',
     cancelarReserva: ' Cancel',
     bloqueado: 'Blocked',
     claseNormal: 'General Class',

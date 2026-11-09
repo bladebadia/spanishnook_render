@@ -464,6 +464,8 @@ export default {
     misReservasConfirmadas: 'Mis reservas confirmadas',
     noTienesReservas: 'No tienes reservas confirmadas.',
     noSePuedeCancelar: 'No se puede cancelar (menos de 24 horas)',
+    yaNoSeCancela: 'Ya no se puede cancelar (menos de 24 h)',
+    horaMadrid: 'Madrid: {hora}',
     cancelarReserva: 'Cancelar',
     bloqueado: 'Bloqueado',
     tipoDeClase: 'Tipo de Clase',

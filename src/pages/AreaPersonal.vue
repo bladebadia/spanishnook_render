@@ -228,82 +228,62 @@
                 </q-card-section>
 
                 <q-card-section>
-                  <q-list separator v-if="reservasConfirmadas.length > 0">
-                    <q-item
+                  <ul v-if="reservasConfirmadas.length > 0" class="ap-lista">
+                    <li
                       v-for="reserva in reservasConfirmadas"
                       :key="reserva.id"
-                      class="q-py-md ap-reserva"
+                      class="ap-fila"
+                      :class="reserva.tipo === 'normal' ? 'sn-sello-general' : 'sn-sello-conversacion'"
                     >
-                      <q-item-section avatar v-if="modoSeleccion">
-                        <q-checkbox
-                          v-model="seleccionadas"
-                          :val="reserva.id"
-                          :disable="!puedeCancelar(reserva)"
-                        >
-                          <q-tooltip v-if="!puedeCancelar(reserva)" class="bg-negative">{{
-                            t('personal.noSePuedeCancelar')
-                          }}</q-tooltip>
-                        </q-checkbox>
-                      </q-item-section>
+                      <q-checkbox
+                        v-if="modoSeleccion"
+                        v-model="seleccionadas"
+                        :val="reserva.id"
+                        :disable="!puedeCancelar(reserva)"
+                      >
+                        <q-tooltip v-if="!puedeCancelar(reserva)">{{
+                          t('personal.noSePuedeCancelar')
+                        }}</q-tooltip>
+                      </q-checkbox>
 
-                      <q-item-section avatar v-else class="ap-reserva__icono" style="min-width: 100px">
-                        <img
-                          :src="getIconoPersonalizado(reserva.tipo)"
-                          :alt="t('personal.iconoClase')"
-                          style="width: 90px; height: 90px; object-fit: contain"
-                        />
-                      </q-item-section>
+                      <!-- Hoja de calendario con la fecha del alumno, en el color del tipo de clase -->
+                      <div class="ap-hoja" :aria-label="formatFecha(reserva.fecha, reserva.hora)">
+                        <span class="ap-hoja__semana">{{ partesFecha(reserva).diaSemana }}</span>
+                        <span class="ap-hoja__dia">{{ partesFecha(reserva).dia }}</span>
+                        <span class="ap-hoja__mes">{{ partesFecha(reserva).mes }}</span>
+                      </div>
 
-                      <q-item-section class="ap-reserva__texto">
-                        <q-item-label class="text-weight-bold text-subtitle1">{{
-                          formatFecha(reserva.fecha, reserva.hora)
-                        }}</q-item-label>
+                      <div class="ap-fila__texto">
+                        <span class="ap-fila__hora">
+                          {{ formatoHorarioLocal(reserva.fecha, reserva.hora) }}
+                        </span>
+                        <span class="ap-fila__detalle">
+                          <span class="ap-fila__tipo">{{ getTipoClaseTexto(reserva) }}</span>
+                          · {{ t('personal.horaMadrid', { hora: formatHorarioIndividual(reserva.hora) }) }}
+                        </span>
+                        <span v-if="!puedeCancelar(reserva)" class="ap-fila__nota">
+                          {{ t('personal.yaNoSeCancela') }}
+                        </span>
+                      </div>
 
-                        <q-item-label class="text-primary q-mb-xs">
-                          <q-icon name="schedule" class="q-mr-xs" />
-                          <span class="text-weight-bold" style="font-size: 1.1em">
-                            {{ formatoHorarioLocal(reserva.fecha, reserva.hora) }}
-                          </span>
-                          <span class="text-caption text-grey-7 q-ml-sm">
-                            (🇪🇸 {{ formatHorarioIndividual(reserva.hora) }} Madrid)
-                          </span>
-                        </q-item-label>
-
-                        <q-badge outline color="grey-7" class="q-mt-xs self-start">{{
-                          getTipoClaseTexto(reserva)
-                        }}</q-badge>
-
-                        <div
-                          v-if="!puedeCancelar(reserva)"
-                          class="text-negative text-caption q-mt-xs flex items-center"
-                        >
-                          <q-icon name="lock" size="xs" class="q-mr-xs" />
-                          {{ t('personal.noSePuedeCancelar') }}
-                        </div>
-                      </q-item-section>
-
-                      <q-item-section side v-if="!modoSeleccion" class="ap-reserva__accion">
-                        <q-btn
-                          v-if="reserva.meet_link"
-                          type="a"
-                          :href="reserva.meet_link"
-                          target="_blank"
-                          color="primary"
-                          icon="videocam"
-                          :label="t('personal.entrar')"
-                          unelevated
-                        />
-                        <q-chip
-                          v-else
-                          color="grey-3"
-                          text-color="grey-8"
-                          icon="hourglass_empty"
-                          :label="t('personal.pendiente')"
-                          size="sm"
-                        />
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
+                      <q-btn
+                        v-if="!modoSeleccion && reserva.meet_link"
+                        type="a"
+                        :href="reserva.meet_link"
+                        target="_blank"
+                        color="primary"
+                        unelevated
+                        no-caps
+                        icon="videocam"
+                        class="ap-fila__boton"
+                        :label="t('personal.entrar')"
+                      />
+                      <span v-else-if="!modoSeleccion" class="ap-fila__pendiente">
+                        <q-icon name="hourglass_empty" size="16px" />
+                        {{ t('personal.pendiente') }}
+                      </span>
+                    </li>
+                  </ul>
 
                   <div v-else class="column flex-center q-pa-xl text-grey-6">
                     <q-icon name="event_busy" size="60px" class="q-mb-md opacity-50" />
@@ -827,6 +807,7 @@ import {
   formatFechaCalendario,
   formatFechaClaseLocal,
   hoyMadridISO,
+  partesFechaClaseLocal,
   proximaFechaDiaSemana,
   rangoHoraLocal,
   rangoHoraMadrid,
@@ -1422,6 +1403,9 @@ const traducirDiasSemana = (dias?: string[]) => {
     .join(', ');
 };
 
+const partesFecha = (reserva: Reserva) =>
+  partesFechaClaseLocal(reserva.fecha, reserva.hora, locale.value);
+
 const getTipoClaseTexto = (reserva: Reserva): string =>
   reserva.tipo === 'normal' ? t('personal.claseNormal') : t('personal.claseConversacion');
 
@@ -1447,23 +1431,101 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Reservas en móvil: sin icono y con el botón debajo, para que la fecha respire */
-@media (max-width: 599px) {
-  .ap-reserva {
+/* Mis reservas: filas compactas con hoja de calendario */
+.ap-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.ap-fila {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--sn-borde);
+  border-radius: 12px;
+  background: var(--sn-hoja);
+}
+.ap-hoja {
+  flex: none;
+  width: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--sn-sello);
+  background: var(--sn-hoja);
+  line-height: 1.1;
+}
+.ap-hoja__semana {
+  width: 100%;
+  text-align: center;
+  background: var(--sn-sello);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 0;
+}
+.ap-hoja__dia {
+  font-family: var(--sn-fuente-titulos);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--sn-tinta);
+  padding-top: 2px;
+}
+.ap-hoja__mes {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--sn-tinta-suave);
+  text-transform: uppercase;
+  padding-bottom: 4px;
+}
+.ap-fila__texto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.35;
+}
+.ap-fila__hora {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.ap-fila__detalle {
+  font-size: var(--sn-t-peq);
+  color: var(--sn-tinta-suave);
+}
+.ap-fila__tipo {
+  color: var(--sn-sello);
+  font-weight: 700;
+}
+.ap-fila__nota {
+  font-size: 0.78rem;
+  color: var(--sn-tinta-suave);
+}
+.ap-fila__boton {
+  flex: none;
+  border-radius: var(--sn-r-boton);
+}
+.ap-fila__pendiente {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--sn-t-peq);
+  color: var(--sn-tinta-suave);
+}
+@media (max-width: 420px) {
+  .ap-fila {
     flex-wrap: wrap;
   }
-  .ap-reserva__icono {
-    display: none;
-  }
-  .ap-reserva__texto {
-    flex: 1 1 calc(100% - 48px);
-    min-width: 0;
-  }
-  .ap-reserva__accion {
+  .ap-fila__boton {
     width: 100%;
-    align-items: flex-start;
-    padding-left: 0;
-    margin-top: 10px;
   }
 }
 .ap-aviso {
