@@ -438,7 +438,7 @@ const user = ref<User | null>(null);
 const ocupacionActual = ref(0);
 
 const autenticado = computed(() => !!user.value);
-const rutaClases = '/NuestrasClases';
+const rutaClases = '/Clases';
 const rutaLogin = '/Acceder';
 const esCursoActivo = computed(() => curso.value?.estado_curso === 'Activo');
 

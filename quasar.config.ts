@@ -190,6 +190,13 @@ export default defineConfig((ctx) => {
         'QChip',
         'QOptionGroup',
         'QSpinnerDots',
+        // Usados en registro, perfil, test de nivel y administración: sin estar aquí
+        // se pintaban como etiquetas vacías (<q-btn-toggle>…) y no se veían.
+        'QBtnToggle',
+        'QBtnGroup',
+        'QLinearProgress',
+        'QCircularProgress',
+        'QPagination',
       ],
 
       // Directivas que usas

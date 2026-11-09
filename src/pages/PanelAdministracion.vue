@@ -1994,6 +1994,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/supabaseClient';
 import { fechasDelCurso, formatFechaCorta, hoyMadridISO } from 'src/utils/zonaHoraria';
+import { escaparHtml } from 'src/utils/html';
 import type { User } from '@supabase/supabase-js';
 import SubirImagen from 'src/components/SubirImagen.vue';
 
@@ -3242,12 +3243,12 @@ const confirmarCierreCurso = (curso: CursoGrupal) => {
 
   const mensajeCierre =
     curso.tipo_curso === 'cerrado'
-      ? `¿Estás seguro de finalizar el curso <b>"${curso.nombre_curso}"</b>?<br><br>
+      ? `¿Estás seguro de finalizar el curso <b>"${escaparHtml(curso.nombre_curso)}"</b>?<br><br>
     Es un curso de fechas cerradas (pago único):<br>
     1. Marcará el curso como 'Completado' y lo ocultará.<br>
     2. <b>Los pagos únicos no se devuelven automáticamente.</b><br>
     Si hay que devolver algo, hazlo desde Stripe.`
-      : `¿Estás seguro de finalizar el curso <b>"${curso.nombre_curso}"</b>?<br><br>
+      : `¿Estás seguro de finalizar el curso <b>"${escaparHtml(curso.nombre_curso)}"</b>?<br><br>
     Esto realizará las siguientes acciones:<br>
     1. Marcará el curso como 'Completado' y lo ocultará.<br>
     2. Cancelará las suscripciones de todos los alumnos activos.<br>
@@ -3357,16 +3358,16 @@ const verAlumnosCurso = async (id: number, nombre: string, tipo?: TipoCurso) => 
         const perfil = (perfiles as PerfilUsuario[] | null)?.find((p) => p.user_id === userId);
 
         if (perfil) {
-          return `• <b>${perfil.nombre} ${perfil.apellido1 || ''}</b> <br><span class="text-grey-7" style="font-size:0.85em">(${perfil.email})</span>`;
+          return `• <b>${escaparHtml(perfil.nombre)} ${escaparHtml(perfil.apellido1)}</b> <br><span class="text-grey-7" style="font-size:0.85em">(${escaparHtml(perfil.email)})</span>`;
         } else {
-          return `• <span class="text-orange">Usuario sin perfil</span> <br><span class="text-grey-7" style="font-size:0.85em">ID: ${userId}</span>`;
+          return `• <span class="text-orange">Usuario sin perfil</span> <br><span class="text-grey-7" style="font-size:0.85em">ID: ${escaparHtml(userId)}</span>`;
         }
       })
       .join('<br><br>');
 
     // Mostrar el resultado
     $q.dialog({
-      title: `<div class="text-primary text-weight-bold">👨‍🎓 Alumnos: ${nombre}</div>`,
+      title: `<div class="text-primary text-weight-bold">👨‍🎓 Alumnos: ${escaparHtml(nombre)}</div>`,
       message: listaHTML,
       html: true,
       ok: { label: 'Cerrar', flat: true, color: 'primary' },
@@ -3746,7 +3747,7 @@ const borrarDeListaEspera = (itemBorrar: ItemListaEspera) => {
 
   $q.dialog({
     title: 'Sacar de la lista',
-    message: `¿Estás seguro de quitar a <b>${itemBorrar.nombre}</b> de la lista de espera?`,
+    message: `¿Estás seguro de quitar a <b>${escaparHtml(itemBorrar.nombre)}</b> de la lista de espera?`,
     html: true,
     cancel: true,
     persistent: true,

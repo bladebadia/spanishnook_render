@@ -68,6 +68,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { escaparHtml } from 'src/utils/html';
 //import { useRoute } from 'vue-router';
 import '../css/pages/EstilosGenerales.css';
 
@@ -127,7 +128,7 @@ const computedImageStyle = computed(() => {
 });
 
 const formattedDescription = computed(() => {
-  return props.description.replace(/\n/g, '<br>');
+  return escaparHtml(props.description).replace(/\n/g, '<br>');
 });
 
 const formatFecha = (fecha: string): string => {
