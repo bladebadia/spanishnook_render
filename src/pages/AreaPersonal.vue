@@ -43,8 +43,8 @@
 
             <q-btn
               color="primary"
-              class="full-width q-mb-md shadow-2"
-              size="lg"
+              class="full-width q-mb-md"
+              no-caps
               icon="add_circle"
               :label="t('personal.nuevaReserva')"
               to="/Reservas"
@@ -1502,9 +1502,20 @@ onMounted(() => {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 2px 2px 10px;
+  padding: 2px 32px 10px 2px;
   margin-bottom: 8px;
   scrollbar-width: none;
+  /* Degradado al borde: indica que hay más pestañas al deslizar */
+  mask-image: linear-gradient(to right, #000 85%, transparent);
+}
+/* Desde 600 px (tablet, ventanas estrechas con ratón): todas visibles en varias líneas */
+@media (min-width: 600px) {
+  .ap-pestanas {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding-right: 2px;
+    mask-image: none;
+  }
 }
 .ap-pestanas::-webkit-scrollbar {
   display: none;
