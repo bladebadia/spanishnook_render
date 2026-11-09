@@ -177,7 +177,7 @@
     <q-footer class="sn-pie text-white">
       <q-no-ssr>
         <div class="footer-legal-bar">
-          <div class="footer-legal-text">{{ t('footerDerechosReservados') }}</div>
+          <div class="footer-legal-text">{{ t('footerDerechosReservados', { anio: new Date().getFullYear() }) }}</div>
           <div class="footer-legal-links">
             <router-link to="/Aviso" class="foot-link">{{ t('footerAvisoLegal') }}</router-link>
             <router-link to="/Privacidad" class="foot-link">{{
@@ -287,11 +287,17 @@ watch(
   { immediate: true },
 );
 
+// Ancho mínimo para la barra completa: con menos, las 6 opciones se partían en
+// varias líneas ("Test de nivel", "Sobre SpanishNook") y se usa el menú lateral
+const ANCHO_BARRA_COMPLETA = 1150;
+const hayBarraCompleta = () =>
+  typeof window !== 'undefined' && window.innerWidth >= ANCHO_BARRA_COMPLETA;
+
 onMounted(() => {
   if (typeof window !== 'undefined') {
     // Mostrar elementos que dependen del tamaño de pantalla
-    showMenuButton.value = $q?.screen.lt.md || false;
-    showDesktopNav.value = $q?.screen.gt.sm || false;
+    showMenuButton.value = !hayBarraCompleta();
+    showDesktopNav.value = hayBarraCompleta();
     showFooterDesktop.value = $q?.screen.gt.sm || false;
 
     // Medir altura real del header
@@ -311,8 +317,8 @@ onMounted(() => {
     // Listener para cambios de tamaño de pantalla
     const updateScreenState = () => {
       if ($q) {
-        showMenuButton.value = $q.screen.lt.md;
-        showDesktopNav.value = $q.screen.gt.sm;
+        showMenuButton.value = !hayBarraCompleta();
+        showDesktopNav.value = hayBarraCompleta();
         showFooterDesktop.value = $q.screen.gt.sm;
       }
     };
@@ -506,10 +512,14 @@ defineExpose({ $q, t });
 .nav-container {
   display: flex !important;
   align-items: center !important;
-  margin-left: 2%;
+  justify-content: flex-end;
+  margin-left: auto;
   width: 100% !important;
-  gap: 3rem !important;
-  padding: 0 3rem !important;
+  gap: clamp(0.25rem, 1.2vw, 1.5rem) !important;
+  padding: 0 1rem !important;
+}
+.nav-container .nave-btn {
+  white-space: nowrap;
 }
 
 /* También para el dropdown de Clases */

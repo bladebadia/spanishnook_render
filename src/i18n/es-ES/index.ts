@@ -24,7 +24,7 @@ export default {
   footerMapa: 'Mapa del Sitio',
   footerEnlacesInteres: 'Enlaces de Interés',
   footerInstitutoCervantes: 'Instituto Cervantes',
-  footerDerechosReservados: '© 2025 Spanishnook · Todos los derechos reservados',
+  footerDerechosReservados: '© {anio} SpanishNook · Todos los derechos reservados',
   indexeUnLugarDonde: 'Un lugar donde aprender español se siente como en casa',
   indexAprenderEspañolPuede:
     'Aprender español puede ser algo cómodo, cercano y hecho para ti. En SpanishNook encontrarás tu lugar: un espacio online con sesiones en vivo donde aprender a tu ritmo, con clases dinámicas, seguimiento personal y materiales pensados para ti. Aprende español con confianza, en un entorno donde sentirse a gusto es tan importante como progresar.',

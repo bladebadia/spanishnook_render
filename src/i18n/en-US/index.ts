@@ -27,7 +27,7 @@ export default {
   footerMapa: 'Site Map',
   footerEnlacesInteres: 'Links of Interest',
   footerInstitutoCervantes: 'Cervantes Institute',
-  footerDerechosReservados: '© 2025 SpanishNook · All rights reserved',
+  footerDerechosReservados: '© {anio} SpanishNook · All rights reserved',
   indexeUnLugarDonde: 'A place where learning Spanish feels like home',
   indexAprenderEspañolPuede:
     'Learning Spanish can be comfortable, personal, and made for you. At SpanishNook, you’ll find your place: an online space with live lessons where you can learn at your own pace, with dynamic classes, personal guidance, and materials designed for you. Learn Spanish with confidence, in an environment where feeling comfortable is just as important as making progress.',
