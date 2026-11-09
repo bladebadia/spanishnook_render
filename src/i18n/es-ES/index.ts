@@ -69,7 +69,7 @@ export default {
     'El proyecto nace de la experiencia y la pasión de Paula, profesora de español con varios años de trayectoria en la enseñanza.',
   indexDetrasDeSpanishnook3: 'SpanishNook es ese lugar donde sentirte cómodo aprendiendo.',
   indexMasSobreSpanishnook: 'Más sobre SpanishNook',
-  indexPreguntasFrecuentes: 'Preguntas frecuentes (FAQs)',
+  indexPreguntasFrecuentes: 'Preguntas frecuentes',
   indexComoFuncionanClases: '¿Cómo funcionan las clases?',
   indexTodasClasesEnVivo:
     'Todas las clases son en vivo (NO grabadas). Nos conectamos online a través de videollamada (Google Meet) en el horario acordado. Las clases privadas son 1:1, mientras que las grupales se realizan en grupos reducidos de un máximo 6 personas.',

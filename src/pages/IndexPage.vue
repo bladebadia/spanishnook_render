@@ -195,19 +195,13 @@
             :name="index"
             class="column flex-center q-px-xl"
           >
-            <q-card
-              class="carta-contenido shadow-4"
-              style="width: 100%; max-width: 320px; height: 100%; display: flex; flex-direction: column"
-            >
+            <q-card class="carta-contenido">
               <q-img :src="cuaderno.imagen_portada || '/img/Logo_rectangular_320.png'" height="200px">
                 <div
-                  v-if="cuaderno.precio === 0 || !cuaderno.precio"
-                  class="badge-hs bg-positive text-white text-weight-bold shadow-3"
+                  class="ini-material__precio"
+                  :class="{ 'ini-material__precio--gratis': !cuaderno.precio }"
                 >
-                  {{ t('MaterialesPage.gratis') }}
-                </div>
-                <div v-else class="badge-hs bg-negative text-white text-weight-bold shadow-3">
-                  {{ cuaderno.precio }} €
+                  {{ cuaderno.precio ? `${cuaderno.precio} €` : t('MaterialesPage.gratis') }}
                 </div>
               </q-img>
               <q-card-section class="col-grow text-center q-pa-md flex column justify-center">
@@ -265,81 +259,39 @@
       </div>
     </section>
 
-    <div class="faqs-section">
-      <h2 class="titulo-responsivo2 text-primary" style="margin-bottom: 32px">
-        {{ t('indexPreguntasFrecuentes') }}
-      </h2>
-      <q-expansion-item class="q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexComoFuncionanClases') }}</p>
-        </template>
-        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
-          {{ t('indexTodasClasesEnVivo') }}
+    <!-- 8. Preguntas frecuentes -->
+    <section class="ini-seccion">
+      <div class="sn-contenedor ini-faq">
+        <h2 class="ini-h2 ini-h2--centro">{{ t('indexPreguntasFrecuentes') }}</h2>
+        <div class="ini-faq__lista">
+          <q-expansion-item
+            v-for="p in preguntas"
+            :key="p.pregunta"
+            :label="t(p.pregunta)"
+            header-class="ini-faq__pregunta"
+          >
+            <p class="ini-faq__respuesta">{{ t(p.respuesta) }}</p>
+          </q-expansion-item>
         </div>
-      </q-expansion-item>
+      </div>
+    </section>
 
-      <q-expansion-item class="q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexQueNecesitoParaEmpezar') }}</p>
-        </template>
-        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
-          {{ t('indexSoloNecesito') }}
-        </div>
-      </q-expansion-item>
-
-      <q-expansion-item class="q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexPuedoCambiarDeModalidad') }}</p>
-        </template>
-        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
-          {{ t('indexClaroQueremos') }}
-        </div>
-      </q-expansion-item>
-
-      <q-expansion-item class="q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" class="faqs-icon" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexQueNivelDeEspañol') }}</p>
-        </template>
-        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
-          {{ t('indexNoNecesitoNingun') }}
-        </div>
-      </q-expansion-item>
-
-      <q-expansion-item class="q-mb-md" expand-separator>
-        <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar icon="help" color="primary" text-color="white" />
-          </q-item-section>
-          <p class="subtitulo2-responsivo q-pt-xs">{{ t('indexQuePasaSiNoPuedoAsistir') }}</p>
-        </template>
-        <div class="texto2-responsivo text-left q-px-xl q-mx-md">
-          {{ t('indexDependeraDeLaModalidad') }}
-        </div>
-      </q-expansion-item>
-    </div>
-
-    <div class="q-my-xl contacto-section flex flex-center column items-center">
-      <h2 class="titulo-responsivo text-primary">{{ t('indexAunTienesDudas') }}</h2>
-      <p class="texto-responsivo">
-        {{ t('indexEstamosAlOtroLado') }}
-      </p>
-      <q-btn color="primary" size="lg" unelevated to="/Contacto" class="oval-btn" no-caps>
-        {{ t('indexContactanos') }}
-      </q-btn>
-    </div>
-    <div class="q-my-xl"></div>
+    <!-- 9. Contacto -->
+    <section class="ini-seccion ini-seccion--papel">
+      <div class="sn-contenedor ini-contacto">
+        <h2 class="ini-h2 ini-h2--centro">{{ t('indexAunTienesDudas') }}</h2>
+        <p class="ini-entrada">{{ t('indexEstamosAlOtroLado') }}</p>
+        <q-btn
+          color="primary"
+          unelevated
+          no-caps
+          size="lg"
+          class="ini-boton q-mt-lg"
+          to="/Contacto"
+          :label="t('indexContactanos')"
+        />
+      </div>
+    </section>
 
     <q-dialog v-model="showLoginDialog">
       <q-card style="min-width: 350px">
@@ -548,6 +500,14 @@ const ofertas = computed(() => [
     sello: '',
   },
 ]);
+
+const preguntas = [
+  { pregunta: 'indexComoFuncionanClases', respuesta: 'indexTodasClasesEnVivo' },
+  { pregunta: 'indexQueNecesitoParaEmpezar', respuesta: 'indexSoloNecesito' },
+  { pregunta: 'indexPuedoCambiarDeModalidad', respuesta: 'indexClaroQueremos' },
+  { pregunta: 'indexQueNivelDeEspañol', respuesta: 'indexNoNecesitoNingun' },
+  { pregunta: 'indexQuePasaSiNoPuedoAsistir', respuesta: 'indexDependeraDeLaModalidad' },
+];
 
 const ventajas = computed(() => [
   { icono: 'videocam', texto: t('indexclasesEnVivo') },
@@ -871,12 +831,8 @@ if (process.env.CLIENT) {
     gap: 56px;
   }
 }
+/* Sin borde ni sombra: la ilustración ya es el marco */
 .ini-descubre__tarjeta {
-  background: var(--sn-hoja);
-  border: 1px solid var(--sn-borde);
-  border-radius: var(--sn-r-tarjeta);
-  box-shadow: var(--sn-sombra);
-  padding: 24px;
   text-align: center;
 }
 .ini-descubre__img {
@@ -1028,37 +984,59 @@ if (process.env.CLIENT) {
   }
 }
 
+/* 6. Materiales: hoja con el estilo común de q-card */
 .carta-contenido {
-  border-radius: 16px;
+  width: 100%;
+  max-width: 320px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
 }
-
-.carta-contenido:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-}
-
-/* Etiqueta roja en la esquina */
-.badge-hs {
+/* Precio: etiqueta discreta en tinta; gratis en verde */
+.ini-material__precio {
   position: absolute;
   top: 12px;
   right: 12px;
-  padding: 6px 16px;
-  border-radius: 20px;
-  transform: rotate(5deg);
-  border: 2px solid white;
+  padding: 4px 12px;
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-hoja);
+  color: var(--sn-tinta);
+  font-weight: 800;
+  font-size: var(--sn-t-peq);
+}
+.ini-material__precio--gratis {
+  color: var(--sn-oliva);
 }
 
-.rectangular-btn {
-  border-radius: 12px !important; /* esquinas redondeadas, no pill */
-  padding: 10px 18px !important; /* tamaño similar al original */
-  min-width: 160px; /* ancho consistente */
-  box-shadow: none !important;
-  font-size: 1.5rem;
-  font-weight: 800;
+/* 8. Preguntas frecuentes: lista con líneas, sin iconos */
+.ini-faq {
+  max-width: 820px;
+}
+.ini-faq__lista {
+  border-top: 1px solid var(--sn-borde);
+}
+.ini-faq__lista > .q-expansion-item {
+  border-bottom: 1px solid var(--sn-borde);
+}
+.ini-faq :deep(.ini-faq__pregunta) {
+  padding: 18px 4px;
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 600;
+  font-size: var(--sn-t-h4);
+  line-height: 1.35;
+  color: var(--sn-tinta);
+}
+.ini-faq__respuesta {
+  margin: 0;
+  padding: 0 4px 20px;
+  max-width: var(--sn-prosa);
+  line-height: 1.6;
+  color: var(--sn-tinta-suave);
+}
+
+/* 9. Contacto */
+.ini-contacto {
+  text-align: center;
 }
 </style>

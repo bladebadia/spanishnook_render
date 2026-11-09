@@ -90,7 +90,7 @@ export default {
   indexPuedoCambiarDeHorario: 'Can I change my schedule?',
   indexEntendemosQueLaVida:
     'We understand that life can be unpredictable. But it will depend on the study format: with private classes, you decide (provided you give advance notice). Group classes, however, are fixed to a specific schedule.',
-  indexPreguntasFrecuentes: 'Frequently Asked Questions (FAQs)',
+  indexPreguntasFrecuentes: 'Frequently asked questions',
   indexQuePasaSiNoPuedoAsistir: 'What happens if I cannot attend a class?',
   indexDependeraDeLaModalidad:
     'It will depend on the modality of the class you select. Check the different class options and their conditions.',
