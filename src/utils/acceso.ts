@@ -1,10 +1,9 @@
 /**
  * Utilidades de inicio de sesión.
  *
- * LOGIN_GOOGLE_ACTIVO: ponerlo a true solo cuando el proveedor Google esté configurado
- * (Google Cloud: cliente OAuth web con la URL de callback de Supabase; Supabase:
- * Authentication → Providers → Google con ese Client ID/Secret) y aplicada la migración
- * supabase/migraciones-pendientes/20261109100000_nombre_usuarios_google.sql, que rellena el nombre de las cuentas de Google.
+ * LOGIN_GOOGLE_ACTIVO: muestra "Continuar con Google". Requiere el proveedor Google activo en
+ * Supabase (cliente OAuth web del proyecto de Google Cloud "SpanishNook login") y la migración
+ * 20261109100000_nombre_usuarios_google.sql (aplicada), que rellena el nombre de esas cuentas.
  */
 export const LOGIN_GOOGLE_ACTIVO = true;
 

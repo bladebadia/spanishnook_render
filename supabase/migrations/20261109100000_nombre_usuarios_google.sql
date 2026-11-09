@@ -1,4 +1,4 @@
--- PENDIENTE DE APLICAR (antes de activar el login con Google).
+-- Aplicada en producción el 2026-11-09 (antes de activar el login con Google).
 --
 -- handle_new_user copiaba nombre de raw_user_meta_data->>'nombre', que solo existe en el
 -- registro por correo. Las cuentas de Google traen full_name / name y datos_usuarios.nombre
