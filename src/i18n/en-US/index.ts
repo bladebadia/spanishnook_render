@@ -198,6 +198,9 @@ export default {
     guardar: 'Save and continue',
     guardado: 'Thank you! Profile saved.',
     error: 'Could not save. Please try again.',
+    avisoTitulo: 'Complete your profile',
+    avisoTexto: 'Tell us your level and what you want to learn so we can tailor your lessons to you.',
+    avisoBoton: 'Complete now',
   },
   BotonGoogle: {
     continuar: 'Continue with Google',

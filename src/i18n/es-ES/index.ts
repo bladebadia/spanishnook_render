@@ -211,6 +211,9 @@ export default {
     guardar: 'Guardar y continuar',
     guardado: '¡Gracias! Perfil guardado.',
     error: 'No se pudo guardar. Inténtalo de nuevo.',
+    avisoTitulo: 'Completa tu perfil',
+    avisoTexto: 'Cuéntanos tu nivel y qué quieres aprender para preparar tus clases a tu medida.',
+    avisoBoton: 'Completar ahora',
   },
   BotonGoogle: {
     continuar: 'Continuar con Google',

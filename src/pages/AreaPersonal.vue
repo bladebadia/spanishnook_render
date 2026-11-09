@@ -16,6 +16,22 @@
             </p>
           </div>
         </div>
+
+        <!-- Perfil sin cuestionario (alta con Google que no lo terminó) -->
+        <div v-if="perfilIncompleto" class="ap-aviso sn-nota">
+          <q-icon name="assignment_ind" class="ap-aviso__icono" />
+          <div class="ap-aviso__texto">
+            <strong>{{ t('CompletarPerfil.avisoTitulo') }}</strong>
+            <span>{{ t('CompletarPerfil.avisoTexto') }}</span>
+          </div>
+          <q-btn
+            color="primary"
+            unelevated
+            no-caps
+            :label="t('CompletarPerfil.avisoBoton')"
+            :to="{ path: '/CompletarPerfil', query: { redirect: '/AreaPersonal' } }"
+          />
+        </div>
         <div class="row q-col-gutter-lg">
           <div class="col-12 col-md-3">
             <SaldoWallet
@@ -1250,6 +1266,9 @@ const verificarYCambiarPassword = async () => {
   }
 };
 
+// Ficha sin nivel: el alumno entró con Google y no terminó el cuestionario
+const perfilIncompleto = ref(false);
+
 const cargarDatosPersonales = async () => {
   if (!user.value?.id) return;
   cargandoSaldo.value = true;
@@ -1270,6 +1289,7 @@ const cargarDatosPersonales = async () => {
       if (error.code !== 'PGRST116') return;
     }
     if (data) {
+      perfilIncompleto.value = !data.nivel_estimado;
       formDatos.value = {
         nombre: data.nombre || '',
         apellido1: data.apellido1 || '',
@@ -1427,6 +1447,23 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.ap-aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.ap-aviso__icono {
+  font-size: 28px;
+  color: var(--sn-burdeos);
+}
+.ap-aviso__texto {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 220px;
+}
 .ap-pagina {
   background: var(--sn-papel);
   color: var(--sn-tinta);
