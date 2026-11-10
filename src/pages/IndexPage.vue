@@ -632,6 +632,8 @@ const enviarOpinion = async () => {
           pais: nuevaOpinion.value.country,
           comentario: nuevaOpinion.value.comment,
           created_at: new Date().toISOString(),
+          // Al editarla vuelve a quedar pendiente de aprobación (lo exige la política de la BD)
+          verified: false,
         })
         .eq('id', existingOpinion.id);
 

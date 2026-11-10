@@ -2,9 +2,9 @@
   <q-page class="ma-pagina">
     <!-- Cabecera corta: lo importante son los cuadernos -->
     <section class="sn-contenedor ma-cabecera">
-      <h1 class="ma-h1">{{ $t('MaterialesPage.titulo1') }}</h1>
-      <p class="ma-entrada">{{ $t('MaterialesPage.descripcion') }}</p>
-      <p class="ma-claim">{{ $t('MaterialesPage.claim') }}</p>
+      <h1 class="ma-h1">{{ t('MaterialesPage.titulo1') }}</h1>
+      <p class="ma-entrada">{{ t('MaterialesPage.descripcion') }}</p>
+      <p class="ma-claim">{{ t('MaterialesPage.claim') }}</p>
     </section>
 
     <!-- Catálogo -->
@@ -15,7 +15,7 @@
 
       <div v-else-if="materiales.length === 0" class="ma-vacio">
         <q-icon name="inventory_2" size="48px" />
-        <p>{{ $t('MaterialesPage.proximamente') }}</p>
+        <p>{{ t('MaterialesPage.proximamente') }}</p>
       </div>
 
       <div v-else class="ma-rejilla">
@@ -35,7 +35,7 @@
               loading="lazy"
             />
             <span class="ma-precio" :class="{ 'ma-precio--gratis': esGratis(mat) }">
-              {{ esGratis(mat) ? $t('MaterialesPage.gratis') : `${mat.precio} €` }}
+              {{ esGratis(mat) ? t('MaterialesPage.gratis') : `${mat.precio} €` }}
             </span>
           </div>
           <div class="ma-tarjeta__cuerpo">
@@ -50,7 +50,7 @@
               }}
             </p>
             <span class="ma-tarjeta__ir">
-              {{ $t('MaterialesPage.verDetalles') }}
+              {{ t('MaterialesPage.verDetalles') }}
               <q-icon name="arrow_forward" size="18px" />
             </span>
           </div>
@@ -62,15 +62,15 @@
     <section class="ma-seccion">
       <div class="sn-contenedor ma-contenido">
         <div>
-          <h2 class="ma-h2">{{ $t('MaterialesPage.quehay') }}</h2>
-          <p class="ma-parrafo">{{ $t('MaterialesPage.descripcion2') }}</p>
+          <h2 class="ma-h2">{{ t('MaterialesPage.quehay') }}</h2>
+          <p class="ma-parrafo">{{ t('MaterialesPage.descripcion2') }}</p>
         </div>
         <ul class="ma-checks">
           <li v-for="n in 5" :key="n">
             <q-icon :name="ICONOS_CONTENIDO[n - 1]" class="ma-checks__icono" />
             <span>
-              <strong>{{ $t(`MaterialesPage.contenido${n}bold`) }}</strong>
-              {{ $t(`MaterialesPage.contenido${n}`) }}
+              <strong>{{ t(`MaterialesPage.contenido${n}bold`) }}</strong>
+              {{ t(`MaterialesPage.contenido${n}`) }}
             </span>
           </li>
         </ul>
@@ -101,7 +101,7 @@
               <q-chip color="primary" text-color="white" size="lg" class="text-weight-bold">
                 {{
                   materialSeleccionado && esGratis(materialSeleccionado)
-                    ? $t('MaterialesPage.gratis')
+                    ? t('MaterialesPage.gratis')
                     : `${materialSeleccionado?.precio} €`
                 }}
               </q-chip>
@@ -135,7 +135,7 @@
         <!-- 3. Los botones ahora están a salvo fuera del área de scroll -->
         <q-separator />
         <q-card-actions align="right" class="q-pa-md bg-grey-2">
-          <q-btn flat :label="$t('MaterialesPage.cerrar')" color="grey-8" v-close-popup />
+          <q-btn flat :label="t('MaterialesPage.cerrar')" color="grey-8" v-close-popup />
 
           <q-btn
             v-if="
@@ -147,8 +147,8 @@
             icon="download"
             :label="
               materialSeleccionado?.precio === 0 || !materialSeleccionado?.precio
-                ? $t('MaterialesPage.descargarGratis')
-                : $t('MaterialesPage.descargarPdf')
+                ? t('MaterialesPage.descargarGratis')
+                : t('MaterialesPage.descargarPdf')
             "
             unelevated
             @click="descargarPdf(materialSeleccionado)"
@@ -158,7 +158,7 @@
             v-else
             color="primary"
             icon="shopping_cart"
-            :label="$t('MaterialesPage.comprarPor', { precio: materialSeleccionado?.precio })"
+            :label="t('MaterialesPage.comprarPor', { precio: materialSeleccionado?.precio })"
             unelevated
             :loading="procesandoPago"
             @click="comprarConStripe(materialSeleccionado)"

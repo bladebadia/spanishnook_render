@@ -23,20 +23,22 @@ export default boot(({ app, router }) => {
     cargado = true;
     // Carga diferida: no incluye vue-gtag-next en el bundle principal
     void import('vue-gtag-next')
-      .then(({ default: VueGtag }) => {
+      .then(({ default: VueGtag, trackRouter }) => {
+        // Opciones de vue-gtag-next (antes se pasaban "router", "config" y "enabled",
+        // que esta librería no reconoce: se ignoraban)
         app.use(VueGtag, {
           property: {
             id: measurementId,
+            params: {
+              send_page_view: true,
+              anonymize_ip: true, // Anonimizar IPs (RGPD)
+            },
           },
-          router,
-          config: {
-            // Configuración de GA4
-            send_page_view: true, // Enviar pageviews automáticamente
-            anonymize_ip: true, // Anonimizar IPs (GDPR)
-          },
-          // Habilitar solo en producción para evitar contaminar datos con desarrollo
-          enabled: process.env.NODE_ENV === 'production',
+          // Solo en producción para no mezclar datos de desarrollo
+          isEnabled: process.env.NODE_ENV === 'production',
         });
+        // Páginas vistas al navegar entre rutas
+        trackRouter(router);
 
         console.log('✅ Google Analytics 4 inicializado:', measurementId);
       })

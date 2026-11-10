@@ -52,9 +52,9 @@ export default defineBoot(({ app, ssrContext }) => {
   });
 
   if (process.env.SERVER) {
-    Lang.set(paqueteQuasar(idioma), ssrContext);
+    Lang.set(paqueteQuasar(idioma) as Parameters<typeof Lang.set>[0], ssrContext);
   } else {
-    Lang.set(paqueteQuasar(idioma));
+    Lang.set(paqueteQuasar(idioma) as Parameters<typeof Lang.set>[0]);
   }
 
   app.use(i18n);
