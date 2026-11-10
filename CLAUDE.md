@@ -54,5 +54,6 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 3. El remitente de los correos de Supabase Auth está en el SMTP del panel de Supabase, no en el código.
 4. Login con Google: falta la verificación de marca de Google (hasta entonces la pantalla muestra el dominio de Supabase).
 5. Inglés: privacidad, aviso legal y condiciones siguen en español; los textos de cursos de la BD no tienen versión en inglés.
-6. `check_email_exists` (registro) deja comprobar sin sesión si un email tiene cuenta. Se mantiene por la experiencia del registro; valorar quitarlo.
+6. **En el panel de Supabase (Miguel)**: Authentication → activar protección de contraseñas filtradas (HaveIBeenPwned; puede requerir plan Pro) y bajar la caducidad del OTP de email a 3600 s o menos; Settings → Infrastructure → actualizar Postgres (17.4.1.074 tiene parches pendientes; implica unos minutos sin servicio).
 7. Panel de administración con el estilo antiguo (funciona; solo es visual).
+8. Despliegue: Vercel instala con **pnpm** (`pnpm-lock.yaml` + override de `vue` en `package.json`). Al cambiar dependencias, regenerar con `npx pnpm@9.15.9 install --lockfile-only`; si no, el despliegue falla en silencio y producción se queda en la versión anterior.
