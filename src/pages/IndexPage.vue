@@ -238,7 +238,7 @@
       <div class="sn-contenedor ini-quien">
         <img
           class="ini-quien__foto"
-          src="/img/paula-perfil.webp"
+          src="/img/paula-perfil-inicio.webp"
           alt="Paula, SpanishNook"
           loading="lazy"
         />
