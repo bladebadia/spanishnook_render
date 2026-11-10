@@ -51,7 +51,6 @@
           />
         </div>
         <p class="adm-item__texto">{{ o.comentario }}</p>
-        <p v-if="o.email" class="adm-item__email">{{ o.email }}</p>
         <div class="adm-item__acciones">
           <q-btn
             v-if="!o.verified"
@@ -98,7 +97,6 @@ interface Opinion {
   id: number;
   created_at: string;
   nombre: string | null;
-  email: string | null;
   comentario: string | null;
   rating: number | null;
   verified: boolean | null;
@@ -131,7 +129,9 @@ async function cargar() {
   cargando.value = true;
   const { data, error } = await supabase
     .from('opiniones_verificadas')
-    .select('id, created_at, nombre, email, comentario, rating, verified, pais')
+    // Sin "email": la columna no es legible para authenticated (20261110150000) y pedirla
+    // hace fallar toda la consulta
+    .select('id, created_at, nombre, comentario, rating, verified, pais')
     .order('created_at', { ascending: false });
   cargando.value = false;
   if (error) {
