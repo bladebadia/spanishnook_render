@@ -62,4 +62,5 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 11. Plazas de curso cerrado: el control no es atómico (dos pagos simultáneos pueden superar el máximo; el webhook reembolsa al que sobra).
 12. Tarea diaria que pase a 'Finalizado' los cursos cerrados con `fecha_fin` pasada.
 13. Inglés: privacidad, aviso legal y condiciones siguen en español; los textos de cursos de la BD no tienen versión en inglés.
-14. Añadir `.gitattributes` (`* text=auto eol=lf`): el repo mezcla CRLF y LF.
+14. Error de hidratación SSR en `IndexPage.vue`: sin comprobar (`npm run dev` arranca en SPA).
+15. Añadir `.gitattributes` (`* text=auto eol=lf`): el repo mezcla CRLF y LF.
