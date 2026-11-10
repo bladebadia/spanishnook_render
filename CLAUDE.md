@@ -15,7 +15,7 @@ Web de clases de español online de Paula (hermana de Miguel). Producción: http
 
 - Vue 3 + Quasar 2 (Composition API, TypeScript), **SSR** en Vercel (`npm run build:ssr`). vue-i18n es/en.
 - Supabase (proyecto `zleqsdfpjepdangitcxv`): Auth, Postgres con RLS, Storage, Edge Functions (Deno).
-- Stripe (Checkout, webhooks), Resend (correo desde `hola@spanishnook.com`), Google Calendar/Meet (OAuth de Paula).
+- Stripe (Checkout, webhooks), Resend (correo desde `info@spanishnook.com`; bienvenidas desde `hola@`; avisos internos a `paulaf@`). `contacto@` no existe, Google Calendar/Meet (OAuth de Paula).
 
 ## Comandos
 

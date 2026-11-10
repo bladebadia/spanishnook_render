@@ -25,7 +25,7 @@ import {
   usuarioDesdePeticion,
 } from "../_shared/auth.ts";
 import { clienteStripe, eventoVerificado, idDe, MOTIVO_BAJA, type Stripe } from "../_shared/stripe.ts";
-import { CORREO_INTERNO, enviarCorreo } from "../_shared/resend.ts";
+import { CORREO_INTERNO, enviarCorreo, REMITENTE_BIENVENIDA } from "../_shared/resend.ts";
 import { escapar, nota, parrafo, plantillaCorreo, tablaDatos } from "../_shared/plantilla-correo.ts";
 import { enlaceSeguro, idiomaDesde, primeraHora, resolverIdioma, saludo, textoDias, URL_AREA, URL_CURSOS, type Idioma } from "../_shared/correo-comun.ts";
 import { rangoHoraMadrid } from "../_shared/fechas.ts";
@@ -209,7 +209,7 @@ async function alCrearSuscripcion(sub: Stripe.Subscription): Promise<void> {
 
   const datosCurso = curso ?? { nombre_curso: idioma === "en" ? "your course" : "tu curso", dias_semana: null, horarios_curso: null, meet_link: null };
   const correo = correoBienvenida(nombre, datosCurso, idioma);
-  await enviarCorreo({ to: email, subject: correo.asunto, html: correo.html });
+  await enviarCorreo({ to: email, subject: correo.asunto, html: correo.html, from: REMITENTE_BIENVENIDA });
 
   await enviarCorreo({
     to: CORREO_INTERNO,

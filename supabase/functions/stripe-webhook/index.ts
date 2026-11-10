@@ -17,7 +17,7 @@
 import { clienteAdmin, errores, json, leerJson, origenSeguro, preflight, usuarioDesdePeticion } from "../_shared/auth.ts";
 import { caducidadCheckout, clienteStripe, eventoVerificado, idDe, type Stripe } from "../_shared/stripe.ts";
 import { crearEventoClase, anadirAsistente, tokenGoogle } from "../_shared/google.ts";
-import { CORREO_INTERNO, enviarCorreo } from "../_shared/resend.ts";
+import { CORREO_INTERNO, enviarCorreo, REMITENTE_BIENVENIDA } from "../_shared/resend.ts";
 import { escapar, nota, parrafo, plantillaCorreo, subtitulo, tablaDatos } from "../_shared/plantilla-correo.ts";
 import {
   enlaceSeguro,
@@ -562,7 +562,9 @@ async function correosCursoCerrado(curso: any, d: { email: string | null; nombre
   filas.push([en ? "Total paid" : "Total pagado", escapar(formatoEuros(d.importe, d.idioma))]);
 
   if (d.email) {
+    // Bienvenida al curso cerrado: desde hola@
     await enviarCorreo({
+      from: REMITENTE_BIENVENIDA,
       to: d.email,
       subject: en ? "You're enrolled in the course" : "Ya estás inscrito/a en el curso",
       html: plantillaCorreo({

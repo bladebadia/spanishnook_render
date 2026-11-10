@@ -31,7 +31,7 @@
       <div class="sn-contenedor so-quien">
         <img
           class="so-quien__foto"
-          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=480&height=480&resize=cover&format=webp"
+          src="/img/paula-perfil.webp"
           alt="Paula, SpanishNook"
           loading="lazy"
         />
@@ -212,7 +212,7 @@ useMeta(() => ({
   align-items: center;
 }
 .so-quien__foto {
-  width: min(240px, 60vw);
+  width: min(240px, 64vw);
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 50%;

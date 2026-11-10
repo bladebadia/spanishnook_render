@@ -27,4 +27,4 @@ Todas tienen `verify_jwt = false`: la pasarela de Supabase no comprueba el JWT y
 
 ## Emails
 
-Todas envían con `fetch("https://api.resend.com/emails")` y `from: "SpanishNook <hola@spanishnook.com>"`. Las plantillas HTML están duplicadas en línea en cada función (sin módulo compartido) y son bilingües ES + EN en el mismo correo. Los avisos internos van a `paulaf@spanishnook.com`.
+Todas envían con `fetch("https://api.resend.com/emails")` y `from: "SpanishNook <info@spanishnook.com>"` (las bienvenidas a curso, desde `hola@`). Las plantillas HTML están duplicadas en línea en cada función (sin módulo compartido) y son bilingües ES + EN en el mismo correo. Los avisos internos van a `paulaf@spanishnook.com`.

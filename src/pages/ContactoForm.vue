@@ -124,7 +124,7 @@ import { supabase } from 'src/supabaseClient';
 
 const { t } = useI18n();
 
-const EMAIL = 'contacto@spanishnook.com';
+const EMAIL = 'info@spanishnook.com';
 
 const redes = [
   { nombre: 'Instagram', url: 'https://instagram.com/spanishnook', icono: mdiInstagram },

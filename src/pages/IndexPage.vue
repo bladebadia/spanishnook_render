@@ -4,7 +4,7 @@
     <q-img
       class="sn-hero-banner"
       fit="cover"
-      position="center"
+      position="50% 25%"
       loading="eager"
       fetchpriority="high"
       no-spinner
@@ -238,7 +238,7 @@
       <div class="sn-contenedor ini-quien">
         <img
           class="ini-quien__foto"
-          src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-sobre-perfil.png?width=400&height=400&resize=cover&format=webp"
+          src="/img/paula-perfil.webp"
           alt="Paula, SpanishNook"
           loading="lazy"
         />
@@ -970,7 +970,7 @@ if (process.env.CLIENT) {
   align-items: center;
 }
 .ini-quien__foto {
-  width: min(220px, 60vw);
+  width: min(240px, 64vw);
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 50%;

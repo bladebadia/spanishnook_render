@@ -842,7 +842,7 @@ export default {
   },
   wallet: {
     wallet: 'Wallet',
-    tuSaldo: 'Your Balance',
+    tuSaldo: 'Your credits',
     comprarPacks: 'Buy packs',
     saldoNormal: 'Individual Classes',
     saldoConversacion: 'Conversation Classes',

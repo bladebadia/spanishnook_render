@@ -13,7 +13,7 @@
       <li>NIF: 77127036D</li>
       <li>Dirección: Barcelona, España</li>
       <li>Teléfono: +34 694280178</li>
-      <li>Email: paulaf@spanishnook.com</li>
+      <li>Email: info@spanishnook.com</li>
     </ul>
     <p class="q-pt-md text-primary text-bold texto-responsivo">Objeto</p>
     <p class="text-left text-left texto-responsivo">

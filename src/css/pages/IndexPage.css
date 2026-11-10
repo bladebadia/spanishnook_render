@@ -2,8 +2,10 @@
 
 /* Banner: en escritorio ocupaba toda la primera pantalla y escondía el titular */
 .sn-hero-banner {
-  max-height: min(56vh, 540px);
+  max-height: min(62vh, 600px);
 }
+/* Las letras están en la parte alta de la imagen: el encuadre (position="50% 25%" en
+   IndexPage.vue) sube para que queden centradas en altura */
 
 /* Bloque "Test de nivel" sobre fondo burdeos */
 .sn-bloque-test {

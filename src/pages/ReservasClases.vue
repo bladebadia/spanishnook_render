@@ -505,11 +505,40 @@ watch(
 /* 2. Calendario */
 .rs-calendario {
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;
   margin-inline: auto;
   display: block;
   box-shadow: none;
   border: 1px solid var(--sn-borde);
+  font-size: 1rem;
+}
+/* Días grandes: más fáciles de leer y de tocar con el dedo */
+.rs-calendario :deep(.q-date__view) {
+  height: auto;
+  min-height: 0;
+  padding: 12px;
+}
+.rs-calendario :deep(.q-date__calendar-days-container) {
+  height: auto;
+  min-height: 0;
+}
+.rs-calendario :deep(.q-date__calendar-item) {
+  height: auto;
+  padding: 2px 0;
+}
+.rs-calendario :deep(.q-date__calendar-item > div),
+.rs-calendario :deep(.q-date__calendar-item button) {
+  width: min(48px, 11vw);
+  height: min(48px, 11vw);
+  font-size: 1rem;
+}
+.rs-calendario :deep(.q-date__calendar-weekdays > div) {
+  font-size: 0.875rem;
+  opacity: 0.75;
+}
+.rs-calendario :deep(.q-date__navigation) {
+  height: 48px;
+  font-size: 1rem;
 }
 
 /* 3. Horas */

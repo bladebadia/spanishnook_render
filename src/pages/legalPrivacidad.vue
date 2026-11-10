@@ -37,7 +37,7 @@
       <br />
       Teléfono de contacto: +34 694280178
       <br />
-      Email de contacto: paulaf@spanishnook.com
+      Email de contacto: info@spanishnook.com
     </p>
     <p class="text-h6 text-left text-bold texto-responsivo text-primary">
       Registro de Datos de Carácter Personal
@@ -172,7 +172,7 @@
     </p>
     <p class="text-h6 text-left texto-responsivo text-black">
       El Usuario podrá ejercer en cualquier momento sus derechos de acceso, rectificación,
-      supresión, limitación, portabilidad y oposición enviando un correo a paulaf@spanishnook.com.
+      supresión, limitación, portabilidad y oposición enviando un correo a info@spanishnook.com.
       Si considera que no se han atendido correctamente sus derechos, puede presentar una
       reclamación ante la Agencia Española de Protección de Datos (AEPD: https://www.aepd.es/).
     </p>
