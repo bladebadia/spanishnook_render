@@ -98,7 +98,6 @@
                 size="md"
                 class="q-px-xl"
                 :disable="!aceptoPrivacidad"
-                :loading="validandoEmail"
                 icon-right="arrow_forward"
               />
             </div>
@@ -336,7 +335,6 @@ const { registroIniciado, registroCompletado } = useAnalytics();
 
 const step = ref(1);
 const cargando = ref(false); // Para el registro final
-const validandoEmail = ref(false); // 🔥 NUEVO: Para el botón de "Siguiente" en paso 1
 const mostrarPass = ref(false);
 const mostrarConfirmPass = ref(false);
 const aceptoPrivacidad = ref(false);
@@ -369,8 +367,8 @@ const tagsIntereses = computed(() => [
   { label: t('registro.interesExamenes'), val: 'Exámenes' },
 ]);
 
-// 🔥 FUNCIÓN MODIFICADA: AHORA ES ASÍNCRONA Y COMPRUEBA EL EMAIL
-const siguientePaso = async () => {
+// Avanza de paso tras validar los campos del paso actual
+const siguientePaso = () => {
   // --- VALIDACIÓN PASO 1 ---
   if (step.value === 1) {
     // 1. Validaciones locales básicas
@@ -386,33 +384,8 @@ const siguientePaso = async () => {
       });
       return;
     }
-
-    // 2. Validación de servidor (¿Existe el email?)
-    validandoEmail.value = true;
-    try {
-      const { data: existe, error } = await supabase.rpc('check_email_exists', {
-        email_check: form.value.email,
-      });
-
-      if (error) throw error;
-
-      if (existe) {
-        $q.notify({
-          type: 'negative',
-          message: t('registro.emailYaRegistrado'),
-          icon: 'login',
-        });
-        // Opcional: router.push('/Acceder');
-        return; // ⛔️ ALTO: No pasamos al paso 2
-      }
-    } catch (err) {
-      console.error(err);
-      // Si falla la red, dejamos pasar o avisamos? Mejor avisar.
-      $q.notify({ type: 'warning', message: t('registro.errorConexion') });
-      return;
-    } finally {
-      validandoEmail.value = false;
-    }
+    // Si el email ya tiene cuenta se sabe al crearla (ver registrarUsuario): antes se
+    // preguntaba aquí a check_email_exists, que dejaba a cualquiera comprobar emails sin límite
   }
 
   // --- VALIDACIÓN PASO 2 ---
@@ -455,6 +428,19 @@ const registrarUsuario = async () => {
     });
 
     if (authError) throw authError;
+
+    // Email ya registrado: Supabase no da error (para no delatarlo) y devuelve un
+    // usuario sin identidades
+    if (authData.user && authData.user.identities?.length === 0) {
+      $q.notify({
+        type: 'negative',
+        message: t('registro.emailYaRegistrado'),
+        icon: 'login',
+        timeout: 8000,
+      });
+      step.value = 1;
+      return;
+    }
 
     // Ya no comprobamos !authData.user para lanzar error, porque con confirmación
     // de email a veces la sesión viene nula pero el usuario se creó.
