@@ -95,7 +95,11 @@
         <h2 class="ini-h2 ini-h2--centro">{{ t('indexConoceExperiencias') }}</h2>
 
         <div class="carousel-container">
-          <div v-if="todasLasOpiniones.length === 0" class="text-center q-pa-xl text-grey-7">
+          <div v-if="cargandoOpiniones" class="ini-opiniones-cargando" aria-hidden="true" />
+          <div
+            v-else-if="todasLasOpiniones.length === 0"
+            class="text-center q-pa-xl text-grey-7"
+          >
             {{ t('indexSeElPrimeroEnOpinar') }}
           </div>
           <q-carousel
@@ -390,7 +394,6 @@ import { useQuasar } from 'quasar';
 import { useAuth } from '../stores/auth';
 import { supabase } from '../supabaseClient';
 import { useMeta } from 'quasar';
-import { onServerPrefetch } from 'vue';
 
 // Importar los estilos CSS
 import '../css/pages/IndexPage.css';
@@ -681,6 +684,7 @@ const enviarOpinion = async () => {
 };
 
 const todasLasOpiniones = ref<Opinion[]>([]);
+const cargandoOpiniones = ref(true);
 
 const fetchOpiniones = async () => {
   try {
@@ -720,21 +724,20 @@ const fetchOpiniones = async () => {
   }
 };
 
-if (process.env.CLIENT) {
-  onMounted(() => {
-    void fetchOpiniones();
-    void fetchCuadernosInicio();
-  });
-} else {
-  onServerPrefetch(async () => {
-    await fetchOpiniones();
-    await fetchCuadernosInicio();
-  });
-}
+// Opiniones y cuadernos se cargan solo en el navegador. Antes el servidor los traía y el
+// cliente arrancaba con las listas vacías: el HTML no coincidía (error de hidratación).
+onMounted(async () => {
+  await Promise.all([fetchOpiniones(), fetchCuadernosInicio()]);
+  cargandoOpiniones.value = false;
+});
 
 </script>
 
 <style scoped>
+/* Hueco del carrusel mientras cargan las opiniones (mismo alto: sin saltos) */
+.ini-opiniones-cargando {
+  height: 300px;
+}
 .ini-pagina {
   background: var(--sn-papel);
   color: var(--sn-tinta);
