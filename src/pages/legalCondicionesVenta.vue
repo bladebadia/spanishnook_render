@@ -1,8 +1,8 @@
 <template>
   <div class="legal-page sn-legal">
-    <p class="text-h3 text-primary text-bold text-center titulo-responsivo">
+    <h1 class="text-h3 text-primary text-bold text-center titulo-responsivo">
       Términos y Condiciones
-    </p>
+    </h1>
 
     <p class="text-h6 text-bold text-center text-black texto-responsivo">
       Fecha de última actualización: 02 de enero de 2026

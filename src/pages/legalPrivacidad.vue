@@ -1,6 +1,6 @@
 <template>
   <div class="legal-page sn-legal">
-    <p class="text-h3 text-primary text-bold titulo-responsivo">Política de Privacidad</p>
+    <h1 class="text-h3 text-primary text-bold titulo-responsivo">Política de Privacidad</h1>
     <p class="text-h5 text-primary text-left q-mt-md subtitulo-responsivo">
       I. POLÍTICA DE PRIVACIDAD Y PROTECCIÓN DE DATOS
     </p>

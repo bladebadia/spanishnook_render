@@ -12,9 +12,9 @@
         header-class="text-weight-bold"
       >
         <q-step :name="1" :title="t('registro.cuenta')" icon="lock" :done="step > 1">
-          <div class="text-h5 text-center q-mb-md text-primary text-weight-bold">
+          <h1 class="text-h5 text-center q-mb-md text-primary text-weight-bold q-mt-none">
             {{ t('registro.creaTuCuenta') }}
-          </div>
+          </h1>
           <p class="text-center text-grey-7 q-mb-lg">
             {{ t('registro.empezamosPorLoBasico') }}
           </p>

@@ -467,36 +467,25 @@ const evaluateTestByLevel = (): string => {
     }
   });
 
-  // Evaluar nivel por nivel, empezando por el más alto
-  const levels: Level[] = ['C1', 'B2', 'B1', 'A2', 'A1'];
+  // De A1 hacia arriba: tu nivel es el más alto que apruebas (≥ 60 %) sin haber
+  // suspendido uno anterior. Antes se miraba de C1 hacia abajo y quien acertaba
+  // por suerte las de C1 salía C1 aunque fallara las de A1.
+  const levels: Level[] = ['A1', 'A2', 'B1', 'B2', 'C1'];
   let assignedLevel: Level = 'A1';
 
   for (const level of levels) {
-    // Solo evaluar si hay respuestas en este nivel
-    if (levelScores[level].total > 0) {
-      const percentageForLevel = (levelScores[level].correct / levelScores[level].total) * 100;
-
-      // Verificar si hay suficientes preguntas respondidas (al menos 60% del total de preguntas del nivel)
-      const answeredQuestionsPercentage =
-        (selectedAnswers.value.filter(
-          (answer, index) => answer !== undefined && testQuestions.value[index]?.level === level,
-        ).length /
-          levelScores[level].total) *
-        100;
-
-      // Solo asignar nivel si:
-      // 1. Se respondió al menos el 60% de las preguntas del nivel
-      // 2. Se obtuvo al menos 60% de respuestas correctas
-      if (answeredQuestionsPercentage >= 60 && percentageForLevel >= 60) {
-        assignedLevel = level;
-        break;
-      }
+    const { correct, total } = levelScores[level];
+    if (total === 0) continue;
+    if ((correct / total) * 100 >= 60) {
+      assignedLevel = level;
+    } else {
+      break;
     }
   }
 
-  // Asignar métricas sobre el total de preguntas existentes del nivel finalmente asignado
-  levelCorrect.value = levelScores[assignedLevel].correct;
-  levelTotal.value = levelScores[assignedLevel].total;
+  // El círculo muestra los aciertos de todo el test
+  levelCorrect.value = Object.values(levelScores).reduce((s, l) => s + l.correct, 0);
+  levelTotal.value = testQuestions.value.length;
   percentage.value = levelTotal.value > 0 ? (levelCorrect.value / levelTotal.value) * 100 : 0;
 
   const nivelDescriptions: NivelDescription = {

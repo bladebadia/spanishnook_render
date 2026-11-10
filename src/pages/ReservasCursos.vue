@@ -1,330 +1,285 @@
 <template>
-  <q-page class="q-pa-lg reservas-page">
+  <q-page class="rc-pagina">
     <div v-if="cargando" class="flex flex-center q-my-xl">
       <q-spinner size="48px" color="primary" />
     </div>
 
-    <div v-else-if="!curso">
-      <q-card flat bordered class="q-pa-xl text-center">
-        <q-icon name="error_outline" size="64px" color="grey-5" />
-        <div class="text-h6 q-mt-md">{{ t('reservasCursos.cursoNo') }}</div>
-        <q-btn
-          color="primary"
-          class="q-mt-md"
-          :to="rutaClases"
-          :label="t('reservasCursos.volverCursos')"
-        />
-      </q-card>
-    </div>
+    <section v-else-if="!curso" class="sn-contenedor rc-vacio">
+      <q-icon name="error_outline" size="56px" class="rc-vacio__icono" />
+      <h1 class="rc-h2">{{ t('reservasCursos.cursoNo') }}</h1>
+      <q-btn
+        color="primary"
+        unelevated
+        no-caps
+        class="q-mt-md"
+        :to="rutaClases"
+        :label="t('reservasCursos.volverCursos')"
+      />
+    </section>
 
-    <div v-else class="row q-col-gutter-lg">
-      <div v-if="pagoOk" class="col-12">
-        <q-banner class="bg-green-1 text-green-9 rounded-borders" role="status">
-          <template v-slot:avatar><q-icon name="check_circle" color="positive" /></template>
+    <div v-else class="sn-contenedor">
+      <router-link :to="rutaClases" class="rc-volver">
+        <q-icon name="arrow_back" size="18px" /> {{ t('reservasCursos.volverCursos') }}
+      </router-link>
+
+      <div v-if="pagoOk" class="rc-aviso" role="status">
+        <q-icon name="check_circle" size="22px" />
+        <div>
           {{ t('reservasCursos.pagoRecibido') }}
-          <div v-if="pagoPendiente" class="text-caption q-mt-xs">
+          <div v-if="pagoPendiente" class="rc-aviso__detalle">
             {{ t('reservasCursos.pagoProcesando') }}
           </div>
-        </q-banner>
+        </div>
       </div>
 
-      <div class="col-12 col-md-7">
-        <q-card class="q-pa-md">
-          <q-card-section>
-            <div class="text-h5 text-weight-bold" style="color: #851319">
-              {{ curso.nombre_curso }}
-            </div>
-            <div class="text-subtitle2 text-grey-7 q-mt-xs row items-center no-wrap">
-              {{ t('reservasCursos.estado') }}
-              <q-chip size="md" :color="colorEstado" text-color="white" dense>
-                {{ textoEstado }}
-              </q-chip>
-              <span class="text-caption text-grey-8 q-ml-auto">
-                <q-icon name="group" class="q-mr-xs" />
-                {{ t('reservasCursos.plazas') }}
-                <strong>{{ ocupacionActual }} / {{ curso.max_estudiantes || '∞' }}</strong>
-              </span>
-            </div>
-          </q-card-section>
+      <div class="rc-rejilla">
+        <!-- Información del curso -->
+        <article class="rc-info" :class="selloCategoria">
+          <div class="rc-etiquetas">
+            <span class="rc-etiqueta rc-etiqueta--sello">{{ textoCategoria }}</span>
+            <span class="rc-etiqueta">{{ textoFormato }}</span>
+            <span v-if="curso.nivel" class="rc-etiqueta">{{ curso.nivel }}</span>
+          </div>
 
-          <q-separator />
+          <h1 class="rc-h1">{{ curso.nombre_curso }}</h1>
 
-          <q-card-section>
-            <div class="text-body2 q-mb-sm" style="white-space: pre-line">
-              {{ curso.descripcion || t('reservasCursos.sinDescripcion') }}
-            </div>
+          <p class="rc-estado">
+            <span class="rc-estado__punto" :class="`rc-estado__punto--${claseEstado}`" />
+            {{ textoEstado }}
+            <span v-if="plazasLibres !== null && !cursoTerminado" class="rc-estado__plazas">
+              · {{ t('reservasCursos.plazasLibres', plazasLibres) }}
+            </span>
+          </p>
 
-            <div v-if="esCerrado" class="sn-nota q-pa-md q-mt-md">
-              <div class="text-subtitle2 text-weight-bold text-primary">
-                <q-icon name="event_available" class="q-mr-xs" />
-                {{ t('reservasCursos.fechasCerradas') }}
-              </div>
-              <div class="text-body2 q-mt-xs">
+          <p v-if="curso.descripcion" class="rc-descripcion">{{ curso.descripcion }}</p>
+
+          <dl class="rc-datos">
+            <div v-if="esCerrado" class="rc-dato">
+              <dt><q-icon name="event_available" /> {{ t('reservasCursos.fechasCerradas') }}</dt>
+              <dd>
                 {{ fechasTexto }}
-              </div>
-              <div class="text-caption text-grey-8 q-mt-xs">
-                <span v-if="sesionesCurso.length > 0">
-                  {{ t('reservasCursos.numSesiones', sesionesCurso.length) }} ·
-                </span>
-                {{ t('reservasCursos.duracionSesion', { min: duracionCurso }) }}
-              </div>
-            </div>
-
-            <div class="row q-col-gutter-sm q-mt-md">
-              <div class="col-12 col-md-6">
-                <q-list dense bordered class="rounded-borders full-height">
-                  <q-item-label header>{{ t('reservasCursos.dias') }}</q-item-label>
-                  <q-item v-for="d in curso.dias_semana" :key="d">
-                    <q-item-section avatar><q-icon name="event" color="primary" /></q-item-section>
-                    <q-item-section>{{ traducirDia(d) }}</q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <q-list dense bordered class="rounded-borders full-height">
-                  <q-item-label header>
-                    {{ t('reservasCursos.horario') }} <strong>{{ zonaHorariaUsuario }}</strong>
-                  </q-item-label>
-
-                  <template v-if="curso.horarios_curso && curso.horarios_curso.length > 0">
-                    <q-item>
-                      <q-item-section avatar>
-                        <q-icon name="schedule" color="primary" />
-                      </q-item-section>
-                      <q-item-section>
-                        <div class="text-weight-bold">
-                          {{ convertirHorarioLocal(curso.horarios_curso[0]) }}
-                        </div>
-                        <div class="text-caption text-grey">
-                          ({{ t('reservasCursos.horaMadrid') }}: {{ curso.horarios_curso[0] }})
-                        </div>
-                      </q-item-section>
-                    </q-item>
+                <span class="rc-dato__extra">
+                  <template v-if="sesionesCurso.length > 0">
+                    {{ t('reservasCursos.numSesiones', sesionesCurso.length) }} ·
                   </template>
-
-                  <q-item v-else>
-                    <q-item-section avatar><q-icon name="schedule" color="grey" /></q-item-section>
-                    <q-item-section class="text-grey">{{
-                      t('reservasCursos.porDefinir')
-                    }}</q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
+                  {{ t('reservasCursos.duracionSesion', { min: duracionCurso }) }}
+                </span>
+              </dd>
             </div>
-          </q-card-section>
-        </q-card>
-      </div>
-
-      <div class="col-12 col-md-5">
-        <q-card class="q-pa-md">
-          <q-card-section>
-            <div class="text-h6 text-weight-bold" style="color: #851319">
-              {{ esCursoActivo ? t('reservasCursos.inscripcion') : t('reservasCursos.reservaTu') }}
+            <div v-else-if="curso.fecha_inicio" class="rc-dato">
+              <dt><q-icon name="event_available" /> {{ t('reservasCursos.inicio') }}</dt>
+              <dd>{{ fechaInicioTexto }}</dd>
             </div>
-          </q-card-section>
 
-          <q-separator />
+            <div class="rc-dato">
+              <dt><q-icon name="event" /> {{ t('reservasCursos.dias') }}</dt>
+              <dd>
+                {{ curso.dias_semana.map(traducirDia).join(', ') || t('reservasCursos.porDefinir') }}
+              </dd>
+            </div>
 
-          <q-card-section class="text-center">
-            <div v-if="esCerrado && estaInscrito">
-              <div class="text-h5 text-positive q-my-md text-weight-bold">
-                {{ t('reservasCursos.yaInscrito') }}
-              </div>
-              <q-banner dense class="bg-green-1 text-green-9 q-pa-md rounded-borders q-mb-md">
-                <template v-slot:avatar><q-icon name="check_circle" color="positive" /></template>
-                {{ t('reservasCursos.yaInscritoTexto') }}
-              </q-banner>
+            <div class="rc-dato">
+              <dt><q-icon name="schedule" /> {{ t('reservasCursos.horarioCorto') }}</dt>
+              <dd v-if="curso.horarios_curso.length > 0">
+                {{ convertirHorarioLocal(curso.horarios_curso[0]) }}
+                <span class="rc-dato__extra">
+                  {{ zonaHorariaUsuario }} · {{ t('reservasCursos.horaMadrid') }}:
+                  {{ curso.horarios_curso[0] }}
+                </span>
+              </dd>
+              <dd v-else>{{ t('reservasCursos.porDefinir') }}</dd>
+            </div>
+          </dl>
+        </article>
+
+        <!-- Reserva -->
+        <aside class="rc-reserva">
+          <h2 class="rc-h2">
+            {{ esCursoActivo ? t('reservasCursos.inscripcion') : t('reservasCursos.reservaTu') }}
+          </h2>
+
+          <!-- Curso cerrado: ya inscrito -->
+          <div v-if="esCerrado && estaInscrito" class="rc-bloque">
+            <p class="rc-ok"><q-icon name="check_circle" /> {{ t('reservasCursos.yaInscrito') }}</p>
+            <p class="rc-texto">{{ t('reservasCursos.yaInscritoTexto') }}</p>
+            <q-btn
+              color="primary"
+              unelevated
+              no-caps
+              class="rc-boton"
+              icon="account_circle"
+              :label="t('reservasCursos.irArea')"
+              to="/AreaPersonal"
+            />
+          </div>
+
+          <!-- Curso cerrado: terminado -->
+          <div v-else-if="esCerrado && cursoTerminado" class="rc-bloque">
+            <p class="rc-texto">{{ t('reservasCursos.cursoTerminado') }}</p>
+            <q-btn
+              outline
+              color="primary"
+              no-caps
+              class="rc-boton"
+              :to="rutaClases"
+              :label="t('reservasCursos.volverCursos')"
+            />
+          </div>
+
+          <!-- Curso cerrado: inscripción abierta -->
+          <div v-else-if="esCerrado && esCursoActivo && !cursoLleno" class="rc-bloque">
+            <p class="rc-precio">
+              {{ precioTotalTexto }}
+              <span class="rc-precio__nota">{{ t('reservasCursos.pagoUnico') }}</span>
+            </p>
+            <p v-if="plazasLibres !== null" class="rc-texto">
+              <q-icon name="group" /> {{ t('reservasCursos.plazasLibres', plazasLibres) }}
+            </p>
+            <q-btn
+              color="primary"
+              unelevated
+              no-caps
+              size="lg"
+              icon="credit_card"
+              class="rc-boton"
+              :label="
+                autenticado
+                  ? t('reservasCursos.inscribirme')
+                  : t('reservasCursos.iniciarSesionInscribirte')
+              "
+              :loading="procesandoInscripcion"
+              @click="inscribirse"
+            />
+            <p class="rc-pie">{{ t('reservasCursos.pago') }}</p>
+          </div>
+
+          <!-- Suscripción: ya suscrito -->
+          <div v-else-if="estaSuscrito" class="rc-bloque">
+            <p class="rc-ok"><q-icon name="check_circle" /> {{ t('reservasCursos.yaEres') }}</p>
+            <p class="rc-texto">{{ t('reservasCursos.ahoraTienes') }}</p>
+            <q-btn
+              color="primary"
+              unelevated
+              no-caps
+              class="rc-boton"
+              icon="account_circle"
+              :label="t('reservasCursos.irArea')"
+              to="/AreaPersonal"
+            />
+          </div>
+
+          <!-- Suscripción: abierta -->
+          <div v-else-if="esCursoActivo && !cursoLleno" class="rc-bloque">
+            <p class="rc-precio">
+              {{ curso.precio_curso }} €<span class="rc-precio__mes">{{ t('reservasCursos.mes') }}</span>
+            </p>
+            <template v-if="autenticado">
               <q-btn
                 color="primary"
-                :label="t('reservasCursos.irArea')"
-                to="/AreaPersonal"
-                class="full-width oval-btn"
-                icon="account_circle"
                 unelevated
-              />
-            </div>
-
-            <div v-else-if="esCerrado && cursoTerminado">
-              <q-icon name="event_busy" size="48px" color="grey-6" class="q-my-sm" />
-              <div class="text-body1 text-grey-8 q-mb-md">
-                {{ t('reservasCursos.cursoTerminado') }}
-              </div>
-              <q-btn
-                outline
-                color="primary"
-                class="oval-btn"
-                :to="rutaClases"
-                :label="t('reservasCursos.volverCursos')"
-              />
-            </div>
-
-            <div v-else-if="esCerrado && esCursoActivo && !cursoLleno">
-              <div class="text-caption text-grey-8 q-mt-sm">
-                {{ t('reservasCursos.precioTotal') }}
-              </div>
-              <div class="text-h4 text-weight-bold text-primary q-mb-xs">
-                {{ precioTotalTexto }}
-              </div>
-              <div class="text-caption text-grey-8">{{ t('reservasCursos.pagoUnico') }}</div>
-              <div class="text-body2 q-mt-md">
-                <q-icon name="event" color="primary" class="q-mr-xs" />
-                {{ fechasTexto }}
-              </div>
-              <div v-if="plazasLibres !== null" class="text-body2 text-weight-medium q-mt-xs">
-                <q-icon name="group" color="primary" class="q-mr-xs" />
-                {{ t('reservasCursos.plazasLibres', plazasLibres) }}
-              </div>
-
-              <q-btn
-                color="primary"
+                no-caps
                 size="lg"
                 icon="credit_card"
-                no-wrap
-                class="oval-btn q-mt-lg"
-                unelevated
-                :label="
-                  autenticado
-                    ? t('reservasCursos.inscribirme')
-                    : t('reservasCursos.iniciarSesionInscribirte')
-                "
-                :loading="procesandoInscripcion"
-                @click="inscribirse"
+                class="rc-boton"
+                :label="t('reservasCursos.suscribirte')"
+                :loading="procesando"
+                @click="iniciarSuscripcion"
               />
-              <div class="text-caption q-mt-sm text-grey">{{ t('reservasCursos.pago') }}</div>
-            </div>
+              <p class="rc-pie">{{ t('reservasCursos.pago') }}</p>
+            </template>
+            <q-btn
+              v-else
+              outline
+              color="primary"
+              no-caps
+              class="rc-boton"
+              :to="rutaLogin"
+              :label="t('reservasCursos.iniciarSesion')"
+            />
+          </div>
 
-            <div v-else-if="estaSuscrito">
-              <div class="text-h5 text-positive q-my-md text-weight-bold">
-                {{ t('reservasCursos.yaEres') }}
-              </div>
-              <q-banner dense class="bg-green-1 text-green-9 q-pa-md rounded-borders q-mb-md">
-                <template v-slot:avatar><q-icon name="check_circle" color="positive" /></template>
-                {{ t('reservasCursos.ahoraTienes') }}
-              </q-banner>
+          <!-- Lista de espera -->
+          <div v-else class="rc-bloque">
+            <p v-if="cursoLleno && esCursoActivo" class="rc-texto rc-texto--fuerte">
+              {{ t('reservasCursos.cursoCompleto') }}
+            </p>
+            <p v-else class="rc-texto rc-texto--fuerte">{{ t('reservasCursos.elCurso') }}</p>
+
+            <template v-if="autenticado">
+              <template v-if="!yaEnListaEspera">
+                <p class="rc-texto">{{ t('reservasCursos.apuntate') }}</p>
+                <q-checkbox
+                  v-model="aceptaCondiciones"
+                  :label="t('reservasCursos.acepto')"
+                  dense
+                  class="rc-check"
+                />
+                <q-btn
+                  color="primary"
+                  unelevated
+                  no-caps
+                  icon="event_available"
+                  class="rc-boton"
+                  :disable="!aceptaCondiciones"
+                  :loading="reservando"
+                  :label="t('reservasCursos.unirme')"
+                  @click="confirmarReservaAutenticado"
+                />
+              </template>
+              <p v-else class="rc-ok rc-ok--espera">
+                <q-icon name="watch_later" /> {{ t('reservasCursos.yaEstas') }}
+              </p>
+            </template>
+
+            <template v-else>
+              <template v-if="!yaEnListaEspera">
+                <p class="rc-texto">{{ t('reservasCursos.apuntateA') }}</p>
+                <q-input
+                  v-model="formGuest.nombre"
+                  :label="t('reservasCursos.tuNombre')"
+                  outlined
+                  dense
+                  class="q-mb-sm"
+                />
+                <q-input
+                  v-model="formGuest.email"
+                  :label="t('reservasCursos.tuEmail')"
+                  type="email"
+                  outlined
+                  dense
+                  class="q-mb-sm"
+                />
+                <q-checkbox
+                  v-model="aceptaCondicionesGuest"
+                  :label="t('reservasCursos.aceptarTerminos')"
+                  dense
+                  class="rc-check"
+                />
+                <q-btn
+                  color="primary"
+                  unelevated
+                  no-caps
+                  class="rc-boton"
+                  :disable="!formGuestValido || reservando"
+                  :loading="reservando"
+                  :label="t('reservasCursos.avisadme')"
+                  @click="confirmarReservaGuest"
+                />
+              </template>
+              <p v-else class="rc-ok rc-ok--espera">
+                <q-icon name="watch_later" /> {{ t('reservasCursos.tuEmailYa') }}
+              </p>
               <q-btn
+                flat
                 color="primary"
-                :label="t('reservasCursos.irArea')"
-                to="/AreaPersonal"
-                class="full-width"
-                icon="account_circle"
+                no-caps
+                class="q-mt-sm"
+                :label="t('reservasCursos.iniciar')"
+                :to="rutaLogin"
               />
-            </div>
-
-            <div v-else-if="esCursoActivo && !cursoLleno">
-              <div class="text-h4 text-weight-bold q-my-md" style="color: #851319">
-                {{ curso.precio_curso
-                }}<span class="text-caption">{{ t('reservasCursos.mes') }}</span>
-              </div>
-
-              <div v-if="autenticado">
-                <q-btn
-                  color="primary"
-                  size="lg"
-                  icon="credit_card"
-                  :label="t('reservasCursos.suscribirte')"
-                  :loading="procesando"
-                  @click="iniciarSuscripcion"
-                  class="q-px-xl"
-                />
-                <div class="text-caption q-mt-sm text-grey">{{ t('reservasCursos.pago') }}</div>
-              </div>
-              <div v-else>
-                <q-btn
-                  outline
-                  color="primary"
-                  class="full-width"
-                  :to="rutaLogin"
-                  :label="t('reservasCursos.iniciarSesion')"
-                />
-              </div>
-            </div>
-
-            <div v-else>
-              <div
-                v-if="cursoLleno && esCursoActivo"
-                class="text-body2 text-negative q-mb-md text-weight-bold"
-              >
-                ⚠️ {{ t('reservasCursos.cursoCompleto') }}
-              </div>
-              <div v-else class="text-body2 text-grey-8 q-mb-md">
-                {{ t('reservasCursos.elCurso') }}
-              </div>
-
-              <div v-if="autenticado">
-                <div v-if="!yaEnListaEspera">
-                  <p>{{ t('reservasCursos.apuntate') }}</p>
-                  <q-checkbox
-                    v-model="aceptaCondiciones"
-                    :label="t('reservasCursos.acepto')"
-                    dense
-                    size="sm"
-                    class="q-mb-md"
-                  />
-                  <br />
-                  <q-btn
-                    color="primary"
-                    icon="event_available"
-                    :disable="!aceptaCondiciones"
-                    :loading="reservando"
-                    :label="t('reservasCursos.unirme')"
-                    @click="confirmarReservaAutenticado"
-                    class="q-px-xl"
-                  />
-                </div>
-                <q-banner v-else dense class="bg-orange-1 text-orange-9 q-mt-md rounded-borders">
-                  <template v-slot:avatar><q-icon name="watch_later" /></template>
-                  {{ t('reservasCursos.yaEstas') }}
-                </q-banner>
-              </div>
-
-              <div v-else>
-                <div v-if="!yaEnListaEspera" class="full-width">
-                  <q-input
-                    v-model="formGuest.nombre"
-                    :label="t('reservasCursos.tuNombre')"
-                    dense
-                    filled
-                    class="q-mb-sm"
-                  />
-                  <q-input
-                    v-model="formGuest.email"
-                    :label="t('reservasCursos.tuEmail')"
-                    dense
-                    filled
-                    class="q-mb-sm"
-                  />
-                  <q-checkbox
-                    v-model="aceptaCondicionesGuest"
-                    :label="t('reservasCursos.aceptarTerminos')"
-                    class="q-my-sm"
-                    dense
-                    size="sm"
-                  />
-                  <q-btn
-                    color="primary"
-                    :disable="!formGuestValido || reservando"
-                    :loading="reservando"
-                    :label="t('reservasCursos.avisadme')"
-                    @click="confirmarReservaGuest"
-                    class="q-mt-sm full-width"
-                  />
-                </div>
-                <q-banner v-else dense class="bg-orange-1 text-orange-9 q-mt-sm">
-                  {{ t('reservasCursos.tuEmailYa') }}
-                </q-banner>
-                <q-btn
-                  flat
-                  color="primary"
-                  class="q-mt-md"
-                  :label="t('reservasCursos.iniciar')"
-                  :to="rutaLogin"
-                  size="sm"
-                />
-              </div>
-            </div>
-          </q-card-section>
-        </q-card>
+            </template>
+          </div>
+        </aside>
       </div>
     </div>
 
@@ -419,6 +374,8 @@ interface Curso {
   id: number;
   nombre_curso: string;
   descripcion?: string | null;
+  nivel?: string | null;
+  categoria?: 'conversacion' | 'general' | null;
   estado_curso: string;
   max_estudiantes?: number;
   dias_semana: string[];
@@ -491,22 +448,6 @@ const cursoLleno = computed(() => {
   return ocupacionActual.value >= max;
 });
 
-const colorEstado = computed(() => {
-  if (cursoTerminado.value) return 'grey-7';
-  if (cursoLleno.value && esCursoActivo.value) return 'red';
-
-  switch (curso.value?.estado_curso) {
-    case 'Activo':
-      return 'positive';
-    case 'Completo':
-      return 'red';
-    case 'Lista de espera':
-      return 'grey-7';
-    default:
-      return 'orange';
-  }
-});
-// AÑADE ESTO:
 const textoEstado = computed(() => {
   if (cursoTerminado.value) return t('reservasCursos.finalizado');
   // Si está activo pero se llenó, lo marcamos como Completo
@@ -522,6 +463,24 @@ const textoEstado = computed(() => {
     default:
       return curso.value?.estado_curso || t('reservasCursos.activo');
   }
+});
+
+// Color del sello y etiquetas (como en las tarjetas de /Clases)
+const selloCategoria = computed(() =>
+  curso.value?.categoria === 'general' ? 'sn-sello-general' : 'sn-sello-conversacion',
+);
+const textoCategoria = computed(() =>
+  curso.value?.categoria === 'general'
+    ? t('PaginaClases.tipoGeneral')
+    : t('PaginaClases.tipoConversacion'),
+);
+const textoFormato = computed(() =>
+  esCerrado.value ? t('PaginaClases.etiquetaPagoUnico') : t('PaginaClases.etiquetaMensual'),
+);
+const claseEstado = computed(() => {
+  if (cursoTerminado.value) return 'fin';
+  if (cursoLleno.value || curso.value?.estado_curso === 'Completo') return 'lleno';
+  return esCursoActivo.value ? 'abierto' : 'espera';
 });
 
 const aceptaCondiciones = ref(false);
@@ -597,7 +556,7 @@ const cargarCurso = async () => {
     const { data, error } = await supabase
       .from('cursos_grupales')
       .select(
-        'id, nombre_curso, descripcion, estado_curso, max_estudiantes, dias_semana, horarios_curso, stripe_price_id, precio_curso, tipo_curso, fecha_inicio, fecha_fin, precio_total_centimos, duracion_minutos',
+        'id, nombre_curso, descripcion, estado_curso, max_estudiantes, dias_semana, horarios_curso, stripe_price_id, precio_curso, tipo_curso, fecha_inicio, fecha_fin, precio_total_centimos, duracion_minutos, nivel, categoria',
       )
       .eq('id', idNum)
       .maybeSingle();
@@ -791,8 +750,210 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.reservas-page {
-  max-width: 1300px;
-  margin: 0 auto;
+.rc-pagina {
+  background: var(--sn-papel);
+  color: var(--sn-tinta);
+  padding-block: clamp(20px, 4vw, 40px) var(--sn-seccion);
+}
+.rc-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+.rc-aviso {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border-radius: var(--sn-r-tarjeta);
+  background: #eef5e4;
+  color: var(--sn-oliva);
+  font-weight: 600;
+}
+.rc-aviso__detalle {
+  font-weight: 400;
+  font-size: var(--sn-t-peq);
+  margin-top: 4px;
+}
+.rc-rejilla {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .rc-rejilla {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 40px;
+  }
+  .rc-reserva {
+    position: sticky;
+    top: 120px;
+  }
+}
+
+/* Información */
+.rc-info {
+  border-top: 6px solid var(--sn-sello);
+  padding-top: 20px;
+}
+.rc-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.rc-etiqueta {
+  padding: 3px 12px;
+  border-radius: var(--sn-r-boton);
+  border: 1px solid var(--sn-borde);
+  font-size: var(--sn-t-peq);
+  font-weight: 700;
+  color: var(--sn-tinta-suave);
+}
+.rc-etiqueta--sello {
+  background: var(--sn-sello-tenue);
+  border-color: transparent;
+  color: var(--sn-sello);
+}
+.rc-h1 {
+  font-size: var(--sn-t-h1);
+  line-height: 1.1;
+  margin: 0 0 12px;
+  color: var(--sn-tinta);
+}
+.rc-h2 {
+  font-size: var(--sn-t-h3);
+  margin: 0 0 16px;
+  color: var(--sn-tinta);
+}
+.rc-estado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 20px;
+  font-weight: 700;
+}
+.rc-estado__plazas {
+  font-weight: 400;
+  color: var(--sn-tinta-suave);
+}
+.rc-estado__punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--sn-tinta-suave);
+}
+.rc-estado__punto--abierto {
+  background: var(--sn-oliva-vivo);
+}
+.rc-estado__punto--lleno {
+  background: var(--sn-burdeos);
+}
+.rc-descripcion {
+  white-space: pre-line;
+  line-height: 1.65;
+  max-width: var(--sn-prosa);
+  margin: 0 0 24px;
+}
+.rc-datos {
+  margin: 0;
+  display: grid;
+  gap: 14px;
+  border-top: 1px solid var(--sn-borde);
+  padding-top: 20px;
+}
+.rc-dato dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--sn-t-peq);
+  font-weight: 700;
+  color: var(--sn-tinta-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.rc-dato dd {
+  margin: 4px 0 0;
+  font-size: var(--sn-t-entrada);
+  font-weight: 600;
+}
+.rc-dato__extra {
+  display: block;
+  font-size: var(--sn-t-peq);
+  font-weight: 400;
+  color: var(--sn-tinta-suave);
+}
+
+/* Reserva */
+.rc-reserva {
+  background: var(--sn-hoja);
+  border: 1px solid var(--sn-borde);
+  border-radius: var(--sn-r-tarjeta);
+  box-shadow: var(--sn-sombra);
+  padding: 24px;
+}
+.rc-bloque {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+.rc-precio {
+  margin: 0;
+  font-family: var(--sn-fuente-titulos);
+  font-size: var(--sn-t-h2);
+  font-weight: 700;
+  color: var(--sn-tinta);
+}
+.rc-precio__mes {
+  font-size: var(--sn-t-cuerpo);
+  color: var(--sn-tinta-suave);
+}
+.rc-precio__nota {
+  display: block;
+  font-family: var(--sn-fuente-texto);
+  font-size: var(--sn-t-peq);
+  font-weight: 400;
+  color: var(--sn-tinta-suave);
+}
+.rc-texto {
+  margin: 0;
+  line-height: 1.55;
+}
+.rc-texto--fuerte {
+  font-weight: 700;
+}
+.rc-ok {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 700;
+  color: var(--sn-oliva);
+}
+.rc-ok--espera {
+  color: var(--sn-tinta);
+}
+.rc-boton {
+  width: 100%;
+}
+.rc-pie {
+  margin: 0;
+  text-align: center;
+  font-size: var(--sn-t-peq);
+  color: var(--sn-tinta-suave);
+}
+.rc-vacio {
+  text-align: center;
+  padding-block: var(--sn-seccion);
+}
+.rc-vacio__icono {
+  color: var(--sn-tinta-suave);
 }
 </style>

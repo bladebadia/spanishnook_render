@@ -2,9 +2,9 @@
   <q-page class="flex flex-center sn-pagina-acceso">
     <q-card class="q-pa-none shadow-2 my-card" bordered style="width: 100%; max-width: 450px">
       <q-card-section class="q-pt-xl q-pb-md text-center">
-        <div class="text-h5 text-primary text-weight-bold">
+        <h1 class="text-h5 text-primary text-weight-bold q-mt-none">
           {{ t('accederForm.entrar') }}
-        </div>
+        </h1>
         <div class="text-caption text-grey-7">{{ t('accederForm.bienvenidoDeNuevo') }}</div>
       </q-card-section>
 

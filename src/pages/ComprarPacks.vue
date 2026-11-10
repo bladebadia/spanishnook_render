@@ -44,21 +44,7 @@
               <q-card-section
                 class="col q-pa-lg text-center column justify-center relative-position"
               >
-                <q-badge
-                  v-if="pack.ahorro"
-                  color="red"
-                  floating
-                  rounded
-                  style="
-                    top: 14px;
-                    right: 16px;
-                    font-size: 0.8rem;
-                    font-weight: bold;
-                    transform: rotate(5deg);
-                  "
-                >
-                  {{ pack.ahorro }}
-                </q-badge>
+                <span v-if="pack.ahorro" class="cp-ahorro">{{ pack.ahorro }}</span>
 
                 <div
                   v-if="pack.precioOriginal"
@@ -113,21 +99,7 @@
               <q-card-section
                 class="col q-pa-lg text-center column justify-center relative-position"
               >
-                <q-badge
-                  v-if="pack.ahorro"
-                  color="red"
-                  floating
-                  rounded
-                  style="
-                    top: 14px;
-                    right: 16px;
-                    font-size: 0.8rem;
-                    font-weight: bold;
-                    transform: rotate(5deg);
-                  "
-                >
-                  {{ pack.ahorro }}
-                </q-badge>
+                <span v-if="pack.ahorro" class="cp-ahorro">{{ pack.ahorro }}</span>
 
                 <div
                   v-if="pack.precioOriginal"
@@ -358,6 +330,19 @@ const comprarPack = async (pack: PackCreditos) => {
 </script>
 
 <style scoped>
+/* Ahorro: nota adhesiva discreta, sin el rojo girado */
+.cp-ahorro {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  padding: 3px 10px;
+  border-radius: var(--sn-r-boton);
+  background: var(--sn-nota);
+  border: 1px solid var(--sn-nota-borde);
+  color: var(--sn-tinta);
+  font-size: var(--sn-t-peq);
+  font-weight: 800;
+}
 /* Cabecera y "cómo funcionan" con el sistema de diseño */
 .pk-cabecera {
   text-align: center;

@@ -16,9 +16,9 @@
       </div>
 
       <q-card-section class="q-pa-none">
-        <div class="text-h5 text-primary text-weight-bold q-mb-xs">
+        <h1 class="text-h5 text-primary text-weight-bold q-mb-xs q-mt-none">
           {{ t('checkEmail.registroCasi') }}
-        </div>
+        </h1>
         <div class="text-subtitle1 text-grey-7">{{ t('checkEmail.soloFalta') }}</div>
       </q-card-section>
 

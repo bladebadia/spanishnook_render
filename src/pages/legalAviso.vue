@@ -1,6 +1,6 @@
 <template>
   <div class="legal-page sn-legal">
-    <p class="text-primary text-bold text-center titulo-responsivo">Aviso Legal</p>
+    <h1 class="text-primary text-bold text-center titulo-responsivo">Aviso Legal</h1>
     <p class="text-primary text-bold texto-responsivo">Responsable de la web</p>
     <p class="text-left text-left texto-responsivo">
       De conformidad con la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la

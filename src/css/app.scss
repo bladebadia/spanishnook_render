@@ -360,7 +360,8 @@ a {
     padding-left: 1.2em !important;
   }
   // Título de la página
-  p.titulo-responsivo {
+  p.titulo-responsivo,
+  h1.titulo-responsivo {
     font-size: var(--sn-t-h1) !important;
     line-height: 1.1;
     margin: 0 0 28px;

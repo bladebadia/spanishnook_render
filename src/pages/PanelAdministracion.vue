@@ -62,20 +62,6 @@
             <q-item
               clickable
               v-ripple
-              :active="seccionActual === 'noticias'"
-              @click="cambiarSeccion('noticias')"
-              class="menu-item"
-            >
-              <q-item-section avatar>
-                <q-icon name="article" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Tarjetas y Noticias</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
               :active="seccionActual === 'materiales'"
               @click="cambiarSeccion('materiales')"
               class="menu-item"
@@ -1358,7 +1344,7 @@
               <div class="col-12 col-md-4">
                 <q-input
                   v-model="filtroReservas.userId"
-                  label="Buscar por User ID"
+                  label="Buscar por nombre o email"
                   filled
                   dense
                   clearable
@@ -1425,7 +1411,8 @@
                 </q-item-label>
                 <q-item-label caption>
                   <q-chip size="sm" color="primary" text-color="white" dense>
-                    User ID: {{ truncarUserId(reserva.user_id) }}
+                    {{ alumnos[reserva.user_id]?.nombre || truncarUserId(reserva.user_id) }}
+                    <q-tooltip>{{ alumnos[reserva.user_id]?.email || reserva.user_id }}</q-tooltip>
                   </q-chip>
                   <q-chip
                     size="sm"
@@ -2290,6 +2277,7 @@ const horariosDisponibles = [
 const nivelesDisponibles = ['Principiante', 'Elemental', 'Intermedio', 'Avanzado', 'Nativo'];
 const estadosCurso = ['Activo', 'Completado', 'Lista de espera'];
 const reservasActivas = ref<Reserva[]>([]);
+const alumnos = ref<Record<string, { nombre: string; email: string }>>({});
 const dialogEditarReserva = ref(false);
 const guardandoReserva = ref(false);
 const paginaActual = ref(1);
@@ -3579,11 +3567,13 @@ const getColorEstado = (estado: string): string => {
 const reservasFiltradas = computed(() => {
   let resultado = [...reservasActivas.value];
 
-  // Filtro por user_id
+  // Filtro por nombre, email o id del alumno
   if (filtroReservas.value.userId) {
-    resultado = resultado.filter((r) =>
-      r.user_id.toLowerCase().includes(filtroReservas.value.userId.toLowerCase()),
-    );
+    const q = filtroReservas.value.userId.toLowerCase();
+    resultado = resultado.filter((r) => {
+      const a = alumnos.value[r.user_id];
+      return [r.user_id, a?.nombre, a?.email].some((v) => v?.toLowerCase().includes(q));
+    });
   }
 
   // Filtro por tipo
@@ -3880,12 +3870,28 @@ const cargarReservas = async (): Promise<void> => {
       .from('reservas')
       .select('*')
       .gte('fecha', fechaActual)
+      .neq('estado', 'cancelada')
       .order('fecha', { ascending: true })
       .order('hora', { ascending: true });
 
     if (error) throw error;
 
     reservasActivas.value = data || [];
+
+    // Nombre y email de cada alumno (antes solo se veía el User ID)
+    const ids = [...new Set(reservasActivas.value.map((r) => r.user_id))];
+    if (ids.length > 0) {
+      const { data: perfiles } = await supabase
+        .from('datos_usuarios')
+        .select('user_id, nombre, apellido1, email')
+        .in('user_id', ids);
+      alumnos.value = Object.fromEntries(
+        ((perfiles ?? []) as PerfilUsuario[]).map((p) => [
+          p.user_id,
+          { nombre: [p.nombre, p.apellido1].filter(Boolean).join(' '), email: p.email ?? '' },
+        ]),
+      );
+    }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
     $q.notify({

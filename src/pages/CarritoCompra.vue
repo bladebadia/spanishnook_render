@@ -86,12 +86,11 @@
           <div class="ca-total sn-nota">
             <p class="ca-total__titulo">{{ t('carrito.resumenDelPedido') }}</p>
             <div class="ca-total__fila">
-              <span>{{ carrito.length }} {{ t('carrito.reserva', { count: carrito.length }) }}</span>
+              <span>{{ carrito.length }} {{ t('carrito.reserva', carrito.length) }}</span>
               <strong class="ca-total__importe">{{ totalPagarDinero }} €</strong>
             </div>
             <p v-if="totalGastarCreditos > 0" class="ca-total__creditos">
-              {{ t('carrito.seCanjearan') }} {{ totalGastarCreditos }}
-              {{ t('carrito.credito', { count: totalGastarCreditos }) }}
+              {{ t('carrito.usarasCreditos', totalGastarCreditos) }}
             </p>
             <p v-if="reservasConflictivas.length > 0" class="ca-total__conflicto">
               <q-icon name="warning" size="16px" />
@@ -211,6 +210,17 @@ onMounted(async () => {
     } finally {
       cargandoSaldo.value = false;
     }
+  }
+  // Si tiene créditos para alguna clase del carrito, se usan por defecto (antes salía
+  // desmarcado y el botón proponía pagar con tarjeta teniendo saldo)
+  const hayCreditoUtil = carrito.value.some(
+    (item) =>
+      (item.tipo === 'normal' && saldoNormal.value > 0) ||
+      (item.tipo === 'conversacion' && saldoConversacion.value > 0),
+  );
+  if (hayCreditoUtil) {
+    usarCreditosGlobal.value = true;
+    recalcularAplicacionCreditos();
   }
   void verificarDisponibilidad();
 });

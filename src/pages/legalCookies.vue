@@ -1,6 +1,6 @@
 <template>
   <div class="legal-page sn-legal">
-    <p class="text-h3 text-primary text-bold text-center titulo-responsivo">Política de Cookies</p>
+    <h1 class="text-h3 text-primary text-bold text-center titulo-responsivo">Política de Cookies</h1>
     <p class="text-h6 text-left text-black texto-responsivo">
       En esta página se informa de manera clara y accesible sobre el uso de cookies en el Sitio Web
       <span style="color: firebrick">www.spanishnook.com</span>

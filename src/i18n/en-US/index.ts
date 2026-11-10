@@ -831,6 +831,7 @@ export default {
     canjear: 'Redeem credits',
     seguir: 'Continue booking',
     credito: 'credit(s)',
+    usarasCreditos: 'You will use {n} credit | You will use {n} credits',
     confirmadas: 'Bookings confirmed!',
     iconoClase: 'Class icon',
     creditoBadge: 'Credit',
@@ -889,6 +890,8 @@ export default {
     volverCursos: 'Back to courses',
     cursoNo: 'Course not found.',
     porDefinir: 'To be defined',
+    inicio: 'Starts',
+    horarioCorto: 'Time',
 
     tuNombre: 'Your name',
     tuEmail: 'Your email',
