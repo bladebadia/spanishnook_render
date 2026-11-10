@@ -91,6 +91,11 @@ export function nota(html: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 20px;"><tr><td style="padding:14px 16px;background:${C.nota};border:1px solid ${C.notaBorde};border-radius:12px;font-family:${TEXTO};font-size:15px;line-height:1.5;color:${C.tinta};">${html}</td></tr></table>`;
 }
 
+/** Código de un solo uso en grande (mismo estilo que los correos de Supabase Auth). */
+export function codigoGrande(codigo: string): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 24px;"><tr><td style="padding:14px 24px;background:${C.papel};border:1px solid ${C.borde};border-radius:12px;font-family:${TITULOS};font-size:28px;font-weight:700;letter-spacing:6px;color:${C.tinta};">${escapar(codigo)}</td></tr></table>`;
+}
+
 /** Botón principal (píldora burdeos). Funciona también en Outlook gracias al padding en la celda. */
 export function boton(texto: string, url: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 24px;"><tr>

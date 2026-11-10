@@ -761,23 +761,68 @@
                   <p class="text-grey-9 q-mt-sm text-bold">⚠️ {{ t('personal.estaAccion') }}</p>
                 </q-card-section>
                 <q-card-section>
-                  <q-form @submit="eliminarCuenta" class="row items-end q-gutter-md">
+                  <q-form @submit="eliminarCuenta" class="ap-borrado">
+                    <!-- Con contraseña: la contraseña. Solo Google: código de 6 dígitos al correo.
+                         La comprobación la hace el servidor (delete-account). -->
                     <q-input
+                      v-if="tieneContrasena"
                       v-model="passwordConfirm"
-                      :type="tieneContrasena ? 'password' : 'email'"
-                      :label="
-                        tieneContrasena ? t('personal.confirmaTuContrasena') : t('personal.escribeTuEmail')
-                      "
+                      type="password"
+                      autocomplete="current-password"
+                      :label="t('personal.confirmaTuContrasena')"
                       outlined
                       dense
-                      class="col-12 col-md-6"
                       bg-color="white"
                     />
+                    <template v-else>
+                      <p class="q-mb-none">
+                        {{
+                          codigoEnviado
+                            ? t('personal.codigoEnviado', { email: user?.email ?? '' })
+                            : t('personal.explicaCodigo')
+                        }}
+                      </p>
+                      <q-btn
+                        v-if="!codigoEnviado"
+                        outline
+                        no-caps
+                        color="negative"
+                        icon="mail"
+                        class="self-start"
+                        :loading="enviandoCodigo"
+                        :label="t('personal.enviarCodigo')"
+                        @click="enviarCodigoBorrado"
+                      />
+                      <template v-else>
+                        <q-input
+                          v-model="codigoBorrado"
+                          inputmode="numeric"
+                          autocomplete="one-time-code"
+                          maxlength="6"
+                          :label="t('personal.codigoSeisDigitos')"
+                          outlined
+                          dense
+                          bg-color="white"
+                        />
+                        <q-btn
+                          flat
+                          no-caps
+                          dense
+                          color="primary"
+                          class="self-start"
+                          :loading="enviandoCodigo"
+                          :label="t('personal.reenviarCodigo')"
+                          @click="enviarCodigoBorrado"
+                        />
+                      </template>
+                    </template>
                     <q-btn
+                      v-if="tieneContrasena || codigoEnviado"
                       :label="t('personal.eliminarDefinitivamente')"
                       type="submit"
                       color="negative"
                       icon="delete_forever"
+                      class="self-start"
                       :loading="deleting"
                       unelevated
                     />
@@ -1205,29 +1250,83 @@ const formatoHorarioLocal = (fechaStr: string | undefined, horaStr: string | und
 const formatHorarioIndividual = (horaInicio: string) =>
   horaInicio ? rangoHoraMadrid(horaInicio, 60) : '';
 
+// --- Borrar cuenta: la contraseña o el código los comprueba el servidor (delete-account) ---
+const codigoBorrado = ref('');
+const codigoEnviado = ref(false);
+const enviandoCodigo = ref(false);
+const idiomaCorreos = () => (locale.value.startsWith('en') ? 'en' : 'es');
+
+/** Motivo de rechazo que devuelve delete-account ({ motivo }) o null. */
+const motivoRechazo = async (error: unknown): Promise<string | null> => {
+  const contexto = (error as { context?: unknown } | null)?.context;
+  if (typeof Response === 'undefined' || !(contexto instanceof Response)) return null;
+  try {
+    return ((await contexto.json()) as { motivo?: string }).motivo ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const MENSAJE_MOTIVO: Record<string, string> = {
+  contrasena_incorrecta: 'personal.contrasenaIncorrecta',
+  codigo_incorrecto: 'personal.codigoIncorrecto',
+  codigo_caducado: 'personal.codigoCaducado',
+  demasiados_intentos: 'personal.demasiadosIntentos',
+  espera: 'personal.esperaCodigo',
+};
+
+const enviarCodigoBorrado = async () => {
+  enviandoCodigo.value = true;
+  try {
+    const { error } = await supabase.functions.invoke('delete-account', {
+      body: { accion: 'enviarCodigo', idioma: idiomaCorreos() },
+    });
+    if (error) {
+      const motivo = await motivoRechazo(error);
+      $q.notify({
+        type: 'negative',
+        message: t(MENSAJE_MOTIVO[motivo ?? ''] ?? 'personal.errorEnviarCodigo'),
+      });
+      return;
+    }
+    codigoEnviado.value = true;
+    codigoBorrado.value = '';
+  } finally {
+    enviandoCodigo.value = false;
+  }
+};
+
 const eliminarCuenta = async () => {
-  if (!user.value?.email || !user.value?.id) return;
-  if (!passwordConfirm.value) return;
+  if (!user.value?.id) return;
+  const body: Record<string, string> = { idioma: idiomaCorreos() };
+  if (tieneContrasena.value) {
+    if (!passwordConfirm.value) return;
+    body.password = passwordConfirm.value;
+  } else {
+    const codigo = codigoBorrado.value.replace(/\D/g, '');
+    if (codigo.length !== 6) {
+      $q.notify({ type: 'warning', message: t('personal.codigoSeisDigitos') });
+      return;
+    }
+    body.codigo = codigo;
+  }
   deleting.value = true;
   try {
-    if (tieneContrasena.value) {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.value.email,
-        password: passwordConfirm.value,
+    const { error } = await supabase.functions.invoke('delete-account', { body });
+    if (error) {
+      const motivo = await motivoRechazo(error);
+      if (motivo === 'codigo_caducado' || motivo === 'demasiados_intentos') {
+        codigoEnviado.value = false;
+      }
+      $q.notify({
+        type: 'negative',
+        message: t(MENSAJE_MOTIVO[motivo ?? ''] ?? 'personal.errorEliminar'),
       });
-      if (signInError) throw new Error(t('personal.contrasenaIncorrecta'));
-    } else if (passwordConfirm.value.trim().toLowerCase() !== user.value.email.toLowerCase()) {
-      // Cuenta de Google sin contraseña: se confirma escribiendo el email
-      throw new Error(t('personal.emailNoCoincide'));
+      return;
     }
-    const { error } = await supabase.functions.invoke('delete-account', { body: {} });
-    if (error) throw error;
     $q.notify({ type: 'positive', message: t('personal.cuentaEliminada') });
     await logout();
     await router.push('/');
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error';
-    $q.notify({ type: 'negative', message: msg });
   } finally {
     deleting.value = false;
   }
@@ -1479,6 +1578,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Borrar cuenta: columna estrecha */
+.ap-borrado {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+}
 /* Mis reservas: filas compactas con hoja de calendario */
 .ap-lista {
   list-style: none;
