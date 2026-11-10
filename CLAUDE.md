@@ -47,16 +47,19 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 - `supabase/functions/README.md` y `CAMBIOS-FASE2.md`: qué hace cada función.
 - `supabase/migrations/`: migraciones ya aplicadas en producción.
 
-## Pendiente (8-nov-2026)
+## Pendiente (10-nov-2026)
 
-1. Subir a `master` el commit de `cerrar-curso` ('Finalizado') que está en `rediseno` (la función ya está desplegada).
-2. Probar: registro y confirmación de email, reset de contraseña, login con Google, borrar cuenta, pago de clase con tarjeta, compra de bono, compra de material y descarga del PDF, suscripción mensual, flujos de admin, formulario de contacto, web en inglés.
-3. ~~Plantillas de correo de Supabase Auth~~ Subidas el 8-nov (`supabase/auth-correos/`, se despliegan con `desplegar.ts`); idioma por `user_metadata.idioma`.
-4. ~~Bucket `pdfs_materiales`: política de lectura~~ Aplicada y probada el 8-nov.
-5. ~~`AuthCallback.vue` ignora `?redirect=`~~ Resuelto en `rediseno`. Login con Google: proveedor activo en Supabase (proyecto de Google Cloud aparte del de Calendar), migración `20261109100000_nombre_usuarios_google.sql` aplicada y botón encendido en `rediseno` (`LOGIN_GOOGLE_ACTIVO`). Pendiente: verificación de marca de Google (hasta entonces la pantalla muestra el dominio de Supabase).
-6. Mensaje de contraseña "vocal/mayúscula" en el registro.
-7. Error de hidratación SSR en `IndexPage.vue`.
-8. Plazas de curso cerrado: el control no es atómico (dos pagos simultáneos pueden superar el máximo; el webhook reembolsa al que sobra).
-9. Tarea diaria que pase a 'Finalizado' los cursos cerrados con `fecha_fin` pasada.
-10. Rediseño visual: hecho en `rediseno` (todas las páginas, menú móvil, área personal, carrito, legales), **sin subir a `master` hasta que Paula lo apruebe**. Revisado con sesión en local. Ideas pendientes: menos tarjetas con borde, usar el burdeos solo en acciones y títulos, foto de Paula en inicio y Clases, ficha de curso (`/ReservasCursos`) sin revisar por falta de curso real.
-11. Añadir `.gitattributes` (`* text=auto eol=lf`): el repo mezcla CRLF y LF.
+1. ~~Subir `cerrar-curso` a `master`~~ Subido con el rediseño el 10-nov.
+2. Probar (escriben en producción; preguntar antes): reserva con crédito y cancelación, lista de espera, opinión, formulario de contacto, registro y confirmación de email, reset de contraseña, borrar cuenta (también con cuenta solo de Google), flujos de admin, y todo Stripe (clase con tarjeta, bono, material y PDF, suscripción, curso cerrado).
+3. ~~Plantillas de correo de Supabase Auth~~ Subidas el 8-nov (`supabase/auth-correos/`, `desplegar.ts`); idioma por `user_metadata.idioma`. El remitente de estos correos está en el SMTP del panel de Supabase, no en el código.
+4. Login con Google: falta la verificación de marca de Google (hasta entonces la pantalla muestra el dominio de Supabase).
+5. **Seguridad**: `cursos_grupales` es legible por `anon` con todas sus columnas (`meet_link`, `google_event_id`, `usuarios`, `lista_espera` con emails de invitados). Necesita migración (vista o RPC pública sin esas columnas) y que los alumnos reciban el Meet por otra vía.
+6. `mensajes_contacto`: nada en el código lo lee ni avisa a Paula (sin triggers). Decidir: correo a Paula o vista en el panel.
+7. Edge Functions con remitente nuevo (`info@`, bienvenidas desde `hola@`) sin desplegar: `stripe-webhook`, `subscription-webhook` y el resto que usa `_shared/resend.ts`.
+8. Curso "prueba" (id 54) visible en `/Clases`.
+9. Test de nivel: evalúa de C1 hacia abajo (quien acierta C1 por suerte sale C1) y muestra el % del nivel asignado, no el total. Decisión de Paula.
+10. Ficha de curso (`/ReservasCursos`) y panel de administración con el estilo antiguo; el panel lista reservas por User ID sin nombre y tiene la sección vacía "Tarjetas y Noticias".
+11. Plazas de curso cerrado: el control no es atómico (dos pagos simultáneos pueden superar el máximo; el webhook reembolsa al que sobra).
+12. Tarea diaria que pase a 'Finalizado' los cursos cerrados con `fecha_fin` pasada.
+13. Inglés: privacidad, aviso legal y condiciones siguen en español; los textos de cursos de la BD no tienen versión en inglés.
+14. Añadir `.gitattributes` (`* text=auto eol=lf`): el repo mezcla CRLF y LF.
