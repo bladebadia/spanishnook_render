@@ -50,7 +50,7 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 ## Pendiente (10-nov-2026, tarde)
 
 1. ~~Aplicar migraciones 20261110*, desplegar funciones y subir a `master`~~ Hecho el 10-nov.
-2. Probar (escriben en producción; preguntar antes): reserva con crédito y cancelación, lista de espera, opinión, formulario de contacto (debe llegar correo a Paula), registro y confirmación de email, reset de contraseña, borrar cuenta (también con cuenta solo de Google), flujos de admin (lista de cursos vía `admin_cursos()`), y todo Stripe (clase con tarjeta, bono, material y PDF, suscripción, curso cerrado).
+2. Probar (escriben en producción; preguntar antes): reserva con crédito y cancelación, lista de espera, opinión, formulario de contacto (debe llegar correo a Paula), registro y confirmación de email, reset de contraseña, borrar cuenta con contraseña (la de Google con código se probó el 10-nov: borrada mifor43@gmail.com), flujos de admin (lista de cursos vía `admin_cursos()`), y todo Stripe (clase con tarjeta, bono, material y PDF, suscripción, curso cerrado).
 3. El remitente de los correos de Supabase Auth está en el SMTP del panel de Supabase, no en el código.
 4. Login con Google: falta la verificación de marca de Google (hasta entonces la pantalla muestra el dominio de Supabase).
 5. Inglés: privacidad, aviso legal y condiciones siguen en español; los textos de cursos de la BD no tienen versión en inglés.
