@@ -47,20 +47,15 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 - `supabase/functions/README.md` y `CAMBIOS-FASE2.md`: qué hace cada función.
 - `supabase/migrations/`: migraciones ya aplicadas en producción.
 
-## Pendiente (10-nov-2026)
+## Pendiente (10-nov-2026, tarde)
 
-1. ~~Subir `cerrar-curso` a `master`~~ Subido con el rediseño el 10-nov.
-2. Probar (escriben en producción; preguntar antes): reserva con crédito y cancelación, lista de espera, opinión, formulario de contacto, registro y confirmación de email, reset de contraseña, borrar cuenta (también con cuenta solo de Google), flujos de admin, y todo Stripe (clase con tarjeta, bono, material y PDF, suscripción, curso cerrado).
-3. ~~Plantillas de correo de Supabase Auth~~ Subidas el 8-nov (`supabase/auth-correos/`, `desplegar.ts`); idioma por `user_metadata.idioma`. El remitente de estos correos está en el SMTP del panel de Supabase, no en el código.
+1. **Aplicar en producción, en este orden y seguido** (la web nueva depende de la 1.ª migración y la vieja deja de funcionar con ella):
+   1. Migraciones `20261110120000_cursos_columnas_privadas.sql`, `20261110130000_contacto_y_cierre_cursos.sql`, `20261110140000_inscripcion_curso_atomica.sql`.
+   2. Desplegar Edge Functions: `contacto` (nueva), `stripe-webhook`, `subscription-webhook`, `cancel-reserva`, `cerrar-curso`, `delete-account`, `notify-waitlist`, `send-booking-email` (remitente `info@`, bienvenidas `hola@`).
+   3. Merge de `rediseno` en `master` y push.
+2. Probar (escriben en producción; preguntar antes): reserva con crédito y cancelación, lista de espera, opinión, formulario de contacto (debe llegar correo a Paula), registro y confirmación de email, reset de contraseña, borrar cuenta (también con cuenta solo de Google), flujos de admin (lista de cursos vía `admin_cursos()`), y todo Stripe (clase con tarjeta, bono, material y PDF, suscripción, curso cerrado).
+3. El remitente de los correos de Supabase Auth está en el SMTP del panel de Supabase, no en el código.
 4. Login con Google: falta la verificación de marca de Google (hasta entonces la pantalla muestra el dominio de Supabase).
-5. **Seguridad**: `cursos_grupales` es legible por `anon` con todas sus columnas (`meet_link`, `google_event_id`, `usuarios`, `lista_espera` con emails de invitados). Necesita migración (vista o RPC pública sin esas columnas) y que los alumnos reciban el Meet por otra vía.
-6. `mensajes_contacto`: nada en el código lo lee ni avisa a Paula (sin triggers). Decidir: correo a Paula o vista en el panel.
-7. Edge Functions con remitente nuevo (`info@`, bienvenidas desde `hola@`) sin desplegar: `stripe-webhook`, `subscription-webhook` y el resto que usa `_shared/resend.ts`.
-8. Curso "prueba" (id 54) visible en `/Clases`.
-9. Test de nivel: evalúa de C1 hacia abajo (quien acierta C1 por suerte sale C1) y muestra el % del nivel asignado, no el total. Decisión de Paula.
-10. Ficha de curso (`/ReservasCursos`) y panel de administración con el estilo antiguo; el panel lista reservas por User ID sin nombre y tiene la sección vacía "Tarjetas y Noticias".
-11. Plazas de curso cerrado: el control no es atómico (dos pagos simultáneos pueden superar el máximo; el webhook reembolsa al que sobra).
-12. Tarea diaria que pase a 'Finalizado' los cursos cerrados con `fecha_fin` pasada.
-13. Inglés: privacidad, aviso legal y condiciones siguen en español; los textos de cursos de la BD no tienen versión en inglés.
-14. Error de hidratación SSR en `IndexPage.vue`: sin comprobar (`npm run dev` arranca en SPA).
-15. Añadir `.gitattributes` (`* text=auto eol=lf`): el repo mezcla CRLF y LF.
+5. Inglés: privacidad, aviso legal y condiciones siguen en español; los textos de cursos de la BD no tienen versión en inglés.
+6. `check_email_exists` (registro) deja comprobar sin sesión si un email tiene cuenta. Se mantiene por la experiencia del registro; valorar quitarlo.
+7. Panel de administración con el estilo antiguo (funciona; solo es visual).
