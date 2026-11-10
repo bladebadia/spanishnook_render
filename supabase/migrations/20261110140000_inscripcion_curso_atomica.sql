@@ -33,10 +33,6 @@ declare
   v_motivo text;
   v_hoy date := (now() at time zone 'Europe/Madrid')::date;
 begin
-  if exists (select 1 from inscripciones_curso where stripe_session_id = p_session_id) then
-    return 'duplicada';
-  end if;
-
   -- Serializa las inscripciones de este curso
   select id, estado_curso, max_estudiantes, fecha_fin
     into v_curso
@@ -47,7 +43,14 @@ begin
   if not found then
     -- Sin curso no se puede guardar la fila (clave foránea): solo se rechaza
     return 'el curso no existe';
-  elsif v_curso.estado_curso <> 'Activo' then
+  end if;
+
+  -- Dentro del bloqueo: dos avisos simultáneos de la misma sesión no pasan los dos
+  if exists (select 1 from inscripciones_curso where stripe_session_id = p_session_id) then
+    return 'duplicada';
+  end if;
+
+  if v_curso.estado_curso <> 'Activo' then
     v_motivo := 'el curso está en estado ' || v_curso.estado_curso;
   elsif v_curso.fecha_fin is not null and v_hoy >= v_curso.fecha_fin then
     v_motivo := 'el curso ya ha terminado';
