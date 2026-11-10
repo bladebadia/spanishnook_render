@@ -826,6 +826,23 @@ defineExpose({ $q, t });
   }
 }
 
+/* Móviles muy estrechos (320-399 px): la barra no cabía y las banderas se salían */
+@media (max-width: 399px) {
+  .q-bar .btn-nav-superior {
+    margin-right: 2px;
+    padding-inline: 4px;
+  }
+  .flag-switcher {
+    gap: 0;
+  }
+  .flag-switcher .flag-btn,
+  .flag-switcher .flag-es,
+  .flag-switcher .flag-en {
+    margin: 0 1px;
+    padding: 2px 4px;
+  }
+}
+
 .footer-titulo {
   font-weight: bold !important;
   font-size: 1rem !important;

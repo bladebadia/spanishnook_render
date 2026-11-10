@@ -383,7 +383,7 @@ watch(
 
 .rs-rejilla {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: start;
 }
@@ -505,6 +505,7 @@ watch(
 /* 2. Calendario */
 .rs-calendario {
   width: 100%;
+  min-width: 0;
   max-width: 560px;
   margin-inline: auto;
   display: block;
@@ -528,8 +529,11 @@ watch(
 }
 .rs-calendario :deep(.q-date__calendar-item > div),
 .rs-calendario :deep(.q-date__calendar-item button) {
-  width: min(48px, 11vw);
-  height: min(48px, 11vw);
+  /* Se ajusta a su celda (1/7 del calendario), sin depender del ancho de la ventana */
+  width: 100%;
+  max-width: 48px;
+  height: auto;
+  aspect-ratio: 1;
   font-size: 1rem;
 }
 .rs-calendario :deep(.q-date__calendar-weekdays > div) {
