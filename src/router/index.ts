@@ -8,6 +8,7 @@ import {
 import { watch } from 'vue';
 import routes from './routes';
 import { obtenerSesion, useAuth } from 'src/stores/auth';
+import { elementoDeAncla } from 'src/utils/ancla';
 
 /*
  * If not building with SSR mode, you can
@@ -33,8 +34,7 @@ export default defineRouter(function (/* { store, ssrContext } */) {
         // Scroll directo (sin animación) con offset del header
         return new Promise((resolve) => {
           requestAnimationFrame(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            const el = document.querySelector(to.hash) as HTMLElement | null;
+            const el = elementoDeAncla(to.hash);
             if (!el) return resolve({ left: 0, top: 0 });
             const top = el.getBoundingClientRect().top + window.scrollY - 80;
             resolve({ left: 0, top, behavior: 'auto' });
@@ -69,7 +69,7 @@ export default defineRouter(function (/* { store, ssrContext } */) {
                 resolve();
               }
             },
-            { immediate: true }
+            { immediate: true },
           );
         });
       }
@@ -110,7 +110,11 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     });
     Router.onError((error: unknown, to) => {
       const mensaje = error instanceof Error ? error.message : String(error);
-      if (/dynamically imported module|Importing a module script failed|error loading dynamically/i.test(mensaje)) {
+      if (
+        /dynamically imported module|Importing a module script failed|error loading dynamically/i.test(
+          mensaje,
+        )
+      ) {
         recargarPorVersionNueva(to.fullPath);
       }
     });

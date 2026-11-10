@@ -278,6 +278,7 @@ import { useRoute } from 'vue-router';
 import { scroll, useMeta } from 'quasar';
 import { formatFechaCorta } from 'src/utils/zonaHoraria';
 import { textoCurso, type TextosEn } from 'src/utils/textoCurso';
+import { elementoDeAncla } from 'src/utils/ancla';
 const route = useRoute();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 const { t, locale } = useI18n();
@@ -333,8 +334,7 @@ function euros(cantidad: number): string {
 }
 
 function scrollDirecto(hash: string, offset = 80) {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const el = document.querySelector(hash) as HTMLElement | null;
+  const el = elementoDeAncla(hash);
   if (!el) return;
   const target = getScrollTarget(el);
   const top = el.getBoundingClientRect().top + window.scrollY - offset;
