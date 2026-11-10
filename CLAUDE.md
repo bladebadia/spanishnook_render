@@ -50,10 +50,10 @@ Sistema "Papel y tinta" en `src/css/app.scss`: tokens `--sn-*` (burdeos #851319,
 ## Pendiente (10-nov-2026, tarde)
 
 1. ~~Aplicar migraciones 20261110*, desplegar funciones y subir a `master`~~ Hecho el 10-nov.
-2. Probar (escriben en producción; preguntar antes): reserva con crédito y cancelación, lista de espera, opinión, formulario de contacto (debe llegar correo a Paula), registro y confirmación de email, reset de contraseña, flujos de admin (lista de cursos vía `admin_cursos()`), y todo Stripe (clase con tarjeta, bono, material y PDF, suscripción, curso cerrado).
+2. Probar (escriben en producción; preguntar antes; la lista de Paula, con Stripe, está en el artifact «Revisión de SpanishNook»): reserva con crédito y cancelación, lista de espera, opinión, formulario de contacto (debe llegar correo a Paula), registro y confirmación de email, reset de contraseña, flujos de admin (lista de cursos vía `admin_cursos()`), y todo Stripe (clase con tarjeta, bono, material y PDF, suscripción, curso cerrado).
 3. El remitente de los correos de Supabase Auth está en el SMTP del panel de Supabase, no en el código.
 4. Login con Google: falta la verificación de marca (Google Auth Platform → Branding/Verification; logo de 120 px en `marca/logo-google-120.png`). Hasta entonces la pantalla muestra el dominio de Supabase.
-5. Inglés: legales traducidos (`src/i18n/*/legal.ts`, módulo aparte de vue-i18n por los @ y llaves; prevalece el español). Cursos: columna `textos_en` (migración 20261111090000) que se rellena en el panel. **Aplicar la migración antes de subir a master**: la web ya pide esa columna.
+5. Inglés: legales traducidos (`src/i18n/*/legal.ts`, módulo aparte de vue-i18n por los @ y llaves; prevalece el español). Cursos: columna `textos_en` (migración 20261111090000, aplicada y subida el 11-nov) que se rellena en el panel.
 6. ~~Postgres y OTP~~ Hecho el 10-nov: Postgres 17.11.0.018 (copia previa en `SpanishNook/backups/2026-11-10-antes-upgrade-postgres`, fuera del repo) y caducidad del OTP corregida. La protección de contraseñas filtradas requiere plan Pro: no se activa.
 7. Panel de administración con el estilo antiguo (funciona; solo es visual; Miguel no quiere cambiarlo). Opiniones y mensajes de contacto ya se gestionan desde el panel.
 8. Despliegue: Vercel instala con **pnpm** (`pnpm-lock.yaml` + override de `vue` en `package.json`). Al cambiar dependencias, regenerar con `npx pnpm@9.15.9 install --lockfile-only`; si no, el despliegue falla en silencio y producción se queda en la versión anterior.
