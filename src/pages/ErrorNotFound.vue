@@ -1,9 +1,9 @@
 <template>
   <div class="fullscreen bg-primary text-white text-center q-pa-md flex flex-center">
     <div>
-      <div style="font-size: 30vh">404</div>
+      <div class="nf-codigo">404</div>
 
-      <div class="text-h2" style="opacity: 0.4">{{ t('flecos.ups') }}</div>
+      <h1 class="nf-titulo">{{ t('flecos.ups') }}</h1>
 
       <q-btn
         class="q-mt-xl"
@@ -36,3 +36,19 @@ useMeta(() => ({
   meta: { robots: { name: 'robots', content: 'noindex, follow' } },
 }));
 </script>
+
+<style scoped>
+/* Antes 30vh fijo: en móvil el "404" era más ancho que la pantalla */
+.nf-codigo {
+  font-family: var(--sn-fuente-titulos);
+  font-weight: 700;
+  font-size: min(30vh, 40vw);
+  line-height: 1;
+}
+.nf-titulo {
+  font-size: var(--sn-t-h2);
+  margin: 16px 0 0;
+  opacity: 0.75;
+  color: #fff;
+}
+</style>

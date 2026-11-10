@@ -39,7 +39,7 @@
       <div class="sn-contenedor">
         <div class="cl-intro">
           <q-img
-            src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-individuales.png?width=700&format=webp"
+            src="/img/web/clases-spanish-individuales.webp"
             class="cl-intro__img"
             :ratio="1"
             fit="cover"
@@ -58,7 +58,7 @@
         <div class="cl-modalidades">
           <article class="cl-modalidad sn-sello-conversacion">
             <q-img
-              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-conversacion2.png?width=600&format=webp"
+              src="/img/web/modalidad-conversacion2.webp"
               class="cl-modalidad__img"
               fit="contain"
               alt=""
@@ -75,7 +75,7 @@
           </article>
           <article class="cl-modalidad sn-sello-general">
             <q-img
-              src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/modalidad-general2.png?width=600&format=webp"
+              src="/img/web/modalidad-general2.webp"
               class="cl-modalidad__img"
               fit="contain"
               alt=""
@@ -138,7 +138,7 @@
       <div class="sn-contenedor">
         <div class="cl-intro cl-intro--invertida">
           <q-img
-            src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/clases-spanish-conversacion-intro.png?width=700&format=webp"
+            src="/img/web/clases-spanish-conversacion-intro.webp"
             class="cl-intro__img"
             :ratio="1"
             fit="cover"

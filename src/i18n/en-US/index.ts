@@ -571,13 +571,17 @@ export default {
     errorActualizar: 'Error updating the password',
     errorPerfil406:
       'Error 406: the profile could not be loaded. Check the RLS policies or the request format.',
-    pagoCompletado: 'Payment completed! Your bookings have been confirmed.',
+    pagoCompletado: 'Payment completed. Your classes will appear here in a few seconds.',
+    pagoPackRecibido: 'Payment received. Your credits will be added in a few seconds.',
+    pagoSuscripcionRecibido: 'Subscription completed. You will see the course in "My courses" in a few seconds.',
+    pagoCancelado: 'You cancelled the payment. Nothing has been charged.',
     pagoUnico: 'One-time payment',
     cursoFinalizado: 'Finished',
     fechasCurso: 'From {inicio} to {fin}',
   },
 
   MaterialesPage: {
+    pagoRecibido: 'Payment received. In a few seconds you can download the workbook here and in your personal area.',
     titulo1: 'Didactic Materials and Activities',
     descripcion:
       'Learn real Spanish at your own pace with practical materials designed to develop Spanish skills autonomously and complementarily to your learning in an effective way.',

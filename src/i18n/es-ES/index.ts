@@ -578,13 +578,17 @@ export default {
     errorActualizar: 'Error al actualizar la contraseña',
     errorPerfil406:
       'Error 406: no se puede obtener el perfil. Revisa las políticas RLS o el formato de la petición.',
-    pagoCompletado: '¡Pago completado! Tus reservas han sido confirmadas.',
+    pagoCompletado: 'Pago completado. Tus clases aparecerán aquí en unos segundos.',
+    pagoPackRecibido: 'Pago recibido. Tus créditos se sumarán en unos segundos.',
+    pagoSuscripcionRecibido: 'Suscripción completada. Verás el curso en «Mis cursos» en unos segundos.',
+    pagoCancelado: 'Has cancelado el pago. No se ha cobrado nada.',
     pagoUnico: 'Pago único',
     cursoFinalizado: 'Finalizado',
     fechasCurso: 'Del {inicio} al {fin}',
   },
 
   MaterialesPage: {
+    pagoRecibido: 'Pago recibido. En unos segundos podrás descargar el cuaderno aquí y en tu área personal.',
     titulo1: 'Materiales didácticos y actividades',
     descripcion:
       'Aprende español real a tu ritmo con materiales prácticos creados para desarrollar las destrezas del español de forma autónoma y complementaria a tu aprendizaje de forma efectiva.',

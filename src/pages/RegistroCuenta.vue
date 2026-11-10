@@ -505,6 +505,11 @@ const registrarUsuario = async () => {
 .my-card {
   border-radius: 16px;
 }
+/* Zona táctil mínima para enlaces sueltos (antes medían menos de 24 px de alto) */
+.link-sin-subrayar {
+  display: inline-block;
+  padding-block: 10px;
+}
 .link-sin-subrayar {
   text-decoration: none;
   font-weight: 600;

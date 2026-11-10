@@ -261,6 +261,12 @@ async function login() {
   border-radius: 16px; /* Borde redondeado igual que registro */
 }
 
+/* Zona táctil mínima para enlaces sueltos (antes medían menos de 24 px de alto) */
+.link-sin-subrayar,
+.link-hover {
+  display: inline-block;
+  padding-block: 10px;
+}
 .link-sin-subrayar {
   text-decoration: none;
 }

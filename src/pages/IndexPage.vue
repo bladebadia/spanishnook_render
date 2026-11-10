@@ -32,7 +32,7 @@
         <article class="ini-descubre__tarjeta">
           <img
             class="ini-descubre__img"
-            src="https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/inicio_principal_OK.png?width=800&format=webp"
+            src="/img/web/inicio_principal_OK.webp"
             alt=""
             loading="lazy"
           />
@@ -472,7 +472,8 @@ const handleCreaTuEspacio = () => {
 
 // Precio más bajo de una clase suelta (conversación). Lo fija el servidor; aquí solo se muestra.
 const PRECIO_DESDE = 27;
-const IMG = 'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes';
+// Ilustraciones servidas desde la web (antes, transformación de imágenes de Supabase: solo plan Pro)
+const IMG = '/img/web';
 
 const ofertas = computed(() => [
   {
@@ -481,7 +482,7 @@ const ofertas = computed(() => [
     precio: t('PaginaClases.desdePorClase', { precio: `${PRECIO_DESDE} €` }),
     boton: t('Inicio.ofertaIndividualesBoton'),
     to: { path: '/Clases', hash: '#individuales' },
-    imagen: `${IMG}/clases-spanish-inicio-individuales.png?width=600&format=webp`,
+    imagen: `${IMG}/clases-spanish-inicio-individuales.webp`,
     sello: 'sn-sello-general',
   },
   {
@@ -490,7 +491,7 @@ const ofertas = computed(() => [
     precio: t('Inicio.ofertaGruposPrecio'),
     boton: t('Inicio.ofertaGruposBoton'),
     to: { path: '/Clases', hash: '#grupos' },
-    imagen: `${IMG}/clases-spanish-inicio-conversacion.png?width=600&format=webp`,
+    imagen: `${IMG}/clases-spanish-inicio-conversacion.webp`,
     sello: 'sn-sello-conversacion',
   },
   {
@@ -499,7 +500,7 @@ const ofertas = computed(() => [
     precio: t('Inicio.ofertaPacksPrecio'),
     boton: t('PaginaClases.verPacks'),
     to: '/ComprarPacks',
-    imagen: `${IMG}/CTA_reserva.png?width=600&format=webp`,
+    imagen: `${IMG}/CTA_reserva.webp`,
     sello: '',
   },
 ]);
@@ -561,7 +562,7 @@ const fetchCuadernosInicio = async () => {
 };
 
 const defaultAvatar =
-  'https://zleqsdfpjepdangitcxv.supabase.co/storage/v1/render/image/public/imagenes/Logotexto_circ.png?width=160&height=160&resize=cover&format=webp';
+  '/img/web/Logotexto_circ.webp';
 
 // Estados para los diálogos
 const showLoginDialog = ref(false);

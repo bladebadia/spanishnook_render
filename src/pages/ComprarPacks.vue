@@ -306,7 +306,7 @@ const comprarPack = async (pack: PackCreditos) => {
           userEmail: user.value.email,
           packCreditos: pack.creditos,
           packTipo: pack.tipo,
-          successUrl: window.location.origin + '/AreaPersonal',
+          successUrl: window.location.origin + '/AreaPersonal?pago=pack',
           cancelUrl: window.location.origin + '/ComprarPacks',
         }),
       },

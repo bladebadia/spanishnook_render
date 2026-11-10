@@ -46,10 +46,12 @@
             @click="changeLang('es-ES')"
             class="flag-btn flag-es"
           >
-            <q-img
-              src="https://flagcdn.com/w40/es.png"
+            <img
+              src="/img/banderas/es.png"
               alt="Español"
-              style="width: 24px; height: 16px"
+              width="24"
+              height="16"
+              style="display: block; object-fit: cover"
             />
           </q-btn>
           <q-btn
@@ -57,10 +59,12 @@
             @click="changeLang('en-US')"
             class="flag-btn flag-en"
           >
-            <q-img
-              src="https://flagcdn.com/w40/gb.png"
+            <img
+              src="/img/banderas/gb.png"
               alt="English"
-              style="width: 24px; height: 16px; border-radius: 2px"
+              width="24"
+              height="16"
+              style="display: block; object-fit: cover; border-radius: 2px"
             />
           </q-btn>
         </div>

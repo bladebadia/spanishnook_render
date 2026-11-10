@@ -1449,20 +1449,32 @@ onMounted(() => {
   void cargarReservasConfirmadas();
   void cargarDatosPersonales();
 
-  if (route.query.session_id) {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('carritoReservas');
-      window.dispatchEvent(new Event('storage'));
-    }
-    $q.notify({
-      type: 'positive',
-      message: t('personal.pagoCompletado'),
-      icon: 'check_circle',
-      position: 'top',
-    });
-
-    // void router.replace('/AreaPersonal');
+  // Vuelta de Stripe. El webhook confirma unos segundos después: se recargan los datos.
+  const q = route.query;
+  const mensaje = q.session_id
+    ? t('personal.pagoCompletado')
+    : q.pago === 'pack'
+      ? t('personal.pagoPackRecibido')
+      : q.success === 'true'
+        ? t('personal.pagoSuscripcionRecibido')
+        : '';
+  if (q.session_id && typeof window !== 'undefined') {
+    localStorage.removeItem('carritoReservas');
+    window.dispatchEvent(new Event('storage'));
   }
+  if (mensaje) {
+    $q.notify({ type: 'positive', message: mensaje, icon: 'check_circle', position: 'top', timeout: 8000 });
+    const recargar = () => {
+      void cargarDatosPersonales();
+      void cargarReservasConfirmadas();
+      void cargarCursos();
+    };
+    setTimeout(recargar, 3000);
+    setTimeout(recargar, 8000);
+  } else if (q.canceled === 'true') {
+    $q.notify({ type: 'info', message: t('personal.pagoCancelado'), position: 'top' });
+  }
+  if (mensaje || q.canceled) void router.replace({ query: {} });
 });
 </script>
 

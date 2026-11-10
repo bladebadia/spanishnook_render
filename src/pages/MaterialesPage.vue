@@ -171,6 +171,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { supabase } from 'src/supabaseClient';
 import { useQuasar, useMeta } from 'quasar';
 import { useAuth } from 'src/stores/auth';
@@ -178,6 +179,8 @@ import { useI18n } from 'vue-i18n'; // <-- IMPORTAMOS EL IDIOMA
 import '../css/pages/EstilosGenerales.css';
 
 const $q = useQuasar();
+const route = useRoute();
+const router = useRouter();
 const { user } = useAuth();
 const { locale, t } = useI18n();
 // `t` se utiliza desde la plantilla; evitamos la regla de "no-unused-vars" referenciándola aquí
@@ -373,6 +376,20 @@ const comprarConStripe = async (mat: Material | null) => {
 onMounted(() => {
   void cargarCatalogo();
   void cargarMisCompras();
+
+  // Vuelta de Stripe: el webhook registra la compra unos segundos después
+  if (route.query.pago === 'completado') {
+    $q.notify({
+      type: 'positive',
+      message: t('MaterialesPage.pagoRecibido'),
+      icon: 'check_circle',
+      position: 'top',
+      timeout: 8000,
+    });
+    setTimeout(() => void cargarMisCompras(), 3000);
+    setTimeout(() => void cargarMisCompras(), 8000);
+    void router.replace({ query: {} });
+  }
 });
 </script>
 
