@@ -1,0 +1,83 @@
+/* Listas del panel de administración (opiniones y mensajes de contacto) */
+.adm-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.adm-filtro {
+  border: 1px solid var(--sn-borde, #eadfd5);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.adm-explica {
+  margin: 12px 0 20px;
+  color: var(--sn-tinta-suave, #67585a);
+  max-width: 65ch;
+}
+.adm-vacio {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--sn-tinta-suave, #67585a);
+  background: var(--sn-papel, #fffdf8);
+  border: 1px dashed var(--sn-borde, #eadfd5);
+  border-radius: 14px;
+}
+.adm-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.adm-item {
+  background: #fff;
+  border: 1px solid var(--sn-borde, #eadfd5);
+  border-radius: 14px;
+  padding: 16px;
+}
+.adm-item--nuevo {
+  border-left: 4px solid var(--sn-burdeos, #851319);
+}
+.adm-item__cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+.adm-item__nombre {
+  font-family: var(--sn-fuente-titulos);
+  font-size: 1.05rem;
+  color: var(--sn-tinta, #2b1d1f);
+}
+.adm-item__dato {
+  font-size: 0.875rem;
+  color: var(--sn-tinta-suave, #67585a);
+  overflow-wrap: anywhere;
+}
+.adm-item__enlace {
+  color: var(--sn-burdeos, #851319);
+}
+.adm-item__estrellas {
+  margin-left: auto;
+}
+.adm-item__texto {
+  margin: 10px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+  color: var(--sn-tinta, #2b1d1f);
+}
+.adm-item__email {
+  margin: 6px 0 0;
+  font-size: 0.875rem;
+  color: var(--sn-tinta-suave, #67585a);
+}
+.adm-item__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}

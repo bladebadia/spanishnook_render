@@ -41,7 +41,7 @@
             <span v-if="curso.nivel" class="rc-etiqueta">{{ curso.nivel }}</span>
           </div>
 
-          <h1 class="rc-h1">{{ curso.nombre_curso }}</h1>
+          <h1 class="rc-h1">{{ textoCurso(curso, 'nombre_curso', locale) }}</h1>
 
           <p class="rc-estado">
             <span class="rc-estado__punto" :class="`rc-estado__punto--${claseEstado}`" />
@@ -51,7 +51,9 @@
             </span>
           </p>
 
-          <p v-if="curso.descripcion" class="rc-descripcion">{{ curso.descripcion }}</p>
+          <p v-if="textoCurso(curso, 'descripcion', locale)" class="rc-descripcion">
+            {{ textoCurso(curso, 'descripcion', locale) }}
+          </p>
 
           <dl class="rc-datos">
             <div v-if="esCerrado" class="rc-dato">
@@ -74,7 +76,9 @@
             <div class="rc-dato">
               <dt><q-icon name="event" /> {{ t('reservasCursos.dias') }}</dt>
               <dd>
-                {{ curso.dias_semana.map(traducirDia).join(', ') || t('reservasCursos.porDefinir') }}
+                {{
+                  curso.dias_semana.map(traducirDia).join(', ') || t('reservasCursos.porDefinir')
+                }}
               </dd>
             </div>
 
@@ -171,7 +175,9 @@
           <!-- Suscripción: abierta -->
           <div v-else-if="esCursoActivo && !cursoLleno" class="rc-bloque">
             <p class="rc-precio">
-              {{ curso.precio_curso }} €<span class="rc-precio__mes">{{ t('reservasCursos.mes') }}</span>
+              {{ curso.precio_curso }} €<span class="rc-precio__mes">{{
+                t('reservasCursos.mes')
+              }}</span>
             </p>
             <template v-if="autenticado">
               <q-btn
@@ -315,6 +321,7 @@ import { supabase } from 'src/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
 import { useI18n } from 'vue-i18n';
+import { textoCurso, type TextosEn } from 'src/utils/textoCurso';
 import {
   fechasDelCurso,
   formatFechaCalendario,
@@ -387,6 +394,7 @@ interface Curso {
   fecha_fin?: string | null;
   precio_total_centimos?: number | null;
   duracion_minutos?: number | null;
+  textos_en?: TextosEn | null;
 }
 
 const curso = ref<Curso | null>(null);
@@ -556,7 +564,7 @@ const cargarCurso = async () => {
     const { data, error } = await supabase
       .from('cursos_grupales')
       .select(
-        'id, nombre_curso, descripcion, estado_curso, max_estudiantes, dias_semana, horarios_curso, stripe_price_id, precio_curso, tipo_curso, fecha_inicio, fecha_fin, precio_total_centimos, duracion_minutos, nivel, categoria',
+        'id, nombre_curso, descripcion, estado_curso, max_estudiantes, dias_semana, horarios_curso, stripe_price_id, precio_curso, tipo_curso, fecha_inicio, fecha_fin, precio_total_centimos, duracion_minutos, nivel, categoria, textos_en',
       )
       .eq('id', idNum)
       .maybeSingle();
@@ -629,8 +637,7 @@ const esperarInscripcion = async (intentos = 5, esperaMs = 2000) => {
   pagoPendiente.value = !(await comprobarInscripcion());
 };
 
-const irALogin = () =>
-  router.push({ path: rutaLogin, query: { redirect: route.fullPath } });
+const irALogin = () => router.push({ path: rutaLogin, query: { redirect: route.fullPath } });
 
 const estadoHttp = (err: unknown): number | undefined => {
   const contexto = (err as { context?: unknown } | null)?.context;

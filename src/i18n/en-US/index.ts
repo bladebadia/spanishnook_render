@@ -199,7 +199,8 @@ export default {
     guardado: 'Thank you! Profile saved.',
     error: 'Could not save. Please try again.',
     avisoTitulo: 'Complete your profile',
-    avisoTexto: 'Tell us your level and what you want to learn so we can tailor your lessons to you.',
+    avisoTexto:
+      'Tell us your level and what you want to learn so we can tailor your lessons to you.',
     avisoBoton: 'Complete now',
   },
   BotonGoogle: {
@@ -230,7 +231,8 @@ export default {
   },
   TestPagina: {
     siguientePaso: 'Your next step',
-    siguienteTexto: "Book a lesson and we'll adapt it to your level, or check the group courses for your level.",
+    siguienteTexto:
+      "Book a lesson and we'll adapt it to your level, or check the group courses for your level.",
   },
   ContactoPagina: {
     titulo: "Let's talk",
@@ -241,7 +243,8 @@ export default {
     asuntoOpcional: 'Subject (optional)',
   },
   Inicio: {
-    ofertaIndividualesTexto: 'One-to-one conversation or general lessons, on the day and time you choose.',
+    ofertaIndividualesTexto:
+      'One-to-one conversation or general lessons, on the day and time you choose.',
     ofertaIndividualesBoton: 'See private lessons',
     ofertaGruposTexto: 'Groups of up to 6 people by level: monthly or with fixed dates.',
     ofertaGruposPrecio: 'Conversation or general',
@@ -275,7 +278,8 @@ export default {
       'You practise with classmates at your level, take an active part and progress at a steady pace every week.',
     queTipo: 'What do you want to work on?',
     tipoConversacion: 'Conversation',
-    tipoConversacionTexto: 'Speak with ease and without fear of mistakes: fluency, pronunciation and useful vocabulary.',
+    tipoConversacionTexto:
+      'Speak with ease and without fear of mistakes: fluency, pronunciation and useful vocabulary.',
     tipoGeneral: 'General',
     tipoGeneralTexto: 'Grammar, vocabulary, comprehension and expression to move up a level.',
     queFormato: 'How do you want to join?',
@@ -297,7 +301,8 @@ export default {
     verPacks: 'See packs',
     gruposAbiertos: 'Open groups',
     sinGrupos: 'There are no open groups right now',
-    sinGruposTexto: "Write to us and we'll let you know as soon as the next group for your level opens.",
+    sinGruposTexto:
+      "Write to us and we'll let you know as soon as the next group for your level opens.",
     avisame: 'Let me know',
   },
   NuestrasClases: {
@@ -316,6 +321,7 @@ export default {
       'Learn Spanish at your own pace with personalized classes tailored to your specific needs. Our native teachers create a unique curriculum for you, focusing on your goals and schedule availability.',
     tituloClasesA1: 'A1 Level Classes',
     pruebaTuClaseGratis: 'Try your free class!',
+    masInformacion: 'More information',
     textoClasesA1:
       'Ideal for beginners. Focus on learning the language: basic grammar, essential vocabulary, and simple conversations to build a solid foundation in Spanish.',
     botonClasesA1: 'go to general classes',
@@ -583,7 +589,8 @@ export default {
       'Error 406: the profile could not be loaded. Check the RLS policies or the request format.',
     pagoCompletado: 'Payment completed. Your classes will appear here in a few seconds.',
     pagoPackRecibido: 'Payment received. Your credits will be added in a few seconds.',
-    pagoSuscripcionRecibido: 'Subscription completed. You will see the course in "My courses" in a few seconds.',
+    pagoSuscripcionRecibido:
+      'Subscription completed. You will see the course in "My courses" in a few seconds.',
     pagoCancelado: 'You cancelled the payment. Nothing has been charged.',
     pagoUnico: 'One-time payment',
     cursoFinalizado: 'Finished',
@@ -591,7 +598,8 @@ export default {
   },
 
   MaterialesPage: {
-    pagoRecibido: 'Payment received. In a few seconds you can download the workbook here and in your personal area.',
+    pagoRecibido:
+      'Payment received. In a few seconds you can download the workbook here and in your personal area.',
     titulo1: 'Didactic Materials and Activities',
     descripcion:
       'Learn real Spanish at your own pace with practical materials designed to develop Spanish skills autonomously and complementarily to your learning in an effective way.',
@@ -960,6 +968,61 @@ export default {
     igualAnterior: 'The new password cannot be the same as the old one.',
     enlaceNoValido:
       'The link is not valid or has expired. Request a new one from "Forgot your password?" and open it in the same browser.',
+  },
+  adminPanel: {
+    opiniones: 'Reviews',
+    mensajes: 'Contact messages',
+  },
+  adminCursoIngles: {
+    titulo: 'English texts (optional)',
+    explica: 'If a field is empty, the English website shows the Spanish text.',
+    nombre: 'Course name',
+    tituloTarjeta: 'Card title',
+    textoTarjeta: 'Card text',
+    descripcion: 'Description',
+    boton: 'Button text',
+    promo: 'Promotion text',
+  },
+  adminOpiniones: {
+    pendientes: 'Pending',
+    publicadas: 'Published',
+    recargar: 'Reload',
+    explica:
+      'New reviews are not shown on the website until you publish them. You can hide a published review at any time.',
+    sinPendientes: 'There are no pending reviews.',
+    sinPublicadas: 'There are no published reviews yet.',
+    sinNombre: 'No name',
+    publicar: 'Publish',
+    ocultar: 'Hide',
+    borrar: 'Delete',
+    cancelar: 'Cancel',
+    publicada: 'Review published on the website.',
+    oculta: 'Review hidden.',
+    borrarTitulo: 'Delete review',
+    borrarTexto: 'The review by {nombre} will be deleted. This cannot be undone.',
+    errorCargar: 'The reviews could not be loaded.',
+    errorGuardar: 'The change could not be saved.',
+  },
+  adminMensajes: {
+    sinLeer: 'Unread',
+    todos: 'All',
+    recargar: 'Reload',
+    explica: 'Messages from the contact form. You also get them by email; they are all kept here.',
+    nadaSinLeer: 'There are no unread messages.',
+    ninguno: 'There are no messages yet.',
+    sinNombre: 'No name',
+    nuevo: 'New',
+    responder: 'Reply',
+    marcarLeido: 'Mark as read',
+    marcarNoLeido: 'Mark as unread',
+    borrar: 'Delete',
+    cancelar: 'Cancel',
+    asuntoRespuesta: 'Your message to SpanishNook',
+    escribio: 'On {fecha}, {nombre} wrote:',
+    borrarTitulo: 'Delete message',
+    borrarTexto: 'The message from {nombre} will be deleted. This cannot be undone.',
+    errorCargar: 'The messages could not be loaded.',
+    errorGuardar: 'The change could not be saved.',
   },
   avisoCookies: {
     titulo: 'Cookie notice',

@@ -1,67 +1,7 @@
 <template>
-  <div class="legal-page sn-legal">
-    <h1 class="text-primary text-bold text-center titulo-responsivo">Aviso Legal</h1>
-    <p class="text-primary text-bold texto-responsivo">Responsable de la web</p>
-    <p class="text-left text-left texto-responsivo">
-      De conformidad con la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la
-      Información y Comercio Electrónico (LSSICE), se informa que la titularidad de este Sitio Web
-      <span style="color: firebrick">www.spanishnook.com</span> corresponde a:
-    </p>
-    <ul class="lista-puntos texto-responsivo q-ml-xl">
-      <li>Responsable/titular: Paula Fortes Esparza</li>
-      <li>Nombre comercial: SpanishNook</li>
-      <li>NIF: 77127036D</li>
-      <li>Dirección: Barcelona, España</li>
-      <li>Teléfono: +34 694280178</li>
-      <li>Email: info@spanishnook.com</li>
-    </ul>
-    <p class="q-pt-md text-primary text-bold texto-responsivo">Objeto</p>
-    <p class="text-left text-left texto-responsivo">
-      La presente web tiene como finalidad ofrecer servicios de enseñanza de español online mediante
-      clases en vivo y venta de productos relacionados.
-    </p>
-    <p class="q-pt-md text-bold text-primary texto-responsivo">Condiciones de uso</p>
-    <p class="text-left text-left texto-responsivo">
-      El acceso, navegación y uso del Sitio Web atribuye la condición de Usuario, por lo que se
-      aceptan, desde dicho acceso, todas las condiciones de uso aquí establecidas, sin perjuicio de
-      la aplicación de la correspondiente normativa legal de obligado cumplimiento.
-    </p>
-    <p class="q-pt-md text-primary text-bold texto-responsivo">Limitación de responsabilidad</p>
-    <p class="text-left texto-responsivo">
-      La persona titular no se hace responsable de los daños que pudieran derivarse del mal uso de
-      la web ni de enlaces externos a los que pueda redirigir.
-    </p>
-    <p class="q-pt-md text-primary text-bold texto-responsivo">
-      Propiedad intelectual e industrial
-    </p>
-    <p class="text-left text-left texto-responsivo">
-      Todos los contenidos del Sitio Web, incluyendo textos, vídeos, imágenes, material didáctico,
-      logotipos y diseño gráfico, son titularidad de SpanishNook o se dispone de los derechos
-      necesarios para su uso, y están protegidos por la normativa de propiedad intelectual e
-      industrial.
-      <br />
-      Queda prohibida la reproducción, distribución o comunicación pública de dichos contenidos sin
-      la autorización expresa de la titular.
-    </p>
-  </div>
+  <PaginaLegal pagina="aviso" />
 </template>
 
 <script setup lang="ts">
-import { useMeta } from 'quasar';
-import '../css/pages/EstilosGenerales.css';
-
-useMeta(() => ({
-  title: 'Aviso Legal | SpanishNook',
-  meta: {
-    description: {
-      name: 'description',
-      content:
-        'Aviso legal de SpanishNook. Información sobre la titularidad del sitio web, datos de contacto y condiciones de uso de www.spanishnook.com.',
-    },
-    robots: {
-      name: 'robots',
-      content: 'index,follow',
-    },
-  },
-}));
+import PaginaLegal from 'src/components/PaginaLegal.vue';
 </script>

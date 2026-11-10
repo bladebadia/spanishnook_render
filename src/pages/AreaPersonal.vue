@@ -178,9 +178,9 @@
                   <q-item-section avatar
                     ><q-icon name="admin_panel_settings" color="negative"
                   /></q-item-section>
-                  <q-item-section class="text-weight-bold text-negative"
-                    >{{ t('personal.panelAdmin') }}</q-item-section
-                  >
+                  <q-item-section class="text-weight-bold text-negative">{{
+                    t('personal.panelAdmin')
+                  }}</q-item-section>
                 </q-item>
               </q-list>
             </q-card>
@@ -233,7 +233,9 @@
                       v-for="reserva in reservasConfirmadas"
                       :key="reserva.id"
                       class="ap-fila"
-                      :class="reserva.tipo === 'normal' ? 'sn-sello-general' : 'sn-sello-conversacion'"
+                      :class="
+                        reserva.tipo === 'normal' ? 'sn-sello-general' : 'sn-sello-conversacion'
+                      "
                     >
                       <q-checkbox
                         v-if="modoSeleccion"
@@ -259,7 +261,12 @@
                         </span>
                         <span class="ap-fila__detalle">
                           <span class="ap-fila__tipo">{{ getTipoClaseTexto(reserva) }}</span>
-                          · {{ t('personal.horaMadrid', { hora: formatHorarioIndividual(reserva.hora) }) }}
+                          ·
+                          {{
+                            t('personal.horaMadrid', {
+                              hora: formatHorarioIndividual(reserva.hora),
+                            })
+                          }}
                         </span>
                         <span v-if="!puedeCancelar(reserva)" class="ap-fila__nota">
                           {{ t('personal.yaNoSeCancela') }}
@@ -338,7 +345,12 @@
                               @click="router.push(`/ReservasCursos?id=${inscripcion.curso_id}`)"
                             >
                               {{
-                                inscripcion.cursos_grupales?.nombre_curso ||
+                                (inscripcion.cursos_grupales &&
+                                  textoCurso(
+                                    inscripcion.cursos_grupales,
+                                    'nombre_curso',
+                                    locale,
+                                  )) ||
                                 t('personal.cursoSinNombre')
                               }}
                             </div>
@@ -407,7 +419,12 @@
                               @click="router.push(`/ReservasCursos?id=${suscripcion.course_id}`)"
                             >
                               {{
-                                suscripcion.cursos_grupales?.nombre_curso ||
+                                (suscripcion.cursos_grupales &&
+                                  textoCurso(
+                                    suscripcion.cursos_grupales,
+                                    'nombre_curso',
+                                    locale,
+                                  )) ||
                                 t('personal.cursoSinNombre')
                               }}
                             </div>
@@ -844,6 +861,7 @@ import { supabase } from 'src/supabaseClient';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import '../css/pages/EstilosGenerales.css';
+import { textoCurso, type TextosEn } from 'src/utils/textoCurso';
 import { useI18n } from 'vue-i18n';
 import { useSuscripciones } from 'src/composables/useSuscripciones';
 import SaldoWallet from 'components/SaldoWallet.vue';
@@ -879,7 +897,9 @@ const seccionesMovil = computed(() => [
   { id: 'historial', icono: 'history', texto: t('personal.historialClases') },
   { id: 'materiales', icono: 'menu_book', texto: t('personal.misCuadernos') },
   { id: 'datos', icono: 'person', texto: t('personal.datosPersonales') },
-  ...(esAdmin.value ? [{ id: 'admin', icono: 'admin_panel_settings', texto: t('personal.panelAdmin') }] : []),
+  ...(esAdmin.value
+    ? [{ id: 'admin', icono: 'admin_panel_settings', texto: t('personal.panelAdmin') }]
+    : []),
   { id: 'eliminar', icono: 'delete_outline', texto: t('personal.eliminarCuenta') },
 ]);
 const passwordConfirm = ref('');
@@ -923,6 +943,7 @@ interface Suscripcion {
   created_at: string;
   cursos_grupales?: {
     nombre_curso: string;
+    textos_en?: TextosEn | null;
     dias_semana: string[];
     horarios_curso: string[];
     meet_link?: string;
@@ -939,6 +960,7 @@ interface InscripcionCurso {
   created_at: string;
   cursos_grupales?: {
     nombre_curso: string;
+    textos_en?: TextosEn | null;
     fecha_inicio: string | null;
     fecha_fin: string | null;
     dias_semana: string[];
@@ -1101,7 +1123,10 @@ const meetDeMisCursos = async (): Promise<Map<number, string>> => {
     return new Map();
   }
   return new Map(
-    ((data ?? []) as { curso_id: number; meet_link: string }[]).map((f) => [f.curso_id, f.meet_link]),
+    ((data ?? []) as { curso_id: number; meet_link: string }[]).map((f) => [
+      f.curso_id,
+      f.meet_link,
+    ]),
   );
 };
 
@@ -1110,7 +1135,7 @@ const cargarSuscripciones = async () => {
   const { data, error } = await supabase
     .from('user_subscriptions')
     .select(
-      `*, cursos_grupales!course_id (nombre_curso, dias_semana, horarios_curso, estado_curso)`,
+      `*, cursos_grupales!course_id (nombre_curso, textos_en, dias_semana, horarios_curso, estado_curso)`,
     )
     .eq('user_id', user.value?.id)
     .order('created_at', { ascending: false });
@@ -1126,11 +1151,11 @@ const cargarSuscripciones = async () => {
       cursos_grupales: sub.cursos_grupales
         ? { ...sub.cursos_grupales, meet_link: meets.get(sub.course_id) }
         : {
-        nombre_curso: t('personal.cursoNoEncontrado'),
-        dias_semana: [],
-        horarios_curso: [],
-        estado_curso: 'Desconocido',
-      },
+            nombre_curso: t('personal.cursoNoEncontrado'),
+            dias_semana: [],
+            horarios_curso: [],
+            estado_curso: 'Desconocido',
+          },
     })) as Suscripcion[];
 
     misSuscripciones.value = cursosTemp.filter(
@@ -1147,7 +1172,7 @@ const cargarInscripciones = async () => {
     .from('inscripciones_curso')
     .select(
       `id, curso_id, estado, created_at,
-      cursos_grupales!curso_id (nombre_curso, fecha_inicio, fecha_fin, dias_semana, horarios_curso,
+      cursos_grupales!curso_id (nombre_curso, textos_en, fecha_inicio, fecha_fin, dias_semana, horarios_curso,
         duracion_minutos)`,
     )
     .eq('user_id', user.value.id)
@@ -1161,7 +1186,10 @@ const cargarInscripciones = async () => {
   const meets = await meetDeMisCursos();
   misInscripciones.value = ((data ?? []) as unknown as InscripcionCurso[]).map((i) =>
     i.cursos_grupales
-      ? { ...i, cursos_grupales: { ...i.cursos_grupales, meet_link: meets.get(i.curso_id) ?? null } }
+      ? {
+          ...i,
+          cursos_grupales: { ...i.cursos_grupales, meet_link: meets.get(i.curso_id) ?? null },
+        }
       : i,
   );
 };
@@ -1525,7 +1553,9 @@ const diasSemanaMap: Record<string, Record<string, string>> = {
 
 // Con hora: fecha tal como la vive el alumno (puede ser otro día que en Madrid)
 const formatFecha = (fecha: string, hora?: string) =>
-  hora ? formatFechaClaseLocal(fecha, hora, locale.value) : formatFechaCalendario(fecha, locale.value);
+  hora
+    ? formatFechaClaseLocal(fecha, hora, locale.value)
+    : formatFechaCalendario(fecha, locale.value);
 
 const traducirDiasSemana = (dias?: string[]) => {
   if (!dias || dias.length === 0) return '';
@@ -1562,7 +1592,13 @@ onMounted(() => {
     window.dispatchEvent(new Event('storage'));
   }
   if (mensaje) {
-    $q.notify({ type: 'positive', message: mensaje, icon: 'check_circle', position: 'top', timeout: 8000 });
+    $q.notify({
+      type: 'positive',
+      message: mensaje,
+      icon: 'check_circle',
+      position: 'top',
+      timeout: 8000,
+    });
     const recargar = () => {
       void cargarDatosPersonales();
       void cargarReservasConfirmadas();

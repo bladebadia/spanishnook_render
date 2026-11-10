@@ -201,11 +201,11 @@
             v-for="curso in cursosPromo"
             :key="curso.id"
             :image-src="curso.imagen_tarjeta"
-            :title="curso.titulo_tarjeta"
-            :description="curso.texto_tarjeta"
-            :button-text="curso.boton_tarjeta"
+            :title="textoCurso(curso, 'titulo_tarjeta', locale)"
+            :description="textoCurso(curso, 'texto_tarjeta', locale)"
+            :button-text="botonCurso(curso)"
             :show-promo="curso.showPromo"
-            :promo-text="curso.promoText"
+            :promo-text="promoCurso(curso)"
             :show-price="curso.showPrice"
             :price="curso.price"
             :original-price="curso.originalPrice"
@@ -277,6 +277,7 @@ import { supabase } from 'src/supabaseClient';
 import { useRoute } from 'vue-router';
 import { scroll, useMeta } from 'quasar';
 import { formatFechaCorta } from 'src/utils/zonaHoraria';
+import { textoCurso, type TextosEn } from 'src/utils/textoCurso';
 const route = useRoute();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
 const { t, locale } = useI18n();
@@ -347,10 +348,22 @@ function irA(hash: string) {
 }
 
 const puntosIndividuales = computed(() => [
-  { titulo: t('NuestrasClases.ListaComoFuncionanInd1Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd1') },
-  { titulo: t('NuestrasClases.ListaComoFuncionanInd2Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd2') },
-  { titulo: t('NuestrasClases.ListaComoFuncionanInd3Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd3') },
-  { titulo: t('NuestrasClases.ListaComoFuncionanInd4Bold'), texto: t('NuestrasClases.ListaComoFuncionanInd4') },
+  {
+    titulo: t('NuestrasClases.ListaComoFuncionanInd1Bold'),
+    texto: t('NuestrasClases.ListaComoFuncionanInd1'),
+  },
+  {
+    titulo: t('NuestrasClases.ListaComoFuncionanInd2Bold'),
+    texto: t('NuestrasClases.ListaComoFuncionanInd2'),
+  },
+  {
+    titulo: t('NuestrasClases.ListaComoFuncionanInd3Bold'),
+    texto: t('NuestrasClases.ListaComoFuncionanInd3'),
+  },
+  {
+    titulo: t('NuestrasClases.ListaComoFuncionanInd4Bold'),
+    texto: t('NuestrasClases.ListaComoFuncionanInd4'),
+  },
   { titulo: t('NuestrasClases.ListaComoFuncionanInd5'), texto: '' },
 ]);
 
@@ -372,8 +385,9 @@ const cursosPromo = ref<
     titulo_tarjeta: string;
     texto_tarjeta: string;
     boton_tarjeta: string;
+    texto_promo: string;
+    textos_en: TextosEn;
     showPromo: boolean;
-    promoText: string;
     showPrice: boolean;
     price: string;
     originalPrice: string;
@@ -387,6 +401,33 @@ const cursosPromo = ref<
 >([]);
 
 type CursoPromo = (typeof cursosPromo.value)[number];
+
+// Textos por defecto que guarda el panel: en inglés se sustituyen por su traducción
+const BOTON_POR_DEFECTO = 'Más información';
+const PROMO_POR_DEFECTO = '¡Prueba tu clase gratis!';
+const enIngles = computed(() => locale.value.startsWith('en'));
+
+const botonCurso = (c: CursoPromo): string => {
+  if (
+    enIngles.value &&
+    !c.textos_en.boton_tarjeta &&
+    (!c.boton_tarjeta || c.boton_tarjeta === BOTON_POR_DEFECTO)
+  ) {
+    return t('NuestrasClases.masInformacion');
+  }
+  return textoCurso(c, 'boton_tarjeta', locale.value) || t('NuestrasClases.masInformacion');
+};
+
+const promoCurso = (c: CursoPromo): string => {
+  if (
+    enIngles.value &&
+    !c.textos_en.texto_promo &&
+    (!c.texto_promo || c.texto_promo === PROMO_POR_DEFECTO)
+  ) {
+    return t('NuestrasClases.pruebaTuClaseGratis');
+  }
+  return textoCurso(c, 'texto_promo', locale.value) || t('NuestrasClases.pruebaTuClaseGratis');
+};
 
 // Etiquetas de la tarjeta: categoría (con el color de su sello) y formato de pago
 const etiquetasCurso = (c: CursoPromo) => [
@@ -408,8 +449,10 @@ const precioMinimoGrupos = computed(() => {
 });
 
 const resumenGrupos = computed(() => {
-  if (precioMinimoGrupos.value) return t('PaginaClases.desdePorMes', { precio: precioMinimoGrupos.value });
-  if (cursosPromo.value.length) return t('PaginaClases.gruposAbiertosN', { n: cursosPromo.value.length });
+  if (precioMinimoGrupos.value)
+    return t('PaginaClases.desdePorMes', { precio: precioMinimoGrupos.value });
+  if (cursosPromo.value.length)
+    return t('PaginaClases.gruposAbiertosN', { n: cursosPromo.value.length });
   return t('PaginaClases.proximosGrupos');
 });
 
@@ -446,6 +489,7 @@ async function cargarCursosPromo(): Promise<void> {
       visibilidad,
       mostrar_promo,
       texto_promo,
+      textos_en,
       mostrar_precio,
       precio_curso,
       precio_original,
@@ -474,9 +518,10 @@ async function cargarCursosPromo(): Promise<void> {
     imagen_tarjeta: (c.imagen_tarjeta ?? '').replace(/^['"]|['"]$/g, '').trim(),
     titulo_tarjeta: c.titulo_tarjeta ?? '',
     texto_tarjeta: c.texto_tarjeta ?? '',
-    boton_tarjeta: c.boton_tarjeta ?? t('NuestrasClases.reservar'),
+    boton_tarjeta: c.boton_tarjeta ?? '',
+    texto_promo: c.texto_promo ?? '',
+    textos_en: (c.textos_en ?? {}) as TextosEn,
     showPromo: c.mostrar_promo ?? false,
-    promoText: c.texto_promo ?? t('NuestrasClases.pruebaTuClaseGratis'),
     showPrice: c.mostrar_precio ?? false,
     price: c.precio_curso ?? '',
     originalPrice: c.precio_original ?? '',

@@ -255,7 +255,8 @@ export default {
     asuntoOpcional: 'Asunto (opcional)',
   },
   Inicio: {
-    ofertaIndividualesTexto: 'Clases 1 a 1 de conversación o generales, el día y la hora que elijas.',
+    ofertaIndividualesTexto:
+      'Clases 1 a 1 de conversación o generales, el día y la hora que elijas.',
     ofertaIndividualesBoton: 'Ver clases individuales',
     ofertaGruposTexto: 'Grupos de máximo 6 personas por nivel: mensuales o con fechas fijas.',
     ofertaGruposPrecio: 'Conversación o general',
@@ -289,7 +290,8 @@ export default {
       'Practicas con compañeros de tu nivel, participas de verdad y avanzas con un ritmo fijo cada semana.',
     queTipo: '¿Qué quieres trabajar?',
     tipoConversacion: 'Conversación',
-    tipoConversacionTexto: 'Hablar con soltura, sin miedo a equivocarte: fluidez, pronunciación y vocabulario útil.',
+    tipoConversacionTexto:
+      'Hablar con soltura, sin miedo a equivocarte: fluidez, pronunciación y vocabulario útil.',
     tipoGeneral: 'General',
     tipoGeneralTexto: 'Gramática, vocabulario, comprensión y expresión para subir de nivel.',
     queFormato: '¿Cómo quieres apuntarte?',
@@ -346,6 +348,7 @@ export default {
       'Aprende español a tu ritmo con clases personalizadas adaptadas a tus necesidades específicas. Nuestros profesores nativos crean un plan de estudios único para ti, enfocándose en tus objetivos y disponibilidad de horario.',
     botonIrAlCarrito: 'Ir al carrito',
     pruebaTuClaseGratis: '¡Prueba tu clase gratis!',
+    masInformacion: 'Más información',
     misReservasConfirmadas: 'Mis reservas confirmadas',
     noSePuede: 'No se puede cancelar (menos de 24 horas)',
     noSePuedeCancelar: 'No se puede cancelar con menos de 24 horas de antelación',
@@ -590,7 +593,8 @@ export default {
       'Error 406: no se puede obtener el perfil. Revisa las políticas RLS o el formato de la petición.',
     pagoCompletado: 'Pago completado. Tus clases aparecerán aquí en unos segundos.',
     pagoPackRecibido: 'Pago recibido. Tus créditos se sumarán en unos segundos.',
-    pagoSuscripcionRecibido: 'Suscripción completada. Verás el curso en «Mis cursos» en unos segundos.',
+    pagoSuscripcionRecibido:
+      'Suscripción completada. Verás el curso en «Mis cursos» en unos segundos.',
     pagoCancelado: 'Has cancelado el pago. No se ha cobrado nada.',
     pagoUnico: 'Pago único',
     cursoFinalizado: 'Finalizado',
@@ -598,7 +602,8 @@ export default {
   },
 
   MaterialesPage: {
-    pagoRecibido: 'Pago recibido. En unos segundos podrás descargar el cuaderno aquí y en tu área personal.',
+    pagoRecibido:
+      'Pago recibido. En unos segundos podrás descargar el cuaderno aquí y en tu área personal.',
     titulo1: 'Materiales didácticos y actividades',
     descripcion:
       'Aprende español real a tu ritmo con materiales prácticos creados para desarrollar las destrezas del español de forma autónoma y complementaria a tu aprendizaje de forma efectiva.',
@@ -967,6 +972,62 @@ export default {
     igualAnterior: 'La nueva contraseña no puede ser igual a la anterior.',
     enlaceNoValido:
       'El enlace no es válido o ha caducado. Vuelve a pedirlo desde "¿Olvidaste tu contraseña?" y ábrelo en el mismo navegador.',
+  },
+  adminPanel: {
+    opiniones: 'Opiniones',
+    mensajes: 'Mensajes de contacto',
+  },
+  adminCursoIngles: {
+    titulo: 'Textos en inglés (opcional)',
+    explica: 'Si dejas un campo vacío, en la web en inglés se ve el texto en español.',
+    nombre: 'Nombre del curso',
+    tituloTarjeta: 'Título de la tarjeta',
+    textoTarjeta: 'Texto de la tarjeta',
+    descripcion: 'Descripción',
+    boton: 'Texto del botón',
+    promo: 'Texto de la promoción',
+  },
+  adminOpiniones: {
+    pendientes: 'Pendientes',
+    publicadas: 'Publicadas',
+    recargar: 'Recargar',
+    explica:
+      'Las opiniones nuevas no salen en la web hasta que las publicas. Puedes ocultar una publicada en cualquier momento.',
+    sinPendientes: 'No hay opiniones pendientes.',
+    sinPublicadas: 'Todavía no hay opiniones publicadas.',
+    sinNombre: 'Sin nombre',
+    publicar: 'Publicar',
+    ocultar: 'Ocultar',
+    borrar: 'Borrar',
+    cancelar: 'Cancelar',
+    publicada: 'Opinión publicada en la web.',
+    oculta: 'Opinión oculta.',
+    borrarTitulo: 'Borrar opinión',
+    borrarTexto: 'Se borrará la opinión de {nombre}. No se puede deshacer.',
+    errorCargar: 'No se han podido cargar las opiniones.',
+    errorGuardar: 'No se ha podido guardar el cambio.',
+  },
+  adminMensajes: {
+    sinLeer: 'Sin leer',
+    todos: 'Todos',
+    recargar: 'Recargar',
+    explica:
+      'Mensajes del formulario de contacto. También te llegan por correo; aquí quedan todos guardados.',
+    nadaSinLeer: 'No hay mensajes sin leer.',
+    ninguno: 'Todavía no hay mensajes.',
+    sinNombre: 'Sin nombre',
+    nuevo: 'Nuevo',
+    responder: 'Responder',
+    marcarLeido: 'Marcar como leído',
+    marcarNoLeido: 'Marcar como no leído',
+    borrar: 'Borrar',
+    cancelar: 'Cancelar',
+    asuntoRespuesta: 'Tu mensaje a SpanishNook',
+    escribio: 'El {fecha}, {nombre} escribió:',
+    borrarTitulo: 'Borrar mensaje',
+    borrarTexto: 'Se borrará el mensaje de {nombre}. No se puede deshacer.',
+    errorCargar: 'No se han podido cargar los mensajes.',
+    errorGuardar: 'No se ha podido guardar el cambio.',
   },
   avisoCookies: {
     titulo: 'Aviso de cookies',

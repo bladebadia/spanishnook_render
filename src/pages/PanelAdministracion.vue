@@ -73,6 +73,40 @@
                 <q-item-label>Materiales y Cuadernos</q-item-label>
               </q-item-section>
             </q-item>
+            <q-item
+              clickable
+              v-ripple
+              :active="seccionActual === 'opiniones'"
+              @click="cambiarSeccion('opiniones')"
+              class="menu-item"
+            >
+              <q-item-section avatar>
+                <q-icon name="reviews" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ t('adminPanel.opiniones') }}</q-item-label>
+              </q-item-section>
+              <q-item-section v-if="opinionesPendientes > 0" side>
+                <q-badge color="primary" rounded :label="opinionesPendientes" />
+              </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-ripple
+              :active="seccionActual === 'mensajes'"
+              @click="cambiarSeccion('mensajes')"
+              class="menu-item"
+            >
+              <q-item-section avatar>
+                <q-icon name="mail" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ t('adminPanel.mensajes') }}</q-item-label>
+              </q-item-section>
+              <q-item-section v-if="mensajesSinLeer > 0" side>
+                <q-badge color="primary" rounded :label="mensajesSinLeer" />
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-card>
       </div>
@@ -353,7 +387,9 @@
                     </q-badge>
                     <q-badge
                       class="q-ml-sm"
-                      :class="curso.categoria === 'general' ? 'sn-sello-general' : 'sn-sello-conversacion'"
+                      :class="
+                        curso.categoria === 'general' ? 'sn-sello-general' : 'sn-sello-conversacion'
+                      "
                       :style="{ background: 'var(--sn-sello)' }"
                     >
                       {{ curso.categoria === 'general' ? 'General' : 'Conversación' }}
@@ -386,8 +422,7 @@
                       dense
                       class="q-ml-xs"
                     >
-                      {{ curso.precio_curso
-                      }}{{ curso.tipo_curso === 'cerrado' ? ' € total' : '' }}
+                      {{ curso.precio_curso }}{{ curso.tipo_curso === 'cerrado' ? ' € total' : '' }}
                     </q-chip>
                     <q-chip
                       v-if="curso.tipo_curso === 'cerrado' && curso.fecha_inicio"
@@ -737,6 +772,9 @@
                     </div>
                     <div class="col-12 col-md-3">
                       <SubirImagen v-model="cursoFormulario.imagen_tarjeta" />
+                    </div>
+                    <div class="col-12">
+                      <TextosInglesCurso v-model="cursoFormulario.textos_en" />
                     </div>
 
                     <div class="col-12">
@@ -1155,6 +1193,9 @@
 
                   <div class="col-12 col-md-3">
                     <SubirImagen v-model="cursoFormulario.imagen_tarjeta" />
+                  </div>
+                  <div class="col-12">
+                    <TextosInglesCurso v-model="cursoFormulario.textos_en" />
                   </div>
 
                   <!-- Promoción y Precios -->
@@ -1888,6 +1929,16 @@
           </q-dialog>
         </div>
 
+        <!-- Sección Opiniones -->
+        <div v-if="seccionActual === 'opiniones'">
+          <AdminOpiniones @pendientes="(n) => (opinionesPendientes = n)" />
+        </div>
+
+        <!-- Sección Mensajes de contacto -->
+        <div v-if="seccionActual === 'mensajes'">
+          <AdminMensajes @sin-leer="(n) => (mensajesSinLeer = n)" />
+        </div>
+
         <!-- Sección Tarjetas -->
         <div v-if="seccionActual === 'tarjetas'">
           <q-card>
@@ -1984,6 +2035,11 @@ import { fechasDelCurso, formatFechaCorta, hoyMadridISO } from 'src/utils/zonaHo
 import { escaparHtml } from 'src/utils/html';
 import type { User } from '@supabase/supabase-js';
 import SubirImagen from 'src/components/SubirImagen.vue';
+import TextosInglesCurso from 'src/components/TextosInglesCurso.vue';
+import AdminOpiniones from 'src/components/admin/AdminOpiniones.vue';
+import AdminMensajes from 'src/components/admin/AdminMensajes.vue';
+import { useI18n } from 'vue-i18n';
+import { limpiarTextosEn, type TextosEn } from 'src/utils/textoCurso';
 
 // Interfaces
 
@@ -2127,6 +2183,8 @@ interface CursoGrupal {
   fecha_fin?: string | null;
   precio_total_centimos?: number | null;
   duracion_minutos?: number | null;
+  // Traducción opcional de los textos visibles (la web en inglés la usa si existe)
+  textos_en: TextosEn;
 }
 
 type TipoCurso = 'suscripcion' | 'cerrado';
@@ -2190,6 +2248,7 @@ const cursoFormulario = ref<CursoGrupal>({
   fecha_fin: '',
   precio_total_centimos: null,
   duracion_minutos: 90,
+  textos_en: {},
 });
 
 // --- CURSO DE FECHAS CERRADAS ---
@@ -2422,6 +2481,25 @@ const diasDelMes = computed(() => {
 // Navegación entre secciones
 const cambiarSeccion = (seccion: string): void => {
   seccionActual.value = seccion;
+};
+
+// Avisos del menú: opiniones por publicar y mensajes de contacto sin leer
+const { t } = useI18n();
+const opinionesPendientes = ref(0);
+const mensajesSinLeer = ref(0);
+const cargarAvisosMenu = async (): Promise<void> => {
+  const [opiniones, mensajes] = await Promise.all([
+    supabase
+      .from('opiniones_verificadas')
+      .select('id', { count: 'exact', head: true })
+      .or('verified.is.null,verified.eq.false'),
+    supabase
+      .from('mensajes_contacto')
+      .select('id', { count: 'exact', head: true })
+      .or('leido.is.null,leido.eq.false'),
+  ]);
+  opinionesPendientes.value = opiniones.count ?? 0;
+  mensajesSinLeer.value = mensajes.count ?? 0;
 };
 
 // Funciones del calendario
@@ -2900,6 +2978,7 @@ const toggleCurso = (id: number): void => {
         fecha_fin: curso.fecha_fin ?? '',
         precio_total_centimos: curso.precio_total_centimos ?? null,
         duracion_minutos: curso.duracion_minutos ?? 90,
+        textos_en: { ...(curso.textos_en ?? {}) },
       };
       precioTotalEur.value =
         curso.precio_total_centimos != null ? curso.precio_total_centimos / 100 : null;
@@ -2939,6 +3018,7 @@ const abrirDialogNuevoCurso = (): void => {
     fecha_fin: '',
     precio_total_centimos: null,
     duracion_minutos: 90,
+    textos_en: {},
   };
   precioTotalEur.value = null;
   tarifaSeleccionada.value = null;
@@ -3127,6 +3207,7 @@ const guardarCurso = async (): Promise<void> => {
           : cursoFormulario.value.fecha_fin || null,
       precio_total_centimos: precioTotalCentimos,
       duracion_minutos: Number(cursoFormulario.value.duracion_minutos) || 90,
+      textos_en: limpiarTextosEn(cursoFormulario.value.textos_en),
     };
 
     let resultado;
@@ -3522,6 +3603,7 @@ onMounted(async (): Promise<void> => {
   await cargarCursosGrupales();
   await cargarReservas();
   void cargarMateriales();
+  void cargarAvisosMenu();
   await cargarUsuario();
   subscription = supabase
     .channel('calendario-changes')
