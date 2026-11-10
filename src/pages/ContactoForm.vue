@@ -78,6 +78,16 @@
             ]"
           />
           <q-input v-model="formData.asunto" outlined :label="t('ContactoPagina.asuntoOpcional')" />
+          <!-- Campo trampa para bots: invisible y fuera del tabulador -->
+          <input
+            v-model="trampa"
+            class="co-trampa"
+            type="text"
+            name="web"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
           <q-input
             v-model="formData.mensaje"
             outlined
@@ -133,6 +143,7 @@ const redes = [
 ];
 
 const formData = ref({ nombre: '', email: '', asunto: '', mensaje: '' });
+const trampa = ref('');
 const isSubmitting = ref(false);
 const enviadoConExito = ref(false);
 const errorEnvio = ref(false);
@@ -144,15 +155,10 @@ const onSubmit = async () => {
   enviadoConExito.value = false;
 
   try {
-    // mensajes_contacto no tiene columna de asunto: se guarda al principio del mensaje
-    const asunto = formData.value.asunto.trim();
-    const mensaje = asunto
-      ? `${t('Contacto.asunto')}: ${asunto}\n\n${formData.value.mensaje}`
-      : formData.value.mensaje;
-
-    const { error } = await supabase.from('mensajes_contacto').insert([
-      { nombre: formData.value.nombre, email: formData.value.email, mensaje },
-    ]);
+    // La función guarda el mensaje y avisa a Paula por correo
+    const { error } = await supabase.functions.invoke('contacto', {
+      body: { ...formData.value, web: trampa.value },
+    });
     if (error) throw error;
 
     enviadoConExito.value = true;
@@ -195,6 +201,13 @@ useMeta(() => ({
 </script>
 
 <style scoped>
+.co-trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
 .co-pagina {
   background: var(--sn-papel);
   color: var(--sn-tinta);

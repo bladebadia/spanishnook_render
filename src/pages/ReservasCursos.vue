@@ -423,7 +423,6 @@ interface Curso {
   max_estudiantes?: number;
   dias_semana: string[];
   horarios_curso: string[];
-  lista_espera: (string | number)[];
   stripe_price_id?: string;
   precio_curso?: string | number;
   tipo_curso?: 'suscripcion' | 'cerrado';
@@ -535,11 +534,20 @@ const formGuestValido = computed(
   () => !!formGuest.value.nombre && !!formGuest.value.email && aceptaCondicionesGuest.value,
 );
 
-const yaEnListaEspera = computed(() => {
-  if (!curso.value) return false;
-  const valor = user.value ? user.value.id : formGuest.value.email || '';
-  return (curso.value.lista_espera || []).includes(valor);
-});
+// La lista de espera ya no es pública: se pregunta al servidor (con sesión, por tu id)
+const yaEnListaEspera = ref(false);
+const comprobarListaEspera = async (email?: string) => {
+  if (!curso.value) return;
+  if (!user.value && !email) {
+    yaEnListaEspera.value = false;
+    return;
+  }
+  const { data } = await supabase.rpc('en_lista_espera', {
+    p_course_id: curso.value.id,
+    p_email: email ?? null,
+  });
+  yaEnListaEspera.value = data === true;
+};
 
 // --- TRADUCCIÓN DÍAS ---
 const diasSemanaMap: Record<string, Record<string, string>> = {
@@ -588,7 +596,9 @@ const cargarCurso = async () => {
 
     const { data, error } = await supabase
       .from('cursos_grupales')
-      .select('*')
+      .select(
+        'id, nombre_curso, descripcion, estado_curso, max_estudiantes, dias_semana, horarios_curso, stripe_price_id, precio_curso, tipo_curso, fecha_inicio, fecha_fin, precio_total_centimos, duracion_minutos',
+      )
       .eq('id', idNum)
       .maybeSingle();
     if (error) throw error;
@@ -598,8 +608,7 @@ const cargarCurso = async () => {
         ...data,
         dias_semana: Array.isArray(data.dias_semana) ? data.dias_semana : [],
         horarios_curso: Array.isArray(data.horarios_curso) ? data.horarios_curso : [],
-        lista_espera: Array.isArray(data.lista_espera) ? data.lista_espera : [],
-      };
+      } as Curso;
       const { data: countData } = await supabase.rpc('get_curso_ocupacion', {
         curso_id_param: idNum,
       });
@@ -731,7 +740,7 @@ const reservarGuest = async () => {
     });
     if (error) throw error;
     $q.notify({ type: 'positive', message: t('reservasCursos.añadido') });
-    await cargarCurso();
+    await comprobarListaEspera(formGuest.value.email);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : t('errorDesconocido');
     $q.notify({ type: 'negative', message: t('reservasCursos.errorRegistrar', { mensaje: msg }) });
@@ -757,7 +766,7 @@ const reservarAutenticado = async () => {
     });
     if (error) throw error;
     $q.notify({ type: 'positive', message: t('reservasCursos.anadido') });
-    await cargarCurso();
+    await comprobarListaEspera();
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : t('errorDesconocido');
     $q.notify({ type: 'negative', message: t('reservasCursos.errorRegistrar', { mensaje: msg }) });
@@ -771,6 +780,7 @@ onMounted(async () => {
   await cargarUsuario();
   await cargarCurso();
   if (!autenticado.value) return;
+  await comprobarListaEspera();
   if (esCerrado.value) {
     if (pagoOk.value) await esperarInscripcion();
     else await comprobarInscripcion();

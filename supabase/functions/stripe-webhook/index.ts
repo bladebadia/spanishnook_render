@@ -39,7 +39,6 @@ import {
   esFechaISO,
   fechaCorta,
   formatFechaCalendario,
-  hoyMadridISO,
   normalizarHora,
   normalizarZona,
   rangoHoraEnZona,
@@ -243,7 +242,7 @@ async function procesarClases(session: Stripe.Checkout.Session): Promise<Respons
   const { data: previas } = await supabase.from("reservas").select("id").eq("stripe_payment_intent", pi).limit(1);
   if (previas && previas.length > 0) return ok({ ignored: true });
   const reembolsos = await stripe.refunds.list({ payment_intent: pi, limit: 10 });
-  if (reembolsos.data.some((r: { metadata?: Record<string, string> }) => r.metadata?.origen === "stripe-webhook")) return ok({ ignored: true });
+  if (reembolsos.data.some((r: { metadata?: Record<string, string> | null }) => r.metadata?.origen === "stripe-webhook")) return ok({ ignored: true });
 
   // Importe real de cada línea (mismo orden que las franjas)
   let lineas: Array<{ amount_total: number }> = [];
@@ -416,43 +415,34 @@ async function procesarCursoCerrado(session: Stripe.Checkout.Session): Promise<R
     return ok({ ignored: true });
   }
 
-  // 1. Inscripción idempotente (una por sesión de Stripe)
-  const { data: nuevas, error: errIns } = await supabase
-    .from("inscripciones_curso")
-    .upsert({
-      curso_id: cursoId, user_id: userId, stripe_session_id: session.id,
-      stripe_payment_intent: pi, importe_centimos: importe, estado: "pagada",
-    }, { onConflict: "stripe_session_id", ignoreDuplicates: true })
-    .select("curso_id");
+  // 1-2. Comprobar plaza e inscribir en una sola transacción (bloquea el curso: sin carreras).
+  //      'duplicada' = reintento de Stripe de una sesión ya procesada.
+  const { data: resultado, error: errIns } = await supabase.rpc("inscribir_curso_cerrado", {
+    p_curso_id: cursoId,
+    p_user_id: userId,
+    p_session_id: session.id,
+    p_payment_intent: pi,
+    p_importe: importe,
+  });
   if (errIns) {
     console.error("[stripe-webhook] Error guardando inscripción:", errIns.message);
     return json({ error: "DB Error" }, 500); // Stripe reintentará
   }
-  if (!nuevas || nuevas.length === 0) return ok({ ignored: true });
+  if (resultado === "duplicada") return ok({ ignored: true });
 
-  // 2. ¿Sigue habiendo plaza y el curso está activo?
   const { data: curso } = await supabase
     .from("cursos_grupales")
     .select("id, nombre_curso, estado_curso, tipo_curso, max_estudiantes, usuarios, fecha_inicio, fecha_fin, dias_semana, horarios_curso, meet_link, google_event_id, duracion_minutos")
     .eq("id", cursoId)
     .maybeSingle();
-  const { count } = await supabase
-    .from("inscripciones_curso")
-    .select("curso_id", { count: "exact", head: true })
-    .eq("curso_id", cursoId)
-    .eq("estado", "pagada");
 
   const alumno = await datosAlumno(userId);
   const email = alumno?.email || session.customer_details?.email || null;
   const idioma = resolverIdioma(meta.idioma, alumno?.idioma_nativo);
 
-  let motivo: string | null = null;
-  if (!curso) motivo = "el curso no existe";
-  else if (curso.estado_curso !== "Activo") motivo = `el curso está en estado ${curso.estado_curso}`;
-  else if (curso.fecha_fin && hoyMadridISO() >= curso.fecha_fin) motivo = "el curso ya ha terminado";
-  else if (curso.max_estudiantes && (count ?? 0) > curso.max_estudiantes) motivo = "el curso está completo";
+  const motivo: string | null = resultado === "ok" ? null : String(resultado ?? "error desconocido");
 
-  if (motivo) return await rechazarCurso(session, { cursoId, nombreCurso: curso?.nombre_curso ?? `#${cursoId}`, motivo, pi, importe, email, nombre: alumno?.nombre ?? null, idioma });
+  if (motivo || !curso) return await rechazarCurso(session, { cursoId, nombreCurso: curso?.nombre_curso ?? `#${cursoId}`, motivo: motivo ?? "el curso no existe", pi, importe, email, nombre: alumno?.nombre ?? null, idioma });
 
   // 3. Alta en el curso
   const usuarios: string[] = (curso!.usuarios ?? []).map(String);

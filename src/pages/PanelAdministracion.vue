@@ -2830,16 +2830,14 @@ let subscription: ReturnType<typeof supabase.channel> | null = null;
 const cargarCursosGrupales = async (): Promise<void> => {
   try {
     // 1. Pedimos los cursos
-    const { data: cursos, error } = await supabase
-      .from('cursos_grupales')
-      .select('*')
-      .order('created_at', { ascending: false });
+    // admin_cursos(): todas las columnas (Meet, alumnos, lista de espera), solo para administración
+    const { data: cursos, error } = await supabase.rpc('admin_cursos');
 
     if (error) throw error;
 
     // 2. Pedimos el CONTEO real de suscripciones activas para cada curso
     const cursosConConteo = await Promise.all(
-      (cursos || []).map(async (curso) => {
+      ((cursos ?? []) as CursoGrupal[]).map(async (curso) => {
         // Consultamos cuántos están suscritos y activos/trialing a este curso
         // Curso cerrado: inscripciones pagadas; suscripción: suscripciones de Stripe
         const { count } =
@@ -3151,8 +3149,7 @@ const guardarCurso = async (): Promise<void> => {
       resultado = await supabase
         .from('cursos_grupales')
         .update(datosGuardar)
-        .eq('id', cursoFormulario.value.id)
-        .select();
+        .eq('id', cursoFormulario.value.id);
 
       if (resultado.error) throw resultado.error;
       cursoIdParaMeet = cursoFormulario.value.id;
@@ -3208,9 +3205,10 @@ const guardarCurso = async (): Promise<void> => {
       }
     } else {
       // INSERT (Nuevo curso)
-      resultado = await supabase.from('cursos_grupales').insert([datosGuardar]).select();
-      if (resultado.error) throw resultado.error;
-      if (resultado.data && resultado.data.length > 0) cursoIdParaMeet = resultado.data[0].id;
+      const insertado = await supabase.from('cursos_grupales').insert([datosGuardar]).select('id');
+      if (insertado.error) throw insertado.error;
+      const nuevoId = (insertado.data as { id: number }[] | null)?.[0]?.id;
+      if (nuevoId) cursoIdParaMeet = nuevoId;
 
       $q.notify({ type: 'positive', message: 'Curso creado' });
       dialogNuevoCurso.value = false;

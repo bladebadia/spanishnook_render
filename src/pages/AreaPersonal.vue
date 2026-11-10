@@ -1048,12 +1048,24 @@ const cancelarSeleccionadas = () => {
 };
 
 // --- RESTO DE FUNCIONES ---
+// El enlace de Meet de los cursos ya no es público: el servidor da solo el de mis cursos
+const meetDeMisCursos = async (): Promise<Map<number, string>> => {
+  const { data, error } = await supabase.rpc('mis_cursos_meet');
+  if (error) {
+    console.error(error.message);
+    return new Map();
+  }
+  return new Map(
+    ((data ?? []) as { curso_id: number; meet_link: string }[]).map((f) => [f.curso_id, f.meet_link]),
+  );
+};
+
 const cargarSuscripciones = async () => {
   if (!user.value) return;
   const { data, error } = await supabase
     .from('user_subscriptions')
     .select(
-      `*, cursos_grupales!course_id (nombre_curso, dias_semana, horarios_curso, meet_link, estado_curso)`,
+      `*, cursos_grupales!course_id (nombre_curso, dias_semana, horarios_curso, estado_curso)`,
     )
     .eq('user_id', user.value?.id)
     .order('created_at', { ascending: false });
@@ -1063,9 +1075,12 @@ const cargarSuscripciones = async () => {
     return;
   }
   if (data) {
+    const meets = await meetDeMisCursos();
     const cursosTemp = data.map((sub) => ({
       ...sub,
-      cursos_grupales: sub.cursos_grupales || {
+      cursos_grupales: sub.cursos_grupales
+        ? { ...sub.cursos_grupales, meet_link: meets.get(sub.course_id) }
+        : {
         nombre_curso: t('personal.cursoNoEncontrado'),
         dias_semana: [],
         horarios_curso: [],
@@ -1088,7 +1103,7 @@ const cargarInscripciones = async () => {
     .select(
       `id, curso_id, estado, created_at,
       cursos_grupales!curso_id (nombre_curso, fecha_inicio, fecha_fin, dias_semana, horarios_curso,
-        meet_link, duracion_minutos)`,
+        duracion_minutos)`,
     )
     .eq('user_id', user.value.id)
     .eq('estado', 'pagada')
@@ -1098,7 +1113,12 @@ const cargarInscripciones = async () => {
     console.error(error.message);
     return;
   }
-  misInscripciones.value = (data ?? []) as unknown as InscripcionCurso[];
+  const meets = await meetDeMisCursos();
+  misInscripciones.value = ((data ?? []) as unknown as InscripcionCurso[]).map((i) =>
+    i.cursos_grupales
+      ? { ...i, cursos_grupales: { ...i.cursos_grupales, meet_link: meets.get(i.curso_id) ?? null } }
+      : i,
+  );
 };
 
 const cargarCursos = () => Promise.all([cargarSuscripciones(), cargarInscripciones()]);
